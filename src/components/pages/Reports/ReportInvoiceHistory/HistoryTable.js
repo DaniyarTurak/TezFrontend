@@ -34,6 +34,7 @@ export default function HistoryTable({
   invoiceDetails,
   invoicetype,
   classes,
+  selectedID,
 }) {
   return (
     <Grid item xs={12}>
@@ -77,8 +78,9 @@ export default function HistoryTable({
             {invoices.map((invoice, idx) => (
               <TableRow
                 hover
+                selected={selectedID === invoice.invoicenumber}
                 className={classes.tableRow}
-                key={idx}
+                key={invoice.invoicenumber}
                 onClick={() => invoiceDetails(invoice)}
               >
                 <StyledTableCell>{idx + 1}</StyledTableCell>

@@ -22,6 +22,9 @@ const useStyles = makeStyles((theme) => ({
         backgroundColor: "#49bb7b",
       },
     },
+    "&$selected, &$selected:hover": {
+      backgroundColor: "#49bb7b",
+    },
   },
   label: {
     color: "orange",
@@ -81,6 +84,7 @@ export default function ReportInvoiceHistory({ companyProps, parameters }) {
     value: "",
     label: "Все",
   });
+  const [selectedID, setSelectedID] = useState(null);
   const [stockFrom, setStockFrom] = useState({ label: "Все", value: 0 });
   const [stockList, setStockList] = useState([]);
   const [stockTo, setStockTo] = useState({ label: "Все", value: 0 });
@@ -379,6 +383,7 @@ export default function ReportInvoiceHistory({ companyProps, parameters }) {
   };
 
   const invoiceDetails = (inv) => {
+    setSelectedID(inv.invoicenumber);
     setMarkedInvoice(inv);
     setLoadingDetails(true);
     Axios.get("/api/report/history/invoice/details", {
@@ -476,6 +481,7 @@ export default function ReportInvoiceHistory({ companyProps, parameters }) {
           invoices={invoices}
           invoiceDetails={invoiceDetails}
           invoicetype={invoicetype}
+          selectedID={selectedID}
         />
       )}
       {details.length > 0 && !isLoadingDetails && (
