@@ -1,0 +1,18 @@
+[
+  {
+    "id": 0,
+    "route": "CurrentPromotions",
+    "caption": "Действующие акции"
+  },
+  {
+    "id": 1,
+    "route": "AddPromotions",
+    "caption": "Создать акцию"
+  },
+
+  {
+    "id": 2,
+    "route": "OldPromotions",
+    "caption": "Старые акции"
+  }
+]

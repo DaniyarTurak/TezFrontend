@@ -1,0 +1,17 @@
+[
+  {
+    "id": 0,
+    "route": "CreateDiscounts",
+    "caption": "Общие скидки"
+  },
+  {
+    "id": 1,
+    "route": "ShelfLife",
+    "caption": "Скидки по срокам годности"
+  },
+  {
+    "id": 2,
+    "route": "DisabledDiscounts",
+    "caption": "Управление исключениями"
+  }
+]

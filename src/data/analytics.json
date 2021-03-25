@@ -1,0 +1,62 @@
+[
+  {
+    "id": 0,
+    "type": "analytics",
+    "route": "analyticsSalesHistory",
+    "caption": "История Покупок"
+  },
+  {
+    "id": 1,
+    "type": "analytics",
+    "route": "salesTrends",
+    "caption": "Тренды"
+  },
+  {
+    "id": 2,
+    "type": "analytics",
+    "route": "paymentMethods",
+    "caption": "Способы Оплаты"
+  },
+  {
+    "id": 3,
+    "type": "analytics",
+    "route": "salesItem",
+    "caption": "Продажи товара"
+  },
+  {
+    "id": 4,
+    "type": "analytics",
+    "route": "salesCategories",
+    "caption": "Продажи по Категориям"
+  },
+  {
+    "id": 5,
+    "type": "analytics",
+    "route": "discounts",
+    "caption": "Скидки"
+  },
+  {
+    "id": 6,
+    "type": "analytics",
+    "route": "salesModifiers",
+    "caption": "Модификаторы Продаж"
+  },
+  {
+    "id": 7,
+    "type": "analyticsReport",
+    "route": "taxes",
+    "caption": "Налоги"
+  },
+  {
+    "id": 8,
+    "type": "analyticsReport",
+    "route": "cashDrawers",
+    "caption": "Денежные Средства"
+  },
+  {
+    "id": 9,
+    "type": "analyticsReport",
+    "route": "cardSpend",
+    "caption": "Потрачено Картой"
+  }
+]

@@ -1,0 +1,12 @@
+[
+  {
+    "id": 0,
+    "route": "MarginOptions",
+    "caption": "Настройка маржи"
+  },
+  {
+    "id": 1,
+    "route": "AdditionalOptions",
+    "caption": "Дополнительные настройки"
+  }
+]

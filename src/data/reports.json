@@ -1,0 +1,110 @@
+[
+  {
+    "id": 0,
+    "type": "report",
+    "route": "reportcashboxstate",
+    "caption": "Отчет по кассам"
+  },
+  {
+    "id": 1,
+    "type": "report",
+    "route": "reportsalessection",
+    "caption": "Общие продажи"
+  },
+  {
+    "id": 2,
+    "type": "report",
+    "route": "reporttransactions",
+    "caption": "Чеки"
+  },
+  {
+    "id": 3,
+    "type": "report",
+    "route": "reportsales",
+    "caption": "Проданные товары"
+  },
+  {
+    "id": 4,
+    "type": "stockreport",
+    "route": "reportstockbalance",
+    "caption": "Остаток на складе"
+  },
+  {
+    "id": 5,
+    "type": "stockreport",
+    "route": "reportinvoicehistory",
+    "caption": "История по накладным"
+  },
+  {
+    "id": 6,
+    "type": "report",
+    "route": "reportsalesplan",
+    "caption": "Индивидуальный бонус"
+  },
+  {
+    "id": 7,
+    "type": "report",
+    "route": "reportsalesplanteam",
+    "caption": "Командный бонус"
+  },
+  {
+    "id": 8,
+    "type": "stockreport",
+    "route": "reportproductmovement",
+    "caption": "Движение товара"
+  },
+  {
+    "id": 9,
+    "type": "stockreport",
+    "route": "revision",
+    "caption": "Ревизия"
+  },
+  {
+    "id": 10,
+    "type": "report",
+    "route": "reportincome",
+    "caption": "Валовая прибыль"
+  },
+  {
+    "id": 11,
+    "type": "report",
+    "route": "reportdiscounts",
+    "caption": "Примененные скидки"
+  },
+  {
+    "id": 12,
+    "type": "report",
+    "route": "reportconsultants",
+    "caption": "Консультанты"
+  },
+  {
+    "id": 13,
+    "type": "report",
+    "route": "certificatespage",
+    "caption": "Сертификаты"
+  },
+  {
+    "id": 14,
+    "type": "report",
+    "route": "reportloyalty",
+    "caption": "Отчёт по покупателям (физ. лица)"
+  },
+  {
+    "id": 15,
+    "type": "stockreport",
+    "route": "reportholdingpage",
+    "caption": "Холдинги"
+  },
+  {
+    "id": 16,
+    "type": "stockreport",
+    "route": "consignmentreports",
+    "caption": "Консигнация"
+  },
+  {
+    "id": 17,
+    "type": "report",
+    "route": "abcxyz",
+    "caption": "ABC/XYZ"
+  }
+]

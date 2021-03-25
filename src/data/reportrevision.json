@@ -1,0 +1,8 @@
+[
+  {
+    "id": 0,
+    "type": "report",
+    "route": "ReportRevision",
+    "caption": "Отчёт по ревизиям"
+  }
+]

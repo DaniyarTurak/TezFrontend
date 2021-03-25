@@ -1,0 +1,177 @@
+[
+  {
+    "id": 0,
+    "route": "report",
+    "name": "Отчеты"
+  },
+  {
+    "id": 1,
+    "route": "stockreport",
+    "name": "Отчеты (склад)"
+  },
+  {
+    "id": 2,
+    "status": "close",
+    "groupName": "Настройки",
+    "group": [
+      {
+        "id": 0,
+        "route": "options/general",
+        "name": "Общая информация"
+      },
+      {
+        "id": 1,
+        "route": "options/point",
+        "name": "Торговая точка"
+      },
+      {
+        "id": 2,
+        "route": "options/stock",
+        "name": "Склад"
+      },
+
+      {
+        "id": 3,
+        "route": "options/cashbox",
+        "name": "Касса"
+      },
+      {
+        "id": 4,
+        "route": "options/cashboxuser",
+        "name": "Пользователи касс"
+      },
+      {
+        "id": 5,
+        "route": "options/erpuser",
+        "name": "Пользователи портала"
+      },
+      {
+        "id": 6,
+        "route": "options/salesplan",
+        "name": "План продаж"
+      },
+      {
+        "id": 7,
+        "route": "options/counterparties",
+        "name": "Поставщики"
+      },
+      {
+        "id": 8,
+        "route": "options/buyers",
+        "name": "Покупатели юр. лица"
+      },
+      {
+        "id": 9,
+        "route": "options/attrspr",
+        "name": "Атрибуты"
+      },
+      {
+        "id": 10,
+        "route": "options/categories",
+        "name": "Категории"
+      },
+      {
+        "id": 11,
+        "route": "options/scales",
+        "name": "Весы"
+      },
+      {
+        "id": 12,
+        "route": "options/pricingmaster",
+        "name": "Мастер ценообразования"
+      },
+      {
+        "id": 13,
+        "route": "options/createprefix",
+        "name": "Префикс весов"
+      }
+    ]
+  },
+  {
+    "id": 3,
+    "groupName": "Управление товарами",
+    "status": "close",
+    "group": [
+      {
+        "id": 0,
+        "name": "Прием нового товара на склад",
+        "route": "product/receive"
+      },
+      {
+        "id": 1,
+        "name": "Перемещение между складами",
+        "route": "product/transfer"
+      },
+      {
+        "id": 2,
+        "name": "Изменение цен",
+        "route": "product/changeprice"
+      },
+      {
+        "id": 3,
+        "name": "Списание товара со склада",
+        "route": "product/writeoff"
+      },
+      {
+        "id": 4,
+        "name": "Привязка бренда к товару",
+        "route": "product/addbrand"
+      },
+      {
+        "id": 5,
+        "name": "Привязка товара к категории",
+        "route": "product/addcategory"
+      },
+      {
+        "id": 6,
+        "name": "Создание скидок",
+        "route": "product/creatediscounts"
+      },
+      {
+        "id": 7,
+        "name": "Печать штрих кода",
+        "route": "product/printbarcode"
+      },
+      {
+        "id": 8,
+        "name": "Ревизия",
+        "route": "product/revision"
+      },
+      {
+        "id": 9,
+        "name": "Подарочные сертификаты",
+        "route": "product/certificates"
+      },
+      {
+        "id": 10,
+        "name": "Бонусы",
+        "route": "product/bonus"
+      },
+      {
+        "id": 11,
+        "name": "Акции",
+        "route": "product/promotionspage"
+      },
+      {
+        "id": 12,
+        "name": "Предельные цены",
+        "route": "product/marginalprice"
+      },
+      {
+        "id": 13,
+        "name": "Весовые товары",
+        "route": "product/productsweight"
+      },
+      {
+        "id": 14,
+        "name": "Купоны",
+        "route": "product/couponspage"
+      },
+      {
+        "id": 15,
+        "name": "Справочник",
+        "route": "product/productreference"
+      }
+    ]
+  }
+]

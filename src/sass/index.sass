@@ -1,0 +1,1335 @@
+$text-color: #000
+$navbar-bg-color: #50b517
+$border-color: #e9e9e9
+$bg-color: #f4f4f4!important
+$green-text-color: #50b517
+$analytics-bg-color: #2b333b
+$analytic-text-color: #61dafb
+$info-color: #17a2b8
+
+@import "~react-vis/dist/style"
+
+button:focus
+  outline: none
+
+@font-face
+	font-family: "RobotoRegular"
+	src: url("../fonts/roboto/Roboto.ttf")
+
+@font-face
+	font-family: "RobotoItalic"
+	src: url("../fonts/roboto/Robotoitalic.ttf")
+
+@font-face
+	font-family: "RobotoBold"
+	src: url("../fonts/roboto/Robotobold.ttf")
+
+@mixin reg
+	font-family: 'RobotoRegular', sans-serif
+	font-weight: 400
+	font-size: 16px
+
+@mixin ital
+	font-family: 'RobotoItalic', sans-serif
+	font-size: 16px
+
+@mixin bold
+	font-family: 'RobotoBold', sans-serif
+	font-size: 16px
+
+//sidebar
+#wrapper
+	padding-left: 50px //
+	-webkit-transition: all 0.5s ease
+	-moz-transition: all 0.5s ease
+	-o-transition: all 0.5s ease
+	transition: all 0.5s ease
+	&.toggled
+ 		padding-left: 250px
+	&.toggled-analytics
+ 		padding-left: 250px
+		 
+#sidebar-wrapper
+	z-index: 100
+	position: fixed
+	left: 300px
+	width: 50px
+	height: 100%
+	margin-left: -300px
+	overflow-y: auto
+	overflow-x: hidden
+	background: #2b333b
+	-webkit-transition: all 0.5s ease
+	-moz-transition: all 0.5s ease
+	-o-transition: all 0.5s ease
+	transition: all 0.5s ease
+
+#wrapper.toggled #sidebar-wrapper
+	width: 300px
+
+#wrapper.toggled-analytics #sidebar-wrapper
+	width: 300px
+
+#page-content-wrapper
+	width: 100%
+	// position: absolute
+	// padding: 15px
+
+#wrapper.toggled #page-content-wrapper
+	position: relative
+	margin-right: 0px
+	padding: 20px
+	// margin-right: -300px
+
+#wrapper.toggled-analytics #page-content-wrapper
+	position: absolute
+	margin-right: 0px
+	padding: 20px
+	// margin-right: -300px
+
+#wrapper.toggled
+	padding-left: 300px
+
+#wrapper.toggled-analytics
+	padding-left: 20px
+
+#wrapper.toggled .sidebar-content
+	display: block
+
+#wrapper.toggled-analytics .sidebar-content
+	display: block
+
+#wrapper .sidebar-content
+	display: none
+
+.sidebar-button
+	float: right
+	margin-top: 5px
+	margin-right: 12.5px
+.hamburger
+	background: url('../img/hamburger.svg') no-repeat 0 0 !important
+.cross
+	background: url('../img/cross.svg') no-repeat 0 0 !important
+
+*,*
+	&:focus
+		outline: none !important
+	&:hover
+		outline: none !important
+		
+/* Sidebar Styles
+.sidebar-nav
+	list-style: none
+	font-weight: 14px
+	top: 0
+	width: 300px
+	margin: 0
+	padding: 0
+	font-size: 16px
+	.subgroups-container
+		overflow: hidden
+		list-style: none
+		padding-left: 20px
+	.slide-down
+		//max-height: 500px
+		animation: height1 0.5s ease
+	.slide-up
+		max-height: 0px
+		animation: height2 .1s ease
+	.group-tab
+		.up
+			transition: all 0.25s ease
+			margin-bottom: -3px
+		.down
+			transition: all 0.25s ease
+			margin-bottom: 3px
+		.up:after
+			transform: rotate(225deg)
+		.down:after
+			transform: rotate(225deg)
+	li
+		text-indent: 20px
+		line-height: 40px
+		color: #fff
+		cursor: pointer
+		&:hover
+			border-left: 3px solid rgb(204, 204, 204)
+			text-decoration: none
+			color: #fff
+			background: #3d454d
+		&:active, &:focus
+			text-decoration: none
+		.subgroup-tab
+			padding-left: 35px
+		.active
+			border-left: 3px solid #000!important
+
+	.sidebar-brand
+		text-indent: 0px
+		padding: 15px 0 5px 20px
+		line-height: 20px
+		@include bold
+	&-inner
+		padding: 0
+		list-style: none
+		padding-left: 10px
+
+.sidebar-nav-admin
+	a
+		&:hover
+			border-left: 3px solid rgb(204, 204, 204)
+			color: #fff
+
+//Analytics styles
+.analytics
+	display: flex
+	height: 100vh
+
+
+.my-tree-menu	
+	list-style: none
+	padding-left: 0px
+	margin-bottom: 0px
+	font-weight: 14px
+
+	.subgroups-container
+		list-style: none
+		overflow: hidden
+	.slide-down
+		max-height: 500px
+		animation: height1 0.5s ease
+	.slide-up
+		max-height: 0px
+		animation: height2 .1s ease
+
+	.group-tab
+		.up
+			transition: all 0.25s ease
+			margin-bottom: -3px
+
+		.down
+			/* Firefox */
+			// -moz-transition: all 1s ease
+			/* WebKit */
+			// -webkit-transition: all 1s ease
+			/* Opera */
+			// -o-transition: all 1s ease
+			/* Standard */
+			transition: all 0.25s ease
+			margin-bottom: 3px
+
+		.up:after
+			transform: rotate(225deg)
+
+		.down:after
+			// opacity: 1
+			// z-index: 1000
+			/* Firefox */
+			// -moz-transform: scale(2) rotate(30deg) translate(50px)
+			/* WebKit */
+			// -webkit-transform: scale(1.2) rotate(30deg) translate(50px)
+			/* Opera */
+			// -o-transform: scale(2) rotate(30deg) translate(50px)
+			/* Standard */
+			transform: rotate(225deg)
+	
+	li
+		cursor: pointer
+		padding: 10px 10px
+	li:hover
+		border-left: 3px solid rgb(204, 204, 204)
+
+	.subgroup-tab
+		padding-left: 35px
+		
+	.active
+		border-left: 3px solid #000!important
+//end of analytics styles 
+.my-tree-menu-sidebar
+	list-style: none
+	padding-left: 0px
+	margin-bottom: 0px
+
+	.subgroups-container
+		overflow: hidden
+	.slide-down
+		animation: height1 0.5s ease
+	.slide-up
+		max-height: 0px
+		animation: height2 .1s ease
+
+	.group-tab
+		.up
+			transition: all 0.25s ease
+			margin-bottom: -3px
+
+		.down
+			/* Firefox */
+			// -moz-transition: all 1s ease
+			/* WebKit */
+			// -webkit-transition: all 1s ease
+			/* Opera */
+			// -o-transition: all 1s ease
+			/* Standard */
+			transition: all 0.25s ease
+			margin-bottom: 3px
+
+		.up:after
+			transform: rotate(225deg)
+
+		.down:after
+			// opacity: 1
+			// z-index: 1000
+			/* Firefox */
+			// -moz-transform: scale(2) rotate(30deg) translate(50px)
+			/* WebKit */
+			// -webkit-transform: scale(1.2) rotate(30deg) translate(50px)
+			/* Opera */
+			// -o-transform: scale(2) rotate(30deg) translate(50px)
+			/* Standard */
+			transform: rotate(225deg)
+	
+	ul
+		display: none
+		cursor: pointer
+		padding: 10px 10px
+	ul:hover
+		display: block
+		border-left: 3px solid rgb(204, 204, 204)
+
+	.subgroup-tab
+		padding-left: 35px
+		
+	.active
+		border-left: 3px solid #000!important
+//end of analytics styles 
+@media(max-width:1066px)
+	table
+		word-break: break-all
+
+@media(max-width:743px)
+	// #wrapper
+	// 	padding-left: 50px
+	// #wrapper.toggled
+	// 	padding-left: 300px
+	// #sidebar-wrapper
+	// 	width: 50px
+	// #wrapper.toggled #sidebar-wrapper
+	// 	width: 300px
+	// #page-content-wrapper
+	// 	padding: 20px
+	// 	position: relative
+	#wrapper.toggled #page-content-wrapper
+		position: absolute
+		// margin-right: 0
+	#wrapper.toggled-analytics #page-content-wrapper
+		position: relative
+body
+	background-color: $bg-color
+	overflow-x: hidden
+	height: 100vh
+div
+	@include reg
+a
+	text-decoration: none!important
+table
+	font-size: 14px!important
+	thead
+		th
+			border-top: 0px!important
+			border-bottom: 0px!important
+	td, th
+		padding: 0.5rem!important
+		vertical-align: initial!important
+button, input
+	box-shadow: none!important
+
+
+.top-nav
+	background-color: $navbar-bg-color
+	li
+		padding: 10px 10px !important
+		&:last-child
+			border: 0
+			padding: 0 auto
+		a
+			color: #d8ffbc
+			@include reg
+			&:hover
+				color: #f3f9ed!important
+	.lang
+		.dropdown-menu
+			min-width: 1rem !important
+			.dropdown-item
+				cursor: pointer
+
+.top-nav-a-active
+	color: #f3f9ed!important
+
+.nav-active
+	color: #f0f0f0!important
+	li
+		background-color: #3d454d
+		
+.nav-active-admin
+	color: #f0f0f0!important
+	background-color: #3d454d!important
+
+.default-hover-admin
+	a:hover
+		color: #f3f9ed!important
+
+.change-password
+	position: absolute
+	width: 400px
+	min-height: 280px
+	min-width: 400px
+	left: 50%
+	margin-left: -200px
+	top: 50%
+	// margin-top: -140px
+	background-color: #fff
+	padding: 15px 20px 15px 20px
+	border: 0.74px solid $border-color
+	label
+		font-size: 14px
+		margin-bottom: 0px
+
+.login-box
+	position: absolute
+	width: 400px
+	min-height: 280px
+	min-width: 400px
+	left: 50%
+	margin-left: -200px
+	top: 50%
+	margin-top: -140px
+	background-color: #fff
+	padding: 30px 20px 15px 20px
+	border: 0.74px solid $border-color
+	@include reg
+	.login-row
+		input
+			margin-top: 0.4rem
+			padding: 3px
+		&-text
+			@include bold
+	.password-row
+		margin-top: 10px
+		&-text
+			display: flex
+			height: auto
+			&-inner
+				width: 50%
+				@include bold
+			&-forgot
+				width: 50%
+				text-align: right
+		input
+			margin-top: 0.4rem
+			padding: 3px
+	.reg-row
+		margin-top: 10px
+		text-align: right
+
+.reg-box
+	min-width: 550px
+	width: 550px
+	position: absolute
+	margin-left: -225px
+	left: 50%
+	margin-top: 15px
+	background-color: #fff
+	border: 4px solid #eaeaea
+	&-header
+		padding: 20px 25px 15px
+		border-bottom: 2px solid #eaeaea
+		color: #333
+	&-body
+		padding: 0px 25px
+		.reg-tip
+			margin: 0
+			padding-top: 20px
+			padding-bottom: 20px
+			font-size: 15px
+			a
+				color: #06c
+				&:hover
+					color: #f60
+		.form-detail
+			dt
+				@include reg
+				font-size: 16px
+				padding-top: 5px
+			input
+				font-size: 13px
+				width: 100%
+				padding: 4px
+				border-radius:
+			.name-row
+				input
+					display: inline-block
+					width: 49.5%
+		.aggr-box
+			padding-bottom: 20px
+			font-size: 13px
+			line-height: 20px
+
+.breadcrumb-st
+	background-color: #fff!important
+	font-size: 12px
+	padding: 0!important
+
+.breadcrumb > li + li:before
+	content: "> "!important
+
+.b-cab
+	margin-top: 30px
+	padding-left: 0px
+	&-right
+		padding: 10px 10px 10px 10px
+		border: 1px solid $border-color
+		background-color: #fff
+		dt
+			@include reg
+			font-size: 14px
+			padding-top: 5px
+			input
+				font-size: 13px
+				width: 100%
+				padding: 4px
+		&-footer
+			border-bottom: 1px solid $border-color
+			padding-bottom: 10px
+
+.general-info, .point-info
+	.general-info-table
+		width: 100%
+		margin: 6px 6px 20px 6px
+		td
+			font-size: 16px!important
+			float: left
+			width: 50%
+			padding: 12px 5px!important
+		.bold-text
+			@include bold
+		.edit-general-info
+			min-width: 100%
+			padding: 0px 5px!important
+		.edit-general-info-title
+			margin-right: 1px
+	dl
+		margin-bottom: 0
+		padding: 10px
+		dt
+			font-size: 16px!important
+			float: left
+			width: 50%
+			margin-right: 10px
+			white-space: nowrap
+		dd
+			margin: 2px 0
+			padding: 10px 0
+			white-space: nowrap
+			@include bold
+
+.loader
+	position: absolute
+	width: 100%
+	height: 100%
+	visibility: hidden
+	transition-delay: 0.2s
+	pointer-events: none
+	.icon
+		width: 80px
+		height: 80px
+		position: relative
+		left: 50%
+		top: 50%
+		transform: translate(-40px, -40px)
+		background: url('../img/loader.svg') no-repeat 0 0
+		background-size: 80px 80px
+
+.is-loading
+	position: absolute
+	width: 100%
+	height: 100%
+	.loader
+		opacity: 1
+		visibility: visible
+		transition: opacity 0.3s linear, visibility 0.3s linear
+		z-index: 3
+
+	
+.is-loading-upload
+	position: relative
+	width: 100%
+	height: 100%
+	.loader
+		opacity: 1
+		visibility: visible
+		transition: opacity 0.3s linear, visibility 0.3s linear
+		z-index: 3
+
+.disabled
+	pointer-events: none
+
+.btn-w-icon
+	width: 25px
+	height: 25px
+	background: none
+	padding: 0!important
+	&:focus
+		outline: none!important
+
+.btn-w-big-icon
+	width: 35px
+	height: 30px
+	background: none
+	padding: 0!important
+	&:focus
+		outline: none!important
+
+.btn-warning-icon
+	width: 55px
+	height: 40px
+	background: none
+	padding: 0!important
+	&:focus
+		outline: none!important
+
+.btn-menu-icon
+	width: 55px
+	height: 40px
+	background: none
+	padding: 0!important
+	&:focus
+		outline: none!important
+
+.products-item
+	background: url('../img/products-icon.svg') no-repeat 0 0
+
+.priority-item
+	background: url('../img/priority.svg') no-repeat 0 0
+
+.warn-item
+	background: url('../img/warn.svg') no-repeat 0 0
+
+.info-item
+	background: url('../img/info-icon.svg') no-repeat 0 0
+
+.delete-item
+	background: url('../img/delete-icon.svg') no-repeat 0 0
+
+.edit-item
+	background: url('../img/edit-icon.svg') no-repeat 0 0
+
+.rollback-item
+	background: url('../img/rollback-icon.svg') no-repeat 0 0
+
+.detail-item
+	background: url('../img/detail-icon.svg') no-repeat 0 0	
+
+.paycard-item
+	background: url('../img/paycard.svg') no-repeat 0 0	
+
+.tenge-item
+	background: url('../img/cash.svg') no-repeat 0 0
+
+.mixed-item
+	background: url('../img/mixed.svg') no-repeat 0 0
+
+.debit-item
+	background: url('../img/debit.svg') no-repeat 0 0
+
+.excel-item
+	background: url('../img/excel.svg') no-repeat 0 0
+	
+.debt-item
+	background: url('../img/debt.png') no-repeat 0 0
+
+.search-item
+	background: url('../img/search-icon.svg') no-repeat 0 0
+
+.barcode-item
+	background: url('../img/barcode.png')
+
+
+.loading-btn
+	background-image: url('../img/loader.svg')
+	background-size: 27px 27px
+	background-position: 90% 50%
+	background-repeat: no-repeat
+
+.edit-link
+	display: block
+	height: 100%
+
+.btn-show
+	font-size: 12.5px
+	cursor: pointer
+	&:hover
+		opacity: 0.8
+
+.closed-cashbox-list
+	margin-top: 10px
+
+.related-stock
+	display: block
+	&-name
+		line-height: 0.5
+	&-address
+		font-size: 13px
+		line-height: 1.2
+		letter-spacing: normal
+		color: #A8A8A8
+
+.manage-invoice-page
+	label
+		font-size: 14px
+		margin-top: 8px
+		margin-bottom: 0px
+
+.empty-space
+	padding-bottom: 15px
+	border-top: 1px solid $border-color
+	border-bottom: 1px solid $border-color
+	margin-left: -16px
+	margin-right: -11px
+	background-color: $bg-color
+
+.inactive-items
+	padding-top: 10px
+	&-list
+		margin-top: 10px
+
+.invoice-formation-list
+	margin-bottom: -10px
+	margin-top: 20px
+
+.invoices-formation-card
+	cursor: pointer
+	-moz-transition: all 1s ease-out
+	-o-transition: all 1s ease-out
+	-webkit-transition: all 1s ease-out
+	&:hover
+		-webkit-transform: scale(1.1)
+		-moz-transform: scale(1.1)
+		-o-transform: scale(1.1)
+	&-body
+		line-height: 0.6
+	&-text
+		color: #aeaeae
+
+.not-found-text
+	padding: 20px
+	color: #aeaeae
+
+.add-product-text
+	cursor: pointer
+	color: #5d5a5a
+	&:hover
+		color: $text-color
+
+.add-product-form
+	margin-top: 20px
+
+.message
+	font-size: 14px
+
+.p
+	&-5
+		padding: 5px
+	&-10
+		padding: 10px
+	&-20
+		padding: 20px
+	&-30
+		padding: 30px
+
+.pt
+	&-5px
+		padding-top: 5px
+	&-10
+		padding-top: 10px
+	&-20
+		padding-top: 20px
+	&-30
+		padding-top: 30px
+.pb
+	&-10
+		padding-bottom: 10px
+	&-20
+		padding-bottom: 20px
+.mb
+	&-10
+		margin-bottom: 10px
+	&-20
+		margin-bottom: 20px
+.ml
+	&-10
+		margin-left: 10px
+	&-20
+		margin-left: 20px
+.mt
+	&-10
+		margin-top: 10px
+	&-20
+		margin-top: 20px
+	&-30
+		margin-top: 30px
+.mr
+	&-10
+		margin-right: 10px
+	&-20
+		margin-right: 20px
+
+.product-change-price
+	&-page-n1
+		label
+			font-size: 14px
+			margin-top: 8px
+			margin-bottom: 0px
+
+.btn-one-line
+	padding: .375rem 0
+
+.active-content
+	padding-top: 15px
+
+.products
+	button
+		white-space: normal
+
+.product-details
+	label
+		font-size: 13px
+		opacity: 0.8
+		margin-top: 8px
+		margin-bottom: 3px
+	p
+		font-style: 16px
+		margin-bottom: 5px
+		border-bottom: 1px solid #e0e0e0
+	button
+		margin-top: 20px
+		margin-bottom: -10px
+
+.change-price-plt
+	ul
+		list-style-type: none
+		padding-left: 0
+	li
+		&:before
+			content: '- '
+.product-transfer, .create-transfer-invoice, .create-product-invoice,
+.manage-invoice-page, .report-bonus, .report-form-300, .product-write-off-page-n1,.product-write-off-page-n2,
+.report-history-invoice, .create-write-off-invoice, .print-barcode, .sales-plan-form,
+.report-sales-plan, .report-sales, .report-stock-balance, .report-check, .report-invoice-product, .inbound-invoice, .esf-block, .esf-detail-form,
+.product-movement, .report-cashbox-state,
+	label
+		font-size: 14px
+		margin-top: 8px
+		margin-bottom: 0px
+	&-stocks
+		font-size: 13px
+		opacity: 0.8
+
+.cnofea-name-text
+	text-align: justify
+	font-size: 13px
+	opacity: 0.8
+
+.hint
+	font-size: 13px
+	opacity: 0.8
+
+.hand
+	cursor: pointer
+	&:hover
+		opacity: 0.8
+		text-decoration: underline
+
+.zi
+	&-2
+		z-index: 2
+	&-3
+		z-index: 3	
+	&-4
+		z-index: 4	
+	&-5
+		z-index: 5	
+	&-6
+		z-index: 6
+	&-7
+		z-index: 7
+
+.group-title
+	font-size: 14px
+	color: #aeaeae!important
+	&:hover
+		background: #2b333b!important
+
+.footer
+	position: absolute
+	padding: 10px
+	// right: 0
+	bottom: 0
+	color: #aeaeae
+	font-size: 13px
+
+.report-price-tenge
+	width: 50%
+	font-size: 14px
+	&:after
+		content: ' \0020B8'
+
+.tenge
+	&:after
+		content: ' \0020B8'
+
+.tax
+	&:after
+		content: ' %'
+
+.form-300-price
+	width: 50%
+
+.loading-dots
+	span
+		font-size: 16px
+		animation-name: blink
+		animation-duration: 1.4s
+		animation-iteration-count: infinite
+		animation-fill-mode: both
+		&:nth-child(2)
+			animation-delay: .2s
+			margin-left: 5px
+		&:nth-child(3)
+			animation-delay: .4s
+			margin-left: 5px
+
+@keyframes blink
+	0%
+		opacity: .2
+	20%
+		opacity: 1
+	100%
+		opacity: .2
+
+.print-content-linux-old
+	line-height: 1
+	margin-top: 100px
+	margin-left: 20px
+	margin-right: 20px
+	padding: 0px!important
+	&-text
+		font-size: 4em
+
+.print-content-win-old
+	width: 8cm
+	line-height: 1
+	margin-top: 20px
+	margin-left: -10px!important
+	padding: 0px!important
+	// &-text
+	// 	font-size: 4em
+
+.print-content-win-svg
+	//display: inline-block
+	position: relative
+	width: 8cm
+	line-height: 1
+	margin-top: 20px
+	margin-left: -10px!important
+	padding: 0px!important
+	// &-text
+	// 	font-size: 4em
+
+.print-content-linux
+	&-text
+		font-size: 3em
+
+.table-barcode-print
+	display: inline-block
+	border-radius: 1em
+	border: solid black 1px
+	min-width: 310px//400px
+	min-height: 210px//250px
+	// transform: rotate(90deg) translate(0,-100%)
+	// transform-origin: top left
+	font-size: 14px !important
+	font-family: Calibri, monospace
+	word-break: break-word
+
+.table-barcode-print-svg
+	display: inline-block
+	border-radius: 1em
+	border: solid black 1px
+	min-width: 250px//400px
+	min-height: 200px//250px
+	// transform: rotate(90deg) translate(0,-100%)
+	// transform-origin: top left
+	font-size: 14px !important
+	//font-weight: bold
+	font-family: Verdana, Geneva, Tahoma, sans-serif
+	word-break: break-word
+
+.table-barcode-print-preview
+	display: flex
+	justify-content: center
+	border-radius: 1em
+	border: solid black 1px
+	font-family: Calibri, monospace
+	min-width: 250px
+	min-height: 200px
+	text-align: left
+	word-break: break-word
+
+.table-barcode-print-type3
+	display: inline-block
+	border-radius: 1em
+	border: solid black 1px
+	font-family: Calibri, monospace
+	min-width: 310px
+	min-height: 210px
+	max-width: 310px
+	text-align: left
+	word-break: break-word
+
+.table-barcode-print-invoice
+	display: inline-block
+	border-radius: 1em
+	border: solid black 1px
+	flex-direction: column
+	font-family: Calibri, monospace
+	min-width: 310px
+	min-height: 210px
+	max-width: 310px
+	text-align: left
+	word-break: break-word
+
+.top-bottom-border
+	border-top: solid black 1px
+	border-bottom: solid black 1px
+
+.rotate-90
+	transform: rotate(90deg) translate(0,-100%)
+	transform-origin: top left
+
+.rotate-90-svg
+	margin: 50px
+	font-size: 10px
+	transform: rotate(90deg) translate(0,-100%)
+	transform-origin: top left
+
+.rotate-90-svg-print
+	position: relative
+	margin-bottom: 150px
+	transform: rotate(90deg) translate(0,-100%)
+	transform-origin: top left
+
+.rotate-90-img-print
+	position: relative
+	margin-bottom: 150px
+	transform: rotate(90deg) translate(0,-100%)
+	transform-origin: top left
+
+.rotate-90-print-price
+	position: relative
+	margin-bottom: 100px
+	//padding 50px
+	transform: rotate(90deg) translate(0,-100%)
+	transform-origin: top left
+
+.min-width
+	width: min-content
+	text-align: center
+
+.content-center
+	margin: auto
+	text-align: center
+
+
+.without-padding
+	padding: 1px !important
+	padding-left: 35px !important
+	min-width: 310px//400px
+
+.without-padding-svg
+	min-width: 400px//400px
+
+@media print
+	.print-content-linux
+		position: absolute
+		//ширина бумаги на линуксе настраивается в принтере и данные строки не имеют значение
+		&-80
+			width: 15cm
+		&-60
+			width: 15cm
+		.print-img
+			&-80
+				width: 100%
+			&-60
+				width: 100%
+	.print-content-win
+		display: flex
+		justify-content: center
+		align-items: center
+		position: absolute
+		// transform: scale(.8)
+		// transform-origin: top left
+		&-80
+			width: 11cm
+		&-60
+			margin-top: 15px
+			margin-left: 30px
+			width: 7cm
+		.print-img
+			&-80
+				width: 70%
+			&-60
+				width: 100%
+
+.table-tfoot
+	tbody, tfoot, thead
+		tr
+			td, th
+				vertical-align: middle!important
+
+.table-material
+	tbody, tfoot, thead
+		tr
+			td, th
+				vertical-align: middle!important
+				border-bottom: 1px solid rgba(224, 224, 224, 1)!important
+
+.header-material
+	vertical-align: middle!important
+	border-bottom: 1px solid rgba(224, 224, 224, 1)!important
+
+.border-right-material
+	border-right: 1px solid rgba(224, 224, 224, 1)!important
+
+i
+	border: solid white
+	margin-left: 10px
+	border-width: 0 2px 2px 0
+	display: inline-block
+	padding: 4px
+
+.up
+	transform: rotate(-135deg)
+	-webkit-transform: rotate(-135deg)
+
+.down
+	transform: rotate(45deg)
+	-webkit-transform: rotate(45deg)
+
+.arrow
+	border: solid black
+	border-width: 0 1px 1px 0
+	display: inline-block
+	padding: 3px
+
+// @mixin scrollbars($size, $foreground-color, $background-color: mix($foreground-color, white, 50%))
+// 	::-webkit-scrollbar
+// 		width:  $size
+// 		height: $size
+// 	::-webkit-scrollbar-thumb
+// 		background: $foreground-color
+// 	::-webkit-scrollbar-track
+// 		background: $background-color
+//   	// For Internet Explorer
+// 	body
+// 		scrollbar-face-color: $foreground-color
+// 		scrollbar-track-color: $background-color
+
+// @include scrollbars(.3em, slategray)
+
+.ico-mglass
+	position: relative
+	display: inline-block
+	background: #fff
+	border-radius: 30px
+	height: 12px
+	width: 12px
+	border: 2px solid #888
+	&:after
+		content: ""
+		height: 2px
+		width: 9px
+		background: #888
+		position: absolute
+		top: 10px
+		left: 7px
+		-webkit-transform: rotate(45deg)
+		-moz-transform: rotate(45deg)
+		-ms-transform: rotate(45deg)
+		-o-transform: rotate(45deg)
+
+.text-white
+	color: #fff
+
+.table-check-detail
+	thead
+		tr
+			th, td
+				border-top: 0px!important
+	font-size: 12px!important
+	margin: 0px!important
+
+.bg-light-grey
+	background-color: #dadada!important
+.bg-grey
+	background-color: #ccc9c9!important
+input[type=number]::-webkit-inner-spin-button,
+input[type=number]::-webkit-outer-spin-button
+	-webkit-appearance: none
+	margin: 0
+
+.btn-report
+	margin: 2px 0px
+
+.link-row
+	cursor: pointer
+	// text-decoration: underline
+	color: #162ece
+	&:hover
+		color: #09135b
+
+.report-btn-block
+	min-width: 207px
+
+.today-btn
+	min-width: 117px
+
+.month-btn
+	min-width: 172px
+
+.date-block
+	min-width: 195px
+
+.percentage-block
+	min-width: 95px
+
+.sale-report-filter
+	min-width: 195px
+
+.point-block
+	min-width: 282px
+
+.bonus-block
+	min-width: 150px
+
+.search-btn
+	min-width: 103px
+
+.chart-container
+	width: 50%
+	border: 1px solid grey
+	margin: 2px
+	padding: 10px
+
+.company-logo
+	background: url('../img/tez.png') no-repeat 0 0
+	width: 50px
+	height: 50px
+	background-size: cover
+
+.attr-spr
+	border: 0px!important
+	padding: 0px!important
+
+.print-by-invoice
+	display: flex
+	align-items: flex-end
+
+.files
+  input
+    outline: 2px dashed #92b0b3
+    outline-offset: -10px
+    -webkit-transition: outline-offset .15s ease-in-out, background-color .15s linear
+    transition: outline-offset .15s ease-in-out, background-color .15s linear
+    padding: 120px 0px 85px 35%
+    text-align: center !important
+    margin: 0
+    width: 100% !important
+
+    &:focus
+      outline: 2px dashed #92b0b3
+      outline-offset: -10px
+      -webkit-transition: outline-offset .15s ease-in-out, background-color .15s linear
+      transition: outline-offset .15s ease-in-out, background-color .15s linear
+      border: 1px solid #92b0b3
+
+  position: relative
+
+  &:after
+    pointer-events: none
+    position: absolute
+    top: 60px
+    left: 0
+    width: 50px
+    right: 0
+    height: 56px
+    content: ""
+    background-image: url(https://image.flaticon.com/icons/png/128/109/109612.png)
+    display: block
+    margin: 0 auto
+    background-size: 100%
+    background-repeat: no-repeat
+
+.color input
+  background-color: #f1f1f1
+
+.files:before
+  position: absolute
+  bottom: 10px
+  left: 0
+  pointer-events: none
+  width: 100%
+  right: 0
+  height: 37px
+  content: " или переместите его сюда... "
+  display: block
+  margin: 0 auto
+  color: #2ea591
+  font-weight: 600
+  text-align: center
+
+
+
+.custom-file-upload
+  border: 1px solid #ccc
+  display: inline-block
+  padding: 6px 12px
+  cursor: pointer
+
+//reportCashboxState styles:
+.btn-cashboxes
+  min-width: 165px
+  max-width: 165px
+  padding: 10px
+.cashboxes
+  display: flex
+  flex-direction: row
+  justify-content: space-between
+
+.download-files:after
+	background-image: url('../img/download.png')
+
+.page-item.active
+  z-index: 0!important
+
+.link:link
+  text-decoration: none
+
+.link:visited
+  text-decoration: none
+
+.link:hover
+  text-decoration: underline
+
+.link:active
+  text-decoration: underline

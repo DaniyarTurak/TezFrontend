@@ -1,0 +1,20 @@
+[
+  {
+    "id": 0,
+    "type": "report",
+    "route": "PosUpdateStatus",
+    "caption": "Выгрузка Обновлений"
+  },
+  {
+    "id": 1,
+    "type": "report",
+    "route": "PosUpdateList",
+    "caption": "Список Обновлений"
+  },
+  {
+    "id": 2,
+    "type": "report",
+    "route": "ReportPos",
+    "caption": "Отчёт по Терминалам"
+  }
+]

@@ -1,0 +1,66 @@
+.table-barcode-print-preview-small
+	border: solid black 1px
+	font-family: Calibri, monospace
+	width: 20rem
+	border-collapse: collapse
+
+.table-barcode-print-preview-small td,tr
+	padding: 0 !important
+	margin: 0 !important
+
+.table-barcode-print-svg-small
+	border: solid black 1px
+	font-family: Verdana, Geneva, Tahoma, sans-serif
+	word-break: break-word
+
+.table-3
+	display: flex
+	justify-content: center
+	flex-direction: row
+
+.fZ-50
+	font-size: 50px
+
+.fZ-30
+	font-size: 30px
+
+.fW-bold
+	font-weight: bold
+
+.width-margin
+	width: 100%
+	margin: 0px
+
+.table-4
+	font-size: 12px
+	font-weight: bold
+	display: flex
+	margin: 0px
+	padding: 0px
+	flex-direction: column
+	justify-content: center
+	align-items: center
+
+.barcode-margin-2
+	margin-bottom: 2rem
+
+.barcode-margin-3
+	margin-bottom: 3rem
+
+@media all
+	.page-break
+		display: none
+
+@media print
+	html body
+		height: initial !important
+		overflow: initial !important
+		-webkit-print-color-adjust: exact
+	.page-break
+		margin-top: 1rem
+		display: block
+		page-break-before: auto
+
+@page
+  size: auto
+  margin: 20mm

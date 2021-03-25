@@ -1,0 +1,14 @@
+[
+  {
+    "id": 0,
+    "type": "report",
+    "route": "CashboxListPage",
+    "caption": "Управление кассой"
+  },
+  {
+    "id": 1,
+    "type": "report",
+    "route": "EditCashbox",
+    "caption": "Изменение чеков"
+  }
+]

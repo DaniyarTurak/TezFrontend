@@ -1,0 +1,14 @@
+[
+  {
+    "id": 0,
+    "type": "report",
+    "route": "ReportCertificateStatus",
+    "caption": "Статус сертификатов"
+  },
+  {
+    "id": 1,
+    "type": "report",
+    "route": "ReportCertificateDetails",
+    "caption": "Сертификаты на списание"
+  }
+]

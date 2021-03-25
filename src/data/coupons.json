@@ -1,0 +1,12 @@
+[
+  {
+    "id": 0,
+    "route": "CreateCoupons",
+    "caption": "Создать купоны"
+  },
+  {
+    "id": 1,
+    "route": "ExistingCoupons",
+    "caption": "Действующие купоны"
+  }
+]

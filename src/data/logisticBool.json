@@ -1,0 +1,11 @@
+[{
+        "id": "1",
+        "value": "Да",
+        "valueBool": true
+    },
+    {
+        "id": "0",
+        "value": "Нет",
+        "valueBool": false
+    }
+]

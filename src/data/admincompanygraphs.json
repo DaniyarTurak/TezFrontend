@@ -1,0 +1,74 @@
+[
+  {
+    "id": 0,
+    "title": "Всего компаний",
+    "name": "allcompanies",
+    "clickable": true,
+    "type": 1
+  },
+  {
+    "id": 1,
+    "title": "Всего торговых точек",
+    "name": "allpoints",
+    "clickable": false
+  },
+  {
+    "id": 2,
+    "title": "Количество новых компаний с 1 числа текущего месяца",
+    "name": "newcompanies",
+    "clickable": true,
+    "type": 2
+  },
+  {
+    "id": 3,
+    "title": "Количество новых торговых точек с 1 числа",
+    "name": "newpoints",
+    "clickable": false
+  },
+  {
+    "id": 4,
+    "title": "Количество активных компаний всего",
+    "name": "activecomp",
+    "clickable": true,
+    "type": 3
+  },
+  {
+    "id": 5,
+    "title": "Количество точек у активных компаний всего",
+    "name": "activecompallpoints",
+    "clickable": false
+  },
+  {
+    "id": 6,
+    "title": "Количество активных компаний, у которых есть продажи больше 10,000 тенге за последние 30 дней",
+    "name": "compup",
+    "clickable": true,
+    "type": 4
+  },
+  {
+    "id": 7,
+    "title": "Количество активных компаний, у которых продажи меньше 10,000 тенге за последние 30 дней",
+    "name": "compdown",
+    "clickable": true,
+    "type": 5
+  },
+  {
+    "id": 8,
+    "title": "Количество открытых касс на текущий момент",
+    "name": "opencashboxes",
+    "clickable": false
+  },
+  {
+    "id": 9,
+    "title": "Количество касс, открытых за последние 72 часа",
+    "name": "opencashboxes3",
+    "clickable": false
+  },
+  {
+    "id": 10,
+    "title": "Количество компаний, у которых нет касс, открытых за последние 72 часа",
+    "name": "compwithoutopencash",
+    "clickable": true,
+    "type": 6
+  }
+]

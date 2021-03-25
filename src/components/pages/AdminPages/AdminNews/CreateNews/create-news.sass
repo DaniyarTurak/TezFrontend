@@ -1,0 +1,73 @@
+$darkAccent: #224B4B;
+	
+.markdown-previewer
+	display: flex
+    flex-direction: column
+	// justify-content: center
+
+.editor
+	box-shadow: 0px 0px 13px 1px rgba(0,0,0,0.75)
+	padding: 0px
+
+.editor-expanded
+	flex: auto
+	height: 60rem
+
+.header
+	width: 100%
+	display: flex
+	justify-content: space-between
+	background-color: green
+
+.logo
+	height: 0.9rem
+	margin-top: 0.4rem
+	margin-left: 0.2rem
+
+// .btn-w-icon
+// 	height: 1.1rem
+// 	width: 1.1rem
+// 	margin-top: 0.2rem
+// 	margin-right: 0.2rem
+// 	background: none
+// 	padding: 0!important
+// 	&:focus
+// 		outline: none!important
+
+.ta-font
+	font-family: monospace
+	
+.text-area
+	width: 100%
+	min-height: 30rem
+	height: unset
+	vertical-align: top
+	overflow: auto
+	resize: none
+	border: none
+	outline: none
+
+.preview
+	blockquote
+		border-left: 3px solid #224B4B
+		color: #224B4B
+		padding-left: 5px
+		margin-left: 25px
+	code
+		background: white
+		padding: 1px 4px 2px 4px
+		font-size: 12px
+		font-weight: bold
+	pre 
+		background: white
+		padding: 5px 0 5px 5px
+	h1
+		border-bottom: 2px solid $darkAccent
+	h2
+		border-bottom: 1px solid $darkAccent
+	table
+		border-collapse: collapse
+	td,th
+		border: 2px solid $darkAccent
+		padding-left: 5px
+		padding-right: 5px

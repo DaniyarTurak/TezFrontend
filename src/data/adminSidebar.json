@@ -1,0 +1,73 @@
+[
+  {
+    "id": 0,
+    "route": "companies",
+    "name": "Компании"
+  },
+  {
+    "id": 1,
+    "route": "posPage",
+    "name": "POS"
+  },
+  {
+    "id": 2,
+    "route": "adminreport",
+    "name": "Отчёт"
+  },
+  {
+    "id": 3,
+    "name": "Справочники",
+    "group": [
+      {
+        "id": 1,
+        "name": "Бренды",
+        "route": "references/brand"
+      }
+    ]
+  },
+  {
+    "id": 4,
+    "route": "createinvoice",
+    "name": "Создание инвойсов"
+  },
+  {
+    "id": 5,
+    "name": "Создание атрибутов",
+    "route": "updateattribute"
+  },
+  {
+    "id": 6,
+    "route": "news",
+    "name": "Новости"
+  },
+  {
+    "id": 7,
+    "route": "consolidated",
+    "name": "Сводные отчёты"
+  },
+  {
+    "id": 8,
+    "route": "register",
+    "name": "Зарегистрироваться"
+  },
+  {
+    "id": 9,
+    "route": "nomenclature",
+    "name": "Загрузить Номенклатуру"
+  },
+  {
+    "id": 10,
+    "route": "uploadfile",
+    "name": "Выгрузить файл"
+  },
+  {
+    "id": 11,
+    "route": "changepass",
+    "name": "Сменить пароль"
+  },
+  {
+    "id": 12,
+    "route": "signout",
+    "name": "Выход"
+  }
+]

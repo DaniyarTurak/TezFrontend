@@ -1,0 +1,14 @@
+[
+  {
+    "id": 0,
+    "type": "report",
+    "route": "ReportExactHolding",
+    "caption": "Отчеты по отдельным компаниям"
+  },
+  {
+    "id": 1,
+    "type": "report",
+    "route": "ReportAllHoldings",
+    "caption": "Сводные отчеты"
+  }
+]

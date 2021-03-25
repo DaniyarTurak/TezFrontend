@@ -1,0 +1,86 @@
+[
+  {
+    "id": 0,
+    "type": "adminreport",
+    "route": "ReportCashboxAdmin",
+    "caption": "Отчет по кассам"
+  },
+  {
+    "id": 1,
+    "type": "adminreport",
+    "route": "ReportSalesSectionAdmin",
+    "caption": "Общие продажи"
+  },
+  {
+    "id": 2,
+    "type": "adminreport",
+    "route": "ReportTransactionsAdmin",
+    "caption": "Чеки"
+  },
+  {
+    "id": 3,
+    "type": "adminreport",
+    "route": "ReportAdminStockBalance",
+    "caption": "Остаток на складе"
+  },
+  {
+    "id": 4,
+    "type": "adminreport",
+    "route": "ConsignmentReports",
+    "caption": "Консигнация"
+  },
+  {
+    "id": 5,
+    "type": "adminreport",
+    "route": "ReportAdminProductMovement",
+    "caption": "Движение товара"
+  },
+  {
+    "id": 6,
+    "type": "adminreport",
+    "route": "ReportSalesAdmin",
+    "caption": "Проданные товары"
+  },
+  {
+    "id": 7,
+    "type": "adminreport",
+    "route": "ReportRevisionAdmin",
+    "caption": "Ревизия"
+  },
+  {
+    "id": 8,
+    "type": "adminreport",
+    "route": "ReportDiscountsAdmin",
+    "caption": "Скидки"
+  },
+  {
+    "id": 9,
+    "type": "adminreport",
+    "route": "ReportIncomeAdmin",
+    "caption": "Валовая прибыль"
+  },
+  {
+    "id": 10,
+    "type": "adminreport",
+    "route": "ReportLoyaltyAdmin",
+    "caption": "Покупатели (физ. лица)"
+  },
+  {
+    "id": 11,
+    "type": "adminreport",
+    "route": "ReportSalesPlanAdmin",
+    "caption": "Индивидуальный бонус"
+  },
+  {
+    "id": 12,
+    "type": "adminreport",
+    "route": "ReportCertificatesAdmin",
+    "caption": "Сертификаты"
+  },
+  {
+    "id": 13,
+    "type": "adminreport",
+    "route": "ReportConsultantsAdmin",
+    "caption": "Консультанты"
+  }
+]

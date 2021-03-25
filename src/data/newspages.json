@@ -1,0 +1,14 @@
+[
+  {
+    "id": 0,
+    "type": "report",
+    "route": "createnews",
+    "caption": "Создание Новостей"
+  },
+  {
+    "id": 1,
+    "type": "report",
+    "route": "changenews",
+    "caption": "Изменение Новостей"
+  }
+]

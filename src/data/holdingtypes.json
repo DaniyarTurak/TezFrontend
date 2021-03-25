@@ -1,0 +1,38 @@
+[
+  {
+    "id": 0,
+    "type": "report",
+    "route": "reportloyalty",
+    "caption": "Отчет по покупателям (физ. лица)"
+  },
+  {
+    "id": 1,
+    "type": "report",
+    "route": "reportbonuses",
+    "caption": "Индивидуальные бонусы"
+  },
+  {
+    "id": 2,
+    "type": "report",
+    "route": "reportsalesplanteam",
+    "caption": "Командные бонусы"
+  },
+  {
+    "id": 3,
+    "type": "report",
+    "route": "reportcashboxstate",
+    "caption": "Кассы"
+  },
+  {
+    "id": 4,
+    "type": "report",
+    "route": "reportsalessection",
+    "caption": "Общие продажи"
+  },
+  {
+    "id": 5,
+    "type": "report",
+    "route": "reporttransactions",
+    "caption": "Чеки"
+  }
+]

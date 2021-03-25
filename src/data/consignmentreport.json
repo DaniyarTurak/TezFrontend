@@ -1,0 +1,17 @@
+[
+  {
+    "id": 0,
+    "route": "ConsignmentProducts",
+    "caption": "Товары на консигнации"
+  },
+  {
+    "id": 1,
+    "route": "ConsignmentSales",
+    "caption": "Продажи консигнационных товаров"
+  },
+  {
+    "id": 2,
+    "route": "CounterpartiesReport",
+    "caption": "Отчёт по контрагентам"
+  }
+]

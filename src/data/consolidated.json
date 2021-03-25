@@ -1,0 +1,14 @@
+[
+  {
+    "id": 0,
+    "type": "report",
+    "route": "Companies",
+    "caption": "На дату"
+  },
+  {
+    "id": 1,
+    "type": "report",
+    "route": "Sales",
+    "caption": "За период"
+  }
+]

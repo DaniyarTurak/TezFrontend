@@ -1,0 +1,10 @@
+[
+  {
+      "id": 0,
+      "type": "change",
+      "route": "ProductList",
+      "caption": "Справочник товаров"
+    }
+  
+]
+  
