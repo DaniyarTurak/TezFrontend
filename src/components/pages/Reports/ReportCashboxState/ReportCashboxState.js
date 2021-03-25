@@ -14,6 +14,7 @@ import Button from "@material-ui/core/Button";
 import { withStyles } from "@material-ui/core/styles";
 import SkeletonTable from "../../../Skeletons/TableSkeleton";
 import ErrorAlert from "../../../ReusableComponents/ErrorAlert";
+import Zreports from "./Zreports";
 
 const ColorButton = withStyles(() => ({
   root: {
@@ -21,6 +22,8 @@ const ColorButton = withStyles(() => ({
     color: "#17a2b8",
     fontSize: ".875rem",
     textTransform: "none",
+    minWidth: "11rem",
+    margin: ".1rem",
   },
 }))(Button);
 
@@ -41,6 +44,7 @@ export default function ReportCashboxState({ company, holding }) {
   const [isError, setError] = useState(false);
   const [cashbox, setCashbox] = useState([]);
   const [modalIsOpen, setModalOpen] = useState(false);
+  const [reportsModalIsOpen, setReportsModalIsOpen] = useState(false);
 
   useEffect(
     () => {
@@ -68,6 +72,7 @@ export default function ReportCashboxState({ company, holding }) {
             cashboxes: temp[key],
           };
         });
+
         setCashboxstate(cashboxstate);
         setLoading(false);
         setError(false);
@@ -84,9 +89,18 @@ export default function ReportCashboxState({ company, holding }) {
     setModalOpen(true);
   };
 
+  const handleZreport = (cashbox) => {
+    setCashbox(cashbox);
+    setReportsModalIsOpen(true);
+  };
+
   const closeDetail = () => {
     setCashbox(null);
     setModalOpen(false);
+  };
+  const closeReports = () => {
+    setCashbox(null);
+    setReportsModalIsOpen(false);
   };
 
   return (
@@ -101,6 +115,17 @@ export default function ReportCashboxState({ company, holding }) {
           company={company ? company : ""}
         />
       )}
+      {reportsModalIsOpen && (
+        <Zreports
+          reportsModalIsOpen={reportsModalIsOpen}
+          setReportsModalIsOpen={setReportsModalIsOpen}
+          holding={holding}
+          cashbox={cashbox}
+          closeReports={closeReports}
+          company={company ? company : ""}
+        />
+      )}
+
       {isLoading && <SkeletonTable />}
 
       {!isLoading && isError && (
@@ -146,6 +171,12 @@ export default function ReportCashboxState({ company, holding }) {
                         <TableRow key={idx}>
                           <StyledCell>{cashbox.name}</StyledCell>
                           <StyledCell>
+                            <ColorButton
+                              variant="outlined"
+                              onClick={() => handleZreport(cashbox)}
+                            >
+                              Операции по кассе
+                            </ColorButton>
                             <ColorButton
                               variant="outlined"
                               onClick={() => handleCashbox(cashbox)}

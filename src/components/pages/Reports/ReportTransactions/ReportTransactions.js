@@ -67,7 +67,7 @@ export default function ReportTransactions({
   const [consignator, setConsignator] = useState(
     parameters
       ? { label: parameters.customer, value: parameters.id }
-      : { label: "Все", value: 0 }
+      : { label: "Все", value: "0" }
   );
   const [consignators, setConsignators] = useState([]);
   const [dateFrom, setDateFrom] = useState(
@@ -93,7 +93,7 @@ export default function ReportTransactions({
   const [modalIsOpen, setModalOpen] = useState(false);
   const [isLoading, setLoading] = useState(false);
   const [orderBy, setOrderBy] = useState("");
-  const [point, setPoint] = useState({ label: "Все", value: 0 });
+  const [point, setPoint] = useState({ label: "Все", value: "0" });
   const [points, setPoints] = useState([]);
   const [transaction, setTransaction] = useState("");
   const [transactions, setTransactions] = useState([]);
@@ -144,9 +144,9 @@ export default function ReportTransactions({
 
   const clean = () => {
     setTransactions([]);
-    setPoint({ label: "Все", value: 0 });
+    setPoint({ label: "Все", value: "0" });
     setPoints([]);
-    setConsignator({ label: "Все", value: 0 });
+    setConsignator({ label: "Все", value: "0" });
     setDateFrom(Moment().format("YYYY-MM-DD"));
     setDateTo(Moment().format("YYYY-MM-DD"));
     setFilter({
@@ -159,7 +159,7 @@ export default function ReportTransactions({
     Axios.get("/api/point", { params: { company, holding } })
       .then((res) => res.data)
       .then((res) => {
-        const all = { label: "Все", value: 0 };
+        const all = [{ label: "Все", value: 0 }];
         const p = res.map((point) => {
           return {
             label: point.name,
