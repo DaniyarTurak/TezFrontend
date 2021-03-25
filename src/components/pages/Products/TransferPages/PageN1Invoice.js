@@ -58,7 +58,8 @@ class PageN1Invoice extends Component {
               "Накладная " +
               invoice.altnumber +
               " от " +
-              Moment(invoice.invoicedate).utc().format("DD.MM.YYYY"),
+              Moment(invoice.invoicedate).format("DD.MM.YYYY"),
+            // Moment(invoice.invoicedate).utc().format("DD.MM.YYYY"),
             value: invoice.invoicenumber,
           };
         });

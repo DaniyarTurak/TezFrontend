@@ -39,6 +39,8 @@ const StyledTableCell = withStyles((theme) => ({
   },
 }))(TableCell);
 
+//вся эта функция TablePaginationActions используется исключительно для того чтобы иметь возможность
+//перепригивать между последней и первой страницей в пагинации. Ridiculous.
 function TablePaginationActions(props) {
   const classes = useStyles1();
   const theme = useTheme();
@@ -110,12 +112,12 @@ TablePaginationActions.propTypes = {
 };
 
 export default function ReportTable({
+  excelResult,
   isClicked,
   reports,
   getStockbalanceExcel,
   isExcelLoading,
   profitAmount,
-  prevAmount,
 }) {
   const [page, setPage] = React.useState(
     JSON.parse(sessionStorage.getItem("abc_xyz_pagination"))
@@ -152,6 +154,7 @@ export default function ReportTable({
     );
     setPage(0);
   };
+
   return (
     <Grid container spacing={3} style={{ marginTop: "1rem" }}>
       <Grid item xs={12}>

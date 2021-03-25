@@ -1,10 +1,37 @@
 import React, { Fragment } from "react";
 import Moment from "moment";
+import Typography from "@material-ui/core/Typography";
+import Table from "@material-ui/core/Table";
+import TableBody from "@material-ui/core/TableBody";
+import TableCell from "@material-ui/core/TableCell";
+import TableContainer from "@material-ui/core/TableContainer";
+import TableRow from "@material-ui/core/TableRow";
+import TableHead from "@material-ui/core/TableHead";
+import TableFooter from "@material-ui/core/TableFooter";
+import Paper from "@material-ui/core/Paper";
+import Grid from "@material-ui/core/Grid";
+import Button from "@material-ui/core/Button";
+import { withStyles } from "@material-ui/core/styles";
 
 import ReactHTMLTableToExcel from "react-html-table-to-excel";
 
 import "moment/locale/ru";
 Moment.locale("ru");
+
+const StyledTableCell = withStyles((theme) => ({
+  head: {
+    backgroundColor: "#17a2b8",
+    color: theme.palette.common.white,
+    fontSize: ".875rem",
+  },
+  body: {
+    fontSize: ".875rem",
+  },
+  footer: {
+    fontWeight: "bold",
+    fontSize: ".875rem",
+  },
+}))(TableCell);
 
 export default function HistoryDetails({
   markedInvoice,
@@ -13,16 +40,17 @@ export default function HistoryDetails({
   invoicetype,
   dateFrom,
   dateTo,
+  classes,
 }) {
   return (
-    <div className="row mt-20">
-      <div className="col-md-8">
-        <b className="btn-one-line">
+    <Fragment>
+      <Grid item xs={8}>
+        <Typography className={classes.invoiceOptions}>
           Накладная {markedInvoice.altnumber} от{" "}
           {Moment(markedInvoice.invoicedate).format("DD.MM.YYYY")}
-        </b>
+        </Typography>
 
-        <p className="product-transfer-stocks">
+        <Typography className={classes.invoiceOptions}>
           {markedInvoice.invoicetype} <br />
           {["1", "7"].includes(markedInvoice.invoicetypeid) && (
             <Fragment>
@@ -44,190 +72,213 @@ export default function HistoryDetails({
               <br />
             </Fragment>
           )}
-        </p>
-      </div>
-      <div className="col-md-4 text-right">
-        <button className="btn btn-secondary" onClick={() => backToList()}>
+        </Typography>
+      </Grid>
+      <Grid item xs={4}>
+        <Button
+          fullWidth
+          className={classes.button}
+          variant="outlined"
+          onClick={backToList}
+        >
           Вернуться назад
-        </button>
-      </div>
-      <div className="col-md-12">
-        <table className="table table-hover" id="table-transfer">
-          <thead>
-            <tr>
-              <th style={{ width: "2%" }}></th>
-              <th style={{ width: "30%" }}>Наименование товара</th>
-              <th style={{ width: "20%" }}>Штрих код</th>
-              {["1", "2", "7", "16", "17"].includes(
-                markedInvoice.invoicetypeid
-              ) && (
-                <th style={{ width: "10%" }} className="text-center">
-                  Количество
-                </th>
-              )}
-              {["7"].includes(markedInvoice.invoicetypeid) && (
-                <th style={{ width: "30%" }}>Причина</th>
-              )}
-
-              {["2", "16", "17"].includes(markedInvoice.invoicetypeid) && (
-                <th>Налоговая категория</th>
-              )}
-              {["2"].includes(markedInvoice.invoicetypeid) && (
-                <th>Код ТН ВЭД</th>
-              )}
-
-              {["2"].includes(markedInvoice.invoicetypeid) && (
-                <th>Цена закупки</th>
-              )}
-              {["2", "16", "17"].includes(markedInvoice.invoicetypeid) && (
-                <th>Цена продажи</th>
-              )}
-              {["0"].includes(markedInvoice.invoicetypeid) && (
-                <th>Новая цена</th>
-              )}
-            </tr>
-          </thead>
-          <tbody>
-            {details.map((detail, idx) => (
-              <tr key={idx}>
-                <td>{idx + 1}</td>
-                <td>
-                  {detail.name +
-                    (detail.attributescaption
-                      ? ", " + detail.attributescaption
-                      : detail.attributescaption)}
-                </td>
-                <td>{detail.code}</td>
-
+        </Button>
+      </Grid>
+      <Grid item xs={12}>
+        <TableContainer component={Paper}>
+          <Table id="table-transfer">
+            <TableHead>
+              <TableRow>
+                <StyledTableCell></StyledTableCell>
+                <StyledTableCell>Наименование товара</StyledTableCell>
+                <StyledTableCell align="center">Штрих код</StyledTableCell>
                 {["1", "2", "7", "16", "17"].includes(
                   markedInvoice.invoicetypeid
                 ) && (
-                  <td className="text-center">
-                    {parseFloat(detail.units).toLocaleString("ru", {
-                      maximumFractionDigits: 2,
-                    })}
-                  </td>
+                  <StyledTableCell align="center">Количество</StyledTableCell>
                 )}
                 {["7"].includes(markedInvoice.invoicetypeid) && (
-                  <td>{detail.reason}</td>
+                  <StyledTableCell align="center">Причина</StyledTableCell>
                 )}
 
                 {["2", "16", "17"].includes(markedInvoice.invoicetypeid) && (
-                  <td>
-                    {detail.taxid === "0" ? "Без НДС" : "Стандартный НДС"}
-                  </td>
+                  <StyledTableCell align="center">
+                    Налоговая категория
+                  </StyledTableCell>
+                )}
+                {["2"].includes(markedInvoice.invoicetypeid) && (
+                  <StyledTableCell align="center">Код ТН ВЭД</StyledTableCell>
                 )}
 
                 {["2"].includes(markedInvoice.invoicetypeid) && (
-                  <td>{detail.cnofeacode}</td>
+                  <StyledTableCell align="center">Цена закупки</StyledTableCell>
                 )}
+                {["2", "16", "17"].includes(markedInvoice.invoicetypeid) && (
+                  <StyledTableCell align="center">Цена продажи</StyledTableCell>
+                )}
+                {["0"].includes(markedInvoice.invoicetypeid) && (
+                  <StyledTableCell align="center">Новая цена</StyledTableCell>
+                )}
+              </TableRow>
+            </TableHead>
+            <TableBody>
+              {details.map((detail, idx) => (
+                <TableRow key={idx}>
+                  <StyledTableCell>{idx + 1}</StyledTableCell>
+                  <StyledTableCell>
+                    {detail.name +
+                      (detail.attributescaption
+                        ? ", " + detail.attributescaption
+                        : detail.attributescaption)}
+                  </StyledTableCell>
+                  <StyledTableCell align="center">
+                    {detail.code}
+                  </StyledTableCell>
 
-                {["2"].includes(markedInvoice.invoicetypeid) && (
-                  <td className={`${detail.purchaseprice ? "tenge" : ""}`}>
-                    {detail.purchaseprice &&
-                      parseFloat(detail.purchaseprice).toLocaleString("ru", {
-                        minimumFractionDigits: 2,
+                  {["1", "2", "7", "16", "17"].includes(
+                    markedInvoice.invoicetypeid
+                  ) && (
+                    <StyledTableCell align="center">
+                      {parseFloat(detail.units).toLocaleString("ru", {
+                        maximumFractionDigits: 2,
                       })}
-                  </td>
-                )}
+                    </StyledTableCell>
+                  )}
+                  {["7"].includes(markedInvoice.invoicetypeid) && (
+                    <StyledTableCell align="center">
+                      {detail.reason}
+                    </StyledTableCell>
+                  )}
 
-                {["16", "17"].includes(markedInvoice.invoicetypeid) && (
-                  <td className={`${detail.price ? "tenge" : ""}`}>
-                    {detail.price &&
-                      parseFloat(detail.price).toLocaleString("ru", {
-                        minimumFractionDigits: 2,
-                      })}
-                  </td>
-                )}
+                  {["2", "16", "17"].includes(markedInvoice.invoicetypeid) && (
+                    <StyledTableCell align="center">
+                      {detail.taxid === "0" ? "Без НДС" : "Стандартный НДС"}
+                    </StyledTableCell>
+                  )}
 
-                {["0", "2"].includes(markedInvoice.invoicetypeid) && (
-                  <td className="tenge">{detail.newprice}</td>
-                )}
-              </tr>
-            ))}
-          </tbody>
-          {["1", "2", "7", "16", "17"].includes(
-            markedInvoice.invoicetypeid
-          ) && (
-            <tfoot className="bg-info text-white">
-              <tr>
-                <td
-                  colSpan={
-                    markedInvoice.invoicetypeid === "7"
-                      ? 3
-                      : markedInvoice.invoicetypeid === "2"
-                      ? 3
-                      : 3
-                  }
-                >
-                  Итого
-                </td>
-                <td className="text-center">
-                  {details
-                    .reduce((prev, cur) => {
-                      return prev + parseFloat(cur.units);
-                    }, 0)
-                    .toLocaleString("ru", { minimumFractionDigits: 2 })}
-                </td>
-                {["2", "7"].includes(markedInvoice.invoicetypeid) && (
-                  <td colSpan="2" />
-                )}
+                  {["2"].includes(markedInvoice.invoicetypeid) && (
+                    <StyledTableCell align="center">
+                      {detail.cnofeacode}
+                    </StyledTableCell>
+                  )}
 
-                {["16", "17"].includes(markedInvoice.invoicetypeid) && <td />}
-                {["2"].includes(markedInvoice.invoicetypeid) && (
-                  <td className="tenge">
+                  {["2"].includes(markedInvoice.invoicetypeid) && (
+                    <StyledTableCell
+                      align="center"
+                      className={`${detail.purchaseprice ? "tenge" : ""}`}
+                    >
+                      {detail.purchaseprice &&
+                        parseFloat(detail.purchaseprice).toLocaleString("ru", {
+                          minimumFractionDigits: 2,
+                        })}
+                    </StyledTableCell>
+                  )}
+
+                  {["16", "17"].includes(markedInvoice.invoicetypeid) && (
+                    <StyledTableCell
+                      align="center"
+                      className={`${detail.price ? "tenge" : ""}`}
+                    >
+                      {detail.price &&
+                        parseFloat(detail.price).toLocaleString("ru", {
+                          minimumFractionDigits: 2,
+                        })}
+                    </StyledTableCell>
+                  )}
+
+                  {["0", "2"].includes(markedInvoice.invoicetypeid) && (
+                    <StyledTableCell align="center" className="tenge">
+                      {detail.newprice}
+                    </StyledTableCell>
+                  )}
+                </TableRow>
+              ))}
+            </TableBody>
+            {["1", "2", "7", "16", "17"].includes(
+              markedInvoice.invoicetypeid
+            ) && (
+              <TableFooter>
+                <TableRow>
+                  <StyledTableCell
+                    colSpan={
+                      markedInvoice.invoicetypeid === "7"
+                        ? 3
+                        : markedInvoice.invoicetypeid === "2"
+                        ? 3
+                        : 3
+                    }
+                  >
+                    Итого
+                  </StyledTableCell>
+                  <StyledTableCell align="center">
                     {details
                       .reduce((prev, cur) => {
-                        return prev + cur.purchaseprice * cur.units;
+                        return prev + parseFloat(cur.units);
                       }, 0)
                       .toLocaleString("ru", { minimumFractionDigits: 2 })}
-                  </td>
-                )}
-                {["16", "17"].includes(markedInvoice.invoicetypeid) && (
-                  <td className="tenge">
-                    {details
-                      .reduce((prev, cur) => {
-                        return prev + cur.price * cur.units;
-                      }, 0)
-                      .toLocaleString("ru", { minimumFractionDigits: 2 })}
-                  </td>
-                )}
-                {["2"].includes(markedInvoice.invoicetypeid) && (
-                  <td className="text-center tenge">
-                    {details
-                      .reduce((prev, cur) => {
-                        return prev + cur.newprice * cur.units;
-                      }, 0)
-                      .toLocaleString("ru", { minimumFractionDigits: 2 })}
-                  </td>
-                )}
-              </tr>
-            </tfoot>
-          )}
-        </table>
+                  </StyledTableCell>
+                  {["2", "7"].includes(markedInvoice.invoicetypeid) && (
+                    <StyledTableCell colSpan="2" />
+                  )}
 
-        <div>
-          <ReactHTMLTableToExcel
-            className="btn btn-sm btn-outline-success"
-            table="table-transfer"
-            filename={`${
-              invoicetype.value === "1"
-                ? "Перемещение товара"
-                : invoicetype.value === "2"
-                ? "Добавление товара"
-                : invoicetype.value === "0"
-                ? "Смена цен"
-                : invoicetype.value === "16" || invoicetype.value === "17"
-                ? "Детали консигнации"
-                : "Списание товара"
-            } c ${Moment(dateFrom).format("DD.MM.YYYY")} по ${Moment(
-              dateTo
-            ).format("DD.MM.YYYY")}`}
-            sheet="tablexls"
-            buttonText="Выгрузить в excel"
-          />
-        </div>
-      </div>
-    </div>
+                  {["16", "17"].includes(markedInvoice.invoicetypeid) && (
+                    <StyledTableCell />
+                  )}
+                  {["2"].includes(markedInvoice.invoicetypeid) && (
+                    <StyledTableCell align="center" className="tenge">
+                      {details
+                        .reduce((prev, cur) => {
+                          return prev + cur.purchaseprice * cur.units;
+                        }, 0)
+                        .toLocaleString("ru", { minimumFractionDigits: 2 })}
+                    </StyledTableCell>
+                  )}
+                  {["16", "17"].includes(markedInvoice.invoicetypeid) && (
+                    <StyledTableCell align="center" className="tenge">
+                      {details
+                        .reduce((prev, cur) => {
+                          return prev + cur.price * cur.units;
+                        }, 0)
+                        .toLocaleString("ru", { minimumFractionDigits: 2 })}
+                    </StyledTableCell>
+                  )}
+                  {["2"].includes(markedInvoice.invoicetypeid) && (
+                    <StyledTableCell align="center" className="tenge">
+                      {details
+                        .reduce((prev, cur) => {
+                          return prev + cur.newprice * cur.units;
+                        }, 0)
+                        .toLocaleString("ru", { minimumFractionDigits: 2 })}
+                    </StyledTableCell>
+                  )}
+                </TableRow>
+              </TableFooter>
+            )}
+          </Table>
+        </TableContainer>
+      </Grid>
+
+      <Grid item xs={12}>
+        <ReactHTMLTableToExcel
+          className="btn btn-sm btn-outline-success"
+          table="table-transfer"
+          filename={`${
+            invoicetype.value === "1"
+              ? "Перемещение товара"
+              : invoicetype.value === "2"
+              ? "Добавление товара"
+              : invoicetype.value === "0"
+              ? "Смена цен"
+              : invoicetype.value === "16" || invoicetype.value === "17"
+              ? "Детали консигнации"
+              : "Списание товара"
+          } c ${Moment(dateFrom).format("DD.MM.YYYY")} по ${Moment(
+            dateTo
+          ).format("DD.MM.YYYY")}`}
+          sheet="tablexls"
+          buttonText="Выгрузить в excel"
+        />
+      </Grid>
+    </Fragment>
   );
 }

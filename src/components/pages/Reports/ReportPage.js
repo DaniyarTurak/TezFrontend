@@ -11,7 +11,7 @@ import ReportIncome from "./ReportIncome";
 import ReportInvoiceHistory from "./ReportInvoiceHistory";
 import ReportLoyalty from "./ReportLoyalty";
 import ReportProductMovement from "./ReportProductMovement";
-import ReportRevisionPage from "./ReportRevisionPage";
+import ReportRevision from "./ReportRevision";
 import ReportStockBalance from "./ReportStockBalance";
 import ReportSalesSection from "./ReportSalesSection";
 import ReportSalesPlan from "./ReportSalesPlan";
@@ -126,7 +126,7 @@ export default function ReportPage({ type, history, location }) {
                 reportMode === "reportsalesplanteam" && (
                   <ReportSalesPlanTeam
                     holding={false}
-                    company={""}
+                    companyProps={""}
                     history={history}
                     location={location}
                   />
@@ -181,7 +181,7 @@ export default function ReportPage({ type, history, location }) {
                 )}
 
               {typeMode === "stockreport" && reportMode === "revision" && (
-                <ReportRevisionPage history={history} location={location} />
+                <ReportRevision history={history} location={location} />
               )}
 
               {typeMode === "stockreport" &&

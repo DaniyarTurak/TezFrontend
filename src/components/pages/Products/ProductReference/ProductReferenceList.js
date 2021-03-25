@@ -18,9 +18,11 @@ import Autocomplete from "@material-ui/lab/Autocomplete";
 import Grid from "@material-ui/core/Grid";
 import SweetAlert from "react-bootstrap-sweetalert";
 import Button from "@material-ui/core/Button";
-import ErrorAlert from "../../../ReusableComponents/ErrorAlert";
 import CreateIcon from "@material-ui/icons/Create";
 import Dialog from "@material-ui/core/Dialog";
+// import ErrorAlert from "../../../ReusableComponents/ErrorAlert";
+// import DialogContentText from '@material-ui/core/DialogContentText';
+
 
 export default function ProductReferenceList({
 	company,
@@ -53,26 +55,12 @@ export default function ProductReferenceList({
 	const [piecesUnint, setPiecesUnint] = useState("");
 	const [productName, setProductName] = useState("");
 	const [sweetalert, setSweetAlert] = useState(null);
-	const [tax, setTax] = useState("");
-	const [open, setOpen] = useState(false);
-	const [fullWidth, setFullWidth] = useState(true);
-  const [maxWidth, setMaxWidth] = useState('lg');
-
-	const customStyles = {
-		
-		content: {
-			top: "50%",
-			left: "60%",
-			right: "50%",
-			bottom: "auto",
-			marginRight: "-50%",
-			transform: "translate(-50%, -50%)",
-			width: "900px",
-			zIndex: 10,
-			transparent: "none",
-		},
-		overlay: { zIndex: 10 },
-	};
+	const [tax, setTax] = useState(1);
+	const [fullWidth] = useState(true);
+ 	const [maxWidth] = useState('lg');
+	const [errorAlert,setErrorAlert] = useState(false);
+	const companyData =
+    JSON.parse(sessionStorage.getItem("isme-company-data")) || {};
 
 	const useStyles = makeStyles(theme => ({
 		table: {},
@@ -98,6 +86,7 @@ export default function ProductReferenceList({
 	const handleEdit = (id, oldProduct) => {
 		setEditingProduct(oldProduct);
 		setEditing(true);
+		setAddingAmount(false);
 		setModalOpen(true);
 		setEditProduct(id);
 	};
@@ -173,7 +162,6 @@ export default function ProductReferenceList({
 	const onSellByPiecesChange = (e, idx) => {
 		const piece = e.target.checked;
 		setSellByPieces(piece);
-		let unit = {};
 		let newUnitRes = [...unitOptions];
 		//продажа поштучно
 		if (piece) {
@@ -181,21 +169,11 @@ export default function ProductReferenceList({
 				if (e.id === "2" || e.id === "16" || e.id === "17") {
 					e.isDisabled = false;
 				} else e.isDisabled = true;
-			});
-			unit = {
-				label: newUnitRes[1].name,
-				value: newUnitRes[1].id,
-				isDisabled: false,
-			};
+			})
 		} else {
 			newUnitRes.forEach(e => {
 				e.isDisabled = false;
 			});
-			unit = {
-				label: newUnitRes[0].name,
-				value: newUnitRes[0].id,
-				isDisabled: false,
-			};
 		}
 		setUnitOptions(newUnitRes);
 	};
@@ -262,7 +240,7 @@ export default function ProductReferenceList({
 			name: productName,
 			category: category.id,
 			brand: brand.id,
-			taxid: tax,
+			taxid: companyData.certificatenum ? tax.value : "0",
 			unitsprid: unitspr.id,
 			piece: sellByPieces,
 			pieceinpack: piecesUnint,
@@ -272,6 +250,7 @@ export default function ProductReferenceList({
 			product,
 		})
 			.then(res => {
+				setErrorAlert(false)
 				setReference([]);
 				setEditProduct([]);
 				getBarcodeProps(editProduct.code);
@@ -284,8 +263,9 @@ export default function ProductReferenceList({
 				});
 			})
 			.catch(err => {
-				ErrorAlert(err);
+				setErrorAlert(true)
 			});
+		
 	};
 
 	const handleDelete = (e, idx) => {
@@ -365,11 +345,10 @@ export default function ProductReferenceList({
 		setPiecesUnint(num);
 	};
 
-	const handleClickOpen = () => {
-		setOpen(true);
-	};
 	const handleClose = () => {
-		setOpen(false);
+		setModalOpen(false);
+		setEditing(false);
+		setAddingAmount(true)
 	};
 
 	return isEditing && !isAddingAmount ? (
@@ -405,6 +384,8 @@ export default function ProductReferenceList({
 				tax={tax}
 				onTaxChange={onTaxChange}
 				onPieceAmountChange={onPieceAmountChange}
+				errorAlert={errorAlert}
+				companyData={companyData}
 			/>
 		</Dialog>
 	) : (
@@ -414,7 +395,6 @@ export default function ProductReferenceList({
 					<Grid item xs={4}>
 						<FormControl fullWidth>
 							<TextField
-								id='outlined-basic'
 								variant='outlined'
 								type='text'
 								name='barcode'
@@ -432,7 +412,7 @@ export default function ProductReferenceList({
 							options={[reference, ...productOptions]}
 							value={productSelectValue}
 							onChange={productListChange}
-							noOptionsMessage={() => "Товар не найден"}
+							noOptionsText="Товар не найден"
 							onInputChange={onProductListChange}
 							filterOptions={options => options.filter(option => option !== "")}
 							getOptionLabel={option => (option ? option.label : "")}

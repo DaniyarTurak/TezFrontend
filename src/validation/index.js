@@ -59,6 +59,10 @@ export const NoMoreThan13 = (input) => {
   if (input && input.length > 14) return "Не более 14 символов";
 };
 
+export const NoMoreThan16 = (input) => {
+  if (input && input.length > 16) return "Не более 16 символов";
+};
+
 export const matchPasswords = (confirm, allValues) =>
   allValues.user_password !== confirm ? "Пароли не совпадают" : undefined;
 

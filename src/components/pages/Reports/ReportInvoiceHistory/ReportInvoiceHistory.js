@@ -1,13 +1,45 @@
 import React, { useState, useEffect } from "react";
 import Axios from "axios";
-import Select from "react-select";
 import Moment from "moment";
-import Searching from "../../../Searching";
 import Alert from "react-s-alert";
 import HistoryDetails from "./HistoryDetails";
-import TableContents from "./TableContents";
+import HistoryTable from "./HistoryTable";
+import Grid from "@material-ui/core/Grid";
+import InvoiceOptions from "./InvoiceOptions";
+import SkeletonTable from "../../../Skeletons/TableSkeleton";
+import { makeStyles } from "@material-ui/core/styles";
+import ErrorAlert from "../../../ReusableComponents/ErrorAlert";
+
+const useStyles = makeStyles((theme) => ({
+  notFound: {
+    textAlign: "center",
+    color: theme.palette.text.secondary,
+    fontSize: ".875rem",
+  },
+  tableRow: {
+    hover: {
+      "&$hover:hover": {
+        backgroundColor: "#49bb7b",
+      },
+    },
+  },
+  label: {
+    color: "orange",
+    fontSize: ".875rem",
+  },
+  invoiceOptions: {
+    fontSize: ".875rem",
+  },
+  button: {
+    minHeight: "3.5rem",
+    fontSize: ".875rem",
+    textTransform: "none",
+  },
+}));
 
 export default function ReportInvoiceHistory({ companyProps, parameters }) {
+  const classes = useStyles();
+  const [barcode, setBarcode] = useState("");
   const [consignator, setConsignator] = useState(
     parameters && parameters.isCounterparties
       ? { label: parameters.customer, value: parameters.id }
@@ -38,23 +70,36 @@ export default function ReportInvoiceHistory({ companyProps, parameters }) {
   const [invoices, setInvoices] = useState([]);
   const [isDateChanging, setDateChanging] = useState(false);
   const [isLoading, setLoading] = useState(false);
+  const [isLoadingDetails, setLoadingDetails] = useState(false);
+  const [isLoadingProducts, setLoadingProducts] = useState(false);
   const [markedInvoice, setMarkedInvoice] = useState(null);
   const [counterparty, setCounterparty] = useState({ label: "Все", value: 0 });
   const [counterparties, setCounterparties] = useState([]);
   const [paramState, setParamState] = useState(parameters);
-  const [stockFrom, setStockFrom] = useState([{ label: "Все", value: 0 }]);
+  const [products, setProducts] = useState([]);
+  const [productSelectValue, setProductSelectValue] = useState({
+    value: "",
+    label: "Все",
+  });
+  const [stockFrom, setStockFrom] = useState({ label: "Все", value: 0 });
   const [stockList, setStockList] = useState([]);
-  const [stockTo, setStockTo] = useState([{ label: "Все", value: 0 }]);
+  const [stockTo, setStockTo] = useState({ label: "Все", value: 0 });
 
   const company = companyProps ? companyProps.value : "";
 
   useEffect(() => {
     getInvoiceTypes();
-
+    getProducts();
     if (!company) {
       getStockList();
     }
   }, []);
+
+  useEffect(() => {
+    if (isLoadingDetails) {
+      document.body.style.cursor = "wait";
+    } else document.body.style.cursor = "default";
+  }, [isLoadingDetails]);
 
   //Данный эффект вызывается только при выполнении перехода из консгинационного отчёта по товарам.
   //Нужен чтобы автоматически заполнить все поля и отправить запрос.
@@ -88,7 +133,7 @@ export default function ReportInvoiceHistory({ companyProps, parameters }) {
     return () => {
       setDateChanging(false);
     };
-  }, [invoicetype, dateFrom, dateTo]);
+  }, [invoicetype, dateFrom, dateTo, productSelectValue]);
 
   const getInvoiceTypes = () => {
     Axios.get("/api/invoice/types", {
@@ -106,17 +151,60 @@ export default function ReportInvoiceHistory({ companyProps, parameters }) {
       });
   };
 
+  const getProductByBarcode = (barcode) => {
+    setLoadingProducts(true);
+    Axios.get("/api/products/barcode", { params: { barcode, company } })
+      .then((res) => res.data)
+      .then((res) => {
+        const selected = {
+          value: res.id,
+          label: res.name,
+          code: res.code,
+        };
+        setProductSelectValue(selected);
+        setLoadingProducts(false);
+      })
+      .catch((err) => {
+        ErrorAlert(err);
+        setLoadingProducts(false);
+      });
+  };
+
+  const getProducts = (productName) => {
+    setLoadingProducts(true);
+    Axios.get("/api/products", {
+      params: { productName, company, report: true },
+    })
+      .then((res) => res.data)
+      .then((list) => {
+        const all = [{ label: "Все", value: "" }];
+        setLoadingProducts(false);
+        const productsList = list.map((product) => {
+          return {
+            label: product.name,
+            value: product.id,
+            code: product.code,
+          };
+        });
+        setProducts([...all, ...productsList]);
+      })
+      .catch((err) => {
+        setLoadingProducts(false);
+        ErrorAlert(err);
+      });
+  };
+
   const dateFromChange = (e) => {
     setDateChanging(true);
-    setDateFrom(e.target.value);
+    setDateFrom(e);
   };
 
   const dateToChange = (e) => {
     setDateChanging(true);
-    setDateTo(e.target.value);
+    setDateTo(e);
   };
 
-  const handleInvoiceTypeChange = (inv) => {
+  const handleInvoiceTypeChange = (event, inv) => {
     setInvoicetype(inv);
     !paramState && setDetails([]);
     setConsignator({ label: "Все", value: 0 });
@@ -129,20 +217,48 @@ export default function ReportInvoiceHistory({ companyProps, parameters }) {
     }
   };
 
-  const handleStockFromChange = (s) => {
+  const handleStockFromChange = (event, s) => {
     setStockFrom(s);
   };
 
-  const handleStockToChange = (s) => {
+  const handleStockToChange = (event, s) => {
     setStockTo(s);
   };
 
-  const handleCounterpartyChange = (p) => {
+  const handleCounterpartyChange = (event, p) => {
     setCounterparty(p);
   };
 
-  const handleConsignatorChange = (c) => {
+  const handleConsignatorChange = (event, c) => {
     setConsignator(c);
+  };
+
+  const onBarcodeChange = (e) => {
+    let barcodeChanged = e.target.value.toUpperCase();
+    if (barcodeChanged) {
+      setBarcode(barcodeChanged);
+    } else {
+      setProductSelectValue({ value: "", label: "Все" });
+      setBarcode("");
+    }
+  };
+
+  const onProductChange = (event, p) => {
+    if (!p.code) {
+      setProductSelectValue({ value: "", label: "Все" });
+      setBarcode("");
+    } else {
+      setProductSelectValue(p);
+      setBarcode(p.code);
+    }
+  };
+
+  const onBarcodeKeyDown = (e) => {
+    if (e.keyCode === 13) getProductByBarcode(barcode);
+  };
+
+  const onProductListInput = (event, p, reason) => {
+    if (reason === "input") getProducts(p);
   };
 
   const changeDate = (dateStr) => {
@@ -173,6 +289,7 @@ export default function ReportInvoiceHistory({ companyProps, parameters }) {
     setLoading(true);
     Axios.get("/api/report/history/invoices", {
       params: {
+        prodID: productSelectValue.value,
         company,
         dateFrom,
         dateTo,
@@ -191,7 +308,7 @@ export default function ReportInvoiceHistory({ companyProps, parameters }) {
         setLoading(false);
       })
       .catch((err) => {
-        console.log(err);
+        ErrorAlert(err);
         setDetails([]);
         setLoading(false);
       });
@@ -218,7 +335,7 @@ export default function ReportInvoiceHistory({ companyProps, parameters }) {
         setConsignators([...all, ...options]);
       })
       .catch((err) => {
-        console.log(err);
+        ErrorAlert(err);
       });
   };
 
@@ -238,7 +355,7 @@ export default function ReportInvoiceHistory({ companyProps, parameters }) {
         setCounterparties([...all, ...counterpartiesList]);
       })
       .catch((err) => {
-        console.log(err);
+        ErrorAlert(err);
       });
   };
 
@@ -257,12 +374,13 @@ export default function ReportInvoiceHistory({ companyProps, parameters }) {
         setStockList([...allStock, ...options]);
       })
       .catch((err) => {
-        console.log(err);
+        ErrorAlert(err);
       });
   };
 
   const invoiceDetails = (inv) => {
     setMarkedInvoice(inv);
+    setLoadingDetails(true);
     Axios.get("/api/report/history/invoice/details", {
       params: {
         company,
@@ -272,6 +390,7 @@ export default function ReportInvoiceHistory({ companyProps, parameters }) {
     })
       .then((res) => res.data)
       .then((detailsList) => {
+        setLoadingDetails(false);
         if (detailsList.length === 0) {
           return Alert.info("Товаров в данной накладной нет", {
             position: "top-right",
@@ -292,7 +411,8 @@ export default function ReportInvoiceHistory({ companyProps, parameters }) {
         setLoading(false);
       })
       .catch((err) => {
-        console.log(err);
+        setLoadingDetails(false);
+        ErrorAlert(err);
         setLoading(false);
       });
   };
@@ -306,130 +426,59 @@ export default function ReportInvoiceHistory({ companyProps, parameters }) {
   };
 
   return (
-    <div className="report-history-invoice">
-      <div className="row">
-        <div className="col-md-2 today-btn">
-          <button
-            className="btn btn-block btn-outline-success mt-30"
-            onClick={() => changeDate("today")}
-          >
-            Сегодня
-          </button>
-        </div>
-        <div className="col-md-2 month-btn">
-          <button
-            className="btn btn-block btn-outline-success mt-30"
-            onClick={() => changeDate("month")}
-          >
-            Текущий месяц
-          </button>
-        </div>
-        <div className="col-md-2 date-block">
-          <label htmlFor="">Дата с</label>
-          <input
-            type="date"
-            value={dateFrom}
-            className="form-control"
-            name="datefrom"
-            onChange={dateFromChange}
-          />
-        </div>
-        <div className="col-md-2 date-block">
-          <label htmlFor="">Дата по</label>
-          <input
-            type="date"
-            value={dateTo}
-            className="form-control"
-            name="dateto"
-            onChange={dateToChange}
-          />
-        </div>
-        <div className="col-md-3 point-block">
-          <label htmlFor="">Выберите тип накладной</label>
-          <Select
-            name="stock"
-            value={invoicetype}
-            noOptionsMessage={() => "Выберите значение из списка"}
-            onChange={handleInvoiceTypeChange}
-            placeholder="Выберите тип накладной"
-            options={invoicetypes || []}
-          />
-        </div>
-        {(invoicetype.value === "1" || invoicetype.value === "7") && (
-          <div className="col-md-3 point-block">
-            <label htmlFor="">Со склада</label>
-            <Select
-              name="stockFrom"
-              value={stockFrom}
-              onChange={handleStockFromChange}
-              options={stockList}
-              placeholder="Выберите склад"
-              noOptionsMessage={() => "Склад не найден"}
-            />
-          </div>
-        )}
-        {(invoicetype.value === "1" || invoicetype.value === "2") && (
-          <div className="col-md-3 point-block">
-            <label htmlFor="">На склад</label>
-            <Select
-              name="stockTo"
-              value={stockTo}
-              onChange={handleStockToChange}
-              options={stockList}
-              placeholder="Выберите склад"
-              noOptionsMessage={() => "Склад не найден"}
-            />
-          </div>
-        )}
-        {invoicetype.value === "2" && (
-          <div className="col-md-3 point-block">
-            <label htmlFor="">Поставщики</label>
-            <Select
-              name="counterparty"
-              value={counterparty}
-              onChange={handleCounterpartyChange}
-              options={counterparties}
-              placeholder="Выберите контрагента"
-              noOptionsMessage={() => "Контрагент не найден"}
-            />
-          </div>
-        )}
-        {(invoicetype.value === "16" || invoicetype.value === "17") && (
-          <div className="col-md-3 point-block">
-            <label htmlFor="">Консигнаторы</label>
-            <Select
-              name="consignator"
-              value={consignator}
-              onChange={handleConsignatorChange}
-              options={consignators}
-              placeholder="Выберите консигнатора"
-              noOptionsMessage={() => "Консигнатор не найден"}
-            />
-          </div>
-        )}
+    <Grid container spacing={3}>
+      <InvoiceOptions
+        changeDate={changeDate}
+        consignator={consignator}
+        consignators={consignators}
+        counterparty={counterparty}
+        counterparties={counterparties}
+        dateFrom={dateFrom}
+        dateTo={dateTo}
+        dateFromChange={dateFromChange}
+        dateToChange={dateToChange}
+        handleInvoiceTypeChange={handleInvoiceTypeChange}
+        handleStockFromChange={handleStockFromChange}
+        handleStockToChange={handleStockToChange}
+        handleCounterpartyChange={handleCounterpartyChange}
+        handleConsignatorChange={handleConsignatorChange}
+        handleSearch={handleSearch}
+        invoicetype={invoicetype}
+        invoicetypes={invoicetypes}
+        stockList={stockList}
+        stockTo={stockTo}
+        stockFrom={stockFrom}
+        barcode={barcode}
+        onBarcodeChange={onBarcodeChange}
+        onBarcodeKeyDown={onBarcodeKeyDown}
+        productSelectValue={productSelectValue}
+        onProductChange={onProductChange}
+        onProductListInput={onProductListInput}
+        products={products}
+        isLoadingProducts={isLoadingProducts}
+      />
 
-        <div className="col-md-1 text-right search-btn">
-          <button className="btn btn-success mt-30" onClick={handleSearch}>
-            Поиск
-          </button>
-        </div>
-      </div>
-      {isLoading && <Searching />}
+      {isLoading && (
+        <Grid item xs={12}>
+          <SkeletonTable />
+        </Grid>
+      )}
       {!isLoading &&
         invoices.length === 0 &&
         (!paramState || paramState.isCounterparties) && (
-          <div className="row mt-10 text-center">
-            <div className="col-md-12 not-found-text">Накладные не найдены</div>
-          </div>
+          <Grid item xs={12}>
+            <p className={classes.notFound}>Накладные не найдены</p>
+          </Grid>
         )}
       {!isLoading && invoices.length > 0 && details.length === 0 && (
-        <TableContents
+        <HistoryTable
+          classes={classes}
           invoices={invoices}
           invoiceDetails={invoiceDetails}
           invoicetype={invoicetype}
         />
       )}
-      {details.length > 0 && (
+      {details.length > 0 && !isLoadingDetails && (
         <HistoryDetails
           markedInvoice={markedInvoice}
           backToList={backToList}
@@ -437,8 +486,9 @@ export default function ReportInvoiceHistory({ companyProps, parameters }) {
           invoicetype={invoicetype}
           dateFrom={dateFrom}
           dateTo={dateTo}
+          classes={classes}
         />
       )}
-    </div>
+    </Grid>
   );
 }

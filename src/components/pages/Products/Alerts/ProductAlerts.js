@@ -1,6 +1,6 @@
 import React, { Component } from "react";
 import Axios from "axios";
-import Alert from "react-s-alert";
+import ErrorAlert from "../../../ReusableComponents/ErrorAlert";
 
 //import cnofeaList from "../../../data/cnofea.json";
 
@@ -34,12 +34,7 @@ export default class ProductAlerts extends Component {
       })
       .catch((err) => {
         this.setState({ disableButton: false });
-        Alert.error("internal_error" + err, {
-          position: "top-right",
-          effect: "bouncyflip",
-          timeout: 2000,
-        });
-
+        ErrorAlert(err);
         this.closeAlert();
       });
   };

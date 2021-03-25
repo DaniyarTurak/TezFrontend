@@ -9,6 +9,7 @@ import ReportIncome from "../Reports/ReportIncome";
 import ReportLoyalty from "../Reports/ReportLoyalty";
 import ReportSales from "../Reports/ReportSales";
 import ReportSalesPlan from "../Reports/ReportSalesPlan";
+import ReportSalesPlanTeam from "../Reports/ReportSalesPlanTeam";
 import ReportSalesSection from "../Reports/ReportSalesSection";
 import ReportStockBalance from "../Reports/ReportStockBalance";
 import ReportTransactions from "../Reports/ReportTransactions";
@@ -16,7 +17,7 @@ import ReportProductMovement from "../Reports/ReportProductMovement";
 import ReportInvoiceHistory from "../Reports/ReportInvoiceHistory";
 
 import CertificatesPage from "../Reports/CertificatesPage";
-import ReportRevisionPage from "../Reports/ReportRevisionPage";
+import ReportRevision from "../Reports/ReportRevision";
 import AssessmentIcon from "@material-ui/icons/Assessment";
 import Searching from "../../Searching";
 import Axios from "axios";
@@ -189,6 +190,9 @@ export default function ReportAdminPage({ user }) {
               {reportMode === "ReportSalesPlanAdmin" && (
                 <ReportSalesPlan companyProps={companySelect} />
               )}
+              {reportMode === "ReportSalesPlanTeamAdmin" && (
+                <ReportSalesPlanTeam companyProps={companySelect} />
+              )}
               {reportMode === "ReportSalesSectionAdmin" && (
                 <ReportSalesSection companyProps={companySelect} />
               )}
@@ -205,7 +209,7 @@ export default function ReportAdminPage({ user }) {
                 <CertificatesPage companyProps={companySelect} />
               )}
               {reportMode === "ReportRevisionAdmin" && (
-                <ReportRevisionPage companyProps={companySelect} />
+                <ReportRevision companyProps={companySelect} />
               )}
 
               {reportMode === "ReportAdminInvoiceHistory" && (

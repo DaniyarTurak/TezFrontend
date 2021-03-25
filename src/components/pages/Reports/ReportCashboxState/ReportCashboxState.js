@@ -19,7 +19,7 @@ const ColorButton = withStyles(() => ({
   root: {
     borderColor: "#17a2b8",
     color: "#17a2b8",
-    fontSize: 12,
+    fontSize: ".875rem",
     textTransform: "none",
   },
 }))(Button);
@@ -27,11 +27,11 @@ const ColorButton = withStyles(() => ({
 const StyledCell = withStyles((theme) => ({
   head: {
     color: theme.palette.common.black,
-    fontSize: 12,
+    fontSize: ".875rem",
     fontWeight: "bold",
   },
   body: {
-    fontSize: 12,
+    fontSize: ".875rem",
   },
 }))(TableCell);
 

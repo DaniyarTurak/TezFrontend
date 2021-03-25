@@ -76,8 +76,8 @@ export default function OrderForm({ handleCloseDialog, comp_id, isOpenDialog }) 
   return (
     <Fragment>
       <Dialog
-        fullWidth={true}
         maxWidth="xs"
+        fullWidth
         disableBackdropClick
         disableEscapeKeyDown
         open={isOpenDialog}
@@ -134,8 +134,8 @@ export default function OrderForm({ handleCloseDialog, comp_id, isOpenDialog }) 
         </DialogContent>
         <DialogActions>
           <Button onClick={handleCloseDialog}>
-            {!tried && "Отмена"}
-            {tried && "Закрыть"}
+           {!tried && "Отмена" }
+           {tried && "Закрыть" }
           </Button>
         </DialogActions>
       </Dialog>

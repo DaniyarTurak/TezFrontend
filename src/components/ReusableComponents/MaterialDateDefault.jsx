@@ -24,7 +24,12 @@ const useStyles = makeStyles((theme) => ({
     alignItems: "flex-end",
     marginBottom: "0.5rem",
   },
-  button: { width: "12rem" },
+  button: {
+    width: "12rem",
+    minHeight: "3.5rem",
+    fontSize: ".875rem",
+    textTransform: "none",
+  },
 }));
 
 export default function MaterialDateDefault({
@@ -34,6 +39,7 @@ export default function MaterialDateDefault({
   dateTo,
   dateToChange,
   searchInvoices,
+  disableButton,
 }) {
   const classes = useStyles();
   return (
@@ -41,11 +47,6 @@ export default function MaterialDateDefault({
       <Grid container spacing={3}>
         <Grid item xs={2} className={classes.buttonGrid}>
           <Button
-            style={{
-              minHeight: "3.5rem",
-              fontSize: ".875rem",
-              textTransform: "none",
-            }}
             className={classes.button}
             variant="outlined"
             color="primary"
@@ -56,11 +57,6 @@ export default function MaterialDateDefault({
         </Grid>
         <Grid item xs={2} className={classes.buttonGrid}>
           <Button
-            style={{
-              minHeight: "3.5rem",
-              fontSize: ".875rem",
-              textTransform: "none",
-            }}
             className={classes.button}
             variant="outlined"
             color="primary"
@@ -125,14 +121,10 @@ export default function MaterialDateDefault({
         </Grid>
         <Grid item xs={2} className={classes.buttonGrid}>
           <Button
-            style={{
-              minHeight: "3.5rem",
-              fontSize: ".875rem",
-              textTransform: "none",
-            }}
             className={classes.button}
             variant="outlined"
             color="primary"
+            disabled={disableButton}
             onClick={searchInvoices}
           >
             Поиск

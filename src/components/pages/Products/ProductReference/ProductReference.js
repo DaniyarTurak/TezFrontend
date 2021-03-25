@@ -5,6 +5,9 @@ import { makeStyles } from "@material-ui/core/styles";
 import "./product-reference.sass";
 import productreference from "../../../../data/productreference.json";
 import CreateProduct from "./CreateProduct";
+import UpdateCategoryPage from "../../Updates/UpdateCategoryPage"
+import AttrSprPage from "../../AttrSprPage"
+
 const useStyles = makeStyles(theme => ({
 	root: {
 		flexGrow: 1,
@@ -14,10 +17,10 @@ const useStyles = makeStyles(theme => ({
 	},
 }));
 
-export default function ProductReference({}) {
+export default function ProductReference() {
 	const classes = useStyles();
 	const [reference, setReference] = useState("");
-	const [productList, setProductList] = useState("ProductList");
+	const [productList, setProductList] = useState("CreateProduct");
 	const [productBarcode, setProductBarcode] = useState("");
 	const [productSelectValue, setProductSelectValue] = useState("");
 	const [productOptions, setProductOptions] = useState([]);
@@ -25,7 +28,7 @@ export default function ProductReference({}) {
 	useEffect(() => {
 		if (productSelectValue.label) {
 			// getProductReference(productSelectValue.label);
-				getProducts(),
+				getProducts();
 				setProductBarcode(productSelectValue.code);
 		}
 	}, [productSelectValue]);
@@ -34,6 +37,8 @@ export default function ProductReference({}) {
 		getProducts();
 		setProductList(e.target.name);
 		setReference({})
+		setProductBarcode("")
+		setProductSelectValue("")
 	};
 
 	const getProductByBarcode = pb => {
@@ -143,7 +148,7 @@ export default function ProductReference({}) {
 						<div className='empty-space' />
 						<div className='row mt-10'>
 							<div className='col-md-12'>
-							{/* {productList === "ProductList" &&(
+							{productList === "CreateProduct" &&(
 									<CreateProduct
 										reference={reference}
 										getProductReference={getProductReference}
@@ -156,7 +161,7 @@ export default function ProductReference({}) {
 										onProductListChange={onProductListChange}
 										getProducts={getProducts}
 										setReference={setReference}
-										/>)} */}
+										/>)}
 								{productList === "ProductList" && 
 									<ProductReferenceList
 										reference={reference}
@@ -175,6 +180,9 @@ export default function ProductReference({}) {
 										getProductByBarcode={getProductByBarcode}
 									/>
 								}
+								{productList === "UpdateCategoryPage" && 
+								<UpdateCategoryPage/>}
+								{productList ==="AttrSprPage"&& <AttrSprPage/>}
 								
 							</div>
 						</div>

@@ -19,10 +19,10 @@ export default function ErrorAlert(err) {
       console.error("ErrorAlert response:", err.response.data.text);
       Alert.error(
         err.response
-          ? err.response.data.code === "internal_error"
-            ? "Возникла ошибка на стороне сервера.[internal_server_error]"
-            : err.response.data.text
+          ? err.response.data.text
             ? err.response.data.text
+            : err.response.data.code === "internal_error"
+            ? "Возникла ошибка на стороне сервера.[internal_server_error]"
             : Object.keys(err.response.data).length === 0 &&
               err.response.data.constructor === Object
             ? "Возникла ошибка на стороне передачи данных на сервер."

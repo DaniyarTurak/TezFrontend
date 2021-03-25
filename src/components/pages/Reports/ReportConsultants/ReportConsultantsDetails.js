@@ -1,6 +1,6 @@
 import React, { useState, useEffect, Fragment } from "react";
 import Axios from "axios";
-import TableSkeleton from '../../../Skeletons/TableSkeleton'
+import TableSkeleton from "../../../Skeletons/TableSkeleton";
 
 export default function ReportConsultantsDetails({ dateFrom, dateTo, id }) {
   useEffect(() => {
@@ -28,29 +28,18 @@ export default function ReportConsultantsDetails({ dateFrom, dateTo, id }) {
 
   return (
     <Fragment>
-      {
-        loading &&
-        <TableSkeleton />
-      }
-      {!loading &&
+      {loading && <TableSkeleton />}
+      {!loading && (
         <table className="table table-striped " width="100%">
-          <thead >
+          <thead>
             <tr>
-              <td className="text-center font-weight-bold">
-                №
-            </td>
-              <td className="text-center font-weight-bold">
-                Штрих-код
-            </td>
-              <td className="text-center font-weight-bold">
-                Наименование
-            </td>
-              <td className="text-center font-weight-bold">
-                Количество
-            </td>
+              <td className="text-center font-weight-bold">№</td>
+              <td className="text-center font-weight-bold">Штрих-код</td>
+              <td className="text-center font-weight-bold">Наименование</td>
+              <td className="text-center font-weight-bold">Количество</td>
             </tr>
           </thead>
-          {details.length !== 0 &&
+          {details.length !== 0 && (
             <tbody>
               {details.map((detail, idx) => (
                 <tr key={idx}>
@@ -61,9 +50,9 @@ export default function ReportConsultantsDetails({ dateFrom, dateTo, id }) {
                 </tr>
               ))}
             </tbody>
-          }
+          )}
         </table>
-      }
+      )}
     </Fragment>
   );
 }
