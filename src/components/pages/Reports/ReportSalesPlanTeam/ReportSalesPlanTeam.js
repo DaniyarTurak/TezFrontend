@@ -1,158 +1,169 @@
-import React, { Component, Fragment } from "react";
+import React, { useState, useEffect, Fragment } from "react";
 import Axios from "axios";
 import Moment from "moment";
 import _ from "lodash";
-import Select from "react-select";
-import Searching from "../../../Searching";
+import SkeletonTable from "../../../Skeletons/TableSkeleton";
 import Alert from "react-s-alert";
 import ReactHTMLTableToExcel from "react-html-table-to-excel";
+import ErrorAlert from "../../../ReusableComponents/ErrorAlert";
+import SalesPlanTeamOptions from "./SalesPlanTeamOptions";
+import Grid from "@material-ui/core/Grid";
 
-import DatePickerQuarter from "./DatePickerQuarter";
-import DatePickerYear from "./DatePickerYear";
-import "./report-sales-plan-team.sass";
+import { makeStyles } from "@material-ui/core/styles";
 
-export default class ReportSalesPlanTeam extends Component {
-  state = {
-    bonusResult: [],
-    dateFrom: Moment().startOf("month").format("YYYY-MM-DD"),
-    dateTo: Moment().format("YYYY-MM-DD"),
-    indBonusResult: [],
-    indBonusResultRowspan: "",
-    points: [],
-    point: "",
-    quarter: "",
-    quarters: ["1", "2", "3", "4"],
-    totalAward: 0,
-    uniqueSold: [],
-    year: Moment().year(),
-    type: 1,
+const useStyles = makeStyles((theme) => ({
+  notFound: {
+    textAlign: "center",
+    color: theme.palette.text.secondary,
+    fontSize: ".875rem",
+  },
+  tableRow: {
+    hover: {
+      "&$hover:hover": {
+        backgroundColor: "#49bb7b",
+      },
+    },
+  },
+  label: {
+    color: "orange",
+    fontSize: ".875rem",
+  },
+  invoiceOptions: {
+    fontSize: ".875rem",
+  },
+  button: {
+    minHeight: "3.5rem",
+    fontSize: ".875rem",
+    textTransform: "none",
+  },
+  buttonGrid: {
+    display: "flex",
+    justifyContent: "center",
+    alignItems: "flex-end",
+  },
+}));
+
+export default function ReportSalesPlanTeam({ companyProps, holding }) {
+  const classes = useStyles();
+  const [bonusResult, setBonusResult] = useState([]);
+  const [dateFrom, setDateFrom] = useState(
+    Moment().startOf("month").format("YYYY-MM-DD")
+  );
+  const [dateTo, setDateTo] = useState(Moment().format("YYYY-MM-DD"));
+  const [isLoading, setLoading] = useState(false);
+  const [indBonusResult, setIndBonusResult] = useState([]);
+  const [indBonusResultRowspan, setIndBonusResultRowspan] = useState("");
+  const [points, setPoints] = useState([]);
+  const [point, setPoint] = useState("");
+  const [totalAward, setTotalAward] = useState(0);
+  const [uniqueSold, setUniqueSold] = useState([]);
+  const [type, setType] = useState(1);
+
+  const company = JSON.parse(sessionStorage.getItem("isme-user-data"))
+    ? JSON.parse(sessionStorage.getItem("isme-user-data")).companyname
+    : "";
+  const now = Moment().format("DD.MM.YYYY HH:mm:ss");
+
+  useEffect(() => {
+    getPoints();
+  }, []);
+
+  useEffect(() => {
+    clean();
+  }, [type]);
+
+  useEffect(() => {
+    getPoints();
+  }, [companyProps]);
+
+  const clean = () => {
+    setBonusResult([]);
+    setDateFrom(Moment().startOf("month").format("YYYY-MM-DD"));
+    setDateTo(Moment().format("YYYY-MM-DD"));
+    setIndBonusResult([]);
+    setIndBonusResultRowspan("");
+    setTotalAward(0);
+    setUniqueSold([]);
   };
 
-  componentDidUpdate(prevProps, prevState) {
-    if (prevState.type !== this.state.type) {
-      this.clean();
-    }
-    if (prevProps.company !== this.props.company) {
-      this.getPoints();
-    }
-  }
-
-  clean = () => {
-    this.setState({
-      bonusResult: [],
-      dateFrom: Moment().startOf("month").format("YYYY-MM-DD"),
-      dateTo: Moment().format("YYYY-MM-DD"),
-      indBonusResult: [],
-      indBonusResultRowspan: "",
-      quarter: "",
-      quarters: ["1", "2", "3", "4"],
-      totalAward: 0,
-      uniqueSold: [],
-      year: Moment().year(),
-    });
-  };
-  componentDidMount() {
-    this.getPoints();
-  }
-
-  getPoints = () => {
-    let holding = this.props.holding;
-    let company = this.props.company.value;
+  const getPoints = () => {
     let pointService = holding === false ? "/api/point" : "/api/point/holding";
-
-    Axios.get(pointService, { params: { company } })
+    Axios.get(pointService, { params: { company: companyProps.value } })
       .then((res) => res.data)
       .then((res) => {
-        const points = res.map((point) => {
+        const pointsChanged = res.map((point) => {
           return {
             label: point.name,
             value: point.id,
           };
         });
-
-        this.setState({ points });
+        setPoints(pointsChanged);
       })
       .catch((err) => {
-        console.log(err);
+        ErrorAlert(err);
       });
   };
 
-  checkDateRange = () => {
-    const dateFromVal = new Date(this.state.dateFrom);
+  const checkDateRange = () => {
+    const dateFromVal = new Date(dateFrom);
     const dateFromPlusThree = dateFromVal.setMonth(dateFromVal.getMonth() + 3);
-    const dateToVal = new Date(this.state.dateTo);
+    const dateToVal = new Date(dateTo);
     return dateFromPlusThree >= dateToVal ? true : false;
   };
 
-  dateFromChange = (e) => {
-    const dateFrom = e.target.value;
-    this.setState({ dateFrom });
+  const dateFromChange = (e) => {
+    setDateFrom(e);
   };
 
-  dateToChange = (e) => {
-    const dateTo = e.target.value;
-    this.setState({ dateTo });
+  const dateToChange = (e) => {
+    setDateTo(e);
   };
 
-  handleQuarter = (date) => {
-    this.setState({
-      dateFrom: Moment(date).startOf("month").format("YYYY-MM-DD"),
-      dateTo: Moment(date).startOf("month").add(3, "M").format("YYYY-MM-DD"),
-    });
+  const handleQuarter = (date) => {
+    setDateFrom(Moment(date).startOf("month").format("YYYY-MM-DD"));
+    setDateTo(Moment(date).startOf("month").add(3, "M").format("YYYY-MM-DD"));
   };
 
-  handleYear = (date) => {
-    this.setState({
-      dateFrom: Moment(date).startOf("year").format("YYYY-MM-DD"),
-      dateTo: Moment(date).startOf("year").add(12, "M").format("YYYY-MM-DD"),
-    });
+  const handleYear = (date) => {
+    setDateFrom(Moment(date).startOf("year").format("YYYY-MM-DD"));
+    setDateTo(Moment(date).startOf("year").add(12, "M").format("YYYY-MM-DD"));
   };
 
-  resetDate = () => {
-    this.setState({
-      dateFrom: Moment().startOf("month").format("YYYY-MM-DD"),
-      dateTo: Moment().format("YYYY-MM-DD"),
-    });
+  const resetDate = () => {
+    setDateFrom(Moment().startOf("month").format("YYYY-MM-DD"));
+    setDateTo(Moment().format("YYYY-MM-DD"));
   };
 
-  pointsChange = (point) => {
-    if (!this.checkDateRange()) {
+  const onPointChange = (event, p) => {
+    if (!checkDateRange()) {
       return Alert.warning("Максимальный период 3 месяца", {
         position: "top-right",
         effect: "bouncyflip",
         timeout: 3000,
       });
     }
-    this.setState({ point });
-    this.resetDate();
+    setPoint(p);
+    resetDate();
   };
 
-  // quarterChange = (quarter) => {
-  //   this.setState({ quarter });
-  // };
-
-  changeDate = (dateStr) => {
-    let dateFrom, dateTo;
+  const changeDate = (dateStr) => {
+    let dF, dT;
     if (dateStr === "today") {
-      dateFrom = Moment().format("YYYY-MM-DD");
-      dateTo = Moment().format("YYYY-MM-DD");
+      dF = Moment().format("YYYY-MM-DD");
+      dT = Moment().format("YYYY-MM-DD");
     } else if (dateStr === "month") {
-      dateFrom = Moment().startOf("month").format("YYYY-MM-DD");
-      dateTo = Moment().format("YYYY-MM-DD");
+      dF = Moment().startOf("month").format("YYYY-MM-DD");
+      dT = Moment().format("YYYY-MM-DD");
     }
-
-    this.setState({ dateFrom, dateTo, isLoading: false }, () => {
-      this.handleSearch();
-    });
+    setDateFrom(dF);
+    setDateTo(dT);
   };
 
-  changePlanDate = (type) => {
-    let holding = this.props.holding;
-    let company = this.props.company.value;
+  const changePlanDate = (t) => {
+    let holdingChanged = holding;
+    let pointChanged = point.value;
 
-    let point = this.state.point.value;
-
-    if (!point) {
+    if (!pointChanged) {
       return Alert.warning("Выберите торговую точку", {
         position: "top-right",
         effect: "bouncyflip",
@@ -160,35 +171,26 @@ export default class ReportSalesPlanTeam extends Component {
       });
     }
 
-    if (!holding) {
-      holding = false;
-      point = [point];
+    if (!holdingChanged) {
+      holdingChanged = false;
+      pointChanged = [pointChanged];
     }
-    this.resetDate();
+    resetDate();
 
-    if (type === 3) {
-      this.setState({
-        dateFrom: Moment().startOf("quarter").format("YYYY-MM-DD"),
-        dateTo: Moment().startOf("quarter").add(3, "M").format("YYYY-MM-DD"),
-      });
+    if (t === 3) {
+      setDateFrom(Moment().startOf("quarter").format("YYYY-MM-DD"));
+      setDateTo(Moment().startOf("quarter").add(3, "M").format("YYYY-MM-DD"));
     }
 
-    if (type === 4) {
-      this.setState({
-        dateFrom: Moment().startOf("year").format("YYYY-MM-DD"),
-        dateTo: Moment().startOf("year").add(12, "M").format("YYYY-MM-DD"),
-      });
+    if (t === 4) {
+      setDateFrom(Moment().startOf("year").format("YYYY-MM-DD"));
+      setDateTo(Moment().startOf("year").add(12, "M").format("YYYY-MM-DD"));
     }
-
-    this.setState({ company, holding, type });
+    setType(t);
   };
 
-  handleSearch = () => {
-    const { dateFrom, dateTo, type } = this.state;
-    const { company, holding } = this.props;
-    let point = this.state.point.value;
-
-    if ((type === 1 || type === 2) && !this.checkDateRange()) {
+  const handleSearch = () => {
+    if ((type === 1 || type === 2) && !checkDateRange()) {
       return Alert.warning("Максимальный период 3 месяца", {
         position: "top-right",
         effect: "bouncyflip",
@@ -207,11 +209,7 @@ export default class ReportSalesPlanTeam extends Component {
         timeout: 3000,
       });
     }
-    // if(type===4){
-    //   this.setState({ dateFrom: Moment().startOf("year").format("YYYY-MM-DD"),
-    //   dateTo: Moment().startOf("year").add(11, "M").format("YYYY-MM-DD"),})
-    // }
-
+    setLoading(true);
     Axios.get("/api/report/salesplan/team/list", {
       params: {
         dateFrom,
@@ -219,18 +217,18 @@ export default class ReportSalesPlanTeam extends Component {
         company: company.value,
         holding,
         type,
-        point,
+        point: point.value,
       },
     })
       .then((res) => res.data)
       .then((response) => {
-        const uniqueSold = response.filter(
+        const uniqueSoldChanged = response.filter(
           (bonus, index, self) =>
             index ===
             self.findIndex((t) => t.dat === bonus.dat && t.sold === bonus.sold)
         );
 
-        const totalAward = response.reduce((prev, cur) => {
+        const totalAwardChanged = response.reduce((prev, cur) => {
           return prev + parseFloat(cur.each_award);
         }, 0);
 
@@ -238,18 +236,20 @@ export default class ReportSalesPlanTeam extends Component {
           _.groupBy(response, "name"),
           (list) => list.map((st) => _.omit(st, "name"))
         );
-        const indBonusResult = Object.keys(indBonusResultTemp).map((key) => {
-          return {
-            user: key,
-            award: indBonusResultTemp[key],
-          };
-        });
+        const indBonusResultChanged = Object.keys(indBonusResultTemp).map(
+          (key) => {
+            return {
+              user: key,
+              award: indBonusResultTemp[key],
+            };
+          }
+        );
 
         const bonusResultTemp = _.mapValues(
           _.groupBy(response, "dat"),
           (list) => list.map((st) => _.omit(st, "dat"))
         );
-        const bonusResult = Object.keys(bonusResultTemp).map((key) => {
+        const bonusResultChanged = Object.keys(bonusResultTemp).map((key) => {
           return {
             dat: key,
             rowSpan: bonusResultTemp[key].length,
@@ -257,357 +257,222 @@ export default class ReportSalesPlanTeam extends Component {
           };
         });
 
-        indBonusResult.sort(function (a, b) {
+        indBonusResultChanged.sort(function (a, b) {
           var textA = a.user.toUpperCase();
           var textB = b.user.toUpperCase();
           return textA < textB ? -1 : textA > textB ? 1 : 0;
         });
-        this.resetDate();
-        this.setState({
-          uniqueSold,
-          totalAward,
-          bonusResult,
-          indBonusResult,
-          indBonusResultRowspan: indBonusResult.length,
-          isLoading: false,
-        });
+
+        resetDate();
+        setUniqueSold(uniqueSoldChanged);
+        setTotalAward(totalAwardChanged);
+        setBonusResult(bonusResultChanged);
+        setIndBonusResult(indBonusResultChanged);
+        setIndBonusResultRowspan(indBonusResultChanged.length);
+        setLoading(false);
       })
       .catch((err) => {
-        console.log(err);
+        ErrorAlert(err);
+        setLoading(false);
       });
   };
 
-  render() {
-    const {
-      bonusResult,
-      dateFrom,
-      dateTo,
-      indBonusResult,
-      indBonusResultRowspan,
-      isLoading,
-      points,
-      point,
-      totalAward,
-      type,
-      uniqueSold,
-    } = this.state;
-    const company = JSON.parse(sessionStorage.getItem("isme-user-data"))
-      ? JSON.parse(sessionStorage.getItem("isme-user-data")).companyname
-      : "";
-    const now = Moment().format("DD.MM.YYYY HH:mm:ss");
-    return (
-      <div className="report-sales-plan">
-        <div className="row">
-          <div className="col-md-3 point-block">
-            <label htmlFor="">Торговая точка</label>
-            <Select
-              value={point}
-              name="point"
-              onChange={this.pointsChange}
-              noOptionsMessage={() => "Выберите торговую точку из списка"}
-              options={points}
-              placeholder="Выберите торговую точку"
-            />
-          </div>
-        </div>
+  return (
+    <Grid container spacing={3}>
+      <SalesPlanTeamOptions
+        changeDate={changeDate}
+        changePlanDate={changePlanDate}
+        classes={classes}
+        dateFrom={dateFrom}
+        dateTo={dateTo}
+        dateFromChange={dateFromChange}
+        dateToChange={dateToChange}
+        handleSearch={handleSearch}
+        handleQuarter={handleQuarter}
+        handleYear={handleYear}
+        onPointChange={onPointChange}
+        point={point}
+        points={points}
+        type={type}
+      />
 
-        <div className="row">
-          <div className="col-md-3 today-btn">
-            <button
-              className={`btn btn-block mt-30 ${
-                type === 1 ? "btn-success" : "btn-outline-success"
-              }`}
-              onClick={() => this.changePlanDate(1)}
+      {isLoading && (
+        <Grid item xs={12}>
+          <SkeletonTable />
+        </Grid>
+      )}
+
+      {!isLoading && !point && bonusResult.length === 0 && (
+        <Grid item xs={12}>
+          <p className={classes.notFound}>Выберите торговую точку</p>
+        </Grid>
+      )}
+
+      {!isLoading && point && bonusResult.length === 0 && (
+        <Grid item xs={12}>
+          <p className={classes.notFound}>
+            С выбранными фильтрами ничего не найдено
+          </p>
+        </Grid>
+      )}
+
+      {!isLoading && bonusResult.length > 0 && (
+        <div className="row mt-20">
+          <div className="col-md-12">
+            <table
+              className="table table-bordered table-tfoot"
+              id="table-to-xls"
             >
-              Ежедневный план
-            </button>
-          </div>
-          <div className="col-md-3 month-btn">
-            <button
-              className={`btn btn-block mt-30 ${
-                type === 2 ? "btn-success" : "btn-outline-success"
-              }`}
-              onClick={() => this.changePlanDate(2)}
-            >
-              Ежемесячный план
-            </button>
-          </div>
-          <div className="col-md-3 month-btn">
-            <button
-              className={`btn btn-block mt-30 ${
-                type === 3 ? "btn-success" : "btn-outline-success"
-              }`}
-              onClick={() => this.changePlanDate(3)}
-            >
-              Ежеквартальный план
-            </button>
-          </div>
-          <div className="col-md-3 month-btn">
-            <button
-              className={`btn btn-block mt-30 ${
-                type === 4 ? "btn-success" : "btn-outline-success"
-              }`}
-              onClick={() => this.changePlanDate(4)}
-            >
-              Ежегодный план
-            </button>
-          </div>
-        </div>
-        {(type === 1 || type === 2) && (
-          <div className="row">
-            <div className="col-md-3 today-btn">
-              <button
-                className="btn btn-block btn-outline-success mt-30"
-                onClick={() => this.changeDate("today")}
+              <thead
+                style={{
+                  display: "none",
+                }}
               >
-                Сегодня
-              </button>
-            </div>
-            <div className="col-md-3 month-btn">
-              <button
-                className="btn btn-block btn-outline-success mt-30"
-                onClick={() => this.changeDate("month")}
-              >
-                Текущий месяц
-              </button>
-            </div>
-            <div className="col-md-2">
-              <label htmlFor="">Дата с</label>
-              <input
-                type="date"
-                value={dateFrom}
-                className="form-control"
-                name="dateFrom"
-                onChange={this.dateFromChange}
-              />
-            </div>
-            <div className="col-md-2">
-              <label htmlFor="">Дата по</label>
-              <input
-                type="date"
-                value={dateTo}
-                className="form-control"
-                name="dateTo"
-                onChange={this.dateToChange}
-              />
-            </div>
-            <div className="col-md-2 today-btn">
-              <button
-                className="btn btn-block btn-outline-success mt-30"
-                onClick={() => this.handleSearch()}
-              >
-                поиск
-              </button>
-            </div>
-          </div>
-        )}
-
-        {type === 3 && (
-          <div className="row">
-            <DatePickerQuarter handleQuarter={this.handleQuarter} />
-
-            <div className="col-md-2 today-btn">
-              <button
-                className="btn btn-block btn-outline-success mt-30"
-                onClick={() => this.handleSearch()}
-              >
-                поиск
-              </button>
-            </div>
-          </div>
-        )}
-
-        {type === 4 && (
-          <div className="row">
-            <DatePickerYear handleYear={this.handleYear} />
-
-            <div className="col-md-2 today-btn">
-              <button
-                className="btn btn-block btn-outline-success mt-30"
-                onClick={() => this.handleSearch()}
-              >
-                поиск
-              </button>
-            </div>
-          </div>
-        )}
-
-        {isLoading && <Searching />}
-
-        {!isLoading && !point && bonusResult.length === 0 && (
-          <div className="row mt-10 text-center">
-            <div className="col-md-12 not-found-text">
-              Выберите торговую точку
-            </div>
-          </div>
-        )}
-
-        {!isLoading && point && bonusResult.length === 0 && (
-          <div className="row mt-10 text-center">
-            <div className="col-md-12 not-found-text">
-              С выбранными фильтрами ничего не найдено
-            </div>
-          </div>
-        )}
-
-        {!isLoading && bonusResult.length > 0 && (
-          <div className="row mt-20">
-            <div className="col-md-12">
-              <table
-                className="table table-bordered table-tfoot"
-                id="table-to-xls"
-              >
-                <thead
-                  style={{
-                    display: "none",
-                  }}
-                >
-                  <tr>
-                    <td className="text-center font-weight-bold">
-                      Отчет по командным бонусам
-                    </td>
-                    <td colSpan="2"></td>
-                  </tr>
-                  <tr></tr>
-                  <tr>
-                    <td className="text-center font-weight-bold">Компания:</td>
-                    <td colSpan="2">{company}</td>
-                  </tr>
-                  <tr>
-                    <td className="text-center font-weight-bold">
-                      Торговая точка:
-                    </td>
-                    <td colSpan="2">{point.label}</td>
-                  </tr>
-                  <tr>
-                    <th className="text-center font-weight-bold">За период:</th>
-                    <td colSpan="2">
-                      {Moment(dateFrom).format("DD.MM.YYYY HH:mm:ss")} -{" "}
-                      {Moment(dateTo).format("DD.MM.YYYY HH:mm:ss")}
-                    </td>
-                  </tr>
-                  <tr>
-                    <td className="text-center font-weight-bold">
-                      Время формирования отчёта:
-                    </td>
-                    <td colSpan="2">{now}.</td>
-                  </tr>
-                  <tr>
-                    <td colSpan="9" style={{ height: "30px" }}></td>
-                  </tr>
-                </thead>
-                <thead>
-                  <tr>
-                    <th style={{ width: "2%" }}></th>
-                    <th style={{ width: "5%" }}>Дата</th>
-                    <th style={{ width: "10%" }}>Ежедневный план продаж</th>
-                    <th style={{ width: "10%" }}>Сумма продаж</th>
-                    <th style={{ width: "10%" }}>Сумма бонусов</th>
-                    <th style={{ width: "15%" }}>Пользователь</th>
-                    <th style={{ width: "10%" }}>Индивидуальная сумма</th>
-                  </tr>
-                </thead>
-                <tbody>
-                  {bonusResult.map((bonus, idx) => (
-                    <Fragment key={idx}>
-                      <tr>
-                        <td rowSpan={bonus.rowSpan}>{idx + 1}</td>
-                        <td rowSpan={bonus.rowSpan}>
-                          {Moment(bonus.date).format("DD-MM-YYYY")}
-                        </td>
-                        <td rowSpan={bonus.rowSpan} className="tenge">
-                          {bonus.users[0].plan.toLocaleString("ru", {
-                            minimumFractionDigits: 2,
-                          })}
-                        </td>
-                        <td rowSpan={bonus.rowSpan} className="tenge">
-                          {bonus.users[0].sold.toLocaleString("ru", {
-                            minimumFractionDigits: 2,
-                          })}
-                        </td>
-                        <td rowSpan={bonus.rowSpan} className="tenge">
-                          {parseFloat(
-                            bonus.users[0].total_award
-                          ).toLocaleString("ru", { minimumFractionDigits: 2 })}
-                        </td>
-                        <td>{bonus.users[0].name}</td>
+                <tr>
+                  <td className="text-center font-weight-bold">
+                    Отчет по командным бонусам
+                  </td>
+                  <td colSpan="2"></td>
+                </tr>
+                <tr></tr>
+                <tr>
+                  <td className="text-center font-weight-bold">Компания:</td>
+                  <td colSpan="2">{company}</td>
+                </tr>
+                <tr>
+                  <td className="text-center font-weight-bold">
+                    Торговая точка:
+                  </td>
+                  <td colSpan="2">{point.label}</td>
+                </tr>
+                <tr>
+                  <th className="text-center font-weight-bold">За период:</th>
+                  <td colSpan="2">
+                    {Moment(dateFrom).format("DD.MM.YYYY HH:mm:ss")} -{" "}
+                    {Moment(dateTo).format("DD.MM.YYYY HH:mm:ss")}
+                  </td>
+                </tr>
+                <tr>
+                  <td className="text-center font-weight-bold">
+                    Время формирования отчёта:
+                  </td>
+                  <td colSpan="2">{now}.</td>
+                </tr>
+                <tr>
+                  <td colSpan="9" style={{ height: "30px" }}></td>
+                </tr>
+              </thead>
+              <thead>
+                <tr>
+                  <th style={{ width: "2%" }}></th>
+                  <th style={{ width: "5%" }}>Дата</th>
+                  <th style={{ width: "10%" }}>Ежедневный план продаж</th>
+                  <th style={{ width: "10%" }}>Сумма продаж</th>
+                  <th style={{ width: "10%" }}>Сумма бонусов</th>
+                  <th style={{ width: "15%" }}>Пользователь</th>
+                  <th style={{ width: "10%" }}>Индивидуальная сумма</th>
+                </tr>
+              </thead>
+              <tbody>
+                {bonusResult.map((bonus, idx) => (
+                  <Fragment key={idx}>
+                    <tr>
+                      <td rowSpan={bonus.rowSpan}>{idx + 1}</td>
+                      <td rowSpan={bonus.rowSpan}>
+                        {Moment(bonus.date).format("DD-MM-YYYY")}
+                      </td>
+                      <td rowSpan={bonus.rowSpan} className="tenge">
+                        {bonus.users[0].plan.toLocaleString("ru", {
+                          minimumFractionDigits: 2,
+                        })}
+                      </td>
+                      <td rowSpan={bonus.rowSpan} className="tenge">
+                        {bonus.users[0].sold.toLocaleString("ru", {
+                          minimumFractionDigits: 2,
+                        })}
+                      </td>
+                      <td rowSpan={bonus.rowSpan} className="tenge">
+                        {parseFloat(
+                          bonus.users[0].total_award
+                        ).toLocaleString("ru", { minimumFractionDigits: 2 })}
+                      </td>
+                      <td>{bonus.users[0].name}</td>
+                      <td className="tenge">
+                        {parseFloat(
+                          bonus.users[0].each_award
+                        ).toLocaleString("ru", { minimumFractionDigits: 2 })}
+                      </td>
+                    </tr>
+                    {bonus.users.slice(1).map((bn, idx) => (
+                      <tr key={idx}>
+                        <td>{bn.name}</td>
                         <td className="tenge">
-                          {parseFloat(
-                            bonus.users[0].each_award
-                          ).toLocaleString("ru", { minimumFractionDigits: 2 })}
+                          {parseFloat(bn.each_award).toLocaleString("ru", {
+                            minimumFractionDigits: 2,
+                          })}
                         </td>
                       </tr>
-                      {bonus.users.slice(1).map((bn, idx) => (
-                        <tr key={idx}>
-                          <td>{bn.name}</td>
-                          <td className="tenge">
-                            {parseFloat(bn.each_award).toLocaleString("ru", {
-                              minimumFractionDigits: 2,
-                            })}
-                          </td>
-                        </tr>
-                      ))}
-                    </Fragment>
-                  ))}
-                </tbody>
-                <tfoot className="bg-info text-white">
-                  <tr>
-                    <td rowSpan={indBonusResultRowspan} colSpan="3">
-                      Итого
-                    </td>
-                    <td rowSpan={indBonusResultRowspan} className="tenge">
-                      {uniqueSold
-                        .reduce((prev, cur) => {
-                          return prev + parseFloat(cur.sold);
-                        }, 0)
-                        .toLocaleString("ru", { minimumFractionDigits: 2 })}
-                    </td>
-                    <td rowSpan={indBonusResultRowspan} className="tenge">
-                      {parseFloat(totalAward).toLocaleString("ru", {
-                        minimumFractionDigits: 2,
-                      })}
-                    </td>
-                    <td>{indBonusResult[0].user}</td>
+                    ))}
+                  </Fragment>
+                ))}
+              </tbody>
+              <tfoot className="bg-info text-white">
+                <tr>
+                  <td rowSpan={indBonusResultRowspan} colSpan="3">
+                    Итого
+                  </td>
+                  <td rowSpan={indBonusResultRowspan} className="tenge">
+                    {uniqueSold
+                      .reduce((prev, cur) => {
+                        return prev + parseFloat(cur.sold);
+                      }, 0)
+                      .toLocaleString("ru", { minimumFractionDigits: 2 })}
+                  </td>
+                  <td rowSpan={indBonusResultRowspan} className="tenge">
+                    {parseFloat(totalAward).toLocaleString("ru", {
+                      minimumFractionDigits: 2,
+                    })}
+                  </td>
+                  <td>{indBonusResult[0].user}</td>
+                  <td className="tenge">
+                    {indBonusResult[0].award
+                      .reduce((prev, cur) => {
+                        return prev + parseFloat(cur.each_award);
+                      }, 0)
+                      .toLocaleString("ru", { minimumFractionDigits: 2 })}
+                  </td>
+                </tr>
+
+                {indBonusResult.slice(1).map((indbonus, idx) => (
+                  <tr key={idx}>
+                    <td>{indbonus.user}</td>
                     <td className="tenge">
-                      {indBonusResult[0].award
+                      {indbonus.award
                         .reduce((prev, cur) => {
                           return prev + parseFloat(cur.each_award);
                         }, 0)
                         .toLocaleString("ru", { minimumFractionDigits: 2 })}
                     </td>
                   </tr>
-
-                  {indBonusResult.slice(1).map((indbonus, idx) => (
-                    <tr key={idx}>
-                      <td>{indbonus.user}</td>
-                      <td className="tenge">
-                        {indbonus.award
-                          .reduce((prev, cur) => {
-                            return prev + parseFloat(cur.each_award);
-                          }, 0)
-                          .toLocaleString("ru", { minimumFractionDigits: 2 })}
-                      </td>
-                    </tr>
-                  ))}
-                </tfoot>
-              </table>
-            </div>
-            <div className="col-md-12">
-              <ReactHTMLTableToExcel
-                className="btn btn-sm btn-outline-success"
-                table="table-to-xls"
-                filename={`Командный бонус ${point.label} c ${Moment(
-                  dateFrom
-                ).format("DD.MM.YYYY")} по ${Moment(dateTo).format(
-                  "DD.MM.YYYY"
-                )}`}
-                sheet="tablexls"
-                buttonText="Выгрузить в excel"
-              />
-            </div>
+                ))}
+              </tfoot>
+            </table>
           </div>
-        )}
-      </div>
-    );
-  }
+          <div className="col-md-12">
+            <ReactHTMLTableToExcel
+              className="btn btn-sm btn-outline-success"
+              table="table-to-xls"
+              filename={`Командный бонус ${point.label} c ${Moment(
+                dateFrom
+              ).format("DD.MM.YYYY")} по ${Moment(dateTo).format(
+                "DD.MM.YYYY"
+              )}`}
+              sheet="tablexls"
+              buttonText="Выгрузить в excel"
+            />
+          </div>
+        </div>
+      )}
+    </Grid>
+  );
 }

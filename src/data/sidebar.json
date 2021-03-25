@@ -61,27 +61,17 @@
         "name": "Покупатели юр. лица"
       },
       {
-        "id": 9,
-        "route": "options/attrspr",
-        "name": "Атрибуты"
-      },
-      {
         "id": 10,
-        "route": "options/categories",
-        "name": "Категории"
-      },
-      {
-        "id": 11,
         "route": "options/scales",
         "name": "Весы"
       },
       {
-        "id": 12,
+        "id": 11,
         "route": "options/pricingmaster",
         "name": "Мастер ценообразования"
       },
       {
-        "id": 13,
+        "id": 12,
         "route": "options/createprefix",
         "name": "Префикс весов"
       }
@@ -113,63 +103,53 @@
         "route": "product/writeoff"
       },
       {
-        "id": 4,
-        "name": "Привязка бренда к товару",
-        "route": "product/addbrand"
-      },
-      {
         "id": 5,
-        "name": "Привязка товара к категории",
-        "route": "product/addcategory"
-      },
-      {
-        "id": 6,
         "name": "Создание скидок",
         "route": "product/creatediscounts"
       },
       {
-        "id": 7,
+        "id": 6,
         "name": "Печать штрих кода",
         "route": "product/printbarcode"
       },
       {
-        "id": 8,
+        "id": 7,
         "name": "Ревизия",
         "route": "product/revision"
       },
       {
-        "id": 9,
+        "id": 8,
         "name": "Подарочные сертификаты",
         "route": "product/certificates"
       },
       {
-        "id": 10,
+        "id": 9,
         "name": "Бонусы",
         "route": "product/bonus"
       },
       {
-        "id": 11,
+        "id": 10,
         "name": "Акции",
         "route": "product/promotionspage"
       },
       {
-        "id": 12,
+        "id": 11,
         "name": "Предельные цены",
         "route": "product/marginalprice"
       },
       {
-        "id": 13,
+        "id": 12,
         "name": "Весовые товары",
         "route": "product/productsweight"
       },
       {
-        "id": 14,
+        "id": 13,
         "name": "Купоны",
         "route": "product/couponspage"
       },
       {
-        "id": 15,
-        "name": "Справочник",
+        "id": 14,
+        "name": "Номенклатура",
         "route": "product/productreference"
       }
     ]

@@ -1,59 +1,50 @@
-import React, { Component, Fragment, useState } from "react";
+import React, { useState, useEffect, Fragment } from "react";
 import Axios from "axios";
 import Alert from "react-s-alert";
 import { read, utils } from "xlsx";
 import Select from "react-select";
 import ReactModal from "react-modal";
+import ErrorAlert from "../../ReusableComponents/ErrorAlert";
 
 const folder = "./public/imp_log";
 
-class ImpNomenclature extends Component {
-  state = {
-    loaded: 0,
-    selectedFile: null,
-    companySelect: "",
-    companies: [],
-    stockSelect: "",
-    stocks: [],
-    companyNDS: "",
-    filesList: [],
-    counterparties: [],
-    contrSelect: "",
-    message: "",
-    open: false,
-  };
+export default function ImpNomenclature() {
+  const [selectedFile, setSelectedFile] = useState(null);
+  const [companySelect, setCompanySelect] = useState("");
+  const [companies, setCompanies] = useState([]);
+  const [stockSelect, setStockSelect] = useState("");
+  const [stocks, setStocks] = useState([]);
+  const [companyNDS, setCompanyNDS] = useState("");
+  const [filesList, setFilesList] = useState([]);
+  const [counterparties, setCounterparties] = useState([]);
+  const [contrSelect, setContrSelect] = useState("");
+  const [message, setMessage] = useState("");
+  const [open, setOpen] = useState(false);
 
+  useEffect(() => {
+    getCompaniesInfo();
+    getFiles();
+  }, []);
 
-  componentDidMount() {
-    this.getCompaniesInfo();
-    this.getFiles(folder);
-  }
-
-  getFiles = (folder) => {
+  const getFiles = () => {
     Axios.get("/api/files", { params: { folder } })
       .then((res) => res.data)
-      .then((filesList) => {
-        console.log(filesList);
-        /*filesList.sort(function (a, b) {
-					var textA = a.toUpperCase();
-					var textB = b.toUpperCase();
-					return (textA < textB) ? -1 : (textA > textB) ? 1 : 0;
-				});*/
-        this.setState({ filesList });
+      .then((res) => {
+        setFilesList(res);
       })
       .catch((err) => {
-        console.log(err);
+        ErrorAlert(err);
       });
   };
 
-  handleDownload = (file) => {
+  const handleDownload = (file) => {
     Axios.get("/api/files/download", {
       responseType: "blob",
-      params: { file: file, folder: folder },
+      params: { file, folder },
     })
       .then((res) => res.data)
-      .then((response) => {
-        const url = window.URL.createObjectURL(new Blob([response]));
+      .then((res) => {
+        const url = window.URL.createObjectURL(new Blob([res]));
         const link = document.createElement("a");
         link.href = url;
         link.setAttribute("download", file);
@@ -62,8 +53,8 @@ class ImpNomenclature extends Component {
       });
   };
 
-  handleDelete = (file) => {
-    Axios.get("/api/files/delete", { params: { file: file, folder: folder } })
+  const handleDelete = (file) => {
+    Axios.get("/api/files/delete", { params: { file, folder } })
       .then((res) => res.data)
       .then(() => {
         Alert.success("Файл успешно удален", {
@@ -71,43 +62,33 @@ class ImpNomenclature extends Component {
           effect: "bouncyflip",
           timeout: 2000,
         });
-
-        let filesList = this.state.filesList.filter((files) => files !== file);
-
-        this.setState({ filesList });
+        const filesListChanged = filesList.filter((files) => files !== file);
+        setFilesList(filesListChanged);
+      })
+      .catch((err) => {
+        ErrorAlert(err);
       });
   };
 
-  handleSelectedFile = (event) => {
-    this.setState({
-      selectedFile: event.target.files[0],
-      loaded: 0,
-    });
+  const handleSelectedFile = (event) => {
+    setSelectedFile(event.target.files[0]);
   };
 
-
-
-  handleUpload = () => {
-    if (
-      !this.state.companySelect.value ||
-      !this.state.stockSelect.value ||
-      !this.state.companyNDS.value
-    ) {
-      Alert.info("Заполните все поля", {
+  const handleUpload = () => {
+    if (!companySelect.value || !stockSelect.value || !companyNDS.value) {
+      return Alert.info("Заполните все поля", {
         position: "top-right",
         effect: "bouncyflip",
         timeout: 2000,
       });
-      return;
     }
 
-    if (!this.state.selectedFile) {
-      Alert.info("Выберите файл", {
+    if (!selectedFile) {
+      return Alert.info("Выберите файл", {
         position: "top-right",
         effect: "bouncyflip",
         timeout: 2000,
       });
-      return;
     }
 
     const reader = new FileReader();
@@ -137,7 +118,11 @@ class ImpNomenclature extends Component {
       );
 
       prods.forEach((product, i) => {
-        if (product.Code.toString().toLowerCase().search(/[а-яё]/i) >= 0) {
+        if (
+          product.Code.toString()
+            .toLowerCase()
+            .search(/[а-яё]/i) >= 0
+        ) {
           pwk.push(i + 1);
         }
       });
@@ -146,298 +131,264 @@ class ImpNomenclature extends Component {
         if (pwk.length > 1) {
           pwk.forEach((number, i) => {
             if (i !== pwk.length - 1) {
-              errMsg += number.toString() + ', ';
-            }
-            else {
-              errMsg += number.toString() + ' ';
+              errMsg += number.toString() + ", ";
+            } else {
+              errMsg += number.toString() + " ";
             }
           });
           errMsg = "В строках " + errMsg + "имеются символы кириллицы";
+        } else {
+          errMsg =
+            "В строке " + pwk[0].toString() + "имеются символы кириллицы";
         }
-        else {
-          errMsg = "В строке " + pwk[0].toString() + " имеются символы кириллицы";
-        }
-        this.setState({message: errMsg, open: true})
+        setMessage(errMsg);
+        setOpen(true);
+      } else {
+        var params = new URLSearchParams();
+        params.append("data", data);
+        params.append("companyId", companySelect.value);
+        params.append("stockId", stockSelect.value);
+        params.append("taxId", companyNDS.value);
+        params.append("counterparty", contrSelect.value);
 
+        Axios.post("/api/utils/import_nomenclature_xls", params)
+          .then((res) => res.data)
+          .then((res) => {
+            Alert.success("Данные успешно импортированы", {
+              position: "top-right",
+              effect: "bouncyflip",
+              timeout: 2000,
+            });
+            setCompanyNDS(null);
+            setContrSelect(null);
+            getFiles(folder);
+          })
+          .catch((err) => {
+            ErrorAlert(err);
+          });
       }
-      else {
-      /* Update state */
-
-      var params = new URLSearchParams();
-      params.append("data", data);
-      params.append("companyId", this.state.companySelect.value);
-      params.append("stockId", this.state.stockSelect.value);
-      params.append("taxId", this.state.companyNDS.value);
-      params.append("counterparty", this.state.contrSelect.value);
-
-      Axios.post("/api/utils/import_nomenclature_xls", params)
-        .then((res) => res.data)
-        .then((res) => {
-          Alert.success("Данные успешно импортированы", {
-            position: "top-right",
-            effect: "bouncyflip",
-            timeout: 2000,
-          });
-          this.setState({
-            companyNDS: null,
-            contrSelect: null,
-          });
-          this.getFiles(folder);
-        })
-        .catch((err) => {
-          Alert.success("Ошибка загрузки данных", {
-            position: "top-right",
-            effect: "bouncyflip",
-            timeout: 2000,
-          });
-          console.log(err);
-        });
     };
-  };
-    reader.readAsBinaryString(this.state.selectedFile);
+    reader.readAsBinaryString(selectedFile);
   };
 
-  getStocksByCompany = (companyId) => {
+  const getStocksByCompany = (companyId) => {
     Axios.get("/api/stock", { params: { companyId } })
       .then((res) => res.data)
-      .then((result) => {
-        const stocks = result.map((result) => {
-          return { value: result.id, label: result.name };
+      .then((res) => {
+        const stocksChanged = res.map((r) => {
+          return { value: r.id, label: r.name };
         });
-        stocks.push({ value: "0", label: "Все склады" });
-        this.setState({ stocks });
+        stocksChanged.push({ value: "0", label: "Все склады" });
+        setStocks(stocksChanged);
       })
       .catch((err) => {
-        console.log(err);
+        ErrorAlert(err);
       });
   };
 
-  getCounterparties = (companyId) => {
+  const getCounterparties = (companyId) => {
     Axios.get("/api/counterparties", { params: { companyId } })
       .then((res) => res.data)
-      .then((result) => {
-        const counterparties = result.map((result) => {
-          return { value: result.id, label: result.name };
+      .then((res) => {
+        const counterpartiesChanged = res.map((r) => {
+          return { value: r.id, label: r.name };
         });
-        counterparties.push({ value: "0", label: "Не указан" });
-        this.setState({ counterparties });
+        counterpartiesChanged.push({ value: "0", label: "Не указан" });
+        setCounterparties(counterpartiesChanged);
       })
       .catch((err) => {
-        console.log(err);
+        ErrorAlert(err);
       });
   };
 
-  onContrChange = (value) => {
-    this.setState({
-      contrSelect: value,
-    });
+  const onContrChange = (val) => {
+    setContrSelect(val);
   };
 
-  onCompanyChange = (value) => {
-    this.setState({
-      companySelect: value,
-      stockSelect: "Касса не найдена",
-    });
-    this.getStocksByCompany(value.value);
-    this.getCounterparties(value.value);
+  const onCompanyChange = (val) => {
+    setCompanySelect(val);
+    setStockSelect("Касса не найдена");
+    getStocksByCompany(val.value);
+    getCounterparties(val.value);
   };
 
-  getCompaniesInfo = () => {
+  const getCompaniesInfo = () => {
     Axios.get("/api/adminpage/companies")
       .then((res) => res.data)
       .then((list) => {
-        const companies = list.map((result) => {
+        const companiesChanged = list.map((result) => {
           return {
             label: result.name,
             value: result.id,
           };
         });
-        this.setState({
-          companies: companies,
-          isUpdating: false,
-          isLoading: false,
-        });
+        setCompanies(companiesChanged);
       })
       .catch((err) => {
-        console.log(err);
-        this.setState({
-          isUpdating: false,
-          isLoading: false,
-        });
+        ErrorAlert(err);
       });
   };
 
-  onStockChange = (value) => {
-    this.setState({
-      stockSelect: value,
-    });
+  const onStockChange = (val) => {
+    setStockSelect(val);
   };
 
-  onNDSChange = (value) => {
-    this.setState({
-      companyNDS: value,
-    });
+  const onNDSChange = (val) => {
+    setCompanyNDS(val);
   };
 
-  render() {
-    const {
-      companySelect,
-      companies,
-      stockSelect,
-      stocks,
-      companyNDS,
-      filesList,
-      contrSelect,
-      counterparties,
-      open,
-      message,
-    } = this.state;
-    return (
-      <Fragment>
-              <ReactModal isOpen={open}
+  return (
+    <Fragment>
+      <ReactModal
+        isOpen={open}
         style={{
           content: {
             textAlign: "center",
-            top: '50%',
-            left: '50%',
-            right: 'auto',
-            bottom: 'auto',
-          }
+            top: "50%",
+            left: "50%",
+            right: "auto",
+            bottom: "auto",
+          },
         }}
-        onRequestClose={() => { this.setState({open: false}) }}
+        onRequestClose={() => {
+          setOpen(false);
+        }}
       >
-        <p style={{ color: 'red' }}>Символы кириллицы в штрих-коде недопустимы.</p>
-        <p>
-          {message}.
-          </p>
+        <p style={{ color: "red" }}>
+          Символы кириллицы в штрих-коде недопустимы.
+        </p>
+        <p>{message}.</p>
         <p />
-        <button className="btn btn-success btn-sm" style={{ minWidth: "40px" }} onClick={() => { this.setState({open:false}) }}> Ок </button>
+        <button
+          className="btn btn-success btn-sm"
+          style={{ minWidth: "40px" }}
+          onClick={() => {
+            setOpen(false);
+          }}
+        >
+          {" "}
+          Ок{" "}
+        </button>
       </ReactModal>
-        <div className="upload-file">
-          <div className="row">
-            <div className="col-md-12">
-              <label htmlFor="">Компания :</label>
-              <div className="col-md-8">
-                <Select
-                  name="companySelect"
-                  value={companySelect}
-                  onChange={this.onCompanyChange}
-                  options={companies}
-                  autosize={true}
-                  placeholder="Выберите компанию"
-                  noOptionsMessage={() => "Компания не найдена"}
-                />
-              </div>
-            </div>
-            <div className="col-md-12">
-              <label htmlFor="">Склад :</label>
-              <div className="col-md-8">
-                <Select
-                  name="stock"
-                  value={stockSelect}
-                  onChange={this.onStockChange}
-                  options={stocks}
-                  placeholder="Выберите кассу"
-                  noOptionsMessage={() => "Склад не найден"}
-                />
-              </div>
-            </div>
-            <div className="col-md-12">
-              <label htmlFor="">Компания является плательщиком НДС ?</label>
-              <div className="col-md-8">
-                <Select
-                  name="companyNDS"
-                  value={companyNDS}
-                  onChange={this.onNDSChange}
-                  options={[
-                    { value: "0", label: "Нет" },
-                    { value: "1", label: "Да" },
-                  ]}
-                  placeholder="Выберите да/нет"
-                  autosize={true}
-                />
-              </div>
-            </div>
-            <div className="col-md-12">
-              <label htmlFor="">Выберите поставщика :</label>
-              <div className="col-md-8">
-                <Select
-                  name="counterparties"
-                  value={contrSelect}
-                  onChange={this.onContrChange}
-                  options={counterparties}
-                  placeholder="Выберите поставщика"
-                />
-              </div>
+      <div className="upload-file">
+        <div className="row">
+          <div className="col-md-12">
+            <label htmlFor="">Компания :</label>
+            <div className="col-md-8">
+              <Select
+                name="companySelect"
+                value={companySelect}
+                onChange={onCompanyChange}
+                options={companies}
+                autosize={true}
+                placeholder="Выберите компанию"
+                noOptionsMessage={() => "Компания не найдена"}
+              />
             </div>
           </div>
-          <div className="row">&nbsp;</div>
           <div className="col-md-12">
-            <div>
-              <input type="file" onChange={this.handleSelectedFile} />
+            <label htmlFor="">Склад :</label>
+            <div className="col-md-8">
+              <Select
+                name="stock"
+                value={stockSelect}
+                onChange={onStockChange}
+                options={stocks}
+                placeholder="Выберите кассу"
+                noOptionsMessage={() => "Склад не найден"}
+              />
             </div>
           </div>
-          <div className="row">&nbsp;</div>
           <div className="col-md-12">
-            <div className=" mb-10">
-              <button
-                className="btn btn-sm btn-success"
-                onClick={this.handleUpload}
-              >
-                Выгрузить
-              </button>
+            <label htmlFor="">Компания является плательщиком НДС ?</label>
+            <div className="col-md-8">
+              <Select
+                name="companyNDS"
+                value={companyNDS}
+                onChange={onNDSChange}
+                options={[
+                  { value: "0", label: "Нет" },
+                  { value: "1", label: "Да" },
+                ]}
+                placeholder="Выберите да/нет"
+                autosize={true}
+              />
+            </div>
+          </div>
+          <div className="col-md-12">
+            <label htmlFor="">Выберите поставщика :</label>
+            <div className="col-md-8">
+              <Select
+                name="counterparties"
+                value={contrSelect}
+                onChange={onContrChange}
+                options={counterparties}
+                placeholder="Выберите поставщика"
+              />
             </div>
           </div>
         </div>
+        <div className="row">&nbsp;</div>
+        <div className="col-md-12">
+          <div>
+            <input type="file" onChange={handleSelectedFile} />
+          </div>
+        </div>
+        <div className="row">&nbsp;</div>
+        <div className="col-md-12">
+          <div className=" mb-10">
+            <button className="btn btn-sm btn-success" onClick={handleUpload}>
+              Выгрузить
+            </button>
+          </div>
+        </div>
+      </div>
 
-        {filesList.length > 0 && (
-          <Fragment>
-            <div className="empty-space"></div>
+      {filesList.length > 0 && (
+        <Fragment>
+          <div className="empty-space"></div>
 
-            <div className="row mt-10">
-              <div className="col-md-12">
-                <table className="table table-hover">
-                  <thead>
-                    <tr>
-                      <td style={{ width: "2%" }}></td>
-                      <td>Наименование файла</td>
-                      <td></td>
-                      <td></td>
+          <div className="row mt-10">
+            <div className="col-md-12">
+              <table className="table table-hover">
+                <thead>
+                  <tr>
+                    <td style={{ width: "2%" }}></td>
+                    <td>Наименование файла</td>
+                    <td></td>
+                    <td></td>
+                  </tr>
+                </thead>
+
+                <tbody>
+                  {filesList.map((file, idx) => (
+                    <tr key={idx}>
+                      <td>{idx + 1}</td>
+                      <td>{file}</td>
+                      <td className="text-right">
+                        <button
+                          className="btn btn-block btn-sm btn-outline-success"
+                          onClick={() => handleDownload(file)}
+                        >
+                          Скачать
+                        </button>
+                      </td>
+                      <td className="text-right">
+                        <button
+                          className="btn btn-block btn-sm btn-outline-danger"
+                          onClick={() => handleDelete(file)}
+                        >
+                          Удалить
+                        </button>
+                      </td>
                     </tr>
-                  </thead>
-
-                  <tbody>
-                    {filesList.map((file, idx) => (
-                      <tr key={idx}>
-                        <td>{idx + 1}</td>
-                        <td>{file}</td>
-                        <td className="text-right">
-                          <button
-                            className="btn btn-block btn-sm btn-outline-success"
-                            onClick={() => this.handleDownload(file)}
-                          >
-                            Скачать
-                          </button>
-                        </td>
-                        <td className="text-right">
-                          <button
-                            className="btn btn-block btn-sm btn-outline-danger"
-                            onClick={() => this.handleDelete(file)}
-                          >
-                            Удалить
-                          </button>
-                        </td>
-                      </tr>
-                    ))}
-                  </tbody>
-                </table>
-              </div>
+                  ))}
+                </tbody>
+              </table>
             </div>
-          </Fragment>
-        )}
-      </Fragment>
-    );
-  }
+          </div>
+        </Fragment>
+      )}
+    </Fragment>
+  );
 }
-
-export default ImpNomenclature;

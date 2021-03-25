@@ -139,17 +139,22 @@ export default function AbcXyzPage() {
 
     setClicked(profitAmount);
 
-    Axios.get("/api/report/analytics/abc_yxz", {
-      params: {
-        type: parseInt(type, 0),
-        period: parseInt(period, 0),
-        profit_amount: profitAmount,
-        a: abc_a,
-        b: abc_b,
-        x: xyz_x,
-        y: xyz_y,
-      },
-    })
+    const httpClient = Axios.create();
+
+    httpClient.defaults.timeout = 0;
+
+    httpClient
+      .get("/api/report/analytics/abc_yxz", {
+        params: {
+          type: parseInt(type, 0),
+          period: parseInt(period, 0),
+          profit_amount: profitAmount,
+          a: abc_a,
+          b: abc_b,
+          x: xyz_x,
+          y: xyz_y,
+        },
+      })
       .then((res) => res.data)
       .then((res) => {
         setReports(res);
@@ -174,18 +179,23 @@ export default function AbcXyzPage() {
 
   const getStockbalanceExcel = () => {
     setExcelLoading(true);
-    Axios.get("/api/report/analytics/abc_xyz_excel", {
-      responseType: "blob",
-      params: {
-        type: parseInt(type, 0),
-        period: parseInt(period, 0),
-        profit_amount: profitAmount,
-        a: abc_a,
-        b: abc_b,
-        x: xyz_x,
-        y: xyz_y,
-      },
-    })
+    const httpClient = Axios.create();
+
+    httpClient.defaults.timeout = 0;
+
+    httpClient
+      .get("/api/report/analytics/abc_xyz_excel", {
+        responseType: "blob",
+        params: {
+          type: parseInt(type, 0),
+          period: parseInt(period, 0),
+          profit_amount: profitAmount,
+          a: abc_a,
+          b: abc_b,
+          x: xyz_x,
+          y: xyz_y,
+        },
+      })
       .then((res) => res.data)
       .then((stockbalance) => {
         const url = window.URL.createObjectURL(new Blob([stockbalance]));

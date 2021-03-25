@@ -4,7 +4,7 @@ import Searching from "../../../Searching";
 import Moment from "moment";
 import ReactHTMLTableToExcel from "react-html-table-to-excel";
 
-import ReportConsultantsDetails from './ReportConsultantsDetails';
+import ReportConsultantsDetails from "./ReportConsultantsDetails";
 
 export default function ReportConsultants({ companyProps }) {
   const [dateFrom, setDateFrom] = useState(Moment().format("YYYY-MM-DD"));
@@ -76,7 +76,7 @@ export default function ReportConsultants({ companyProps }) {
     })
       .then((res) => res.data)
       .then((consultantsList) => {
-        consultantsList.forEach(consultant => {
+        consultantsList.forEach((consultant) => {
           consultant.show = false;
         });
         setConsultants(consultantsList);
@@ -88,17 +88,15 @@ export default function ReportConsultants({ companyProps }) {
       });
   };
 
-
   const handleClick = (id) => {
     const newConsultants = [...consultants];
     newConsultants.forEach((e) => {
       if (e.id === id) {
-        e.show = !e.show
+        e.show = !e.show;
       }
-    })
+    });
     setConsultants([...newConsultants]);
-  }
-  
+  };
   return (
     <div className="report-stock-balance">
       <div className="row">
@@ -210,7 +208,11 @@ export default function ReportConsultants({ companyProps }) {
               <tbody>
                 {consultants.map((consultant, idx) => (
                   <Fragment>
-                    <tr style={{cursor:"pointer"}} key={idx} onClick={() => handleClick(consultant.id)} >
+                    <tr
+                      style={{ cursor: "pointer" }}
+                      key={idx}
+                      onClick={() => handleClick(consultant.id)}
+                    >
                       <td>{idx + 1}</td>
                       <td className="text-center">{consultant.name}</td>
                       <td className="text-center">{consultant.sum}</td>
@@ -218,13 +220,17 @@ export default function ReportConsultants({ companyProps }) {
                         {consultant.sum_without_bonus}
                       </td>
                     </tr>
-                    {consultant.show &&
-                      <tr style={{transition: "transform 1s"}}>
+                    {consultant.show && (
+                      <tr style={{ transition: "transform 1s" }}>
                         <td colspan="4">
-                          <ReportConsultantsDetails dateFrom={dateFrom} dateTo={dateTo} id={consultant.id} />
+                          <ReportConsultantsDetails
+                            dateFrom={dateFrom}
+                            dateTo={dateTo}
+                            id={consultant.id}
+                          />
                         </td>
                       </tr>
-                    }
+                    )}
                   </Fragment>
                 ))}
               </tbody>

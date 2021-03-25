@@ -2,8 +2,26 @@
   {
       "id": 0,
       "type": "change",
+      "route": "CreateProduct",
+      "caption": "Добавление товара"
+    },
+    {
+      "id": 1,
+      "type": "change",
       "route": "ProductList",
-      "caption": "Справочник товаров"
+      "caption": "Редактирование товаров"
+    },
+    {
+      "id": 2,
+      "type":"change",
+      "route":"UpdateCategoryPage",
+      "caption": "Управление категориями"
+    },
+    {
+      "id":3,
+      "type":"change",
+      "route":"AttrSprPage",
+      "caption":"Настройка атрибутов"
     }
   
 ]

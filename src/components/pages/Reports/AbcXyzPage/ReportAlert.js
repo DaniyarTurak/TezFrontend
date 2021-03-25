@@ -48,13 +48,18 @@ export default function ReportAlert({ classes }) {
             aria-controls="panel1a-content"
             id="panel1a-header"
           >
-            <Typography className={classes.heading}>
+            <Typography component={"span"} className={classes.heading}>
               <InfoOutlinedIcon className={classes.icon} />
-              <Typography className={classes.secondaryHeading}>
+              <Typography
+                component={"span"}
+                className={classes.secondaryHeading}
+              >
                 Пояснение к отчёту
               </Typography>
             </Typography>
-            <Typography className={classes.thirdHeading}>развернуть</Typography>
+            <Typography component={"span"} className={classes.thirdHeading}>
+              развернуть
+            </Typography>
           </AccordionSummary>
           <AccordionDetails>
             <div

@@ -20,6 +20,7 @@ export default function ABC({
     <Grid container spacing={1}>
       <Grid item xs={5}>
         <Typography
+          component={"span"}
           gutterBottom
           style={{ opacity: "60%", fontSize: ".875rem" }}
         >
@@ -49,6 +50,7 @@ export default function ABC({
       </Grid>
       <Grid item xs={5}>
         <Typography
+          component={"span"}
           variant="subtitle1"
           gutterBottom
           style={{ opacity: "60%", fontSize: ".875rem" }}
@@ -79,6 +81,7 @@ export default function ABC({
       </Grid>
       <Grid item xs={12}>
         <Typography
+          component={"span"}
           variant="subtitle1"
           gutterBottom
           style={{ opacity: "60%", fontSize: ".875rem" }}

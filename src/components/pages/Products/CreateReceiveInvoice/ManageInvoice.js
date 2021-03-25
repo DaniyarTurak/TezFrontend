@@ -237,7 +237,7 @@ export default function ManageInvoice({ location, history }) {
           errMsg = "В строках " + errMsg + "имеются символы кириллицы";
         }
         else {
-          errMsg = "В строке " + pwk[0].toString() + " имеются символы кириллицы";
+          errMsg = "В строке " + pwk[0].toString() + "имеются символы кириллицы";
         }
         setMessage(errMsg)
         setOpen(true);

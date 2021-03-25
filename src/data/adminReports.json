@@ -82,5 +82,11 @@
     "type": "adminreport",
     "route": "ReportConsultantsAdmin",
     "caption": "Консультанты"
+  },
+  {
+    "id": 14,
+    "type": "adminreport",
+    "route": "ReportSalesPlanTeamAdmin",
+    "caption": "Коммандный бонус"
   }
 ]

@@ -1,7 +1,8 @@
 import React, { useState, useEffect, Fragment } from "react";
 import { Field, reduxForm, reset, change } from "redux-form";
 import Axios from "axios";
-import Alert from "react-s-alert";
+import alert from "react-s-alert";
+import { Alert, AlertTitle } from "@material-ui/lab";
 import ReactModal from "react-modal";
 import AddAttribute from "./AddAttribute";
 import { InputField, InputGroup, SelectField } from "../../../fields";
@@ -12,7 +13,7 @@ import {
   LessThanZero,
   NotEqualZero,
   NoMoreThan10,
-  NoMoreThan13,
+  NoMoreThan16,
   RequiredSelect,
 } from "../../../../validation";
 
@@ -381,7 +382,7 @@ let AddProductForm = ({
     let barcodeChanged = e.target.value.toUpperCase();
 
     if (!isAllowed(barcodeChanged)) {
-      Alert.warning(`Пожалуйста поменяйте раскладку на латиницу!`, {
+      alert.warning(`Пожалуйста поменяйте раскладку на латиницу!`, {
         position: "top-right",
         effect: "bouncyflip",
         timeout: 2000,
@@ -556,7 +557,7 @@ let AddProductForm = ({
       isStatic = true;
     }
     if (isStatic) {
-      Alert.warning(
+      alert.warning(
         `Внимание! Цена продажи не может превышать предельную цену: ${staticprice}`,
         {
           position: "top-right",
@@ -642,13 +643,13 @@ let AddProductForm = ({
   const handleSearch = (brcd) => {
     const barcodeCheck = brcd || barcode;
     if (!barcodeCheck) {
-      return Alert.info("Заполните поле Штрих код", {
+      return alert.info("Заполните поле Штрих код", {
         position: "top-right",
         effect: "bouncyflip",
         timeout: 2000,
       });
     } else if (barcodeCheck.length > 20) {
-      return Alert.info("Длина штрихкода не может превышать 20 символов", {
+      return alert.info("Длина штрихкода не может превышать 20 символов", {
         position: "top-right",
         effect: "bouncyflip",
         timeout: 2000,
@@ -728,7 +729,7 @@ let AddProductForm = ({
       .then((res) => res.data)
       .then((product) => {
         if (Object.keys(product).length === 0) {
-          Alert.warning("Товар не найден", {
+          alert.warning("Товар не найден", {
             position: "top-right",
             effect: "bouncyflip",
             timeout: 2000,
@@ -870,7 +871,7 @@ let AddProductForm = ({
   const handleAddProduct = (data) => {
     if (staticprice) {
       if (data.newprice > staticprice) {
-        return Alert.warning(
+        return alert.warning(
           `Внимание! Цена продажи не может превышать предельную цену: ${staticprice}`,
           {
             position: "top-right",
@@ -973,7 +974,7 @@ let AddProductForm = ({
         handleEditing();
         setClearBoard(newData.code);
         clearForm();
-        Alert.success("Товар успешно добавлен", {
+        alert.success("Товар успешно добавлен", {
           position: "top-right",
           effect: "bouncyflip",
           timeout: 2000,
@@ -1010,6 +1011,17 @@ let AddProductForm = ({
         />
       </ReactModal>
       <div className="empty-space"></div>
+
+      {staticprice && (
+        <Alert severity="warning" style={{ marginTop: "1rem" }}>
+          <AlertTitle>
+            <strong style={{ fontSize: "0.875rem" }}>Внимание!</strong>
+          </AlertTitle>
+          <p style={{ fontSize: "0.875rem" }}>
+            На данный товар установлена предельная цена: {staticprice}тг.
+          </p>
+        </Alert>
+      )}
 
       <div className="add-product-form">
         <form
@@ -1048,7 +1060,7 @@ let AddProductForm = ({
                     </button>
                   </Fragment>
                 }
-                validate={!isEditing ? [RequiredField, NoMoreThan13] : []}
+                validate={!isEditing ? [RequiredField, NoMoreThan16] : []}
               />
             </div>
           </div>

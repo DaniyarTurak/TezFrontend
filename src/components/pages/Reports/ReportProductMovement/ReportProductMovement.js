@@ -1,17 +1,31 @@
 import React, { useState, useEffect, Fragment } from "react";
 import Axios from "axios";
-import Select from "react-select";
+import MovementOptions from "./MovementOptions";
 import Moment from "moment";
-import Searching from "../../../Searching";
+import Grid from "@material-ui/core/Grid";
 import Alert from "react-s-alert";
-import ReactHTMLTableToExcel from "react-html-table-to-excel";
 import _ from "lodash";
 import MovementDetailsNew from "./MovementDetailsNew";
+import MovementDetailsTable from "./MovementDetailsTable";
+import SkeletonTable from "../../../Skeletons/TableSkeleton";
+import ErrorAlert from "../../../ReusableComponents/ErrorAlert";
+import { makeStyles } from "@material-ui/core/styles";
+
+const useStyles = makeStyles((theme) => ({
+  notFound: {
+    textAlign: "center",
+    color: theme.palette.text.secondary,
+    fontSize: ".875rem",
+  },
+  label: { fontWeight: "bold", fontSize: ".875rem" },
+}));
 
 export default function ReportProductMovement({ company, parameters }) {
+  const classes = useStyles();
   const [dateFrom, setDateFrom] = useState(Moment().format("YYYY-MM-DD"));
   const [dateTo, setDateTo] = useState(Moment().format("YYYY-MM-DD"));
   const [isLoading, setLoading] = useState(false);
+  const [isLoadingProducts, setLoadingProducts] = useState(false);
   const [isDateChanging, setDateChanging] = useState(false);
   const [barcode, setBarcode] = useState("");
   const [movementDetails, setMovementDetails] = useState([]);
@@ -25,7 +39,9 @@ export default function ReportProductMovement({ company, parameters }) {
     () => {
       getProducts();
       getPointList();
-      clean();
+      if (company) {
+        clean();
+      }
     },
     company ? [company.value] : []
   );
@@ -35,7 +51,7 @@ export default function ReportProductMovement({ company, parameters }) {
   useEffect(() => {
     if (parameters && points.length > 0) {
       setDateFrom(Moment(parameters.date).format("YYYY-MM-DD"));
-      
+
       points.forEach((e, idx) => {
         if (e.value === parameters.point) {
           setSelectedPoint(e);
@@ -57,7 +73,7 @@ export default function ReportProductMovement({ company, parameters }) {
 
   const clean = () => {
     setBarcode("");
-    setSelectedPoint([]);
+    setSelectedPoint("");
     setProductSelectValue("");
     setMovementDetails([]);
     setUnchangedMovementDetails([]);
@@ -77,12 +93,13 @@ export default function ReportProductMovement({ company, parameters }) {
         setPoints(points);
       })
       .catch((err) => {
-        console.log(err);
+        ErrorAlert(err);
       });
   };
 
   const getProducts = (productName) => {
     const comp = company ? company.value : "";
+    setLoadingProducts(true);
     Axios.get("/api/products", {
       params: { productName, company: comp, report: true },
     })
@@ -96,14 +113,17 @@ export default function ReportProductMovement({ company, parameters }) {
           };
         });
         setProducts(products);
+        setLoadingProducts(false);
       })
       .catch((err) => {
-        console.log(err);
+        setLoadingProducts(false);
+        ErrorAlert(err);
       });
   };
 
   const getProductByBarcode = (barcode) => {
     const comp = company ? company.value : "";
+    setLoadingProducts(true);
     Axios.get("/api/products/barcode", { params: { barcode, company: comp } })
       .then((res) => res.data)
       .then((product) => {
@@ -112,21 +132,23 @@ export default function ReportProductMovement({ company, parameters }) {
           label: product.name,
           code: product.code,
         };
+        setLoadingProducts(false);
         setProductSelectValue(productSelectValue);
       })
       .catch((err) => {
-        console.log(err);
+        setLoadingProducts(false);
+        ErrorAlert(err);
       });
   };
 
   const dateFromChange = (e) => {
     setDateChanging(true);
-    setDateFrom(e.target.value);
+    setDateFrom(e);
   };
 
   const dateToChange = (e) => {
     setDateChanging(true);
-    setDateTo(e.target.value);
+    setDateTo(e);
   };
 
   const changeDate = (dateStr) => {
@@ -142,14 +164,14 @@ export default function ReportProductMovement({ company, parameters }) {
     setDateTo(dateTo);
   };
 
-  const onPointChange = (p) => {
+  const onPointChange = (event, p) => {
     setSelectedPoint(p);
   };
 
   const onBarcodeChange = (e) => {
-    let barcode = e.target.value.toUpperCase();
-    if (barcode) {
-      setBarcode(barcode);
+    let barcodeChanged = e.target.value.toUpperCase();
+    if (barcodeChanged) {
+      setBarcode(barcodeChanged);
     } else {
       setProductSelectValue("");
       setBarcode("");
@@ -160,15 +182,14 @@ export default function ReportProductMovement({ company, parameters }) {
     if (e.keyCode === 13) getProductByBarcode(barcode);
   };
 
-  const onProductChange = (p) => {
+  const onProductChange = (event, p) => {
     if (!p.code) {
       setProductSelectValue("");
       setBarcode("");
-      return;
+    } else {
+      setProductSelectValue(p);
+      setBarcode(p.code);
     }
-
-    setProductSelectValue(p);
-    setBarcode(p.code);
   };
 
   const onProductListInput = (productName) => {
@@ -220,127 +241,54 @@ export default function ReportProductMovement({ company, parameters }) {
       .catch((err) => {
         setDateChanging(false);
         setLoading(false);
-        console.log(err);
+        ErrorAlert(err);
       });
   };
 
   return (
-    <div className="product-movement">
-      <div className="row">
-        <div className="col-md-2 today-btn">
-          <button
-            className="btn btn-block btn-outline-success mt-30"
-            onClick={() => changeDate("today")}
-          >
-            Сегодня
-          </button>
-        </div>
-        <div className="col-md-2 month-btn">
-          <button
-            className="btn btn-block btn-outline-success mt-30"
-            onClick={() => changeDate("month")}
-          >
-            Текущий месяц
-          </button>
-        </div>
-        <div className="col-md-2 date-block">
-          <label htmlFor="">Дата с</label>
-          <input
-            type="date"
-            value={dateFrom}
-            className="form-control"
-            name="datefrom"
-            onChange={dateFromChange}
-          />
-        </div>
-        <div className="col-md-2 date-block">
-          <label htmlFor="">Дата по</label>
-          <input
-            type="date"
-            value={dateTo}
-            className="form-control"
-            name="dateto"
-            onChange={dateToChange}
-          />
-        </div>
-        <div className="col-md-4 point-block">
-          <label htmlFor="">Выберите торговую точку</label>
-          <Select
-            name="point"
-            value={selectedPoint}
-            onChange={onPointChange}
-            options={points}
-            placeholder="Выберите торговую точку"
-            noOptionsMessage={() => "Торговая точка не найдена"}
-          />
-        </div>
-      </div>
-      <div className={`row pt-10 ${movementDetails.length > 0 ? "pb-10" : ""}`}>
-        <div className="col-md-4 point-block">
-          <input
-            name="barcode"
-            value={barcode}
-            placeholder="Введите или отсканируйте штрих код"
-            onChange={onBarcodeChange}
-            onKeyDown={onBarcodeKeyDown}
-            type="text"
-            className="form-control mt-10"
-          />
-        </div>
-        <div className="col-md-4 point-block">
-          <Select
-            name="product"
-            className="mt-10"
-            value={productSelectValue}
-            onChange={onProductChange}
-            options={products}
-            placeholder="Выберите товар"
-            onInputChange={onProductListInput.bind(this)}
-            noOptionsMessage={() => "Товар не найден"}
-          />
-        </div>
+    <Grid container spacing={3}>
+      <MovementOptions
+        changeDate={changeDate}
+        dateFrom={dateFrom}
+        dateTo={dateTo}
+        dateFromChange={dateFromChange}
+        dateToChange={dateToChange}
+        handleSearch={handleSearch}
+        selectedPoint={selectedPoint}
+        onPointChange={onPointChange}
+        points={points}
+        barcode={barcode}
+        onBarcodeChange={onBarcodeChange}
+        onBarcodeKeyDown={onBarcodeKeyDown}
+        productSelectValue={productSelectValue}
+        onProductChange={onProductChange}
+        onProductListInput={onProductListInput}
+        products={products}
+        isLoadingProducts={isLoadingProducts}
+      />
 
-        <div className="col-md-1 text-right search-btn">
-          <button className="btn btn-success mt-10" onClick={handleSearch}>
-            Поиск
-          </button>
-        </div>
-      </div>
-
-      {isLoading && <Searching />}
+      {isLoading && (
+        <Grid item xs={12}>
+          <SkeletonTable />
+        </Grid>
+      )}
 
       {!isLoading && unchangedMovementDetails.length === 0 && (
-        <div className="row mt-10 text-center">
-          <div className="col-md-12 not-found-text">
+        <Grid item xs={12}>
+          <p className={classes.notFound}>
             С выбранными фильтрами ничего не найдено
-          </div>
-        </div>
+          </p>
+        </Grid>
       )}
       {isDateChanging && (
-        <div
-          style={{
-            opacity: "60%",
-            display: "flex",
-            justifyContent: "center",
-            alignItems: "center",
-          }}
-        >
-          Нажмите на "Поиск"
-        </div>
+        <Grid item xs={12}>
+          <p className={classes.notFound}>Нажмите "Поиск"</p>
+        </Grid>
       )}
       {!isLoading && !isDateChanging && unchangedMovementDetails.length > 0 && (
         <Fragment>
-          <div className="empty-space" />
-          <div className="row">
-            <div
-              style={{ fontSize: "20px", fontWeight: "bold" }}
-              className="col-md-12 mt-10"
-            >
-              Движение товара:
-            </div>
-          </div>
-
           <MovementDetailsNew
+            classes={classes}
             isDateChanging={isDateChanging}
             movementDetails={movementDetails}
             unchangedMovementDetails={unchangedMovementDetails}
@@ -348,72 +296,14 @@ export default function ReportProductMovement({ company, parameters }) {
             dateTo={dateTo}
           />
 
-          <div className="row">
-            <div
-              style={{ fontSize: "20px", fontWeight: "bold" }}
-              className="col-md-12  mb-10"
-            >
-              Детализация движения:
-            </div>
-            <div className="col-md-12">
-              <table id="table-to-xls" className="table table-striped">
-                <thead className="bg-info text-white">
-                  <tr>
-                    <td>№ п/п</td>
-                    <td>Дата совершения</td>
-                    <td className="text-center">Тип</td>
-                    <td className="text-center">Количество</td>
-                    <td className="text-center">Накладная</td>
-                    <td>Характеристики</td>
-                  </tr>
-                </thead>
-                <tbody>
-                  {unchangedMovementDetails.map((detail, idx) => (
-                    <tr key={idx}>
-                      <td>{idx + 1}</td>
-                      <td>
-                        {Moment(detail.date).format("DD.MM.YYYY HH:mm:ss")}
-                      </td>
-                      <td
-                        className="text-center"
-                        data-toggle="tooltip"
-                        title={
-                          detail.name === "Перемещение со склада"
-                            ? detail.sum === 0
-                              ? "перемещения не было"
-                              : detail.sum > 0
-                              ? "переместился c: " + detail.stockfrom
-                              : "переместился в: " + detail.stockto
-                            : ""
-                        }
-                      >
-                        {detail.name}
-                      </td>
-                      <td className="text-center">
-                        {detail.sum.toLocaleString("ru", {
-                          minimumFractionDigits: 2,
-                        })}
-                      </td>
-
-                      <td className="text-center">{detail.invoice}</td>
-                      <td>{detail.attr}</td>
-                    </tr>
-                  ))}
-                </tbody>
-              </table>
-              <ReactHTMLTableToExcel
-                className="btn btn-sm btn-outline-success"
-                table="table-to-xls"
-                filename={`Движение товара за период:${Moment(dateFrom).format(
-                  "DD.MM.YYYY"
-                )}-${Moment(dateTo).format("DD.MM.YYYY")}`}
-                sheet="tablexls"
-                buttonText="Выгрузить в Excel"
-              />
-            </div>
-          </div>
+          <MovementDetailsTable
+            classes={classes}
+            dateFrom={dateFrom}
+            dateTo={dateTo}
+            unchangedMovementDetails={unchangedMovementDetails}
+          />
         </Fragment>
       )}
-    </div>
+    </Grid>
   );
 }

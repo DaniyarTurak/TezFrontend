@@ -1,9 +1,8 @@
-import React from "react";
+import React, { Fragment } from "react";
 import MaterialDateDefault from "../../../ReusableComponents/MaterialDateDefault";
 import Moment from "moment";
-import TextField from "@material-ui/core/TextField";
 import Grid from "@material-ui/core/Grid";
-import Autocomplete from "@material-ui/lab/Autocomplete";
+import AutocompleteSelect from "../../../ReusableComponents/AutocompleteSelect";
 
 export default function ReportOptions({
   setDateFrom,
@@ -61,47 +60,35 @@ export default function ReportOptions({
   };
 
   return (
-    <div>
-      <MaterialDateDefault
-        changeDate={changeDate}
-        dateFrom={dateFrom}
-        dateTo={dateTo}
-        dateFromChange={dateFromChange}
-        dateToChange={dateToChange}
-        searchInvoices={handleSearch}
-      />
-      <Grid container spacing={3} style={{ marginTop: "1rem" }}>
-        <Grid item xs={3}>
-          <Autocomplete
-            fullWidth
-            value={filter}
-            options={options}
-            onChange={filterChange}
-            disableClearable
-            noOptionsText="Выберите фильтр из списка"
-            getOptionLabel={(option) => option.label}
-            getOptionSelected={(option) => option.label === filter.label}
-            renderInput={(params) => (
-              <TextField {...params} label="Фильтр" variant="outlined" />
-            )}
-          />
-        </Grid>
-        <Grid item xs={3}>
-          <Autocomplete
-            fullWidth
-            value={filterType}
-            options={typeOptions}
-            onChange={filterTypeChange}
-            disableClearable
-            noOptionsText="Выберите фильтр из списка"
-            getOptionLabel={(option) => option.label}
-            getOptionSelected={(option) => option.label === filterType.label}
-            renderInput={(params) => (
-              <TextField {...params} label="Фильтр-2" variant="outlined" />
-            )}
-          />
-        </Grid>
+    <Fragment>
+      <Grid item xs={12}>
+        <MaterialDateDefault
+          changeDate={changeDate}
+          dateFrom={dateFrom}
+          dateTo={dateTo}
+          dateFromChange={dateFromChange}
+          dateToChange={dateToChange}
+          searchInvoices={handleSearch}
+        />
       </Grid>
-    </div>
+      <Grid item xs={3}>
+        <AutocompleteSelect
+          value={filter}
+          onChange={filterChange}
+          options={options}
+          noOptions="Фильтр не найден"
+          label="Фильтр"
+        />
+      </Grid>
+      <Grid item xs={3}>
+        <AutocompleteSelect
+          value={filterType}
+          onChange={filterTypeChange}
+          options={typeOptions}
+          noOptions="Фильтр не найден"
+          label="Фильтр-2"
+        />
+      </Grid>
+    </Fragment>
   );
 }

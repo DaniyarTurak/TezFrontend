@@ -1,3 +1,3 @@
-import ReportConsultants from './ReportConsultants';
+import ReportConsultants from "./ReportConsultants";
 
 export default ReportConsultants;

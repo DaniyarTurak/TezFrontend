@@ -26,7 +26,7 @@ import ESF from "../pages/ESF/ESF";
 import PricingMasterPage from "../pages/PricingMasterPage";
 import CreatePrefix from "../pages/ProductsWeight/CreatePrefix";
 
-import UpdateCategoryPage from "../pages/Updates/UpdateCategoryPage";
+// import UpdateCategoryPage from "../pages/Products/ProductReference/UpdateCategoryPage";
 import UpdateBonusPage from "../pages/Updates/UpdateBonusPage";
 import UpdateScalesPage from "../pages/Updates/UpdateScalesPage";
 import CashboxUserListPage from "../pages/ListPages/CashboxUserListPage";
@@ -45,8 +45,8 @@ import ChangePrice from "../pages/Products/ChangePrice";
 import CreateTransferInvoice from "../pages/Products/TransferPages/CreateTransferInvoice";
 import TransferInvoice from "../pages/Products/TransferPages/InvoiceTransfer";
 import ProductWriteoff from "../pages/Products/ProductWriteoff";
-import ProductAddBrand from "../pages/Products/ProductAddBrand";
-import ProductAddCategory from "../pages/Products/ProductAddCategory";
+// import ProductAddBrand from "../pages/Products/ProductAddBrand";
+// import ProductAddCategory from "../pages/Products/ProductAddCategory";
 import CreateWriteoffInvoice from "../pages/Products/CreateWriteoffInvoice";
 import DiscountsPage from "../pages/Products/DiscountsPage";
 import CouponsPage from "../pages/Products/CouponsPage";
@@ -159,8 +159,8 @@ export default function getBody({
             }
           case "attrspr":
             return <AttrSprPage history={history} location={location} />;
-          case "categories":
-            return <UpdateCategoryPage history={history} location={location} />;
+          // case "categories":
+          //   return <UpdateCategoryPage history={history} location={location} />;
           case "scales":
             return <UpdateScalesPage history={history} location={location} />;
           case "pricingmaster":
@@ -192,10 +192,10 @@ export default function getBody({
             );
           case "invoicewriteoff":
             return <ProductWriteoff history={history} location={location} />;
-          case "addbrand":
-            return <ProductAddBrand history={history} location={location} />;
-          case "addcategory":
-            return <ProductAddCategory history={history} location={location} />;
+          // case "addbrand":
+          //   return <ProductAddBrand history={history} location={location} />;
+          // case "addcategory":
+          //   return <ProductAddCategory history={history} location={location} />;
           case "creatediscounts":
             return <DiscountsPage history={history} location={location} />;
           case "couponspage":

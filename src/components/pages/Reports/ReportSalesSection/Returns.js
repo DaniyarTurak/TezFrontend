@@ -26,17 +26,17 @@ const styles = (theme) => ({
       borderBottom: 0,
       borderRight: 0,
     },
-    fontSize: 12,
+    fontSize: ".875rem",
   },
   notFound: {},
 });
 
 const StyledCell = withStyles(() => ({
   head: {
-    fontSize: 12,
+    fontSize: ".875rem",
   },
   body: {
-    fontSize: 12,
+    fontSize: ".875rem",
   },
   root: {
     verticalAlign: "middle!important",
