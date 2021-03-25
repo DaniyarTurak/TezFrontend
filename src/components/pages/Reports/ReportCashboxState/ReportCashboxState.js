@@ -175,7 +175,7 @@ export default function ReportCashboxState({ company, holding }) {
                               variant="outlined"
                               onClick={() => handleZreport(cashbox)}
                             >
-                              Операции по кассе
+                              Отчёт по сменам
                             </ColorButton>
                             <ColorButton
                               variant="outlined"

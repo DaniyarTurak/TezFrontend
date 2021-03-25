@@ -164,7 +164,7 @@ export default function Zreports({
         const url = window.URL.createObjectURL(new Blob([res]));
         const link = document.createElement("a");
         link.href = url;
-        link.setAttribute("download", `Кассовые операции.xlsx`);
+        link.setAttribute("download", `Отчёт по сменам.xlsx`);
         document.body.appendChild(link);
         link.click();
       })
@@ -203,7 +203,7 @@ export default function Zreports({
           setReportsModalIsOpen(false);
         }}
       >
-        Операции по кассе
+        Отчёт по сменам
       </DialogTitle>
 
       <DialogContent>
