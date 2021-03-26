@@ -19,6 +19,8 @@ import ReportSalesPlanTeam from "./ReportSalesPlanTeam";
 import ReportSales from "./ReportSales";
 import ReportTransactions from "./ReportTransactions";
 import AbcXyzPage from "./AbcXyzPage";
+import ShelfLifePage from "./ShelfLifePage";
+
 
 export default function ReportPage({ type, history, location }) {
   // const counter = useSelector((state) => state.counter);
@@ -29,8 +31,8 @@ export default function ReportPage({ type, history, location }) {
     type === "report"
       ? "reportcashboxstate"
       : location.state
-      ? location.state
-      : "reportstockbalance"
+        ? location.state
+        : "reportstockbalance"
   );
   const [typeMode, setTypeMode] = useState(type ? type : "report");
 
@@ -42,8 +44,8 @@ export default function ReportPage({ type, history, location }) {
           ? "reporttransactions"
           : "reportcashboxstate"
         : location.state
-        ? location.state
-        : "reportstockbalance"
+          ? location.state
+          : "reportstockbalance"
     );
   }, [type]);
 
@@ -73,11 +75,10 @@ export default function ReportPage({ type, history, location }) {
             typeMode === report.type && (
               <div className="col-md-3 report-btn-block" key={report.id}>
                 <button
-                  className={`btn btn-sm btn-block btn-report ${
-                    reportMode === report.route
+                  className={`btn btn-sm btn-block btn-report ${reportMode === report.route
                       ? "btn-info"
                       : "btn-outline-info"
-                  }`}
+                    }`}
                   name={report.route}
                   onClick={changeReportMode}
                 >
@@ -195,6 +196,10 @@ export default function ReportPage({ type, history, location }) {
 
               {typeMode === "report" && reportMode === "abcxyz" && (
                 <AbcXyzPage history={history} location={location} />
+              )}
+
+              {typeMode === "stockreport" && reportMode === "shelflife" && (
+                <ShelfLifePage history={history} location={location} />
               )}
             </div>
           </div>

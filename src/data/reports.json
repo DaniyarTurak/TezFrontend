@@ -106,5 +106,11 @@
     "type": "report",
     "route": "abcxyz",
     "caption": "ABC/XYZ"
+  },
+  {
+    "id": 18,
+    "type": "stockreport",
+    "route": "shelflife",
+    "caption": "Отчёт по срокам годности"
   }
 ]
