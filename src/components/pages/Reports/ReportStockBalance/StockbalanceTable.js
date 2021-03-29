@@ -127,7 +127,7 @@ export default function StockbalanceTable({
   return (
     <Fragment>
       <TableContainer component={Paper} className={classes.container}>
-        <Table className={classes.table} id="table-to-xls">
+        <Table className={classes.table}>
           <TableHead>
             <TableRow>
               <StyledTableCell />
@@ -218,7 +218,6 @@ export default function StockbalanceTable({
           </TableFooter>
         </Table>
       </TableContainer>
-
       {totalCount !== 0 && !isPaginationLoading && (
         <TablePagination
           rowsPerPageOptions={[20, 50, 100]}

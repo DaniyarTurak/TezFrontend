@@ -73,7 +73,6 @@ const useStyles2 = makeStyles((theme) => ({
   },
 }));
 
-
 export default function CreateProduct({ isEditing }) {
   const [brand, setBrand] = useState("");
   const [barcode, setBarcode] = useState("");
@@ -90,9 +89,9 @@ export default function CreateProduct({ isEditing }) {
   const [productName, setProductName] = useState("");
   const [tax, setTax] = useState(1);
   const [piecesUnint, setPiecesUnint] = useState(0);
-  const [productBarcode,setProductBarcode] = useState("");
+  const [productBarcode, setProductBarcode] = useState("");
   const companyData =
-  JSON.parse(sessionStorage.getItem("isme-company-data")) || {};
+    JSON.parse(sessionStorage.getItem("isme-company-data")) || {};
   const classes = useStyles();
   const classes2 = useStyles2();
 
@@ -131,14 +130,14 @@ export default function CreateProduct({ isEditing }) {
 
   const onProductNameChange = (e) => {
     let pn = e.target.value;
-    if (!pn===0) {
+    if (!pn === 0) {
       setValidateName(true);
       return;
     } else if (!pn) {
       setValidateName(true);
-  } else {
-    setValidateName(false);
-  }
+    } else {
+      setValidateName(false);
+    }
     if (pn.length > 100) {
       return Alert.warning(
         `Название товара не может содержать символы: ' ; ' ' , '`,
@@ -164,7 +163,7 @@ export default function CreateProduct({ isEditing }) {
     setSellByPieces(piece);
     let newUnitRes = [...unitOptions];
     //продажа поштучно
-    if (piece <2) {
+    if (piece < 2) {
       newUnitRes.forEach((e) => {
         if (e.id === "2" || e.id === "16" || e.id === "17") {
           e.isDisabled = false;
@@ -215,7 +214,7 @@ export default function CreateProduct({ isEditing }) {
     })
       .then((res) => res.data)
       .then((product) => {
-        setProductBarcode(product)
+        setProductBarcode(product);
         setLoading(false);
         if (Object.keys(product).length === productBarcode.code) {
           Alert.warning("Товар уже есть в базе!", {
@@ -257,13 +256,13 @@ export default function CreateProduct({ isEditing }) {
     if (e.keyCode === 13) {
       handleSearch();
     }
-    if(productBarcode=== barcode){
+    if (productBarcode === barcode) {
       Alert.warning("Товар уже есть в базе!", {
         position: "top-right",
         effect: "bouncyflip",
         timeout: 2000,
       });
-  }
+    }
   };
   const getTaxes = (inputValue) => {
     Axios.get("/api/taxes", { params: { category: inputValue } })
@@ -325,55 +324,51 @@ export default function CreateProduct({ isEditing }) {
       return;
     } else if (!num) {
       setValidateUnit(true);
-  } else {
-    setValidateUnit(false);
-  }
+    } else {
+      setValidateUnit(false);
+    }
     setPiecesUnint(num);
   };
 
   const createProduct = () => {
-    if(!barcode){ Alert.warning(
-      "Заполните штрихкод!",
-      {
+    if (!barcode) {
+      Alert.warning("Заполните штрихкод!", {
         position: "top-right",
         effect: "bouncyflip",
         timeout: 3000,
-      }
-    );
-    return;};
-    if(!productName){ Alert.warning(
-      "Заполните наеминование товара!",
-      {
+      });
+      return;
+    }
+    if (!productName) {
+      Alert.warning("Заполните наеминование товара!", {
         position: "top-right",
         effect: "bouncyflip",
         timeout: 3000,
-      }
-    );
-    return;};
-    if(!unitspr){ Alert.warning(
-      "Укажите единицу измерения!",
-      {
+      });
+      return;
+    }
+    if (!unitspr) {
+      Alert.warning("Укажите единицу измерения!", {
         position: "top-right",
         effect: "bouncyflip",
         timeout: 3000,
-      }
-    );
-    return;}
-    if( sellByPieces === true && piecesUnint < 2){ Alert.warning(
-     "Количество в упаковке/пачке(мин. 2)",
-      {
+      });
+      return;
+    }
+    if (sellByPieces === true && piecesUnint < 2) {
+      Alert.warning("Количество в упаковке/пачке(мин. 2)", {
         position: "top-right",
         effect: "bouncyflip",
         timeout: 3000,
-      }
-    );
-    return;}
+      });
+      return;
+    }
     let product = {
       code: barcode,
       name: productName,
       category: category.id || "0",
       brand: brand.id || "0",
-      taxid: companyData.certificatenum ? tax.value : "0",
+      taxid: companyData.certificatenum ? tax : "0",
       unitsprid: unitspr.id,
       piece: sellByPieces ? true : false,
       pieceinpack: piecesUnint,
@@ -412,52 +407,52 @@ export default function CreateProduct({ isEditing }) {
             <div className="col-md-8">
               <label>Штрих код</label>
               <div className={classes.topDiv}>
-            <TextField
-              size="small"
-              disabled={isEditing}
-              onChange={onBarcodeChange}
-              onKeyDown={onBarcodeKeyDown}
-              value={barcode}
-              error={isValidate}
-              className={classes.input}
-              InputProps={{
-                classes: classes2,
-                endAdornment: (
-                  <React.Fragment>
-                    {isLoading ? (
-                      <CircularProgress color="inherit" size={20} />
-                    ) : null}
-                  </React.Fragment>
-                ),
-              }}
-              type="text"
-              placeholder="Внесите вручную, или с помощью сканера"
-            />
-            <IconButton
-              type="submit"
-              disabled={isEditing}
-              className={classes.iconButton}
-              aria-label="search"
-              onClick={handleSearch}
-            >
-              <SearchIcon />
-            </IconButton>
-            <Divider className={classes.divider} orientation="vertical" />
-            <Button
-              color="primary"
-              className={classes.iconButton}
-              disabled={isEditing}
-              onClick={generateBarcode}
-            >
-              Сгенерировать
-            </Button>
-          </div>
-          {isValidate && (
-            <span className={classes.errorText}>
-              Поле обязательно для заполнения
-            </span>
-          )}
-        </div>
+                <TextField
+                  size="small"
+                  disabled={isEditing}
+                  onChange={onBarcodeChange}
+                  onKeyDown={onBarcodeKeyDown}
+                  value={barcode}
+                  error={isValidate}
+                  className={classes.input}
+                  InputProps={{
+                    classes: classes2,
+                    endAdornment: (
+                      <React.Fragment>
+                        {isLoading ? (
+                          <CircularProgress color="inherit" size={20} />
+                        ) : null}
+                      </React.Fragment>
+                    ),
+                  }}
+                  type="text"
+                  placeholder="Внесите вручную, или с помощью сканера"
+                />
+                <IconButton
+                  type="submit"
+                  disabled={isEditing}
+                  className={classes.iconButton}
+                  aria-label="search"
+                  onClick={handleSearch}
+                >
+                  <SearchIcon />
+                </IconButton>
+                <Divider className={classes.divider} orientation="vertical" />
+                <Button
+                  color="primary"
+                  className={classes.iconButton}
+                  disabled={isEditing}
+                  onClick={generateBarcode}
+                >
+                  Сгенерировать
+                </Button>
+              </div>
+              {isValidate && (
+                <span className={classes.errorText}>
+                  Поле обязательно для заполнения
+                </span>
+              )}
+            </div>
             <div style={{ marginLeft: "1 rem" }} className="col-md-8 zi-7">
               <label>Наименование</label>
               <TextField
@@ -471,7 +466,9 @@ export default function CreateProduct({ isEditing }) {
                 value={productName}
                 onChange={onProductNameChange}
                 error={isValidateName}
-                helperText={isValidateName ? "Поле обязательно для заполнения" : ""}
+                helperText={
+                  isValidateName ? "Поле обязательно для заполнения" : ""
+                }
               />
             </div>
           </div>
@@ -605,50 +602,54 @@ export default function CreateProduct({ isEditing }) {
                   option.label === value.label
                 }
                 renderInput={(params) => (
-                  <TextField {...params} variant="outlined"
-                  placeholder="Штука" />
+                  <TextField
+                    {...params}
+                    variant="outlined"
+                    placeholder="Штука"
+                  />
                 )}
               />
             </Grid>
             {companyData.certificatenum && (
-            <Grid
-              item
-              xs={3}
-              sm={3}
-              style={{ paddingBottom: "20px", paddingTop: "20px" }}
-            >
-              <label> Налоговая категория</label>
-              <FormControl
-                style={{ paddingBottom: "5px", paddingTop: "10px" }}
-                fullWidth
-                variant="outlined"
-                size="small"
-                value="Выберите налоговую катергию"
+              <Grid
+                item
+                xs={3}
+                sm={3}
+                style={{ paddingBottom: "20px", paddingTop: "20px" }}
               >
-                <Select
+                <label> Налоговая категория</label>
+                <FormControl
+                  style={{ paddingBottom: "5px", paddingTop: "10px" }}
                   fullWidth
-                  labelId="demo-simple-select-filled-label"
-                  id="demo-simple-select-filled"
+                  variant="outlined"
                   size="small"
-                  value={tax}
-                  onChange={onTaxChange}
+                  value="Выберите налоговую катергию"
                 >
-                  {taxes.map((option) => (
-                    <MenuItem key={option.value} value={option.value}>
-                      {option.label}
-                    </MenuItem>
-                  ))}
-                </Select>
-              </FormControl>
-            </Grid>)}
+                  <Select
+                    fullWidth
+                    labelId="demo-simple-select-filled-label"
+                    id="demo-simple-select-filled"
+                    size="small"
+                    value={tax}
+                    onChange={onTaxChange}
+                  >
+                    {taxes.map((option) => (
+                      <MenuItem key={option.value} value={option.value}>
+                        {option.label}
+                      </MenuItem>
+                    ))}
+                  </Select>
+                </FormControl>
+              </Grid>
+            )}
           </Grid>
-          <div 
-           className="row justify-content-center text-right mt-20" >
-             <div className="col-md-8">
-              <Button 
-              style ={{ marginRight:"20px"}} 
-              variant="contained"
-               onClick={clearForm}>
+          <div className="row justify-content-center text-right mt-20">
+            <div className="col-md-8">
+              <Button
+                style={{ marginRight: "20px" }}
+                variant="contained"
+                onClick={clearForm}
+              >
                 Очистить
               </Button>
               <Button
@@ -658,8 +659,8 @@ export default function CreateProduct({ isEditing }) {
               >
                 Сохранить
               </Button>
-              </div>
-         </div>
+            </div>
+          </div>
         </form>
       </div>
     </Fragment>

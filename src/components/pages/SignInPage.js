@@ -40,7 +40,7 @@ class LoginPage extends Component {
       : false,
     alert: {
       authfailed: "Неверный логин или пароль",
-      accauntNotActive: "Компания не активна",
+      accauntNotActive: "Пользователь не активен",
       emailIsEmpty: "Введите логин",
       passwordIsEmpty: "Введите пароль",
       notDemo: "Вы можете войти только под логином demo",

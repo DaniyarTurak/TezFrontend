@@ -10,6 +10,7 @@ import StockbalanceOptions from "./StockbalanceOptions";
 import { makeStyles } from "@material-ui/core/styles";
 import SkeletonTable from "../../../Skeletons/TableSkeleton";
 import StockbalanceTable from "./StockbalanceTable";
+import ErrorAlert from "../../../ReusableComponents/ErrorAlert";
 
 const customStyles = {
   content: {
@@ -256,27 +257,109 @@ export default function ReportStockBalance({ companyProps }) {
     if (reason === "input") getCategories(c);
   };
 
-  const getStockList = () => {
-    Axios.get("/api/stock", { params: { company } })
+  const getAttributes = () => {
+    Axios.get("/api/attributes", { params: { deleted: false, company } })
       .then((res) => res.data)
-      .then((stockList) => {
-        const options = stockList.map((stock) => {
+      .then((attributes) => {
+        const all = [{ label: "Все", value: "@" }];
+        const attr = attributes.map((point) => {
           return {
-            value: stock.id,
-            label: stock.name,
+            value: point.id,
+            label: point.values,
+            format: point.format,
           };
         });
-        const allStock = [{ value: "0", label: "Все" }];
-        setStockList([...allStock, ...options]);
+        setAttributes([...all, ...attr]);
       })
       .catch((err) => {
-        console.log(err);
+        ErrorAlert(err);
       });
   };
 
-  const getProductByBarcode = (barcode) => {
+  const getAttributeTypes = (sprid) => {
+    Axios.get("/api/attributes/getsprattr", { params: { sprid, company } })
+      .then((res) => res.data)
+      .then((attributeTypes) => {
+        const all = [{ label: "Все", value: "" }];
+        const attrtype = attributeTypes.map((attrtype) => {
+          return {
+            value: attrtype.id,
+            label: attrtype.value,
+            deleted: attrtype.deleted,
+          };
+        });
+        let newattrtype = [];
+        newattrtype = attrtype.filter((value) => {
+          return value.deleted === false;
+        });
+        setAttributeTypes([...all, ...newattrtype]);
+      })
+      .catch((err) => {
+        ErrorAlert(err);
+      });
+  };
+
+  const getBrands = (inputValue) => {
+    Axios.get("/api/brand/search", { params: { brand: inputValue, company } })
+      .then((res) => res.data)
+      .then((list) => {
+        const all = [{ label: "Все", value: "@" }];
+        const brandsList = list.map((result) => {
+          return {
+            label: result.brand,
+            value: result.id,
+          };
+        });
+        setBrands([...all, ...brandsList]);
+      })
+      .catch((err) => {
+        ErrorAlert(err);
+      });
+  };
+
+  const getCategories = (inputValue) => {
+    Axios.get("/api/categories/search", {
+      params: { deleted: false, company, category: inputValue },
+    })
+      .then((res) => res.data)
+      .then((list) => {
+        const all = [{ label: "Все", value: "@" }];
+        const categoriesList = list.map((result) => {
+          return {
+            label: result.name,
+            value: result.id,
+          };
+        });
+        setCategories([...all, ...categoriesList]);
+      })
+      .catch((err) => {
+        ErrorAlert(err);
+      });
+  };
+
+  const getCounterparties = (сounterpartie) => {
+    Axios.get("/api/counterparties/search", {
+      params: { сounterpartie, company },
+    })
+      .then((res) => res.data)
+      .then((list) => {
+        const all = [{ label: "Все", value: "0" }];
+        const counterpartiesList = list.map((result) => {
+          return {
+            label: result.name,
+            value: result.id,
+          };
+        });
+        setCounterparties([...all, ...counterpartiesList]);
+      })
+      .catch((err) => {
+        ErrorAlert(err);
+      });
+  };
+
+  const getProductByBarcode = (b) => {
     setLoadingProducts(true);
-    Axios.get("/api/products/barcode", { params: { barcode, company } })
+    Axios.get("/api/products/barcode", { params: { barcode: b, company } })
       .then((res) => res.data)
       .then((res) => {
         const selected = {
@@ -288,7 +371,7 @@ export default function ReportStockBalance({ companyProps }) {
         setLoadingProducts(false);
       })
       .catch((err) => {
-        console.log(err);
+        ErrorAlert(err);
         setLoadingProducts(false);
       });
   };
@@ -313,107 +396,25 @@ export default function ReportStockBalance({ companyProps }) {
       })
       .catch((err) => {
         setLoadingProducts(false);
-        console.log(err);
+        ErrorAlert(err);
       });
   };
 
-  const getCounterparties = (сounterpartie) => {
-    Axios.get("/api/counterparties/search", {
-      params: { сounterpartie, company },
-    })
+  const getStockList = () => {
+    Axios.get("/api/stock", { params: { company } })
       .then((res) => res.data)
-      .then((list) => {
-        const all = [{ label: "Все", value: "0" }];
-        const counterpartiesList = list.map((result) => {
+      .then((stockList) => {
+        const options = stockList.map((stock) => {
           return {
-            label: result.name,
-            value: result.id,
+            value: stock.id,
+            label: stock.name,
           };
         });
-        setCounterparties([...all, ...counterpartiesList]);
+        const allStock = [{ value: "0", label: "Все" }];
+        setStockList([...allStock, ...options]);
       })
       .catch((err) => {
-        console.log(err);
-      });
-  };
-
-  const getBrands = (inputValue) => {
-    Axios.get("/api/brand/search", { params: { brand: inputValue, company } })
-      .then((res) => res.data)
-      .then((list) => {
-        const all = [{ label: "Все", value: "@" }];
-        const brandsList = list.map((result) => {
-          return {
-            label: result.brand,
-            value: result.id,
-          };
-        });
-        setBrands([...all, ...brandsList]);
-      })
-      .catch((err) => {
-        console.log(err);
-      });
-  };
-
-  const getCategories = (inputValue) => {
-    Axios.get("/api/categories/search", {
-      params: { deleted: false, company, category: inputValue },
-    })
-      .then((res) => res.data)
-      .then((list) => {
-        const all = [{ label: "Все", value: "@" }];
-        const categoriesList = list.map((result) => {
-          return {
-            label: result.name,
-            value: result.id,
-          };
-        });
-        setCategories([...all, ...categoriesList]);
-      })
-      .catch((err) => {
-        console.log(err);
-      });
-  };
-
-  const getAttributes = () => {
-    Axios.get("/api/attributes", { params: { deleted: false, company } })
-      .then((res) => res.data)
-      .then((attributes) => {
-        const all = [{ label: "Все", value: "@" }];
-        const attr = attributes.map((point) => {
-          return {
-            value: point.id,
-            label: point.values,
-            format: point.format,
-          };
-        });
-        setAttributes([...all, ...attr]);
-      })
-      .catch((err) => {
-        console.log(err);
-      });
-  };
-
-  const getAttributeTypes = (sprid) => {
-    Axios.get("/api/attributes/getsprattr", { params: { sprid, company } })
-      .then((res) => res.data)
-      .then((attributeTypes) => {
-        const all = [{ label: "Все", value: "" }];
-        const attrtype = attributeTypes.map((attrtype) => {
-          return {
-            value: attrtype.id,
-            label: attrtype.value,
-            deleted: attrtype.deleted,
-          };
-        });
-        let newattrtype = [];
-        newattrtype = attrtype.filter((value) => {
-          return value.deleted === false;
-        });
-        setAttributeTypes([...all, ...newattrtype]);
-      })
-      .catch((err) => {
-        console.log(err);
+        ErrorAlert(err);
       });
   };
 
@@ -488,7 +489,7 @@ export default function ReportStockBalance({ companyProps }) {
         .catch((err) => {
           setLoading(false);
           setPaginationLoading(false);
-          console.log(err);
+          ErrorAlert(err);
         });
     } else {
       setStockbalance([]);
@@ -513,7 +514,7 @@ export default function ReportStockBalance({ companyProps }) {
   };
 
   const handleChangeRowsPerPage = (event) => {
-    setFlag(false);
+    setFlag(true);
     setPaginationLoading(true);
     setItemsPerPage(+event.target.value);
     setActivePage(0);
@@ -565,7 +566,7 @@ export default function ReportStockBalance({ companyProps }) {
         .catch((err) => {
           setLoading(false);
           setExcelLoading(false);
-          console.log(err);
+          ErrorAlert(err);
         });
     } else {
       setStockbalance([]);

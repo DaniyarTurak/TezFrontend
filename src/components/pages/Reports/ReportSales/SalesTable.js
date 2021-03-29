@@ -128,6 +128,7 @@ export default function SalesTable({
   point,
   sales,
 }) {
+  console.log(ascending, orderBy);
   const [page, setPage] = React.useState(0);
   const [rowsPerPage, setRowsPerPage] = React.useState(10);
 
@@ -188,12 +189,6 @@ export default function SalesTable({
               </TableRow>
             </TableHead>
             <TableHead>
-              <TableRow style={{ fontWeight: "bold" }}>
-                <StyledTableCell colSpan="12" style={{ display: "none" }}>
-                  Торговая точка: "{point.label}". Выбранный период: С "
-                  {dateFrom}" По "{dateTo}"
-                </StyledTableCell>
-              </TableRow>
               <TableRow style={{ fontWeight: "bold" }}>
                 <StyledTableCell rowSpan="2" />
                 <StyledTableCell rowSpan="2">
