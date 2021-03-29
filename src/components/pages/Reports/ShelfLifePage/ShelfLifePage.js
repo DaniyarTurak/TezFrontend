@@ -1,10 +1,14 @@
 import React, { useState, useEffect, Fragment } from "react";
 import PeriodComponent from "./PeriodComponent";
 import Axios from "axios";
+import Grid from "@material-ui/core/Grid";
+import ErrorAlert from "../../../ReusableComponents/ErrorAlert";
 
 export default function ShelfLifePage() {
-const [expdates,setExpdates] = useState([]);
-const arrays = [];
+  const [expdates, setExpdates] = useState([]);
+  const arrays = [];
+  const [isLoading, setLoading] = useState(true);
+  const [isExcelLoading, setExcelLoading] = useState(false);
   useEffect(() => {
     getExpireDates();
   }, []);
@@ -18,31 +22,70 @@ const arrays = [];
 
   const getExpireDates = () => {
     Axios.get("/api/report/expire_date")
-    .then((res) => res.data)
-    .then((expiredates) => {
-      arrays.push(expiredates[0].rep_exp_date.array3);
-      arrays.push(expiredates[0].rep_exp_date.array6);
-      arrays.push(expiredates[0].rep_exp_date.array9);
-      arrays.push(expiredates[0].rep_exp_date.array12);
-      setExpdates(arrays);
+      .then((res) => res.data)
+      .then((expiredates) => {
+        arrays.push(expiredates[0].rep_exp_date.array3);
+        arrays.push(expiredates[0].rep_exp_date.array6);
+        arrays.push(expiredates[0].rep_exp_date.array9);
+        arrays.push(expiredates[0].rep_exp_date.array12);
+        setExpdates(arrays);
+        setLoading(false)
+      })
+      .catch((err) => {
+        ErrorAlert(err);
+        setLoading(false)
+      });
+  };;
+
+  const getShelfLifeExcel = () => {
+    setExcelLoading(true);
+    let arr3 = expdates[0];
+    let arr6 = expdates[1];
+    let arr9 = expdates[2];
+    let arr12 = expdates[3];
+    Axios({
+      method: "POST",
+      url: "/api/report/expire_date/excel",
+      data: { arr3, arr6, arr9, arr12 },
+      responseType: "blob",
     })
-    .catch((err) => {
-      console.log(err);
-    });
-  }
+      .then((res) => res.data)
+      .then((res) => {
+        const url = window.URL.createObjectURL(new Blob([res]));
+        const link = document.createElement("a");
+        link.href = url;
+        link.setAttribute("download", `Сроки годности.xlsx`);
+        document.body.appendChild(link);
+        link.click();
+        setExcelLoading(false);
+      })
+      .catch((err) => {
+        ErrorAlert(err);
+        setExcelLoading(false);
+      });
+  };
 
   return (
     <div>
-
-      {periodProps.map((period, i) => ( expdates.length !== 0 &&
-        <PeriodComponent 
-        products = {expdates[i]}
-        key={i}
-        label = {period.label} 
-        background = {period.background} 
-        gradient = {period.gradient}/>
+      {periodProps.map((period, i) => (expdates.length !== 0 &&
+        <PeriodComponent
+          isLoading={isLoading}
+          products={expdates[i]}
+          key={i}
+          label={period.label}
+          background={period.background}
+          gradient={period.gradient} />
       ))}
-
+      <Grid item xs={12} style={{ paddingTop: "20px" }}>
+        {!isLoading && <button
+          className="btn btn-sm btn-outline-success"
+          disabled={isExcelLoading}
+          onClick={getShelfLifeExcel}
+        >
+          Выгрузить в Excel
+        </button>
+        }
+      </Grid>
     </div>
   );
-}
+};
