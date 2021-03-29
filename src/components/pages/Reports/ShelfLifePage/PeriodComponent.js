@@ -34,13 +34,13 @@ export default function PeridoComponent({ label, background, gradient, products,
           expandIcon={products && products.length > 0 && <ExpandMoreIcon />}
           style={{ backgroundColor: background }}
         >
-          {products && products.length > 0 && code !== "no_data_found" &&
+          {products && products.length > 0 &&
             <Typography className={classes.heading}>
               <strong>
                 {label} &emsp;
               </strong>
             </Typography>}
-          {!products && code === "no_data_found" &&
+          {!products &&
             <Typography className={classes.heading}>
               <strong>
                 {label} &emsp; НЕТ ТОВАРОВ

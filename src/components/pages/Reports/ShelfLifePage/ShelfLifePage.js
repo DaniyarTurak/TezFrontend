@@ -89,7 +89,7 @@ export default function ShelfLifePage() {
         expdates.length === 0 && !isLoading && code === "no_data_found" && <Typography style={{ textAlign: "center" }}>Нет данных</Typography>
       }
       <Grid item xs={12}>
-        {!isLoading && expdates.length > 0 && code !== "no_data_found" && <button
+        {!isLoading && expdates.length > 0 && code === "sucess" && <button
           className="btn btn-sm btn-outline-success"
           disabled={isExcelLoading}
           onClick={getShelfLifeExcel}
