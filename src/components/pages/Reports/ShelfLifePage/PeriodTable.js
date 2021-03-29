@@ -8,11 +8,8 @@ import TableCell from "@material-ui/core/TableCell";
 import TableContainer from "@material-ui/core/TableContainer";
 import TableRow from "@material-ui/core/TableRow";
 import TableHead from "@material-ui/core/TableHead";
-import TableFooter from "@material-ui/core/TableFooter";
 import Paper from "@material-ui/core/Paper";
 import Grid from "@material-ui/core/Grid";
-import ReactHTMLTableToExcel from "react-html-table-to-excel";
-import OrderArrowMaterial from "../../../ReusableComponents/OrderArrowMaterial";
 import FirstPageIcon from "@material-ui/icons/FirstPage";
 import KeyboardArrowLeft from "@material-ui/icons/KeyboardArrowLeft";
 import KeyboardArrowRight from "@material-ui/icons/KeyboardArrowRight";
@@ -28,7 +25,6 @@ const useStyles1 = makeStyles((theme) => ({
         marginLeft: theme.spacing(2.5),
     },
 }));
-
 
 //вся эта функция TablePaginationActions используется исключительно для того чтобы иметь возможность
 //перепригивать между последней и первой страницей в пагинации. Ridiculous.
