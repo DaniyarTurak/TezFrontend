@@ -7,7 +7,7 @@ import ErrorAlert from "../../../ReusableComponents/ErrorAlert";
 export default function ShelfLifePage() {
   const [expdates, setExpdates] = useState([]);
   const arrays = [];
-  const [isLoading, setLoading] = useState(true);
+  const [isLoading, setLoading] = useState(false);
   const [isExcelLoading, setExcelLoading] = useState(false);
   useEffect(() => {
     getExpireDates();
@@ -21,6 +21,7 @@ export default function ShelfLifePage() {
   ];
 
   const getExpireDates = () => {
+    setLoading(true);
     Axios.get("/api/report/expire_date")
       .then((res) => res.data)
       .then((expiredates) => {
@@ -66,7 +67,8 @@ export default function ShelfLifePage() {
   };
 
   return (
-    <div>
+
+    <Grid container spacing={3}>
       {periodProps.map((period, i) => (expdates.length !== 0 &&
         <PeriodComponent
           isLoading={isLoading}
@@ -76,7 +78,7 @@ export default function ShelfLifePage() {
           background={period.background}
           gradient={period.gradient} />
       ))}
-      <Grid item xs={12} style={{ paddingTop: "20px" }}>
+      <Grid item xs={12}>
         {!isLoading && <button
           className="btn btn-sm btn-outline-success"
           disabled={isExcelLoading}
@@ -86,6 +88,6 @@ export default function ShelfLifePage() {
         </button>
         }
       </Grid>
-    </div>
+    </Grid>
   );
 };

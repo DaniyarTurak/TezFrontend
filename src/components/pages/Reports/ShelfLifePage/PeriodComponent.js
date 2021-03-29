@@ -7,6 +7,7 @@ import Typography from '@material-ui/core/Typography';
 import ExpandMoreIcon from '@material-ui/icons/ExpandMore';
 import PeriodTable from "./PeriodTable";
 import Skeleton from '@material-ui/lab/Skeleton';
+import Grid from "@material-ui/core/Grid";
 
 export default function PeridoComponent({ label, background, gradient, products, isLoading }) {
   const useStyles = makeStyles((theme) => ({
@@ -21,7 +22,7 @@ export default function PeridoComponent({ label, background, gradient, products,
   const classes = useStyles();
 
   return (
-    <div className={classes.root}>
+    <Grid item xs={12}>
       { isLoading ? <Skeleton animation="wave" /> :
         <Accordion style={{ margin: "0px" }} defaultExpanded>
           <AccordionSummary
@@ -38,6 +39,6 @@ export default function PeridoComponent({ label, background, gradient, products,
             </AccordionDetails>}
         </Accordion>
       }
-    </div >
+    </Grid>
   );
 }
