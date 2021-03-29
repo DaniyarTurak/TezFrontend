@@ -15,9 +15,10 @@ import KeyboardArrowLeft from "@material-ui/icons/KeyboardArrowLeft";
 import KeyboardArrowRight from "@material-ui/icons/KeyboardArrowRight";
 import LastPageIcon from "@material-ui/icons/LastPage";
 import IconButton from "@material-ui/core/IconButton";
-import "moment/locale/ru";
+// import "moment/locale/ru";
 import { withStyles, makeStyles, useTheme } from "@material-ui/core/styles";
-Moment.locale("ru");
+// Moment.locale("ru");
+import moment from 'moment';
 
 const useStyles1 = makeStyles((theme) => ({
     root: {
@@ -176,7 +177,7 @@ export default function PeriodTable({ products, background }) {
                                             {product.units}
                                         </StyledTableCell>
                                         <StyledTableCell align="center">
-                                            {product.dt}
+                                            {moment(product.dt).format('L')}
                                         </StyledTableCell>
                                     </TableRow>
                                 ))}
