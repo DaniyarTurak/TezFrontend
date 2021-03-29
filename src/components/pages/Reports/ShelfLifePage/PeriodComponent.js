@@ -23,21 +23,25 @@ export default function PeridoComponent({ label, background, gradient, products,
 
   return (
     <Grid item xs={12}>
-      { isLoading ? <Skeleton animation="wave" /> :
-        <Accordion style={{ margin: "0px" }} defaultExpanded>
-          <AccordionSummary
-            expandIcon={products.length > 0 && <ExpandMoreIcon />}
-            style={{ backgroundColor: background }}
-          >
-            <Typography className={classes.heading}><strong>{label} &emsp;
-           {products.length <= 0 && <Fragment>НЕТ ТОВАРОВ</Fragment>}
-            </strong></Typography>
-          </AccordionSummary>
-          {products.length > 0 &&
-            <AccordionDetails style={{ backgroundImage: gradient }}>
-              <PeriodTable products={products} background={background} />
-            </AccordionDetails>}
-        </Accordion>
+      { isLoading && <Typography variant="h3">
+        <Skeleton />
+        <Skeleton />
+        <Skeleton />
+      </Typography>}
+      {!isLoading && <Accordion style={{ margin: "0px" }} defaultExpanded>
+        <AccordionSummary
+          expandIcon={products && products.length > 0 && <ExpandMoreIcon />}
+          style={{ backgroundColor: background }}
+        >
+          <Typography className={classes.heading}><strong>{label} &emsp;
+           {!products || products.length <= 0 && <Fragment>НЕТ ТОВАРОВ</Fragment>}
+          </strong></Typography>
+        </AccordionSummary>
+        {products && products.length > 0 &&
+          <AccordionDetails style={{ backgroundImage: gradient }}>
+            <PeriodTable products={products} background={background} />
+          </AccordionDetails>}
+      </Accordion>
       }
     </Grid>
   );

@@ -111,6 +111,6 @@
     "id": 18,
     "type": "stockreport",
     "route": "shelflife",
-    "caption": "Отчёт по срокам годности"
+    "caption": "Сроки годности"
   }
 ]

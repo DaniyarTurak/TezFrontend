@@ -3,6 +3,7 @@ import PeriodComponent from "./PeriodComponent";
 import Axios from "axios";
 import Grid from "@material-ui/core/Grid";
 import ErrorAlert from "../../../ReusableComponents/ErrorAlert";
+import { Typography } from "@material-ui/core";
 
 export default function ShelfLifePage() {
   const [expdates, setExpdates] = useState([]);
@@ -41,7 +42,7 @@ export default function ShelfLifePage() {
   const getShelfLifeExcel = () => {
     setExcelLoading(true);
     let arr3 = expdates[0];
-    let arr6 = expdates[1];
+    let arr6;
     let arr9 = expdates[2];
     let arr12 = expdates[3];
     Axios({
@@ -69,17 +70,23 @@ export default function ShelfLifePage() {
   return (
 
     <Grid container spacing={3}>
-      {periodProps.map((period, i) => (expdates.length !== 0 &&
-        <PeriodComponent
-          isLoading={isLoading}
-          products={expdates[i]}
-          key={i}
-          label={period.label}
-          background={period.background}
-          gradient={period.gradient} />
-      ))}
+      {expdates.length > 0 && <Fragment>
+        {periodProps.map((period, i) => (expdates.length !== 0 &&
+          <PeriodComponent
+            isLoading={isLoading}
+            products={expdates[i]}
+            key={i}
+            label={period.label}
+            background={period.background}
+            gradient={period.gradient} />
+        ))}
+      </Fragment>
+      }
+      {
+        expdates.length === 0 && <Typography style={{ textAlign: "center" }}>Нет данных</Typography>
+      }
       <Grid item xs={12}>
-        {!isLoading && <button
+        {!isLoading && expdates.length > 0 && <button
           className="btn btn-sm btn-outline-success"
           disabled={isExcelLoading}
           onClick={getShelfLifeExcel}
