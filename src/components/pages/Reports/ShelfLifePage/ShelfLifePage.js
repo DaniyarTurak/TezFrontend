@@ -10,6 +10,7 @@ export default function ShelfLifePage() {
   const arrays = [];
   const [isLoading, setLoading] = useState(false);
   const [isExcelLoading, setExcelLoading] = useState(false);
+  const [code, setCode] = useState("");
   useEffect(() => {
     getExpireDates();
   }, []);
@@ -31,7 +32,8 @@ export default function ShelfLifePage() {
         arrays.push(expiredates[0].rep_exp_date.array9);
         arrays.push(expiredates[0].rep_exp_date.array12);
         setExpdates(arrays);
-        setLoading(false)
+        setLoading(false);
+        setCode(expiredates[0].rep_exp_date.code);
       })
       .catch((err) => {
         ErrorAlert(err);
@@ -73,6 +75,7 @@ export default function ShelfLifePage() {
       {expdates.length > 0 && <Fragment>
         {periodProps.map((period, i) => (expdates.length !== 0 &&
           <PeriodComponent
+            code={code}
             isLoading={isLoading}
             products={expdates[i]}
             key={i}
@@ -83,10 +86,10 @@ export default function ShelfLifePage() {
       </Fragment>
       }
       {
-        expdates.length === 0 && <Typography style={{ textAlign: "center" }}>Нет данных</Typography>
+        expdates.length === 0 && !isLoading && code === "no_data_found" && <Typography style={{ textAlign: "center" }}>Нет данных</Typography>
       }
       <Grid item xs={12}>
-        {!isLoading && expdates.length > 0 && <button
+        {!isLoading && expdates.length > 0 && code !== "no_data_found" && <button
           className="btn btn-sm btn-outline-success"
           disabled={isExcelLoading}
           onClick={getShelfLifeExcel}

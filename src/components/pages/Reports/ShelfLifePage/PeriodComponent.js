@@ -9,7 +9,7 @@ import PeriodTable from "./PeriodTable";
 import Skeleton from '@material-ui/lab/Skeleton';
 import Grid from "@material-ui/core/Grid";
 
-export default function PeridoComponent({ label, background, gradient, products, isLoading }) {
+export default function PeridoComponent({ label, background, gradient, products, isLoading, code }) {
   const useStyles = makeStyles((theme) => ({
     root: {
       width: '100%',
@@ -20,7 +20,8 @@ export default function PeridoComponent({ label, background, gradient, products,
     },
   }));
   const classes = useStyles();
-
+  console.log(products);
+  console.log(code);
   return (
     <Grid item xs={12}>
       { isLoading && <Typography variant="h3">
@@ -33,9 +34,18 @@ export default function PeridoComponent({ label, background, gradient, products,
           expandIcon={products && products.length > 0 && <ExpandMoreIcon />}
           style={{ backgroundColor: background }}
         >
-          <Typography className={classes.heading}><strong>{label} &emsp;
-           {!products || products.length <= 0 && <Fragment>НЕТ ТОВАРОВ</Fragment>}
-          </strong></Typography>
+          {products && products.length > 0 && code !== "no_data_found" &&
+            <Typography className={classes.heading}>
+              <strong>
+                {label} &emsp;
+              </strong>
+            </Typography>}
+          {!products && code === "no_data_found" &&
+            <Typography className={classes.heading}>
+              <strong>
+                {label} &emsp; НЕТ ТОВАРОВ
+              </strong>
+            </Typography>}
         </AccordionSummary>
         {products && products.length > 0 &&
           <AccordionDetails style={{ backgroundImage: gradient }}>
