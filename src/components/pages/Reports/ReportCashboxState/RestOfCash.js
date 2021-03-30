@@ -1,9 +1,8 @@
 import React, { useState, useEffect, Fragment } from "react";
 import Axios from "axios";
-import _ from "lodash";
 import ErrorAlert from "../../../ReusableComponents/ErrorAlert";
 
-export default function RestOfCash({shiftnumber, cashbox }) {
+export default function RestOfCash({ shiftnumber, cashbox }) {
     useEffect(() => {
         getRestOfCash();
     }, []);

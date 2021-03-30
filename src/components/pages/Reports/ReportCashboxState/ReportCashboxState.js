@@ -184,9 +184,9 @@ export default function ReportCashboxState({ company, holding }) {
                 <StyledCell align="center">
                   Время (открытия / закрытия)
                 </StyledCell>
-                <StyledCell>
-                  <Tooltip title={<p style={{padding: "0px", fontSize: ".875rem" }}>Остаток наличности в кассе</p>}>
-                    <span style={{cursor: "pointer"}}>Остаток в кассе*</span>
+                <StyledCell align="center">
+                  <Tooltip title={<p style={{ padding: "0px", fontSize: ".875rem" }}>Остаток наличности в кассе</p>}>
+                    <span style={{ cursor: "pointer" }}>Остаток в кассе*</span>
                   </Tooltip>
                 </StyledCell>
                 <StyledCell />
@@ -230,7 +230,7 @@ export default function ReportCashboxState({ company, holding }) {
                               )}
                           </StyledCell>
                           <StyledCell align="center">
-                                <RestOfCash key={idx} cashbox = {cashbox.id} shiftnumber={cashbox.shiftnumber}/>
+                            <RestOfCash key={idx} cashbox={cashbox.id} shiftnumber={cashbox.shiftnumber} />
                           </StyledCell>
                           <StyledCell>
                             <IconButton
