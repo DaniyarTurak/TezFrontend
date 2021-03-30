@@ -1,11 +1,13 @@
 import React, { useState, useEffect } from "react";
 import Axios from "axios";
-import Select from "react-select";
-import Searching from "../../../../Searching";
+import SkeletonTable from "../../../../Skeletons/TableSkeleton";
 import Alert from "react-s-alert";
-import ReactHTMLTableToExcel from "react-html-table-to-excel";
+import ErrorAlert from "../../../../ReusableComponents/ErrorAlert";
+import CertificateOptionsStatus from "./CertificateOptionsStatus";
+import Grid from "@material-ui/core/Grid";
+import CertificatesTable from "./CertificatesTable";
 
-export default function ReportCertificateStatus({ companyProps }) {
+export default function ReportCertificateStatus({ companyProps, classes }) {
   const [certificates, setCertificates] = useState([]);
   const [certificatesAvailable, setCertificatesAvailable] = useState([]);
   const [certificatesActive, setCertificatesActive] = useState([]);
@@ -53,7 +55,7 @@ export default function ReportCertificateStatus({ companyProps }) {
     setCertificatesUsed([]);
   };
 
-  const onStatusChange = (stat) => {
+  const onStatusChange = (e, stat) => {
     setStatus(stat);
     stat.value === "0"
       ? setCertificates(certificatesAll)
@@ -66,7 +68,7 @@ export default function ReportCertificateStatus({ companyProps }) {
       : setCertificates(certificatesUsed);
   };
 
-  const onPointChange = (p) => {
+  const onPointChange = (e, p) => {
     setPoint(p);
   };
 
@@ -96,7 +98,7 @@ export default function ReportCertificateStatus({ companyProps }) {
       })
       .catch((err) => {
         setLoading(false);
-        console.log(err);
+        ErrorAlert(err);
       });
   };
 
@@ -113,7 +115,7 @@ export default function ReportCertificateStatus({ companyProps }) {
         setPoints([...options]);
       })
       .catch((err) => {
-        console.log(err);
+        ErrorAlert(err);
       });
   };
 
@@ -142,123 +144,43 @@ export default function ReportCertificateStatus({ companyProps }) {
       })
       .catch((err) => {
         setLoading(false);
-        Alert.error(`Возникла ошибка: ${err.response.data.text}`, {
-          position: "top-right",
-          effect: "bouncyflip",
-          timeout: 2000,
-        });
+        ErrorAlert(err);
       });
   };
 
   return (
-    <div className="report-stock-balance">
-      <div className="row">
-        <div className="col-md-3 point-block">
-          <label htmlFor="">Статус</label>
-          <Select
-            name="status"
-            value={status}
-            onChange={onStatusChange}
-            options={statuses}
-            placeholder="Выберите статус"
-            noOptionsMessage={() => "Статус не найден"}
-          />
-        </div>
-        <div className="col-md-6">
-          <label>Выберите торговую точку:</label>
-          <Select
-            name="point"
-            value={point}
-            onChange={onPointChange}
-            options={points}
-            placeholder="Выберите торговую точку"
-            noOptionsMessage={() => "Точка не найдена"}
-          />
-        </div>
-      </div>
+    <Grid container spacing={3}>
+      <CertificateOptionsStatus
+        onStatusChange={onStatusChange}
+        onPointChange={onPointChange}
+        point={point}
+        points={points}
+        status={status}
+        statuses={statuses}
+      />
 
-      {isLoading && <Searching />}
-
-      {!isLoading && certificates.length === 0 && (
-        <div className="row mt-10 text-center">
-          <div className="col-md-12 not-found-text">
-            С выбранными фильтрами ничего не найдено
-          </div>
-        </div>
+      {isLoading && (
+        <Grid item xs={12}>
+          <SkeletonTable />
+        </Grid>
       )}
 
-      {/* {!isLoading && certificates.length > 0 && ( */}
-      <div className="row mt-20">
-        <div className="col-md-12">
-          <table className="table table-striped " id="table-to-xls">
-            <thead>
-              <tr style={{ fontWeight: "bold" }}>
-                <td>№</td>
-                <td>Код</td>
-                <td className="text-center">Номинал</td>
-                <td className="text-center">Дата истечения</td>
-                <td className="text-center">Тип</td>
-                <td className="text-center">Дата продажи</td>
-                <td className="text-center">Статус</td>
-                <td />
-              </tr>
-            </thead>
-            <tbody>
-              {certificates.map((certificate, idx) => (
-                <tr key={idx}>
-                  <td>{idx + 1}</td>
+      {!isLoading && certificates.length === 0 && (
+        <Grid item xs={12}>
+          <p className={classes.notFound}>
+            С выбранными фильтрами ничего не найдено
+          </p>
+        </Grid>
+      )}
 
-                  <td>{certificate.code}</td>
-                  <td className="text-center">{certificate.denomination}</td>
-                  <td className="text-center">{certificate.expiredate}</td>
-                  <td className="text-center">{certificate.type}</td>
-
-                  <td className="text-center">{certificate.selldate}</td>
-                  <td
-                    className="text-center"
-                    style={{
-                      fontWeight: "bold",
-                      color:
-                        certificate.status === "Доступен для продажи"
-                          ? "green"
-                          : certificate.status === "Использован"
-                          ? "black"
-                          : certificate.status === "Продан (Активен)"
-                          ? "blue"
-                          : "red",
-                    }}
-                  >
-                    {certificate.status}
-                  </td>
-                  <td>
-                    {certificate.status === "Доступен для продажи" ||
-                    certificate.status === "Использован" ? (
-                      <button
-                        className="btn btn-outline-info"
-                        onClick={() => handleActivate(certificate)}
-                      >
-                        Активировать
-                      </button>
-                    ) : (
-                      ""
-                    )}
-                  </td>
-                </tr>
-              ))}
-            </tbody>
-          </table>
-        </div>
-
-        <div className="col-md-12">
-          <ReactHTMLTableToExcel
-            className="btn btn-sm btn-outline-success"
-            table="table-to-xls"
-            filename={`Сертификаты(${status.label})`}
-            sheet="tablexls"
-            buttonText="Выгрузить в excel"
-          />
-        </div>
-      </div>
-    </div>
+      {!isLoading && certificates.length > 0 && (
+        <CertificatesTable
+          classes={classes}
+          certificates={certificates}
+          handleActivate={handleActivate}
+          status={status}
+        />
+      )}
+    </Grid>
   );
 }

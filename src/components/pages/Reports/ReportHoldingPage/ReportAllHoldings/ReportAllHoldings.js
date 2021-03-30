@@ -1,6 +1,6 @@
 import React, { useState, Fragment } from "react";
 import holdingtypes from "../../../../../data/holdingtypes";
-import ReportLoyalty from "../../../Reports/ReportLoyalty";
+import ReportFizCustomers from "../../../Reports/ReportFizCustomers";
 import ReportSalesPlanTeam from "../../../Reports/ReportSalesPlanTeam";
 import ReportSalesSection from "../../../Reports/ReportSalesSection";
 import ReportTransactions from "../../../Reports/ReportTransactions";
@@ -8,7 +8,7 @@ import ReportBonuses from "../ReportBonuses";
 import ReportCashboxState from "../../ReportCashboxState";
 
 export default function ReportAllHoldings() {
-  const [reportMode, setReportMode] = useState("reportloyalty");
+  const [reportMode, setReportMode] = useState("reportFizCustomers");
 
   const changeReportMode = (e) => {
     setReportMode(e.target.name);
@@ -46,8 +46,8 @@ export default function ReportAllHoldings() {
               {reportMode === "reportcashboxstate" && (
                 <ReportCashboxState company={""} holding={true} />
               )}
-              {reportMode === "reportloyalty" && (
-                <ReportLoyalty companyProps={""} holding={true} />
+              {reportMode === "reportFizCustomers" && (
+                <ReportFizCustomers companyProps={""} holding={true} />
               )}
               {reportMode === "reportbonuses" && (
                 <ReportBonuses company={""} holding={true} />

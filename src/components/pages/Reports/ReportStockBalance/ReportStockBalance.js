@@ -134,7 +134,7 @@ export default function ReportStockBalance({ companyProps }) {
       setDateChanging(false);
     };
   }, [
-    barcode,
+    productSelectValue,
     selectedStock,
     counterparty,
     category,
@@ -465,7 +465,7 @@ export default function ReportStockBalance({ companyProps }) {
           counterparty: counterparty.value,
           company,
           consignment,
-          date,
+          date: Moment(date).format("YYYY-MM-DD"),
           flag,
           itemsPerPage,
           notattr,
@@ -576,7 +576,7 @@ export default function ReportStockBalance({ companyProps }) {
   };
 
   return (
-    <Fragment>
+    <Grid container spacing={2}>
       <ReactModal isOpen={modalIsOpen} style={customStyles}>
         <ProductDetails
           product={product}
@@ -584,101 +584,99 @@ export default function ReportStockBalance({ companyProps }) {
           invoiceNumber={false}
         />
       </ReactModal>
-      <Grid container spacing={2}>
-        <StockbalanceOptions
-          attrval={attrval}
-          attribute={attribute}
-          attributes={attributes}
-          attributeTypes={attributeTypes}
-          barcode={barcode}
-          brand={brand}
-          brands={brands}
-          category={category}
-          categories={categories}
-          consignment={consignment}
-          counterparty={counterparty}
-          counterparties={counterparties}
-          date={date}
-          grouping={grouping}
-          handleSearch={handleSearch}
-          isLoading={isLoading}
-          isLoadingProducts={isLoadingProducts}
-          nds={nds}
-          ndses={ndses}
-          onAttributeTypeChange={onAttributeTypeChange}
-          onBarcodeChange={onBarcodeChange}
-          onBarcodeKeyDown={onBarcodeKeyDown}
-          onConsignmentChange={onConsignmentChange}
-          onDateChange={onDateChange}
-          onGroupingChange={onGroupingChange}
-          onNdsChange={onNdsChange}
-          onProductChange={onProductChange}
-          onProductListInput={onProductListInput}
-          onStockChange={onStockChange}
-          onCounterpartieChange={onCounterpartieChange}
-          onCounterpartieListInput={onCounterpartieListInput}
-          onBrandChange={onBrandChange}
-          onBrandListInput={onBrandListInput}
-          onCategoryChange={onCategoryChange}
-          onCategoryListInput={onCategoryListInput}
-          onAttributeChange={onAttributeChange}
-          productSelectValue={productSelectValue}
-          products={products}
-          selectedStock={selectedStock}
-          stockList={stockList}
-        />
+      <StockbalanceOptions
+        attrval={attrval}
+        attribute={attribute}
+        attributes={attributes}
+        attributeTypes={attributeTypes}
+        barcode={barcode}
+        brand={brand}
+        brands={brands}
+        category={category}
+        categories={categories}
+        consignment={consignment}
+        counterparty={counterparty}
+        counterparties={counterparties}
+        date={date}
+        grouping={grouping}
+        handleSearch={handleSearch}
+        isLoading={isLoading}
+        isLoadingProducts={isLoadingProducts}
+        nds={nds}
+        ndses={ndses}
+        onAttributeTypeChange={onAttributeTypeChange}
+        onBarcodeChange={onBarcodeChange}
+        onBarcodeKeyDown={onBarcodeKeyDown}
+        onConsignmentChange={onConsignmentChange}
+        onDateChange={onDateChange}
+        onGroupingChange={onGroupingChange}
+        onNdsChange={onNdsChange}
+        onProductChange={onProductChange}
+        onProductListInput={onProductListInput}
+        onStockChange={onStockChange}
+        onCounterpartieChange={onCounterpartieChange}
+        onCounterpartieListInput={onCounterpartieListInput}
+        onBrandChange={onBrandChange}
+        onBrandListInput={onBrandListInput}
+        onCategoryChange={onCategoryChange}
+        onCategoryListInput={onCategoryListInput}
+        onAttributeChange={onAttributeChange}
+        productSelectValue={productSelectValue}
+        products={products}
+        selectedStock={selectedStock}
+        stockList={stockList}
+      />
 
-        {!isLoading && stockbalance.length === 0 && (
+      {!isLoading && stockbalance.length === 0 && (
+        <Grid item xs={12}>
+          <p className={classes.notFound}>
+            {(selectedStock.length === 0 && "Выберите склад или товар") ||
+              (stockbalance.length === 0 && "Список товаров пуст")}
+          </p>
+        </Grid>
+      )}
+
+      {isLoading && (
+        <Grid item xs={12}>
+          <SkeletonTable />
+        </Grid>
+      )}
+
+      {isPaginationLoading && <Searching className="text-center" />}
+
+      {!isLoading && !isPaginationLoading && stockbalance.length > 0 && (
+        <Fragment>
           <Grid item xs={12}>
-            <p className={classes.notFound}>
-              {(selectedStock.length === 0 && "Выберите склад или товар") ||
-                (stockbalance.length === 0 && "Список товаров пуст")}
-            </p>
+            <StockbalanceTable
+              stockbalance={stockbalance}
+              activePage={activePage}
+              itemsPerPage={itemsPerPage}
+              handleProductDtl={handleProductDtl}
+              totalcost={totalcost}
+              totalprice={totalprice}
+              totalunits={totalunits}
+              totalCount={totalCount}
+              isPaginationLoading={isPaginationLoading}
+              pageRangeDisplayed={pageRangeDisplayed}
+              handlePageChange={handlePageChange}
+              isExcelLoading={isExcelLoading}
+              getStockbalanceExcel={getStockbalanceExcel}
+              classes={classes}
+              handleChangeRowsPerPage={handleChangeRowsPerPage}
+            />
           </Grid>
-        )}
 
-        {isLoading && (
           <Grid item xs={12}>
-            <SkeletonTable />
+            <button
+              className="btn btn-sm btn-outline-success"
+              disabled={isExcelLoading}
+              onClick={getStockbalanceExcel}
+            >
+              Выгрузить в excel
+            </button>
           </Grid>
-        )}
-
-        {isPaginationLoading && <Searching className="text-center" />}
-
-        {!isLoading && !isPaginationLoading && stockbalance.length > 0 && (
-          <Fragment>
-            <Grid item xs={12}>
-              <StockbalanceTable
-                stockbalance={stockbalance}
-                activePage={activePage}
-                itemsPerPage={itemsPerPage}
-                handleProductDtl={handleProductDtl}
-                totalcost={totalcost}
-                totalprice={totalprice}
-                totalunits={totalunits}
-                totalCount={totalCount}
-                isPaginationLoading={isPaginationLoading}
-                pageRangeDisplayed={pageRangeDisplayed}
-                handlePageChange={handlePageChange}
-                isExcelLoading={isExcelLoading}
-                getStockbalanceExcel={getStockbalanceExcel}
-                classes={classes}
-                handleChangeRowsPerPage={handleChangeRowsPerPage}
-              />
-            </Grid>
-
-            <Grid item xs={12}>
-              <button
-                className="btn btn-sm btn-outline-success"
-                disabled={isExcelLoading}
-                onClick={getStockbalanceExcel}
-              >
-                Выгрузить в excel
-              </button>
-            </Grid>
-          </Fragment>
-        )}
-      </Grid>
-    </Fragment>
+        </Fragment>
+      )}
+    </Grid>
   );
 }

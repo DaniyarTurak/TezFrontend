@@ -112,7 +112,6 @@ TablePaginationActions.propTypes = {
 };
 
 export default function ReportTable({
-  excelResult,
   isClicked,
   reports,
   getStockbalanceExcel,
