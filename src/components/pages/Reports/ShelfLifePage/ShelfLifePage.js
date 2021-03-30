@@ -4,6 +4,7 @@ import Axios from "axios";
 import Grid from "@material-ui/core/Grid";
 import ErrorAlert from "../../../ReusableComponents/ErrorAlert";
 import { Typography } from "@material-ui/core";
+import moment from 'moment';
 
 export default function ShelfLifePage() {
   const [expdates, setExpdates] = useState([]);
@@ -47,6 +48,19 @@ export default function ShelfLifePage() {
     let arr6 = expdates[1];
     let arr9 = expdates[2];
     let arr12 = expdates[3];
+    arr3.forEach(element => {
+      element.dt = moment(element.dt).format('L')
+    });
+    arr6.forEach(element => {
+      element.dt = moment(element.dt).format('L')
+    });
+    arr9.forEach(element => {
+      element.dt = moment(element.dt).format('L')
+    });
+    arr12.forEach(element => {
+      element.dt = moment(element.dt).format('L')
+    });
+
     Axios({
       method: "POST",
       url: "/api/report/expire_date/excel",

@@ -1,5 +1,4 @@
 import React, { Fragment } from "react";
-import Moment from "moment";
 import PropTypes from "prop-types";
 import TablePagination from "@material-ui/core/TablePagination";
 import Table from "@material-ui/core/Table";
@@ -124,14 +123,13 @@ export default function PeriodTable({ products, background }) {
 
     const handleChangeRowsPerPage = (event) => {
         setRowsPerPage(+event.target.value);
-
         setPage(0);
     };
 
     return (
         <Fragment>
             <Grid item xs={12}>
-                <TableContainer component={Paper} style={{boxShadow: "0px -1px 1px 1px white"}}>
+                <TableContainer component={Paper} style={{ boxShadow: "0px -1px 1px 1px white" }}>
                     <Table id="table-to-xls">
                         <TableHead >
                             <TableRow style={{ fontWeight: "bold" }} >
@@ -139,22 +137,22 @@ export default function PeriodTable({ products, background }) {
                                     <span className="hand">
                                     </span>
                                 </StyledTableCell>
-                                <StyledTableCell rowSpan="2" style={{fontWeight: "bold", color: "black"}}>
+                                <StyledTableCell rowSpan="2" style={{ fontWeight: "bold", color: "black" }}>
                                     <span className="hand">
                                         Штрих-код
                                     </span>
                                 </StyledTableCell>
-                                <StyledTableCell rowSpan="2" align="center" style={{fontWeight: "bold", color: "black"}}>
+                                <StyledTableCell rowSpan="2" align="center" style={{ fontWeight: "bold", color: "black" }}>
                                     <span className="hand">
                                         Наименование товара
                                     </span>
                                 </StyledTableCell>
-                                <StyledTableCell rowSpan="2" align="center" style={{fontWeight: "bold", color: "black"}}>
+                                <StyledTableCell rowSpan="2" align="center" style={{ fontWeight: "bold", color: "black" }}>
                                     <span className="hand">
                                         Количество
                                     </span>
                                 </StyledTableCell>
-                                <StyledTableCell rowSpan="2" align="center" style={{fontWeight: "bold", color: "black"}}>
+                                <StyledTableCell rowSpan="2" align="center" style={{ fontWeight: "bold", color: "black" }}>
                                     <span className="hand">
                                         Годен до
                                     </span>
@@ -182,21 +180,19 @@ export default function PeriodTable({ products, background }) {
                         </TableBody>
                     </Table>
                 </TableContainer>
-                {products.length > rowsPerPage && (
-                    <TablePagination
-                        rowsPerPageOptions={[10, 20, 50]}
-                        component="div"
-                        count={products.length}
-                        backIconButtonText="Предыдущая страница"
-                        labelRowsPerPage="Строк в странице"
-                        nextIconButtonText="Следующая страница"
-                        rowsPerPage={rowsPerPage}
-                        page={page}
-                        onChangePage={handleChangePage}
-                        onChangeRowsPerPage={handleChangeRowsPerPage}
-                        ActionsComponent={TablePaginationActions}
-                    />
-                )}
+                <TablePagination
+                    rowsPerPageOptions={[10, 20, 50]}
+                    component="div"
+                    count={products.length}
+                    backIconButtonText="Предыдущая страница"
+                    labelRowsPerPage="Строк в странице"
+                    nextIconButtonText="Следующая страница"
+                    rowsPerPage={rowsPerPage}
+                    page={page}
+                    onChangePage={handleChangePage}
+                    onChangeRowsPerPage={handleChangeRowsPerPage}
+                    ActionsComponent={TablePaginationActions}
+                />
             </Grid>
         </Fragment>
     );

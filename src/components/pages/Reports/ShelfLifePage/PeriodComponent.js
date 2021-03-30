@@ -1,4 +1,4 @@
-import React, { useState, useEffect, Fragment } from "react";
+import React from "react";
 import { makeStyles } from "@material-ui/core/styles";
 import Accordion from '@material-ui/core/Accordion';
 import AccordionSummary from '@material-ui/core/AccordionSummary';
@@ -20,8 +20,6 @@ export default function PeridoComponent({ label, background, gradient, products,
     },
   }));
   const classes = useStyles();
-  console.log(products);
-  console.log(code);
   return (
     <Grid item xs={12}>
       { isLoading && <Typography variant="h3">
