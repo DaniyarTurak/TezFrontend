@@ -49,8 +49,6 @@ export default function ShelfLifePage() {
       });
   };
 
-  console.log(datesExcel[0]);
-
   const getShelfLifeExcel = () => {
     setExcelLoading(true);
     let arr3 = [];
