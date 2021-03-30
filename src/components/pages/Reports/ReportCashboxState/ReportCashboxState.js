@@ -3,6 +3,7 @@ import Axios from "axios";
 import Moment from "moment";
 import _ from "lodash";
 import CashboxDetails from "./CashboxDetails";
+import RestOfCash from "./RestOfCash";
 import Table from "@material-ui/core/Table";
 import TableBody from "@material-ui/core/TableBody";
 import TableCell from "@material-ui/core/TableCell";
@@ -15,6 +16,11 @@ import { withStyles } from "@material-ui/core/styles";
 import SkeletonTable from "../../../Skeletons/TableSkeleton";
 import ErrorAlert from "../../../ReusableComponents/ErrorAlert";
 import Zreports from "./Zreports";
+import Menu from '@material-ui/core/Menu';
+import MenuItem from '@material-ui/core/MenuItem';
+import MoreVertIcon from '@material-ui/icons/MoreVert';
+import IconButton from '@material-ui/core/IconButton';
+import Tooltip from '@material-ui/core/Tooltip';
 
 const ColorButton = withStyles(() => ({
   root: {
@@ -37,6 +43,22 @@ const StyledCell = withStyles((theme) => ({
     fontSize: ".875rem",
   },
 }))(TableCell);
+
+const StyledMenu = withStyles()((props) => (
+  <Menu
+    elevation={0}
+    getContentAnchorEl={null}
+    anchorOrigin={{
+      vertical: 'bottom',
+      horizontal: 'right',
+    }}
+    transformOrigin={{
+      vertical: 'top',
+      horizontal: 'right',
+    }}
+    {...props}
+  />
+));
 
 export default function ReportCashboxState({ company, holding }) {
   const [cashboxstate, setCashboxstate] = useState([]);
@@ -103,6 +125,15 @@ export default function ReportCashboxState({ company, holding }) {
     setReportsModalIsOpen(false);
   };
 
+  const closeMenu = () => {
+    setMenuOpened(null);
+  };
+  const [menuOpened, setMenuOpened] = useState(null);
+
+  const openMenu = (event) => {
+    setMenuOpened(event.currentTarget);
+  };
+
   return (
     <div>
       {modalIsOpen && (
@@ -148,12 +179,17 @@ export default function ReportCashboxState({ company, holding }) {
             <TableHead>
               <TableRow>
                 <StyledCell>Наименование</StyledCell>
-                <StyledCell />
                 <StyledCell>Пользователь</StyledCell>
                 <StyledCell>Статус</StyledCell>
                 <StyledCell align="center">
                   Время (открытия / закрытия)
                 </StyledCell>
+                <StyledCell align="center">
+                  <Tooltip title={<p style={{ padding: "0px", fontSize: ".875rem" }}>Остаток наличности в кассе</p>}>
+                    <span style={{ cursor: "pointer" }}>Остаток в кассе*</span>
+                  </Tooltip>
+                </StyledCell>
+                <StyledCell />
               </TableRow>
             </TableHead>
             <TableBody>
@@ -161,7 +197,7 @@ export default function ReportCashboxState({ company, holding }) {
                 return (
                   <Fragment key={idx}>
                     <TableRow>
-                      <StyledCell className="bg-info text-white" colSpan={5}>
+                      <StyledCell className="bg-info text-white" colSpan={6}>
                         {state.point}
                       </StyledCell>
                     </TableRow>
@@ -170,20 +206,6 @@ export default function ReportCashboxState({ company, holding }) {
                       return (
                         <TableRow key={idx}>
                           <StyledCell>{cashbox.name}</StyledCell>
-                          <StyledCell>
-                            <ColorButton
-                              variant="outlined"
-                              onClick={() => handleZreport(cashbox)}
-                            >
-                              Отчёт по сменам
-                            </ColorButton>
-                            <ColorButton
-                              variant="outlined"
-                              onClick={() => handleCashbox(cashbox)}
-                            >
-                              Кассовые Ордера
-                            </ColorButton>
-                          </StyledCell>
                           <StyledCell>{cashbox.person}</StyledCell>
                           <StyledCell>
                             {(cashbox.state === "CLOSE" && (
@@ -206,6 +228,39 @@ export default function ReportCashboxState({ company, holding }) {
                               Moment(cashbox.operdate).format(
                                 "DD.MM.YYYY HH:mm:ss"
                               )}
+                          </StyledCell>
+                          <StyledCell align="center">
+                            <RestOfCash key={idx} cashbox={cashbox.id} shiftnumber={cashbox.shiftnumber} />
+                          </StyledCell>
+                          <StyledCell>
+                            <IconButton
+                              onClick={openMenu}
+                            >
+                              <MoreVertIcon />
+                            </IconButton>
+                            <StyledMenu
+                              anchorEl={menuOpened}
+                              keepMounted
+                              open={Boolean(menuOpened)}
+                              onClose={closeMenu}
+                            >
+                              <MenuItem>
+                                <ColorButton
+                                  variant="outlined"
+                                  onClick={() => handleZreport(cashbox)}
+                                >
+                                  Отчёт по сменам
+                            </ColorButton>
+                              </MenuItem>
+                              <MenuItem>
+                                <ColorButton
+                                  variant="outlined"
+                                  onClick={() => handleCashbox(cashbox)}
+                                >
+                                  Кассовые Ордера
+                            </ColorButton>
+                              </MenuItem>
+                            </StyledMenu>
                           </StyledCell>
                         </TableRow>
                       );

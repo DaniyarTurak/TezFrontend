@@ -3,12 +3,15 @@ import PeriodComponent from "./PeriodComponent";
 import Axios from "axios";
 import Grid from "@material-ui/core/Grid";
 import ErrorAlert from "../../../ReusableComponents/ErrorAlert";
+import { Typography } from "@material-ui/core";
+import moment from 'moment';
 
 export default function ShelfLifePage() {
   const [expdates, setExpdates] = useState([]);
   const arrays = [];
-  const [isLoading, setLoading] = useState(true);
+  const [isLoading, setLoading] = useState(false);
   const [isExcelLoading, setExcelLoading] = useState(false);
+  const [code, setCode] = useState("");
   useEffect(() => {
     getExpireDates();
   }, []);
@@ -21,6 +24,7 @@ export default function ShelfLifePage() {
   ];
 
   const getExpireDates = () => {
+    setLoading(true);
     Axios.get("/api/report/expire_date")
       .then((res) => res.data)
       .then((expiredates) => {
@@ -29,7 +33,8 @@ export default function ShelfLifePage() {
         arrays.push(expiredates[0].rep_exp_date.array9);
         arrays.push(expiredates[0].rep_exp_date.array12);
         setExpdates(arrays);
-        setLoading(false)
+        setLoading(false);
+        setCode(expiredates[0].rep_exp_date.code);
       })
       .catch((err) => {
         ErrorAlert(err);
@@ -43,6 +48,19 @@ export default function ShelfLifePage() {
     let arr6 = expdates[1];
     let arr9 = expdates[2];
     let arr12 = expdates[3];
+    arr3.forEach(element => {
+      element.dt = moment(element.dt).format('L')
+    });
+    arr6.forEach(element => {
+      element.dt = moment(element.dt).format('L')
+    });
+    arr9.forEach(element => {
+      element.dt = moment(element.dt).format('L')
+    });
+    arr12.forEach(element => {
+      element.dt = moment(element.dt).format('L')
+    });
+
     Axios({
       method: "POST",
       url: "/api/report/expire_date/excel",
@@ -66,18 +84,26 @@ export default function ShelfLifePage() {
   };
 
   return (
-    <div>
-      {periodProps.map((period, i) => (expdates.length !== 0 &&
-        <PeriodComponent
-          isLoading={isLoading}
-          products={expdates[i]}
-          key={i}
-          label={period.label}
-          background={period.background}
-          gradient={period.gradient} />
-      ))}
-      <Grid item xs={12} style={{ paddingTop: "20px" }}>
-        {!isLoading && <button
+
+    <Grid container spacing={3}>
+      {expdates.length > 0 && <Fragment>
+        {periodProps.map((period, i) => (expdates.length !== 0 &&
+          <PeriodComponent
+            code={code}
+            isLoading={isLoading}
+            products={expdates[i]}
+            key={i}
+            label={period.label}
+            background={period.background}
+            gradient={period.gradient} />
+        ))}
+      </Fragment>
+      }
+      {
+        expdates.length === 0 && !isLoading && code === "no_data_found" && <Typography style={{ textAlign: "center" }}>Нет данных</Typography>
+      }
+      <Grid item xs={12}>
+        {!isLoading && expdates.length > 0 && code === "sucess" && <button
           className="btn btn-sm btn-outline-success"
           disabled={isExcelLoading}
           onClick={getShelfLifeExcel}
@@ -86,6 +112,6 @@ export default function ShelfLifePage() {
         </button>
         }
       </Grid>
-    </div>
+    </Grid>
   );
 };

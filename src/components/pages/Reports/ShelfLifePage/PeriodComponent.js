@@ -1,4 +1,4 @@
-import React, { Fragment } from "react";
+import React from "react";
 import { makeStyles } from "@material-ui/core/styles";
 import Accordion from '@material-ui/core/Accordion';
 import AccordionSummary from '@material-ui/core/AccordionSummary';
@@ -7,8 +7,9 @@ import Typography from '@material-ui/core/Typography';
 import ExpandMoreIcon from '@material-ui/icons/ExpandMore';
 import PeriodTable from "./PeriodTable";
 import Skeleton from '@material-ui/lab/Skeleton';
+import Grid from "@material-ui/core/Grid";
 
-export default function PeridoComponent({ label, background, gradient, products, isLoading }) {
+export default function PeridoComponent({ label, background, gradient, products, isLoading, code }) {
   const useStyles = makeStyles((theme) => ({
     root: {
       width: '100%',
@@ -19,25 +20,37 @@ export default function PeridoComponent({ label, background, gradient, products,
     },
   }));
   const classes = useStyles();
-
   return (
-    <div className={classes.root}>
-      { isLoading ? <Skeleton animation="wave" /> :
-        <Accordion style={{ margin: "0px" }} defaultExpanded>
-          <AccordionSummary
-            expandIcon={products.length > 0 && <ExpandMoreIcon />}
-            style={{ backgroundColor: background }}
-          >
-            <Typography className={classes.heading}><strong>{label} &emsp;
-           {products.length <= 0 && <Fragment>НЕТ ТОВАРОВ</Fragment>}
-            </strong></Typography>
-          </AccordionSummary>
-          {products.length > 0 &&
-            <AccordionDetails style={{ backgroundImage: gradient }}>
-              <PeriodTable products={products} background={background} />
-            </AccordionDetails>}
-        </Accordion>
+    <Grid item xs={12}>
+      { isLoading && <Typography variant="h3">
+        <Skeleton />
+        <Skeleton />
+        <Skeleton />
+      </Typography>}
+      {!isLoading && <Accordion style={{ margin: "0px" }} defaultExpanded>
+        <AccordionSummary
+          expandIcon={products && products.length > 0 && <ExpandMoreIcon />}
+          style={{ backgroundColor: background }}
+        >
+          {products && products.length > 0 &&
+            <Typography className={classes.heading}>
+              <strong>
+                {label} &emsp;
+              </strong>
+            </Typography>}
+          {!products &&
+            <Typography className={classes.heading}>
+              <strong>
+                {label} &emsp; НЕТ ТОВАРОВ
+              </strong>
+            </Typography>}
+        </AccordionSummary>
+        {products && products.length > 0 &&
+          <AccordionDetails style={{ backgroundImage: gradient }}>
+            <PeriodTable products={products} background={background} />
+          </AccordionDetails>}
+      </Accordion>
       }
-    </div >
+    </Grid>
   );
 }
