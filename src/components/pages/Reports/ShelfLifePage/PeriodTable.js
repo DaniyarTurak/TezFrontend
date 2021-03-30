@@ -173,6 +173,7 @@ export default function PeriodTable({ products, background }) {
                                             {product.units}
                                         </StyledTableCell>
                                         <StyledTableCell align="center">
+                                            {/* {moment(product.dt).format('L')} */}
                                             {moment(product.dt).format('L')}
                                         </StyledTableCell>
                                     </TableRow>

@@ -1,4 +1,8 @@
+<<<<<<< HEAD
 import React, { useState, useEffect ,Fragment} from "react";
+=======
+import React, { useState, useEffect, Fragment } from "react";
+>>>>>>> 9badddfba154eccbec1464aa4d9d7609b7a78e93
 import PeriodComponent from "./PeriodComponent";
 import Axios from "axios";
 import Grid from "@material-ui/core/Grid";
@@ -8,10 +12,11 @@ import moment from 'moment';
 
 export default function ShelfLifePage() {
   const [expdates, setExpdates] = useState([]);
-  const arrays = [];
+  const [datesExcel, setDatesExcel] = useState([]);
   const [isLoading, setLoading] = useState(false);
   const [isExcelLoading, setExcelLoading] = useState(false);
   const [code, setCode] = useState("");
+
   useEffect(() => {
     getExpireDates();
   }, []);
@@ -28,11 +33,13 @@ export default function ShelfLifePage() {
     Axios.get("/api/report/expire_date")
       .then((res) => res.data)
       .then((expiredates) => {
-        arrays.push(expiredates[0].rep_exp_date.array3);
-        arrays.push(expiredates[0].rep_exp_date.array6);
-        arrays.push(expiredates[0].rep_exp_date.array9);
-        arrays.push(expiredates[0].rep_exp_date.array12);
-        setExpdates(arrays);
+        let newarr = [];
+        newarr.push(expiredates[0].rep_exp_date.array3);
+        newarr.push(expiredates[0].rep_exp_date.array6);
+        newarr.push(expiredates[0].rep_exp_date.array9);
+        newarr.push(expiredates[0].rep_exp_date.array12);
+        setDatesExcel(newarr);
+        setExpdates(newarr);
         setLoading(false);
         setCode(expiredates[0].rep_exp_date.code);
       })
@@ -40,26 +47,40 @@ export default function ShelfLifePage() {
         ErrorAlert(err);
         setLoading(false)
       });
-  };;
+  };
+
+  console.log(datesExcel[0]);
 
   const getShelfLifeExcel = () => {
     setExcelLoading(true);
-    let arr3 = expdates[0];
-    let arr6 = expdates[1];
-    let arr9 = expdates[2];
-    let arr12 = expdates[3];
-    arr3.forEach(element => {
-      element.dt = moment(element.dt).format('L')
-    });
-    arr6.forEach(element => {
-      element.dt = moment(element.dt).format('L')
-    });
-    arr9.forEach(element => {
-      element.dt = moment(element.dt).format('L')
-    });
-    arr12.forEach(element => {
-      element.dt = moment(element.dt).format('L')
-    });
+    let arr3 = [];
+    let arr6 = [];
+    let arr9 = [];
+    let arr12 = [];
+
+    if (datesExcel[0]) {
+      datesExcel[0].forEach((e) => {
+        arr3.push({ ...e, dt: moment(e.dt).format('L') })
+      })
+    };
+
+    if (datesExcel[1]) {
+      datesExcel[1].forEach((e) => {
+        arr6.push({ ...e, dt: moment(e.dt).format('L') })
+      })
+    };
+
+    if (datesExcel[2]) {
+      datesExcel[2].forEach((e) => {
+        arr9.push({ ...e, dt: moment(e.dt).format('L') })
+      })
+    };
+
+    if (datesExcel[3]) {
+      datesExcel[3].forEach((e) => {
+        arr12.push({ ...e, dt: moment(e.dt).format('L') })
+      })
+    };
 
     Axios({
       method: "POST",
@@ -84,7 +105,6 @@ export default function ShelfLifePage() {
   };
 
   return (
-
     <Grid container spacing={3}>
       {expdates.length > 0 && <Fragment>
         {periodProps.map((period, i) => (expdates.length !== 0 &&
