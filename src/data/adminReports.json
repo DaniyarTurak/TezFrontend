@@ -62,7 +62,7 @@
   {
     "id": 10,
     "type": "adminreport",
-    "route": "ReportLoyaltyAdmin",
+    "route": "reportFizCustomers",
     "caption": "Покупатели (физ. лица)"
   },
   {

@@ -8,7 +8,6 @@ export default function FizProductDetails({
   holding,
   company,
   customer,
-  debtSum,
 }) {
   const [dateFrom, setDateFrom] = useState(
     Moment().startOf("month").format("YYYY-MM-DD")

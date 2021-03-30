@@ -6,7 +6,7 @@ import ReportConsultants from "../Reports/ReportConsultants";
 import ReportDiscounts from "../Reports/ReportDiscounts";
 import ReportIncome from "../Reports/ReportIncome";
 // import ConsignmentReports from "../Reports/ConsignmentReports";
-import ReportLoyalty from "../Reports/ReportLoyalty";
+import ReportFizCustomers from "../Reports/ReportFizCustomers";
 import ReportSales from "../Reports/ReportSales";
 import ReportSalesPlan from "../Reports/ReportSalesPlan";
 import ReportSalesPlanTeam from "../Reports/ReportSalesPlanTeam";
@@ -181,8 +181,8 @@ export default function ReportAdminPage({ user }) {
               {/* {reportMode === "ConsignmentReports" && (
                 <ConsignmentReports companyProps={companySelect} />
               )} */}
-              {reportMode === "ReportLoyaltyAdmin" && (
-                <ReportLoyalty companyProps={companySelect} />
+              {reportMode === "ReportFizCustomersAdmin" && (
+                <ReportFizCustomers companyProps={companySelect} />
               )}
               {reportMode === "ReportSalesAdmin" && (
                 <ReportSales companyProps={companySelect} />

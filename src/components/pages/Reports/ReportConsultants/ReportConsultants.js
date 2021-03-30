@@ -203,18 +203,16 @@ export default function ReportConsultants({ companyProps }) {
       )}
 
       {!isLoading && consultants.length > 0 && (
-        <Grid item xs={12}>
-          <ConsultantsTable
-            classes={classes}
-            companyName={companyName}
-            dateFrom={dateFrom}
-            dateTo={dateTo}
-            handleClick={handleClick}
-            now={now}
-            consultants={consultants}
-            selectedID={selectedID}
-          />
-        </Grid>
+        <ConsultantsTable
+          classes={classes}
+          companyName={companyName}
+          dateFrom={dateFrom}
+          dateTo={dateTo}
+          handleClick={handleClick}
+          now={now}
+          consultants={consultants}
+          selectedID={selectedID}
+        />
       )}
     </Grid>
   );

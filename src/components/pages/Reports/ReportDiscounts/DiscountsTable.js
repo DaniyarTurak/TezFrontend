@@ -196,7 +196,7 @@ export default function DiscountsTable({
                         minimumFractionDigits: 2,
                       })}
                     </StyledTableCell>
-                    <StyledTableCell className="text-right">
+                    <StyledTableCell>
                       <IconButton
                         component="span"
                         onClick={() => openDetails(discount)}

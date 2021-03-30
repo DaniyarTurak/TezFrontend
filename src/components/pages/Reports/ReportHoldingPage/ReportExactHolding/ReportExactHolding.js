@@ -1,6 +1,6 @@
 import React, { useState, useEffect, Fragment } from "react";
 import holdingtypes from "../../../../../data/holdingtypes";
-import ReportLoyalty from "../../../Reports/ReportLoyalty";
+import ReportFizCustomers from "../../../Reports/ReportFizCustomers";
 import ReportSalesPlanTeam from "../../../Reports/ReportSalesPlanTeam";
 import ReportSalesSection from "../../../Reports/ReportSalesSection";
 import ReportTransactions from "../../../Reports/ReportTransactions";
@@ -12,7 +12,7 @@ import Axios from "axios";
 import Select from "react-select";
 
 export default function ReportExactHolding() {
-  const [reportMode, setRepotrMode] = useState("reportloyalty");
+  const [reportMode, setRepotrMode] = useState("reportFizCustomers");
   const [companySelect, setCompanySelect] = useState("");
   const [companies, setCompanies] = useState([]);
   const [isLoading, setLoading] = useState(true);
@@ -93,8 +93,11 @@ export default function ReportExactHolding() {
               {reportMode === "reportcashboxstate" && (
                 <ReportCashboxState company={companySelect} holding={false} />
               )}
-              {reportMode === "reportloyalty" && (
-                <ReportLoyalty companyProps={companySelect} holding={false} />
+              {reportMode === "reportFizCustomers" && (
+                <ReportFizCustomers
+                  companyProps={companySelect}
+                  holding={false}
+                />
               )}
               {reportMode === "reportbonuses" && (
                 <ReportBonuses company={companySelect} holding={false} />

@@ -1,13 +1,12 @@
 import React, { Fragment } from "react";
 import PropTypes from "prop-types";
 import Table from "@material-ui/core/Table";
-import ReportConsultantsDetails from "./ReportConsultantsDetails";
+import Button from "@material-ui/core/Button";
 import { withStyles, makeStyles, useTheme } from "@material-ui/core/styles";
 import TableBody from "@material-ui/core/TableBody";
 import TableContainer from "@material-ui/core/TableContainer";
 import TableHead from "@material-ui/core/TableHead";
 import TableRow from "@material-ui/core/TableRow";
-import TableFooter from "@material-ui/core/TableFooter";
 import ReactHTMLTableToExcel from "react-html-table-to-excel";
 import Paper from "@material-ui/core/Paper";
 import TablePagination from "@material-ui/core/TablePagination";
@@ -116,18 +115,15 @@ TablePaginationActions.propTypes = {
   rowsPerPage: PropTypes.number.isRequired,
 };
 
-export default function ConsultantsTable({
+export default function CertificatesTable({
   classes,
-  companyName,
-  dateFrom,
-  dateTo,
-  handleClick,
-  now,
-  consultants,
-  selectedID,
+  certificates,
+  handleActivate,
+  status,
 }) {
   const [page, setPage] = React.useState(0);
   const [rowsPerPage, setRowsPerPage] = React.useState(10);
+  const [selectedID, setSelectedID] = React.useState(null);
 
   const handleChangePage = (event, newPage) => {
     setPage(newPage);
@@ -143,120 +139,86 @@ export default function ConsultantsTable({
       <Grid item xs={12}>
         <TableContainer component={Paper} className={classes.container}>
           <Table className={classes.table} id="table-to-xls">
-            <TableHead
-              style={{
-                display: "none",
-              }}
-            >
-              <TableRow>
-                <StyledTableCell align="center">
-                  Отчет по консультантам
-                </StyledTableCell>
-                <StyledTableCell colSpan={2} />
-              </TableRow>
-              <TableRow></TableRow>
-              <TableRow>
-                <StyledTableCell align="center">Компания:</StyledTableCell>
-                <StyledTableCell colSpan="2">{companyName}</StyledTableCell>
-              </TableRow>
-              <TableRow>
-                <StyledTableCell align="center">За период:</StyledTableCell>
-                <StyledTableCell colSpan="2">
-                  {Moment(dateFrom).format("DD.MM.YYYY HH:mm:ss")} -{" "}
-                  {Moment(dateTo).format("DD.MM.YYYY HH:mm:ss")}
-                </StyledTableCell>
-              </TableRow>
-              <TableRow>
-                <StyledTableCell align="center">
-                  Время формирования отчёта:
-                </StyledTableCell>
-                <StyledTableCell colSpan="2">{now}.</StyledTableCell>
-              </TableRow>
-              <TableRow>
-                <StyledTableCell
-                  colSpan="9"
-                  style={{ height: "30px" }}
-                ></StyledTableCell>
-              </TableRow>
-            </TableHead>
             <TableHead>
-              <TableRow style={{ fontWeight: "bold" }}>
+              <TableRow>
                 <StyledTableCell>№</StyledTableCell>
-                <StyledTableCell align="center">Консультант</StyledTableCell>
-                <StyledTableCell align="center">
-                  C учетом применёной скидки
-                </StyledTableCell>
-                <StyledTableCell align="center">
-                  C учетом применёной скидки(за минусом использованных бонусов)
-                </StyledTableCell>
+                <StyledTableCell>Код</StyledTableCell>
+                <StyledTableCell align="center">Номинал</StyledTableCell>
+                <StyledTableCell align="center">Дата истечения</StyledTableCell>
+                <StyledTableCell align="center">Тип</StyledTableCell>
+                <StyledTableCell align="center">Дата продажи</StyledTableCell>
+                <StyledTableCell align="center">Статус</StyledTableCell>
+                <StyledTableCell />
               </TableRow>
             </TableHead>
             <TableBody>
-              {consultants
+              {certificates
                 .slice(page * rowsPerPage, page * rowsPerPage + rowsPerPage)
-                .map((consultant, idx) => (
-                  <Fragment>
-                    <TableRow
-                      hover
-                      selected={selectedID === consultant.id}
-                      key={consultant.id}
-                      className={classes.tableRow}
-                      onClick={() => handleClick(consultant.id)}
+                .map((certificate, idx) => (
+                  <TableRow
+                    selected={selectedID === certificate.id}
+                    className={classes.tableRow}
+                    key={certificate.id}
+                    onClick={() => setSelectedID(certificate.id)}
+                  >
+                    <StyledTableCell>{idx + 1}</StyledTableCell>
+
+                    <StyledTableCell>{certificate.code}</StyledTableCell>
+                    <StyledTableCell align="center">
+                      {certificate.denomination}
+                    </StyledTableCell>
+                    <StyledTableCell align="center">
+                      {certificate.expiredate}
+                    </StyledTableCell>
+                    <StyledTableCell align="center">
+                      {certificate.type}
+                    </StyledTableCell>
+
+                    <StyledTableCell align="center">
+                      {certificate.selldate}
+                    </StyledTableCell>
+                    <StyledTableCell
+                      align="center"
+                      style={{
+                        fontWeight: "bold",
+                        color:
+                          certificate.status === "Доступен для продажи"
+                            ? "green"
+                            : certificate.status === "Использован"
+                            ? "black"
+                            : certificate.status === "Продан (Активен)"
+                            ? "blue"
+                            : "red",
+                      }}
                     >
-                      <StyledTableCell>{idx + 1}</StyledTableCell>
-                      <StyledTableCell align="center">
-                        {consultant.name}
-                      </StyledTableCell>
-                      <StyledTableCell align="center">
-                        {consultant.sum}
-                      </StyledTableCell>
-                      <StyledTableCell align="center">
-                        {consultant.sum_without_bonus}
-                      </StyledTableCell>
-                    </TableRow>
-                    {consultant.show && (
-                      <TableRow style={{ transition: "transform 1s" }}>
-                        <StyledTableCell colspan="4">
-                          <ReportConsultantsDetails
-                            dateFrom={Moment(dateFrom).format("YYYY-MM-DD")}
-                            dateTo={Moment(dateTo).format("YYYY-MM-DD")}
-                            id={consultant.id}
-                            classes={classes}
-                          />
-                        </StyledTableCell>
-                      </TableRow>
-                    )}
-                  </Fragment>
+                      {certificate.status}
+                    </StyledTableCell>
+                    <StyledTableCell>
+                      {certificate.status === "Доступен для продажи" ||
+                      certificate.status === "Использован" ? (
+                        <Button
+                          fullWidth
+                          className={classes.button}
+                          variant="outlined"
+                          onClick={() => handleActivate(certificate)}
+                        >
+                          Активировать
+                        </Button>
+                      ) : (
+                        ""
+                      )}
+                    </StyledTableCell>
+                  </TableRow>
                 ))}
             </TableBody>
-            <TableRow>
-              <StyledTableCell>Итого:</StyledTableCell>
-              <StyledTableCell></StyledTableCell>
-              <StyledTableCell align="center">
-                {consultants
-                  .reduce((prev, cur) => {
-                    return prev + parseFloat(cur.sum);
-                  }, 0)
-                  .toLocaleString("ru", { minimumFractionDigits: 2 })}
-              </StyledTableCell>
-              <StyledTableCell align="center">
-                {consultants
-                  .reduce((prev, cur) => {
-                    return prev + parseFloat(cur.sum_without_bonus);
-                  }, 0)
-                  .toLocaleString("ru", { minimumFractionDigits: 2 })}
-              </StyledTableCell>
-            </TableRow>
-
-            <TableFooter></TableFooter>
           </Table>
         </TableContainer>
 
-        {consultants.length > rowsPerPage && (
+        {certificates.length > rowsPerPage && (
           <TablePagination
             rowsPerPageOptions={[10, 20, 50]}
             component="div"
-            count={consultants.length}
+            count={certificates.length}
             backIconButtonText="Предыдущая страница"
             labelRowsPerPage="Строк в странице"
             nextIconButtonText="Следующая страница"
@@ -268,11 +230,12 @@ export default function ConsultantsTable({
           />
         )}
       </Grid>
+
       <Grid item xs={12}>
         <ReactHTMLTableToExcel
           className="btn btn-sm btn-outline-success"
           table="table-to-xls"
-          filename="Консультанты"
+          filename={`Сертификаты(${status.label})`}
           sheet="tablexls"
           buttonText="Выгрузить в excel"
         />

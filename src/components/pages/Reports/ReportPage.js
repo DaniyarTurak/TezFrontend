@@ -9,7 +9,7 @@ import ReportDiscounts from "./ReportDiscounts";
 import ReportHoldingPage from "./ReportHoldingPage";
 import ReportIncome from "./ReportIncome";
 import ReportInvoiceHistory from "./ReportInvoiceHistory";
-import ReportLoyalty from "./ReportLoyalty";
+import ReportFizCustomers from "./ReportFizCustomers";
 import ReportProductMovement from "./ReportProductMovement";
 import ReportRevision from "./ReportRevision";
 import ReportStockBalance from "./ReportStockBalance";
@@ -21,7 +21,6 @@ import ReportTransactions from "./ReportTransactions";
 import AbcXyzPage from "./AbcXyzPage";
 import ShelfLifePage from "./ShelfLifePage";
 
-
 export default function ReportPage({ type, history, location }) {
   // const counter = useSelector((state) => state.counter);
   // console.log(counter);
@@ -31,8 +30,8 @@ export default function ReportPage({ type, history, location }) {
     type === "report"
       ? "reportcashboxstate"
       : location.state
-        ? location.state
-        : "reportstockbalance"
+      ? location.state
+      : "reportstockbalance"
   );
   const [typeMode, setTypeMode] = useState(type ? type : "report");
 
@@ -44,8 +43,8 @@ export default function ReportPage({ type, history, location }) {
           ? "reporttransactions"
           : "reportcashboxstate"
         : location.state
-          ? location.state
-          : "reportstockbalance"
+        ? location.state
+        : "reportstockbalance"
     );
   }, [type]);
 
@@ -75,10 +74,11 @@ export default function ReportPage({ type, history, location }) {
             typeMode === report.type && (
               <div className="col-md-3 report-btn-block" key={report.id}>
                 <button
-                  className={`btn btn-sm btn-block btn-report ${reportMode === report.route
+                  className={`btn btn-sm btn-block btn-report ${
+                    reportMode === report.route
                       ? "btn-info"
                       : "btn-outline-info"
-                    }`}
+                  }`}
                   name={report.route}
                   onClick={changeReportMode}
                 >
@@ -145,8 +145,8 @@ export default function ReportPage({ type, history, location }) {
                 <ReportConsultants history={history} location={location} />
               )}
 
-              {typeMode === "report" && reportMode === "reportloyalty" && (
-                <ReportLoyalty
+              {typeMode === "report" && reportMode === "reportFizCustomers" && (
+                <ReportFizCustomers
                   holding={false}
                   company={""}
                   history={history}

@@ -2,7 +2,7 @@
   {
     "id": 0,
     "type": "report",
-    "route": "reportloyalty",
+    "route": "reportFizCustomers",
     "caption": "Отчет по покупателям (физ. лица)"
   },
   {

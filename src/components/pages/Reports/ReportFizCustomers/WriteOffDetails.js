@@ -1,5 +1,5 @@
 import React from "react";
-export default function WeireOffDetails({
+export default function WriteOffDetails({
   customerInfo,
   handleWriteOff,
   onWriteOffChange,

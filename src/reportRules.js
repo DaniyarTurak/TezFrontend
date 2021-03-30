@@ -19,7 +19,7 @@ const rules = {
       "reportSalesPlan",
       "reportSalesPlanTeam",
       "reportProductRemains",
-      "reportLoyalty",
+      "reportFizCustomers",
       "reportDiscounts",
       "reportIncome",
 
@@ -46,7 +46,7 @@ const rules = {
       "reportSalesPlan",
       "reportSalesPlanTeam",
       "reportProductRemains",
-      "reportLoyalty",
+      "reportFizCustomers",
       "reportDiscounts",
       "reportIncome",
 
