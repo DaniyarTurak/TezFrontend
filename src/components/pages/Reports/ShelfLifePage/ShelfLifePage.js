@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect, Fragment } from "react";
 import PeriodComponent from "./PeriodComponent";
 import Axios from "axios";
 import Grid from "@material-ui/core/Grid";
@@ -59,7 +59,7 @@ export default function ShelfLifePage() {
         arr3.push({ ...e, dt: moment(e.dt).format('L') })
       })
     };
-    
+
     if (datesExcel[1]) {
       datesExcel[1].forEach((e) => {
         arr6.push({ ...e, dt: moment(e.dt).format('L') })
