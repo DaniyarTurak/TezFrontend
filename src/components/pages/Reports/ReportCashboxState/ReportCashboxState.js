@@ -20,9 +20,7 @@ import Menu from '@material-ui/core/Menu';
 import MenuItem from '@material-ui/core/MenuItem';
 import MoreVertIcon from '@material-ui/icons/MoreVert';
 import IconButton from '@material-ui/core/IconButton';
-import InfoIcon from '@material-ui/icons/Info';
 import Tooltip from '@material-ui/core/Tooltip';
-import { Typography } from "@material-ui/core";
 
 const ColorButton = withStyles(() => ({
   root: {
@@ -181,7 +179,6 @@ export default function ReportCashboxState({ company, holding }) {
             <TableHead>
               <TableRow>
                 <StyledCell>Наименование</StyledCell>
-
                 <StyledCell>Пользователь</StyledCell>
                 <StyledCell>Статус</StyledCell>
                 <StyledCell align="center">

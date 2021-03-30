@@ -16,11 +16,9 @@ export default function RestOfCash({shiftnumber, cashbox }) {
         })
             .then((res) => res.data)
             .then((result) => {
-                console.log(result.rows[0].cash);
                 setCash(result.rows[0].cash);
             })
             .catch((err) => {
-                console.log(err);
                 ErrorAlert(err);
             });
     };
