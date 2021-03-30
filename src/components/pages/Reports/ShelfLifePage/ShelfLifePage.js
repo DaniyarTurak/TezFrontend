@@ -44,7 +44,7 @@ export default function ShelfLifePage() {
   const getShelfLifeExcel = () => {
     setExcelLoading(true);
     let arr3 = expdates[0];
-    let arr6;
+    let arr6 = expdates[1];
     let arr9 = expdates[2];
     let arr12 = expdates[3];
     Axios({
