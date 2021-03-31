@@ -11,29 +11,14 @@ import TableContainer from "@material-ui/core/TableContainer";
 import TableHead from "@material-ui/core/TableHead";
 import TableRow from "@material-ui/core/TableRow";
 import Paper from "@material-ui/core/Paper";
-import Button from "@material-ui/core/Button";
 import { withStyles } from "@material-ui/core/styles";
 import SkeletonTable from "../../../Skeletons/TableSkeleton";
 import ErrorAlert from "../../../ReusableComponents/ErrorAlert";
 import Zreports from "./Zreports";
-import Menu from '@material-ui/core/Menu';
-import MenuItem from '@material-ui/core/MenuItem';
-import MoreVertIcon from '@material-ui/icons/MoreVert';
 import Tooltip from '@material-ui/core/Tooltip';
 import IconButton from '@material-ui/core/IconButton';
 import ListAltIcon from '@material-ui/icons/ListAlt';
 import ReceiptIcon from '@material-ui/icons/Receipt';
-
-const ColorButton = withStyles(() => ({
-  root: {
-    borderColor: "#17a2b8",
-    color: "#17a2b8",
-    fontSize: ".875rem",
-    textTransform: "none",
-    minWidth: "11rem",
-    margin: ".1rem",
-  },
-}))(Button);
 
 const StyledCell = withStyles((theme) => ({
   head: {
@@ -45,22 +30,6 @@ const StyledCell = withStyles((theme) => ({
     fontSize: ".875rem",
   },
 }))(TableCell);
-
-const StyledMenu = withStyles()((props) => (
-  <Menu
-    elevation={0}
-    getContentAnchorEl={null}
-    anchorOrigin={{
-      vertical: 'bottom',
-      horizontal: 'right',
-    }}
-    transformOrigin={{
-      vertical: 'top',
-      horizontal: 'right',
-    }}
-    {...props}
-  />
-));
 
 export default function ReportCashboxState({ company, holding }) {
   const [cashboxstate, setCashboxstate] = useState([]);
@@ -125,15 +94,6 @@ export default function ReportCashboxState({ company, holding }) {
   const closeReports = () => {
     setCashbox(null);
     setReportsModalIsOpen(false);
-  };
-
-  const closeMenu = () => {
-    setMenuOpened(null);
-  };
-  const [menuOpened, setMenuOpened] = useState(null);
-
-  const openMenu = (event) => {
-    setMenuOpened(event.currentTarget);
   };
 
   return (
@@ -235,34 +195,6 @@ export default function ReportCashboxState({ company, holding }) {
                             <RestOfCash key={idx} cashbox={cashbox.id} shiftnumber={cashbox.shiftnumber} />
                           </StyledCell>
                           <StyledCell align="center">
-                            {/* <IconButton
-                              onClick={openMenu}
-                            >
-                              <MoreVertIcon />
-                            </IconButton>
-                            <StyledMenu
-                              anchorEl={menuOpened}
-                              keepMounted
-                              open={Boolean(menuOpened)}
-                              onClose={closeMenu}
-                            >
-                              <MenuItem>
-                                <ColorButton
-                                  variant="outlined"
-                                  onClick={() => handleZreport(cashbox)}
-                                >
-                                  Отчёт по сменам
-                            </ColorButton>
-                              </MenuItem>
-                              <MenuItem>
-                                <ColorButton
-                                  variant="outlined"
-                                  onClick={() => handleCashbox(cashbox)}
-                                >
-                                  Кассовые Ордера
-                            </ColorButton>
-                              </MenuItem>
-                            </StyledMenu> */}
                             <Tooltip title={<p style={{ padding: "0px", fontSize: ".875rem" }}>Отчёт по сменам</p>}>
                             <IconButton onClick={() => handleZreport(cashbox)}>
                               <ListAltIcon />
