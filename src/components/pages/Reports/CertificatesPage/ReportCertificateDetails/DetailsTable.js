@@ -63,7 +63,6 @@ export default function DetailsTable({
                 <TableRow
                   key={certificate.id}
                   selected={selectedID === certificate.id}
-                  className={classes.tableRow}
                   onClick={() => setSelectedID(certificate.id)}
                 >
                   <StyledTableCell>{idx + 1}</StyledTableCell>

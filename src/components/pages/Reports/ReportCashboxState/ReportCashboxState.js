@@ -192,7 +192,11 @@ export default function ReportCashboxState({ company, holding }) {
                               )}
                           </StyledCell>
                           <StyledCell align="center">
-                            <RestOfCash key={idx} cashbox={cashbox.id} shiftnumber={cashbox.shiftnumber} />
+                            <RestOfCash
+                              key={idx}
+                              cashbox={cashbox.id}
+                              shiftnumber={cashbox.shiftnumber}
+                            />
                           </StyledCell>
                           <StyledCell align="center">
                             <Tooltip title={<p style={{ padding: "0px", fontSize: ".875rem" }}>Отчёт по сменам</p>}>

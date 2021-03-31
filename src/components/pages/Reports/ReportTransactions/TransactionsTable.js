@@ -128,6 +128,8 @@ export default function TransactionsTable({
 
   const [rowsPerPage, setRowsPerPage] = React.useState(10);
 
+  const [selectedID, setSelectedID] = React.useState(10);
+
   const handleChangePage = (event, newPage) => {
     setPage(newPage);
   };
@@ -190,8 +192,12 @@ export default function TransactionsTable({
               {transactions
                 .slice(page * rowsPerPage, page * rowsPerPage + rowsPerPage)
                 .map((tr, idx) => (
-                  <TableRow key={idx}>
-                    <StyledTableCell>{idx + 1}</StyledTableCell>
+                  <TableRow
+                    key={tr.id}
+                    selected={selectedID === tr.id}
+                    onClick={() => setSelectedID(tr.id)}
+                  >
+                    <StyledTableCell>{idx + 1 + page * 10}</StyledTableCell>
                     <StyledTableCell>
                       {Moment(tr.date).format("DD.MM.YYYY HH:mm:ss")}
                     </StyledTableCell>
