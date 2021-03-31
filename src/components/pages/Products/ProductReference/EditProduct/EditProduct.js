@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useState,Fragment } from "react";
 import { makeStyles } from "@material-ui/core/styles";
 import Paper from "@material-ui/core/Paper";
 import TextField from "@material-ui/core/TextField";
@@ -20,7 +20,8 @@ import TableCell from "@material-ui/core/TableCell";
 import TableRow from "@material-ui/core/TableRow";
 import IconButton from "@material-ui/core/IconButton";
 import TableFooter from "@material-ui/core/TableFooter";
-import { Fragment } from "react";
+import AlertMaterial from '@material-ui/lab/Alert';
+
 
 const useStyles = makeStyles((theme) => ({
   table: {},
@@ -64,11 +65,11 @@ export default function EditProduct({
   onProductNameChange,
   editProd,
   closeModal,
-  tax,
   onTaxChange,
   taxes,
   companyData,
-  errorAlert,
+  errorMessage,
+  errorAlert
 }) {
   const classes = useStyles();
   const [editingName, setEditingName] = useState(true);
@@ -79,6 +80,7 @@ export default function EditProduct({
 
   return (
     <Fragment>
+      {errorAlert && (<AlertMaterial severity="error">{errorMessage.response&& errorMessage.response.data.text}</AlertMaterial>)}
       <TableContainer component={Paper}>
         <Table className={classes.table} aria-label="customized table">
           <TableHead className={classes.head} align="left">

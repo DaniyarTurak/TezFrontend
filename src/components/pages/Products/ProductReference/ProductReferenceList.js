@@ -22,6 +22,7 @@ import CreateIcon from "@material-ui/icons/Create";
 import Dialog from "@material-ui/core/Dialog";
 
 
+
 export default function ProductReferenceList({
 	company,
 	reference,
@@ -56,6 +57,7 @@ export default function ProductReferenceList({
 	const [tax, setTax] = useState(1);
 	const [fullWidth] = useState(true);
  	const [maxWidth] = useState('lg');
+	 const [errorMessage,setErrorMessage] = useState({});
 	const [errorAlert,setErrorAlert] = useState(false);
 	const companyData =
     JSON.parse(sessionStorage.getItem("isme-company-data")) || {};
@@ -262,6 +264,7 @@ export default function ProductReferenceList({
 			})
 			.catch(err => {
 				setErrorAlert(true)
+				setErrorMessage(err)
 			});
 		
 	};
@@ -323,6 +326,8 @@ export default function ProductReferenceList({
 		setEditingProduct(idx);
 		setModalOpen(false);
 		clear();
+		setErrorMessage({});
+		setErrorAlert(false)
 	};
 
 	const handleSearch = () => {
@@ -383,6 +388,7 @@ export default function ProductReferenceList({
 				onTaxChange={onTaxChange}
 				onPieceAmountChange={onPieceAmountChange}
 				errorAlert={errorAlert}
+				errorMessage={errorMessage}
 				companyData={companyData}
 			/>
 		</Dialog>
