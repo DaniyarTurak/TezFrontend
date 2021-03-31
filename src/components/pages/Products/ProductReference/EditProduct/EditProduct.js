@@ -68,8 +68,9 @@ export default function EditProduct({
   onTaxChange,
   taxes,
   companyData,
+  errorAlert,
   errorMessage,
-  errorAlert
+  
 }) {
   const classes = useStyles();
   const [editingName, setEditingName] = useState(true);
