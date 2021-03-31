@@ -20,8 +20,6 @@ import SweetAlert from "react-bootstrap-sweetalert";
 import Button from "@material-ui/core/Button";
 import CreateIcon from "@material-ui/icons/Create";
 import Dialog from "@material-ui/core/Dialog";
-// import ErrorAlert from "../../../ReusableComponents/ErrorAlert";
-// import DialogContentText from '@material-ui/core/DialogContentText';
 
 
 export default function ProductReferenceList({
