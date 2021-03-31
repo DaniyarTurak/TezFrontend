@@ -40,6 +40,7 @@ export default function ReportSalesSection({ companyProps, holding }) {
   });
   const [isDateChanging, setDateChanging] = useState(false);
   const [isLoading, setLoading] = useState(false);
+  const [isExcelLoading, setExcelLoading] = useState(false);
   const [salesResult, setSalesResult] = useState([]);
   const [salesResultNDS, setSalesResultNDS] = useState([]);
 
@@ -155,7 +156,6 @@ export default function ReportSalesSection({ companyProps, holding }) {
       })
       .catch((err) => {
         ErrorAlert(err);
-        ErrorAlert(err);
         setLoading(false);
       });
   };
@@ -198,6 +198,67 @@ export default function ReportSalesSection({ companyProps, holding }) {
       .catch((err) => {
         setLoading(false);
         ErrorAlert(err);
+      });
+  };
+
+  const getExcel = () => {
+    setExcelLoading(true);
+
+    let totalsForSales = {};
+    totalsForSales = {
+      name: "Итого",
+      cash: totalResults.reduce((prev, cur) => {
+        return prev + parseFloat(cur.cash);
+      }, 0),
+      card: totalResults.reduce((prev, cur) => {
+        return prev + parseFloat(cur.card);
+      }, 0),
+      debitpay: totalResults.reduce((prev, cur) => {
+        return prev + parseFloat(cur.debitpay);
+      }, 0),
+      discount: totalResults.reduce((prev, cur) => {
+        return prev + parseFloat(cur.discount);
+      }, 0),
+      bonuspay: totalResults.reduce((prev, cur) => {
+        return prev + parseFloat(cur.bonuspay);
+      }, 0),
+      debtpay: totalResults.reduce((prev, cur) => {
+        return prev + parseFloat(cur.debtpay);
+      }, 0),
+      total_discount: totalResults.reduce((prev, cur) => {
+        return prev + parseFloat(cur.total_discount);
+      }, 0),
+      total_discount_bonus: totalResults.reduce((prev, cur) => {
+        return prev + parseFloat(cur.total_discount_bonus);
+      }, 0),
+    };
+
+    console.log([...totalResults, totalsForSales]);
+    Axios({
+      method: "POST",
+      url: "/api/report/transactions/excel_sales",
+      data: {
+        salesResult: [...totalResults, totalsForSales],
+        salesResultNDS: [...totalResults, totalsForSales],
+        totalResults,
+        totalResultsNDS,
+        filterType,
+      },
+      responseType: "blob",
+    })
+      .then((res) => res.data)
+      .then((res) => {
+        const url = window.URL.createObjectURL(new Blob([res]));
+        const link = document.createElement("a");
+        link.href = url;
+        link.setAttribute("download", `Сроки годности.xlsx`);
+        document.body.appendChild(link);
+        link.click();
+        setExcelLoading(false);
+      })
+      .catch((err) => {
+        ErrorAlert(err);
+        setExcelLoading(false);
       });
   };
 
@@ -267,6 +328,16 @@ export default function ReportSalesSection({ companyProps, holding }) {
               filterType={filterType}
               totalResultsNDS={totalResultsNDS}
             />
+          </Grid>
+
+          <Grid item xs={12}>
+            <button
+              className="btn btn-sm btn-outline-success"
+              disabled={isExcelLoading}
+              onClick={getExcel}
+            >
+              Выгрузить в excel
+            </button>
           </Grid>
         </Fragment>
       )}
