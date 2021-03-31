@@ -1,8 +1,4 @@
-<<<<<<< HEAD
 import React, { useState, useEffect ,Fragment} from "react";
-=======
-import React, { useState, useEffect, Fragment } from "react";
->>>>>>> 9badddfba154eccbec1464aa4d9d7609b7a78e93
 import PeriodComponent from "./PeriodComponent";
 import Axios from "axios";
 import Grid from "@material-ui/core/Grid";

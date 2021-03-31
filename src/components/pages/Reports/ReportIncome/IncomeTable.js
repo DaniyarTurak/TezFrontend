@@ -235,7 +235,6 @@ export default function IncomeTable({
                 <TableRow
                   selected={selectedID === idx}
                   key={idx}
-                  className={classes.tableRow}
                   onClick={() => setSelectedID(idx)}
                 >
                   <StyledTableCell>{idx + 1}</StyledTableCell>

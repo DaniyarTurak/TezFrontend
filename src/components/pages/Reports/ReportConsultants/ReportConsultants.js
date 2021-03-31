@@ -61,9 +61,6 @@ const useStyles = makeStyles((theme) => ({
         backgroundColor: "#49bb7b",
       },
     },
-    "&$selected, &$selected:hover": {
-      backgroundColor: "#49bb7b",
-    },
   },
   label: {
     color: "orange",
