@@ -203,28 +203,26 @@ export default function TransactionsTable({
                     </StyledTableCell>
                     <StyledTableCell align="center">
                       <span
-                        className={`btn btn-w-big-icon ${
-                          tr.paymenttype === "card"
+                        className={`btn btn-w-big-icon ${tr.paymenttype === "card"
                             ? "paycard-item"
                             : tr.paymenttype === "cash"
-                            ? "tenge-item"
-                            : tr.paymenttype === "mixed"
-                            ? "mixed-item"
-                            : tr.paymenttype === "debt"
-                            ? "debt-item"
-                            : "debit-item"
-                        }`}
-                        title={`${
-                          tr.paymenttype === "card"
+                              ? "tenge-item"
+                              : tr.paymenttype === "mixed"
+                                ? "mixed-item"
+                                : tr.paymenttype === "debt"
+                                  ? "debt-item"
+                                  : "debit-item"
+                          }`}
+                        title={`${tr.paymenttype === "card"
                             ? "Карта"
                             : tr.paymenttype === "cash"
-                            ? "Наличными"
-                            : tr.paymenttype === "mixed"
-                            ? "Смешанная"
-                            : tr.paymenttype === "debt"
-                            ? "Долг"
-                            : "Перевод"
-                        }`}
+                              ? "Наличными"
+                              : tr.paymenttype === "mixed"
+                                ? "Смешанная"
+                                : tr.paymenttype === "debt"
+                                  ? "Долг"
+                                  : "Перевод"
+                          }`}
                       />
                     </StyledTableCell>
                     <StyledTableCell align="center">
@@ -260,21 +258,19 @@ export default function TransactionsTable({
             </TableBody>
           </Table>
         </TableContainer>
-        {transactions.length > rowsPerPage && (
-          <TablePagination
-            rowsPerPageOptions={[10, 20, 50]}
-            component="div"
-            count={transactions.length}
-            backIconButtonText="Предыдущая страница"
-            labelRowsPerPage="Строк в странице"
-            nextIconButtonText="Следующая страница"
-            rowsPerPage={rowsPerPage}
-            page={page}
-            onChangePage={handleChangePage}
-            onChangeRowsPerPage={handleChangeRowsPerPage}
-            ActionsComponent={TablePaginationActions}
-          />
-        )}
+        <TablePagination
+          rowsPerPageOptions={[10, 20, 50]}
+          component="div"
+          count={transactions.length}
+          backIconButtonText="Предыдущая страница"
+          labelRowsPerPage="Строк в странице"
+          nextIconButtonText="Следующая страница"
+          rowsPerPage={rowsPerPage}
+          page={page}
+          onChangePage={handleChangePage}
+          onChangeRowsPerPage={handleChangeRowsPerPage}
+          ActionsComponent={TablePaginationActions}
+        />
       </Grid>
 
       <Grid item xs={12}>

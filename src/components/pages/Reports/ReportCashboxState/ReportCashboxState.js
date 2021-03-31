@@ -11,27 +11,14 @@ import TableContainer from "@material-ui/core/TableContainer";
 import TableHead from "@material-ui/core/TableHead";
 import TableRow from "@material-ui/core/TableRow";
 import Paper from "@material-ui/core/Paper";
-import Button from "@material-ui/core/Button";
 import { withStyles } from "@material-ui/core/styles";
 import SkeletonTable from "../../../Skeletons/TableSkeleton";
 import ErrorAlert from "../../../ReusableComponents/ErrorAlert";
 import Zreports from "./Zreports";
-import Menu from "@material-ui/core/Menu";
-import MenuItem from "@material-ui/core/MenuItem";
-import MoreVertIcon from "@material-ui/icons/MoreVert";
-import IconButton from "@material-ui/core/IconButton";
-import Tooltip from "@material-ui/core/Tooltip";
-
-const ColorButton = withStyles(() => ({
-  root: {
-    borderColor: "#17a2b8",
-    color: "#17a2b8",
-    fontSize: ".875rem",
-    textTransform: "none",
-    minWidth: "11rem",
-    margin: ".1rem",
-  },
-}))(Button);
+import Tooltip from '@material-ui/core/Tooltip';
+import IconButton from '@material-ui/core/IconButton';
+import ListAltIcon from '@material-ui/icons/ListAlt';
+import ReceiptIcon from '@material-ui/icons/Receipt';
 
 const StyledCell = withStyles((theme) => ({
   head: {
@@ -43,22 +30,6 @@ const StyledCell = withStyles((theme) => ({
     fontSize: ".875rem",
   },
 }))(TableCell);
-
-const StyledMenu = withStyles()((props) => (
-  <Menu
-    elevation={0}
-    getContentAnchorEl={null}
-    anchorOrigin={{
-      vertical: "bottom",
-      horizontal: "right",
-    }}
-    transformOrigin={{
-      vertical: "top",
-      horizontal: "right",
-    }}
-    {...props}
-  />
-));
 
 export default function ReportCashboxState({ company, holding }) {
   const [cashboxstate, setCashboxstate] = useState([]);
@@ -125,15 +96,6 @@ export default function ReportCashboxState({ company, holding }) {
     setReportsModalIsOpen(false);
   };
 
-  const closeMenu = () => {
-    setMenuOpened(null);
-  };
-  const [menuOpened, setMenuOpened] = useState(null);
-
-  const openMenu = (event) => {
-    setMenuOpened(event.currentTarget);
-  };
-
   return (
     <div>
       {modalIsOpen && (
@@ -185,13 +147,7 @@ export default function ReportCashboxState({ company, holding }) {
                   Время (открытия / закрытия)
                 </StyledCell>
                 <StyledCell align="center">
-                  <Tooltip
-                    title={
-                      <p style={{ padding: "0px", fontSize: ".875rem" }}>
-                        Остаток наличности в кассе
-                      </p>
-                    }
-                  >
+                  <Tooltip title={<p style={{ padding: "0px", fontSize: ".875rem" }}>Остаток в кассе на текущий момент</p>}>
                     <span style={{ cursor: "pointer" }}>Остаток в кассе*</span>
                   </Tooltip>
                 </StyledCell>
@@ -242,33 +198,17 @@ export default function ReportCashboxState({ company, holding }) {
                               shiftnumber={cashbox.shiftnumber}
                             />
                           </StyledCell>
-                          <StyledCell>
-                            <IconButton onClick={openMenu}>
-                              <MoreVertIcon />
+                          <StyledCell align="center">
+                            <Tooltip title={<p style={{ padding: "0px", fontSize: ".875rem" }}>Отчёт по сменам</p>}>
+                            <IconButton onClick={() => handleZreport(cashbox)}>
+                              <ListAltIcon />
                             </IconButton>
-                            <StyledMenu
-                              anchorEl={menuOpened}
-                              keepMounted
-                              open={Boolean(menuOpened)}
-                              onClose={closeMenu}
-                            >
-                              <MenuItem>
-                                <ColorButton
-                                  variant="outlined"
-                                  onClick={() => handleZreport(cashbox)}
-                                >
-                                  Отчёт по сменам
-                                </ColorButton>
-                              </MenuItem>
-                              <MenuItem>
-                                <ColorButton
-                                  variant="outlined"
-                                  onClick={() => handleCashbox(cashbox)}
-                                >
-                                  Кассовые Ордера
-                                </ColorButton>
-                              </MenuItem>
-                            </StyledMenu>
+                            </Tooltip>
+                            <Tooltip title={<p style={{ padding: "0px", fontSize: ".875rem" }}>Кассовые ордера</p>}>
+                            <IconButton onClick={() => handleCashbox(cashbox)}>
+                              <ReceiptIcon />
+                              </IconButton>
+                              </Tooltip>
                           </StyledCell>
                         </TableRow>
                       );

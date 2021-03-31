@@ -115,6 +115,14 @@ export default function ProductDetails({
           </div>
         </div>
       )}
+      {details.counterparty && details.counterparty !== "" && (
+        <div className="row">
+          <div className="col-md-12">
+            <label>Контрагент</label>
+            <p>{details.counterparty}</p>
+          </div>
+        </div>
+      )}
 
       {details.cnofeacode && (
         <div className="row">
