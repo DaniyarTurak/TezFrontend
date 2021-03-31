@@ -400,15 +400,6 @@ export default function CreateProduct({ isEditing }) {
     setPiecesUnint(0);
   };
 
-  const top100Films = [
-    { title: "att1", id: 1 },
-    { title: "att2", id: 2 },
-    { title: "att3", id: 3 },
-    { title: "att4", id: 4 },
-    { title: "att5", id: 5 },
-    { title: "att6", id: 6 },
-  ];
-
   return (
     <Fragment>
       <div className="add-product-form">
@@ -540,7 +531,7 @@ export default function CreateProduct({ isEditing }) {
               />
             </div>
           </div>
-          <Grid container spacing={3} justify="center">
+          {/* <Grid container spacing={3} justify="center">
             <Grid item xs={3} sm={3}>
             <Typography style={{ paddingBottom: "10px", paddingTop: "8px" }}>
             Глобальные характеристики
@@ -563,7 +554,7 @@ export default function CreateProduct({ isEditing }) {
         )}
       />
       </Grid>
-      </Grid>
+      </Grid> */}
           <Grid container spacing={3} justify="center">
             <Grid item xs={3} sm={3}>
               <Typography variant="h7" align="left">

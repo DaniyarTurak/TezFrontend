@@ -151,7 +151,7 @@ export default function ReportCashboxState({ company, holding }) {
                     <span style={{ cursor: "pointer" }}>Остаток в кассе*</span>
                   </Tooltip>
                 </StyledCell>
-                <StyledCell />
+                <StyledCell align="center">Отчёты</StyledCell>
               </TableRow>
             </TableHead>
             <TableBody>

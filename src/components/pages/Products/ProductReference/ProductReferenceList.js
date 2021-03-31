@@ -240,7 +240,7 @@ export default function ProductReferenceList({
 			name: productName,
 			category: category.id,
 			brand: brand.id,
-			taxid: companyData.certificatenum ? tax.value : "0",
+			taxid: companyData.certificatenum ? tax : "0",
 			unitsprid: unitspr.id,
 			piece: sellByPieces,
 			pieceinpack: piecesUnint,
