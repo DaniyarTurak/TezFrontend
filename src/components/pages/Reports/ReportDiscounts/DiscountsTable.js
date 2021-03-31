@@ -159,7 +159,6 @@ export default function DiscountsTable({
                   <TableRow
                     selected={selectedID === idx}
                     key={idx}
-                    className={classes.tableRow}
                     onClick={() => setSelectedID(idx)}
                   >
                     <StyledTableCell>{discount.name}</StyledTableCell>

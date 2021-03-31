@@ -57,11 +57,6 @@ const useStyles = makeStyles((theme) => ({
   icon: {
     color: "#35a0f4",
   },
-  tableRow: {
-    "&$selected, &$selected:hover": {
-      backgroundColor: "#49bb7b",
-    },
-  },
   label: {
     color: "orange",
     fontSize: ".875rem",
