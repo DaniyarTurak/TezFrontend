@@ -56,7 +56,7 @@ export default function ProductReferenceList({
 	const [sweetalert, setSweetAlert] = useState(null);
 	const [tax, setTax] = useState(1);
 	const [fullWidth] = useState(true);
- 	const [maxWidth] = useState('lg');
+ 	const [maxWidth] = useState('md');
 	 const [errorMessage,setErrorMessage] = useState({});
 	const [errorAlert,setErrorAlert] = useState(false);
 	const companyData =
@@ -356,7 +356,8 @@ export default function ProductReferenceList({
 
 	return isEditing && !isAddingAmount ? (
 		<Dialog
-		fullWidth={fullWidth}
+		style={{marginLeft: "300px"}}
+		// fullWidth={fullWidth}
         maxWidth={maxWidth}
 			onClose={handleClose}
 			open={modalIsOpen}>
