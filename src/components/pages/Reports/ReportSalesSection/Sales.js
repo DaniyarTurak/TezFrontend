@@ -38,6 +38,7 @@ const StyledCell = withStyles(() => ({
   body: {
     fontSize: ".875rem",
   },
+
   root: {
     verticalAlign: "middle!important",
     borderBottom: "1px solid rgba(224, 224, 224, 1)!important",
@@ -47,6 +48,7 @@ const StyledCell = withStyles(() => ({
 const StyledFooterCell = withStyles((theme) => ({
   root: {
     border: 0,
+    fontSize: ".875rem",
     color: theme.palette.common.white,
   },
 }))(TableCell);

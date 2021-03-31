@@ -16,11 +16,11 @@ import { withStyles } from "@material-ui/core/styles";
 import SkeletonTable from "../../../Skeletons/TableSkeleton";
 import ErrorAlert from "../../../ReusableComponents/ErrorAlert";
 import Zreports from "./Zreports";
-import Menu from '@material-ui/core/Menu';
-import MenuItem from '@material-ui/core/MenuItem';
-import MoreVertIcon from '@material-ui/icons/MoreVert';
-import IconButton from '@material-ui/core/IconButton';
-import Tooltip from '@material-ui/core/Tooltip';
+import Menu from "@material-ui/core/Menu";
+import MenuItem from "@material-ui/core/MenuItem";
+import MoreVertIcon from "@material-ui/icons/MoreVert";
+import IconButton from "@material-ui/core/IconButton";
+import Tooltip from "@material-ui/core/Tooltip";
 
 const ColorButton = withStyles(() => ({
   root: {
@@ -49,12 +49,12 @@ const StyledMenu = withStyles()((props) => (
     elevation={0}
     getContentAnchorEl={null}
     anchorOrigin={{
-      vertical: 'bottom',
-      horizontal: 'right',
+      vertical: "bottom",
+      horizontal: "right",
     }}
     transformOrigin={{
-      vertical: 'top',
-      horizontal: 'right',
+      vertical: "top",
+      horizontal: "right",
     }}
     {...props}
   />
@@ -185,7 +185,13 @@ export default function ReportCashboxState({ company, holding }) {
                   Время (открытия / закрытия)
                 </StyledCell>
                 <StyledCell align="center">
-                  <Tooltip title={<p style={{ padding: "0px", fontSize: ".875rem" }}>Остаток наличности в кассе</p>}>
+                  <Tooltip
+                    title={
+                      <p style={{ padding: "0px", fontSize: ".875rem" }}>
+                        Остаток наличности в кассе
+                      </p>
+                    }
+                  >
                     <span style={{ cursor: "pointer" }}>Остаток в кассе*</span>
                   </Tooltip>
                 </StyledCell>
@@ -230,12 +236,14 @@ export default function ReportCashboxState({ company, holding }) {
                               )}
                           </StyledCell>
                           <StyledCell align="center">
-                            <RestOfCash key={idx} cashbox={cashbox.id} shiftnumber={cashbox.shiftnumber} />
+                            <RestOfCash
+                              key={idx}
+                              cashbox={cashbox.id}
+                              shiftnumber={cashbox.shiftnumber}
+                            />
                           </StyledCell>
                           <StyledCell>
-                            <IconButton
-                              onClick={openMenu}
-                            >
+                            <IconButton onClick={openMenu}>
                               <MoreVertIcon />
                             </IconButton>
                             <StyledMenu
@@ -250,7 +258,7 @@ export default function ReportCashboxState({ company, holding }) {
                                   onClick={() => handleZreport(cashbox)}
                                 >
                                   Отчёт по сменам
-                            </ColorButton>
+                                </ColorButton>
                               </MenuItem>
                               <MenuItem>
                                 <ColorButton
@@ -258,7 +266,7 @@ export default function ReportCashboxState({ company, holding }) {
                                   onClick={() => handleCashbox(cashbox)}
                                 >
                                   Кассовые Ордера
-                            </ColorButton>
+                                </ColorButton>
                               </MenuItem>
                             </StyledMenu>
                           </StyledCell>

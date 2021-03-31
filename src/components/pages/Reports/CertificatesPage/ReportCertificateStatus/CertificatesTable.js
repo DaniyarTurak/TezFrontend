@@ -141,7 +141,7 @@ export default function CertificatesTable({
           <Table className={classes.table} id="table-to-xls">
             <TableHead>
               <TableRow>
-                <StyledTableCell>№</StyledTableCell>
+                <StyledTableCell />
                 <StyledTableCell>Код</StyledTableCell>
                 <StyledTableCell align="center">Номинал</StyledTableCell>
                 <StyledTableCell align="center">Дата истечения</StyledTableCell>
@@ -157,11 +157,10 @@ export default function CertificatesTable({
                 .map((certificate, idx) => (
                   <TableRow
                     selected={selectedID === certificate.id}
-                    className={classes.tableRow}
                     key={certificate.id}
                     onClick={() => setSelectedID(certificate.id)}
                   >
-                    <StyledTableCell>{idx + 1}</StyledTableCell>
+                    <StyledTableCell>{idx + 1 + page * 10}</StyledTableCell>
 
                     <StyledTableCell>{certificate.code}</StyledTableCell>
                     <StyledTableCell align="center">
