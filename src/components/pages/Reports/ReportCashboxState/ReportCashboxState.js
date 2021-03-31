@@ -19,8 +19,10 @@ import Zreports from "./Zreports";
 import Menu from '@material-ui/core/Menu';
 import MenuItem from '@material-ui/core/MenuItem';
 import MoreVertIcon from '@material-ui/icons/MoreVert';
-import IconButton from '@material-ui/core/IconButton';
 import Tooltip from '@material-ui/core/Tooltip';
+import IconButton from '@material-ui/core/IconButton';
+import ListAltIcon from '@material-ui/icons/ListAlt';
+import ReceiptIcon from '@material-ui/icons/Receipt';
 
 const ColorButton = withStyles(() => ({
   root: {
@@ -232,8 +234,8 @@ export default function ReportCashboxState({ company, holding }) {
                           <StyledCell align="center">
                             <RestOfCash key={idx} cashbox={cashbox.id} shiftnumber={cashbox.shiftnumber} />
                           </StyledCell>
-                          <StyledCell>
-                            <IconButton
+                          <StyledCell align="center">
+                            {/* <IconButton
                               onClick={openMenu}
                             >
                               <MoreVertIcon />
@@ -260,7 +262,17 @@ export default function ReportCashboxState({ company, holding }) {
                                   Кассовые Ордера
                             </ColorButton>
                               </MenuItem>
-                            </StyledMenu>
+                            </StyledMenu> */}
+                            <Tooltip title={<p style={{ padding: "0px", fontSize: ".875rem" }}>Отчёт по сменам</p>}>
+                            <IconButton onClick={() => handleZreport(cashbox)}>
+                              <ListAltIcon />
+                            </IconButton>
+                            </Tooltip>
+                            <Tooltip title={<p style={{ padding: "0px", fontSize: ".875rem" }}>Кассовые ордера</p>}>
+                            <IconButton onClick={() => handleCashbox(cashbox)}>
+                              <ReceiptIcon />
+                              </IconButton>
+                              </Tooltip>
                           </StyledCell>
                         </TableRow>
                       );

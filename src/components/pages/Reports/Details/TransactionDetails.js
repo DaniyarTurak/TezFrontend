@@ -135,7 +135,18 @@ export default function TransactionDetails({
                   <br />
                   <span>{`Касса: ${transaction.cashbox}`}</span>
                   <br />
-                  <span>{`Консультант: ${transaction.consultant}`}</span>
+                  {transaction.consultant && transaction.consultant !== "" &&
+                    <Fragment>
+                      <span>{`Консультант: ${transaction.consultant}`}</span>
+                      <br />
+                    </Fragment>
+                  }
+                  {transaction.fio && transaction.fio !== "" &&
+                    <Fragment>
+                      <span>{`Клиент: ${transaction.fio}`}</span>
+                      <br />
+                    </Fragment>
+                  }
                 </div>
               )}
               {parentDetail === 3 && (
