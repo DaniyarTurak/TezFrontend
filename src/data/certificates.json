@@ -2,11 +2,23 @@
   {
     "id": 0,
     "type": "report",
+    "route": "ReportCertificateSold",
+    "caption": "Проданные сертификаты"
+  },
+  {
+    "id": 1,
+    "type": "report",
+    "route": "ReportCertificateUsed",
+    "caption": "Использованные сертификаты"
+  },
+  {
+    "id": 2,
+    "type": "report",
     "route": "ReportCertificateStatus",
     "caption": "Статус сертификатов"
   },
   {
-    "id": 1,
+    "id": 3,
     "type": "report",
     "route": "ReportCertificateDetails",
     "caption": "Сертификаты на списание"
