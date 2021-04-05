@@ -11,6 +11,7 @@ import AccordionSummary from '@material-ui/core/AccordionSummary';
 import AccordionDetails from '@material-ui/core/AccordionDetails';
 import ExpandMoreIcon from '@material-ui/icons/ExpandMore';
 import CertificatesSoldTable from "./CertificatesSoldTable"
+import moment from 'moment';
 
 export default function ReportCertificateSold({ companyProps, classes }) {
 
@@ -20,6 +21,8 @@ export default function ReportCertificateSold({ companyProps, classes }) {
   const [certificates, setCertificates] = useState([]);
   const [isSearched, setSearched] = useState(false);
   const [nominals, setNominals] = useState([]);
+  const [isExcelLoading, setExcelLoading] = useState(false);
+  const [certExcell, setCertExcell] = useState();
 
   const changeDate = (dateStr) => {
     let dF, dT;
@@ -53,6 +56,11 @@ export default function ReportCertificateSold({ companyProps, classes }) {
         certs.forEach(element => {
           noms.push(element.nominal)
         });
+        let newarr = [];
+        certs.forEach(el => {
+          newarr.push(el);
+        });
+        setCertExcell(newarr);
         setNominals(Array.from(new Set(noms)));
         setCertificates(certs);
         setLoading(false);
@@ -75,48 +83,87 @@ export default function ReportCertificateSold({ companyProps, classes }) {
     )
   };
 
+  const getSoldCertificatesExcel = () => {
+    setExcelLoading(true);
+    let arr = [];
+
+    certExcell.forEach((e) => {
+      arr.push({ ...e, sell_date: moment(e.sell_date).format('L'), shelflife: moment(e.sell_date).format('L') })
+    });
+
+    Axios({
+      method: "POST",
+      url: "/api/report/certificates/soldtoexcel",
+      data: { arr },
+      responseType: "blob",
+    })
+      .then((res) => res.data)
+      .then((res) => {
+        const url = window.URL.createObjectURL(new Blob([res]));
+        const link = document.createElement("a");
+        link.href = url;
+        link.setAttribute("download", `Проданные сертификаты.xlsx`);
+        document.body.appendChild(link);
+        link.click();
+        setExcelLoading(false);
+      })
+      .catch((err) => {
+        ErrorAlert(err);
+        setExcelLoading(false);
+      });
+  };
+
   return (
-    <Fragment>
-      <Fragment>
-        <Grid item xs={12} style={{ paddingBottom: "20px" }}>
-          <MaterialDateDefault
-            changeDate={changeDate}
-            dateFrom={dateFrom}
-            dateTo={dateTo}
-            dateFromChange={dateFromChange}
-            dateToChange={dateToChange}
-            searchInvoices={getCertificates}
-          />
-        </Grid>
-        <Grid item xs={12}>
-          {isLoading &&
-            <SkeletonTable />
-          }
-          {!isLoading && certificates.length === 0 && isSearched &&
-            <Typography style={{ color: "#212569", textAlign: "center", padding: "20px" }}>
-              Сертификатов не найдено
+    <Grid container spacing={3}>
+      <Grid item xs={12} style={{ paddingBottom: "20px" }}>
+        <MaterialDateDefault
+          changeDate={changeDate}
+          dateFrom={dateFrom}
+          dateTo={dateTo}
+          dateFromChange={dateFromChange}
+          dateToChange={dateToChange}
+          searchInvoices={getCertificates}
+        />
+      </Grid>
+      <Grid item xs={12}>
+        {isLoading &&
+          <SkeletonTable />
+        }
+        {!isLoading && certificates.length === 0 && isSearched &&
+          <Typography style={{ color: "#212569", textAlign: "center", padding: "20px" }}>
+            Сертификатов не найдено
             </Typography>
-          }
-          {!isLoading && certificates.length > 0 && <Fragment>
-            {console.log(certificates)}
-            {nominals.map((nom, n) => (
-              <Accordion key={n} style={{ margin: "0px" }} defaultExpanded>
-                <AccordionSummary
-                  expandIcon={<ExpandMoreIcon />}
-                >
-                  <Typography className={classes.heading}>
-                    Сертификаты на &nbsp; <strong>{nom} тг.</strong>
-                  </Typography>
-                </AccordionSummary>
-                <AccordionDetails>
-                  {showCertificates(nom)}
-                </AccordionDetails>
-              </Accordion>
-            ))}
-          </Fragment>
-          }
-        </Grid>
-      </Fragment>
-    </Fragment>
+        }
+        {!isLoading && certificates.length > 0 && <Fragment>
+          {console.log(certificates)}
+          {nominals.map((nom, n) => (
+            <Accordion key={n} style={{ margin: "0px" }} defaultExpanded>
+              <AccordionSummary
+               style={{backgroundColor: "#FFF59D"}}
+                expandIcon={<ExpandMoreIcon />}
+              >
+                <Typography className={classes.heading}>
+                  Сертификаты на &nbsp; <strong>{nom} тг.</strong>
+                </Typography>
+              </AccordionSummary>
+              <AccordionDetails>
+                {showCertificates(nom)}
+              </AccordionDetails>
+            </Accordion>
+          ))}
+        </Fragment>
+        }
+      </Grid>
+      <Grid item xs={12}>
+        {!isLoading && certificates.length > 0 && <button
+          className="btn btn-sm btn-outline-success"
+          disabled={isExcelLoading}
+          onClick={getSoldCertificatesExcel}
+        >
+          Выгрузить в Excel
+        </button>
+        }
+      </Grid>
+    </Grid>
   );
 }
