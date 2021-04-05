@@ -59,8 +59,8 @@ export const NoMoreThan13 = (input) => {
   if (input && input.length > 14) return "Не более 14 символов";
 };
 
-export const NoMoreThan18 = (input) => {
-  if (input && input.length > 18) return "Не более 18 символов";
+export const NoMoreThan20 = (input) => {
+  if (input && input.length > 20) return "Не более 18 символов";
 };
 
 export const matchPasswords = (confirm, allValues) =>
