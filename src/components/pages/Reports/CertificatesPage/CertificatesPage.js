@@ -2,6 +2,7 @@ import React, { useState, Fragment } from "react";
 import ReportCertificateStatus from "./ReportCertificateStatus";
 import ReportCertificateDetails from "./ReportCertificateDetails";
 import ReportCertificateSold from "./ReportCertificateSold";
+import ReportCertificateUsed from "./ReportCertificateUsed";
 import certificates from "../../../../data/certificates";
 import { makeStyles } from "@material-ui/core/styles";
 
@@ -120,6 +121,13 @@ export default function CertificatesPage({ companyProps, parameters }) {
 
               {reportMode === "ReportCertificateSold" && (
                 <ReportCertificateSold
+                  companyProps={companyProps}
+                  classes={classes}
+                />
+              )}
+
+              {reportMode === "ReportCertificateUsed" && (
+                <ReportCertificateUsed
                   companyProps={companyProps}
                   classes={classes}
                 />

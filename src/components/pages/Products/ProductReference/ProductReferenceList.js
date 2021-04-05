@@ -55,7 +55,6 @@ export default function ProductReferenceList({
 	const [productName, setProductName] = useState("");
 	const [sweetalert, setSweetAlert] = useState(null);
 	const [tax, setTax] = useState(1);
-	const [fullWidth] = useState(true);
  	const [maxWidth] = useState('md');
 	 const [errorMessage,setErrorMessage] = useState({});
 	const [errorAlert,setErrorAlert] = useState(false);

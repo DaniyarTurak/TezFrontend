@@ -10,9 +10,9 @@ import Accordion from '@material-ui/core/Accordion';
 import AccordionSummary from '@material-ui/core/AccordionSummary';
 import AccordionDetails from '@material-ui/core/AccordionDetails';
 import ExpandMoreIcon from '@material-ui/icons/ExpandMore';
-import CertificatesSoldTable from "./CertificatesSoldTable"
+import CertificatesUsedTable from "./CertificatesUsedTable"
 
-export default function ReportCertificateSold({ companyProps, classes }) {
+export default function ReportCertificateUsed({ companyProps, classes }) {
 
   const [dateFrom, setDateFrom] = useState(Moment().format("YYYY-MM-DD"));
   const [dateTo, setDateTo] = useState(Moment().format("YYYY-MM-DD"));
@@ -43,24 +43,24 @@ export default function ReportCertificateSold({ companyProps, classes }) {
   };
 
   const getCertificates = () => {
-    setSearched(true);
-    setLoading(true);
-    Axios.get("/api/report/certificates/sold", { params: { dateFrom, dateTo } })
-      .then((res) => res.data)
-      .then((certs) => {
-        console.log(certs);
-        let noms = [];
-        certs.forEach(element => {
-          noms.push(element.nominal)
+      setSearched(true);
+      setLoading(true);
+      Axios.get("/api/report/certificates/used", { params: { dateFrom, dateTo } })
+        .then((res) => res.data)
+        .then((certs) => {
+          console.log(certs);
+          let noms = [];
+          certs.forEach(element => {
+            noms.push(element.nominal)
+          });
+          setNominals(Array.from(new Set(noms)));
+          setCertificates(certs);
+          setLoading(false);
+        })
+        .catch((err) => {
+          setLoading(false);
+          ErrorAlert(err);
         });
-        setNominals(Array.from(new Set(noms)));
-        setCertificates(certs);
-        setLoading(false);
-      })
-      .catch((err) => {
-        setLoading(false);
-        ErrorAlert(err);
-      });
   };
 
   const showCertificates = (nom) => {
@@ -71,7 +71,7 @@ export default function ReportCertificateSold({ companyProps, classes }) {
       }
     })
     return (
-      <CertificatesSoldTable certificates={crts} />
+      <CertificatesUsedTable certificates={crts} />
     )
   };
 
