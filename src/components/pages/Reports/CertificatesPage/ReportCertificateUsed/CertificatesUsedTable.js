@@ -111,7 +111,7 @@ TablePaginationActions.propTypes = {
   rowsPerPage: PropTypes.number.isRequired,
 };
 
-export default function CertificatesUsedTable({ certificates }) {
+export default function CertificatesUsedTable({ certificates, openDetails }) {
   const [page, setPage] = React.useState(0);
 
   const [rowsPerPage, setRowsPerPage] = React.useState(10);
@@ -138,6 +138,7 @@ export default function CertificatesUsedTable({ certificates }) {
                 <StyledTableCell>Номер сертификата</StyledTableCell>
                 <StyledTableCell align="center">Номинал</StyledTableCell>
                 <StyledTableCell align="center">Дата использования</StyledTableCell>
+                <StyledTableCell align="center">Детали</StyledTableCell>
               </TableRow>
             </TableHead>
             <TableBody>
@@ -145,14 +146,20 @@ export default function CertificatesUsedTable({ certificates }) {
                 .slice(page * rowsPerPage, page * rowsPerPage + rowsPerPage)
                 .map((cr, idx) => (
                   <TableRow
-                    key={cr.id}
-                    selected={selectedID === cr.id}
-                    onClick={() => setSelectedID(cr.id)}
+                    key={cr.tr_id}
+                    selected={selectedID === cr.tr_id}
+                    onClick={() => setSelectedID(cr.tr_id)}
                   >
                     <StyledTableCell>{idx + 1 + page * 10}</StyledTableCell>
                     <StyledTableCell>{cr.id}</StyledTableCell>
                     <StyledTableCell align="center">{cr.nominal}</StyledTableCell>
-                    <StyledTableCell align="center">{cr.sell_date ? Moment(cr.sell_date).format("L"): "Нет даты"}</StyledTableCell>
+                    <StyledTableCell align="center">{cr.use_date ? Moment(cr.use_date).format("L") : "Нет даты"}</StyledTableCell>
+                    <StyledTableCell align="center">
+                      <button
+                        className="btn btn-w-icon detail-item"
+                        onClick={() => openDetails(cr.tr_id)}
+                      ></button>
+                    </StyledTableCell>
                   </TableRow>
                 ))}
             </TableBody>
