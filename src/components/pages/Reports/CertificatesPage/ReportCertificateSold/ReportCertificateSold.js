@@ -11,7 +11,27 @@ import AccordionSummary from '@material-ui/core/AccordionSummary';
 import AccordionDetails from '@material-ui/core/AccordionDetails';
 import ExpandMoreIcon from '@material-ui/icons/ExpandMore';
 import CertificatesSoldTable from "./CertificatesSoldTable"
+import CertificateExpand from "./CertificateExpand";
+import ReactModal from "react-modal";
 import moment from 'moment';
+
+const customStyles = {
+  content: {
+    top: "50%",
+    left: "50%",
+    right: "auto",
+    bottom: "auto",
+    marginRight: "-50%",
+    transform: "translate(-50%, -50%)",
+    width: "600px",
+    maxHeight: "80vh",
+    overlfow: "scroll",
+    zIndex: 11,
+  },
+  overlay: { zIndex: 10 },
+};
+
+ReactModal.setAppElement("#root");
 
 export default function ReportCertificateSold({ companyProps, classes }) {
 
@@ -23,6 +43,8 @@ export default function ReportCertificateSold({ companyProps, classes }) {
   const [nominals, setNominals] = useState([]);
   const [isExcelLoading, setExcelLoading] = useState(false);
   const [certExcell, setCertExcell] = useState();
+  const [modalIsOpen, setModalOpen] = useState(false);
+  const [certificate, setCertificate] = useState([]);
 
   const changeDate = (dateStr) => {
     let dF, dT;
@@ -79,7 +101,7 @@ export default function ReportCertificateSold({ companyProps, classes }) {
       }
     })
     return (
-      <CertificatesSoldTable certificates={crts} />
+      <CertificatesSoldTable certificates={crts} openExpand={openExpand} />
     )
   };
 
@@ -113,57 +135,92 @@ export default function ReportCertificateSold({ companyProps, classes }) {
       });
   };
 
+  const openExpand = (id) => {
+    setCertificate(id);
+    setModalOpen(true);
+  };
+
+  const closeExpand = () => {
+    setCertificate("");
+    setModalOpen(false);
+  };
+
+  const closeExpandAndReload = () => {
+    setCertificate("");
+    setModalOpen(false);
+    getCertificates();
+  };
+
   return (
-    <Grid container spacing={3}>
-      <Grid item xs={12} style={{ paddingBottom: "20px" }}>
-        <MaterialDateDefault
-          changeDate={changeDate}
-          dateFrom={dateFrom}
-          dateTo={dateTo}
-          dateFromChange={dateFromChange}
-          dateToChange={dateToChange}
-          searchInvoices={getCertificates}
+    <Fragment>
+      <ReactModal
+        onRequestClose={() => {
+          setModalOpen(false);
+        }}
+        isOpen={modalIsOpen}
+        style={customStyles}
+      >
+        <CertificateExpand
+          certificate={certificate}
+          closeExpand={closeExpand}
+          closeExpandAndReload = {closeExpandAndReload}
         />
-      </Grid>
-      <Grid item xs={12}>
+      </ReactModal>
+      <Grid container spacing={3}>
+        <Grid item xs={12}>
+          <MaterialDateDefault
+            changeDate={changeDate}
+            dateFrom={dateFrom}
+            dateTo={dateTo}
+            dateFromChange={dateFromChange}
+            dateToChange={dateToChange}
+            searchInvoices={getCertificates}
+          />
+        </Grid>
         {isLoading &&
-          <SkeletonTable />
+          <Grid item xs={12}>
+            <SkeletonTable />
+          </Grid>
         }
         {!isLoading && certificates.length === 0 && isSearched &&
-          <Typography style={{ color: "#212569", textAlign: "center", padding: "20px" }}>
-            Сертификатов не найдено
+          <Grid item xs={12}>
+            <Typography style={{ color: "#212569", textAlign: "center", padding: "20px" }}>
+              Сертификатов не найдено
             </Typography>
+          </Grid>
         }
-        {!isLoading && certificates.length > 0 && <Fragment>
-          {console.log(certificates)}
-          {nominals.map((nom, n) => (
-            <Accordion key={n} style={{ margin: "0px" }} defaultExpanded>
-              <AccordionSummary
-               style={{backgroundColor: "#FFF59D"}}
-                expandIcon={<ExpandMoreIcon />}
-              >
-                <Typography className={classes.heading}>
-                  Сертификаты на &nbsp; <strong>{nom} тг.</strong>
-                </Typography>
-              </AccordionSummary>
-              <AccordionDetails>
-                {showCertificates(nom)}
-              </AccordionDetails>
-            </Accordion>
-          ))}
-        </Fragment>
+        {!isLoading && certificates.length > 0 &&
+          <Grid item xs={12}>
+            {console.log(certificates)}
+            {nominals.map((nom, n) => (
+              <Accordion key={n} style={{ margin: "0px" }} defaultExpanded>
+                <AccordionSummary
+                  style={{ backgroundColor: "#FFF59D" }}
+                  expandIcon={<ExpandMoreIcon />}
+                >
+                  <Typography className={classes.heading}>
+                    Сертификаты на &nbsp; <strong>{nom} тг.</strong>
+                  </Typography>
+                </AccordionSummary>
+                <AccordionDetails>
+                  {showCertificates(nom)}
+                </AccordionDetails>
+              </Accordion>
+            ))}
+          </Grid>
         }
-      </Grid>
-      <Grid item xs={12}>
-        {!isLoading && certificates.length > 0 && <button
-          className="btn btn-sm btn-outline-success"
-          disabled={isExcelLoading}
-          onClick={getSoldCertificatesExcel}
-        >
-          Выгрузить в Excel
+        {!isLoading && certificates.length > 0 &&
+          <Grid item xs={12}>
+            <button
+              className="btn btn-sm btn-outline-success"
+              disabled={isExcelLoading}
+              onClick={getSoldCertificatesExcel}
+            >
+              Выгрузить в Excel
         </button>
+          </Grid>
         }
       </Grid>
-    </Grid>
+    </Fragment>
   );
 }

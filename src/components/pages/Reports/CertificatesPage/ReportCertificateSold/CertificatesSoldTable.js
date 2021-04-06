@@ -111,7 +111,7 @@ TablePaginationActions.propTypes = {
   rowsPerPage: PropTypes.number.isRequired,
 };
 
-export default function CertificatesSoldTable({ certificates }) {
+export default function CertificatesSoldTable({ certificates, openExpand }) {
   const [page, setPage] = React.useState(0);
 
   const [rowsPerPage, setRowsPerPage] = React.useState(10);
@@ -154,16 +154,26 @@ export default function CertificatesSoldTable({ certificates }) {
                     <StyledTableCell>{idx + 1 + page * 10}</StyledTableCell>
                     <StyledTableCell>{cr.id}</StyledTableCell>
                     <StyledTableCell align="center">{cr.nominal}</StyledTableCell>
-                    <StyledTableCell align="center">{cr.sell_date ? Moment(cr.sell_date).format("L"): "Нет даты"}</StyledTableCell>
-                    <StyledTableCell align="center">{cr.shelflife ? Moment(cr.shelflife).format("L"): "Нет даты"}</StyledTableCell>
+                    <StyledTableCell align="center">{cr.sell_date ? Moment(cr.sell_date).format("L") : "Нет даты"}</StyledTableCell>
+                    <StyledTableCell align="center">{cr.shelflife ? Moment(cr.shelflife).format("L") : "Нет даты"}</StyledTableCell>
                     <StyledTableCell align="center">
-                      {cr.status === "Активен, истек срок годности" && <span style={{color:"#DC3545"}}>
+                      {cr.status === "Активен, истек срок годности" &&
+                        <Fragment>
+                          <span style={{ color: "#DC3545" }}>
+                            {cr.status}
+                          </span>
+                          &emsp;
+                          <button
+                            className="btn btn-sm btn-outline-success"
+                            onClick={() => openExpand(cr.id)}
+                          >
+                            Продлить
+                          </button>
+                        </Fragment>}
+                      {cr.status === "Активен" && <span style={{ color: "#008000" }}>
                         {cr.status}
                       </span>}
-                      {cr.status === "Активен" && <span style={{color:"#008000"}}>
-                        {cr.status}
-                      </span>}
-                      {cr.status === "Использован" && <span style={{color:"#17a2b8"}}>
+                      {cr.status === "Использован" && <span style={{ color: "#17a2b8" }}>
                         {cr.status}
                       </span>}
                     </StyledTableCell>

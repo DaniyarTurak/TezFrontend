@@ -144,7 +144,7 @@ export default function ReportCertificateUsed({ companyProps, classes }) {
   };
 
   const openDetails = (tr) => {
-    let trans = {id: tr }
+    let trans = { id: tr }
     setTransaction(trans);
     setModalOpen(true);
     console.log(trans);
@@ -169,11 +169,10 @@ export default function ReportCertificateUsed({ companyProps, classes }) {
           transaction={transaction}
           parentDetail={1}
           closeDetail={closeDetails}
-          // holding={holding}
         />
       </ReactModal>
       <Grid container spacing={3}>
-        <Grid item xs={12} style={{ paddingBottom: "20px" }}>
+        <Grid item xs={12} >
           <MaterialDateDefault
             changeDate={changeDate}
             dateFrom={dateFrom}
@@ -183,16 +182,20 @@ export default function ReportCertificateUsed({ companyProps, classes }) {
             searchInvoices={getCertificates}
           />
         </Grid>
-        <Grid item xs={12}>
-          {isLoading &&
+        {isLoading &&
+          <Grid item xs={12}>
             <SkeletonTable />
-          }
-          {!isLoading && certificates.length === 0 && isSearched &&
+          </Grid>
+        }
+        {!isLoading && certificates.length === 0 && isSearched &&
+          <Grid item xs={12}>
             <Typography style={{ color: "#212569", textAlign: "center", padding: "20px" }}>
               Сертификатов не найдено
             </Typography>
-          }
-          {!isLoading && certificates.length > 0 && <Fragment>
+          </Grid>
+        }
+        {!isLoading && certificates.length > 0 &&
+          <Grid item xs={12}>
             {console.log(certificates)}
             {nominals.map((nom, n) => (
               <Accordion key={n} style={{ margin: "0px" }} defaultExpanded>
@@ -209,19 +212,19 @@ export default function ReportCertificateUsed({ companyProps, classes }) {
                 </AccordionDetails>
               </Accordion>
             ))}
-          </Fragment>
-          }
-        </Grid>
-        <Grid item xs={12}>
-          {!isLoading && certificates.length > 0 && <button
-            className="btn btn-sm btn-outline-success"
-            disabled={isExcelLoading}
-            onClick={getUsedCertificatesExcel}
-          >
-            Выгрузить в Excel
+          </Grid>
+        }
+        {!isLoading && certificates.length > 0 &&
+          <Grid item xs={12}>
+            <button
+              className="btn btn-sm btn-outline-success"
+              disabled={isExcelLoading}
+              onClick={getUsedCertificatesExcel}
+            >
+              Выгрузить в Excel
         </button>
-          }
-        </Grid>
+          </Grid>
+        }
       </Grid>
     </Fragment>
   );
