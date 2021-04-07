@@ -166,17 +166,7 @@ export default function PageN1({ stockFrom, invoicenumber, productListProps }) {
     setProductBarcode(psv.code);
     getStockCurrentDetail(psv.value);
   };
-
-  const onAmountChange = (e) => {
-    const amount = isNaN(e.target.value) ? 0 : e.target.value;
-    if (writeoffAmount > detail.units) {
-      setAmountExceeds(true);
-    } else {
-      setWriteoffAmount(amount);
-      setAmountExceeds(false);
-    }
-  };
-
+ 
   const onReasonChange = (e) => {
     const wr = e.target.value;
     setWriteoffReason(wr);
@@ -231,7 +221,7 @@ export default function PageN1({ stockFrom, invoicenumber, productListProps }) {
       );
     }
     if (writeoffAmount <= 0) {
-      return Alert.info("Количество для списания должно быть больше ноля", {
+      return Alert.info("Количество для списания должно быть больше нуля", {
         position: "top-right",
         effect: "bouncyflip",
         timeout: 2000,
@@ -321,12 +311,23 @@ export default function PageN1({ stockFrom, invoicenumber, productListProps }) {
       });
   };
 
+    const onAmountChange = (e) => {
+      let amount = isNaN(e.target.value) ? 0 : e.target.value;
+      if (amount > detail.units) {
+        setAmountExceeds(true)
+        setWriteoffAmount(amount)
+      }
+      else {
+        setAmountExceeds(false)
+        setWriteoffAmount(amount)
+      }
+  };
+
   return (
     <div className="product-write-off-page-n1">
       <ReactModal isOpen={modalIsOpen} style={customStyles}>
         <Fragment>
           <h6>Для данного товара, найдены следующие характеристики:</h6>
-
           <table className="table table-hover">
             <tbody>
               {products.map((product) => (
@@ -378,7 +379,6 @@ export default function PageN1({ stockFrom, invoicenumber, productListProps }) {
           />
         </div>
       </div>
-
       <div className="row">
         <div className="col-md-12">
           <label>Внесите количество для списания</label>
@@ -433,13 +433,13 @@ export default function PageN1({ stockFrom, invoicenumber, productListProps }) {
           />
         </div>
       </div>
-
       <div className={`row mt-10 ${productList.length > 0 ? "pb-10" : ""}`}>
         <div className="col-md-12 text-right">
           <button
             className="btn btn-info"
             onClick={addProduct}
             style={{ zIndex: 0 }}
+            disabled={amountExceeds}
           >
             Добавить
           </button>

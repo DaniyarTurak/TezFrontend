@@ -55,7 +55,6 @@ export default function ProductReferenceList({
 	const [productName, setProductName] = useState("");
 	const [sweetalert, setSweetAlert] = useState(null);
 	const [tax, setTax] = useState(1);
-	const [fullWidth] = useState(true);
  	const [maxWidth] = useState('md');
 	 const [errorMessage,setErrorMessage] = useState({});
 	const [errorAlert,setErrorAlert] = useState(false);
@@ -240,7 +239,7 @@ export default function ProductReferenceList({
 			name: productName,
 			category: category.id,
 			brand: brand.id,
-			taxid: companyData.certificatenum ? tax.value : "0",
+			taxid: companyData.certificatenum ? tax : "0",
 			unitsprid: unitspr.id,
 			piece: sellByPieces,
 			pieceinpack: piecesUnint,

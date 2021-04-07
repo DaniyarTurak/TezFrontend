@@ -147,11 +147,9 @@ export default function ReportCashboxState({ company, holding }) {
                   Время (открытия / закрытия)
                 </StyledCell>
                 <StyledCell align="center">
-                  <Tooltip title={<p style={{ padding: "0px", fontSize: ".875rem" }}>Остаток в кассе на текущий момент</p>}>
-                    <span style={{ cursor: "pointer" }}>Остаток в кассе*</span>
-                  </Tooltip>
+                    Остаток в кассе на текущий момент
                 </StyledCell>
-                <StyledCell />
+                <StyledCell align="center">Отчёты</StyledCell>
               </TableRow>
             </TableHead>
             <TableBody>
