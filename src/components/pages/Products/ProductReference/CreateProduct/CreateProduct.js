@@ -13,7 +13,7 @@ import Autocomplete from "@material-ui/lab/Autocomplete";
 import Typography from "@material-ui/core/Typography";
 import Checkbox from "@material-ui/core/Checkbox";
 import FormControlLabel from "@material-ui/core/FormControlLabel";
-import AddAttribute from "./AddAttribute"
+import ErrorAlert from "../../../../ReusableComponents/ErrorAlert";
 import { makeStyles } from "@material-ui/core/styles";
 import Divider from "@material-ui/core/Divider";
 import IconButton from "@material-ui/core/IconButton";
@@ -90,17 +90,6 @@ export default function CreateProduct({ isEditing }) {
   const [tax, setTax] = useState(1);
   const [piecesUnint, setPiecesUnint] = useState(0);
   const [productBarcode, setProductBarcode] = useState("");
-  const [selectedAttribute, setSelectedAttribute] = useState([]);
-  const [attributeCode, setAttributeCode] = useState("");
-  const [attrList, setAttrList] = useState([]);
-  const [globalChar, setGlobalChar]= useState({});
-  const [editProduct, setEditProduct] = useState("")
-  const [globalOptions,setGlobalOptions] = useState([{ title: "att1", id: "1" },
-  { title: "att2", id: "2" },
-  { title: "att3", id: "3" },
-  { title: "att4", id: "4" },
-  { title: "att5", id: "5" },
-  { title: "att6", id: "6" },])
   const companyData =
     JSON.parse(sessionStorage.getItem("isme-company-data")) || {};
   const classes = useStyles();
@@ -323,26 +312,11 @@ export default function CreateProduct({ isEditing }) {
     setTax(e.target.value);
   };
 
-  const globalCharChange = (e,t) =>{
-    setGlobalChar(t)
-  }
-
-  const onGlobalCharChange = (e, char) => {
-    if (char.lenght > 0) setGlobalChar(char);
-  };
-
-  const getAttributeCode = (attributeCodeChanged) => {
-    setAttributeCode(attributeCodeChanged);
-  };
-
-  const getAttrList = (attrListChanged) => {
-    setAttrList(attrListChanged);
-  };
-
   const taxes = [
     { label: "Без НДС", value: "0" },
     { label: "Стандартный НДС", value: "1" },
   ];
+
   const onPieceAmountChange = (e) => {
     const num = e.target.value;
     if (num < 2) {
@@ -398,27 +372,21 @@ export default function CreateProduct({ isEditing }) {
       unitsprid: unitspr.id,
       piece: sellByPieces ? true : false,
       pieceinpack: piecesUnint,
-      details:!isEditing
-      ? attributeCode || null
-      : editProduct.attributes !== "0" &&
-        parseInt(editProduct.attributes, 0) >= attributeCode
-      ? editProduct.attributes
-      : attributeCode,
+      details: "5"
     };
-    console.log(product);
-    // Axios.post("/api/products/create", { product })
-    //   .then((res) => {
-    //     clearForm(res);
-    //     Alert.success("Товар успешно сохранен", {
-    //       position: "top-right",
-    //       effect: "bouncyflip",
-    //       timeout: 2000,
-    //     });
-    //   })
-    //   .catch((err) => {
-    //     // ErrorAlert(err);
-    //     console.log(err);
-    //   });
+    Axios.post("/api/products/create", { product })
+      .then((res) => {
+        clearForm(res);
+        Alert.success("Товар успешно сохранен", {
+          position: "top-right",
+          effect: "bouncyflip",
+          timeout: 2000,
+        });
+      })
+      .catch((err) => {
+        ErrorAlert(err);
+        console.log(err);
+      });
   };
 
   const clearForm = () => {
@@ -431,6 +399,15 @@ export default function CreateProduct({ isEditing }) {
     setProductName("");
     setPiecesUnint(0);
   };
+
+  const top100Films = [
+    { title: "att1", id: 1 },
+    { title: "att2", id: 2 },
+    { title: "att3", id: 3 },
+    { title: "att4", id: 4 },
+    { title: "att5", id: 5 },
+    { title: "att6", id: 6 },
+  ];
 
   return (
     <Fragment>
@@ -565,56 +542,28 @@ export default function CreateProduct({ isEditing }) {
           </div>
           <Grid container spacing={3} justify="center">
             <Grid item xs={3} sm={3}>
-              <Typography style={{ paddingBottom: "10px", paddingTop: "8px" }}>
-                Глобальные характеристики
+            <Typography style={{ paddingBottom: "10px", paddingTop: "8px" }}>
+            Глобальные характеристики
               </Typography>
-              <Autocomplete
-                multiple
-                align="left"
-                id="tags-outlined"
-                fullWidth
-                size="small"
-                options={globalOptions}
-                // value={globalChar}
-                onChange={globalCharChange}
-                noOptionsText="Категория не найдена"
-                onInputChange={onGlobalCharChange.bind(this)}
-                filterOptions={(options) =>
-                  options.filter((option) => option.globalChar !== "")
-                }
-                getOptionLabel={(option) => (option ? option.title : "")}
-                getOptionSelected={(option, value) =>
-                  option.id === value.id
-                }
-                renderInput={(params) => (
-                  <TextField
-                    label="Выберите категорию"
-                    {...params}
-                    variant="outlined"
-                  />
-                )}
-              />
-              {/* <Autocomplete
-                multiple
-                size="small"
-                id="tags-outlined"
-                options={globalOptions}
-                getOptionLabel={(option) => option.title}
-                onChange={globalCharChange}
-                onInputChange={onGlobalCharChange.bind(this)}
-                filterSelectedOptions ={(options) =>
-                  options.filter((option) => option.globalOptions !== "")
-                }
-                renderInput={(params) => (
-                  <TextField
-                    {...params}
-                    variant="outlined"
-                    placeholder="Favorites"
-                  />
-                )}
-              /> */}
-            </Grid>
-          </Grid>
+            <Autocomplete
+        multiple
+        size="small"
+        id="tags-outlined"
+        options={top100Films}
+        getOptionLabel={(option) => option.title}
+        // defaultValue={[top100Films[5]]}
+        filterSelectedOptions
+        renderInput={(params) => (
+          <TextField
+            {...params}
+            variant="outlined"
+            label="filterSelectedOptions"
+            placeholder="Favorites"
+          />
+        )}
+      />
+      </Grid>
+      </Grid>
           <Grid container spacing={3} justify="center">
             <Grid item xs={3} sm={3}>
               <Typography variant="h7" align="left">
@@ -728,13 +677,6 @@ export default function CreateProduct({ isEditing }) {
               </Grid>
             )}
           </Grid>
-          <AddAttribute
-            isEditing={isEditing}
-            selected={selectedAttribute}
-            // clearBoard={clearBoard}
-            attributeCode={getAttributeCode}
-            attrListProps={getAttrList}
-          />
           <div className="row justify-content-center text-right mt-20">
             <div className="col-md-8">
               <Button
