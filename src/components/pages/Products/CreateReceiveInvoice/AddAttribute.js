@@ -236,7 +236,7 @@ export default function AddAttribute({
           <h6>Дополнительная информация</h6>
         </div>
       </div>
-
+      
       {!isHidden && (
         <Fragment>
           <div className="row justify-content-center">
@@ -249,11 +249,9 @@ export default function AddAttribute({
                 placeholder={"Выберите"}
                 noOptionsMessage={() => "Характеристики не найдены"}
               />
-
               <span className="message text-danger">{attrNameError}</span>
             </div>
           </div>
-
           <div className="row justify-content-center">
             <div className="col-md-8">
               <label htmlFor="">Укажите значение</label>
@@ -300,7 +298,6 @@ export default function AddAttribute({
           </div>
         </Fragment>
       )}
-
       {attrList.length > 0 && (
         <div className="row justify-content-center mt-20">
           <div className="col-md-8">
