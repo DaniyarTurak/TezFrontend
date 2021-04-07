@@ -87,7 +87,6 @@ export default function CreateProduct({ isEditing }) {
   const [unitspr, setUnitspr] = useState(1);
   const [sellByPieces, setSellByPieces] = useState(false);
   const [productName, setProductName] = useState("");
-  const [cnofeacode, setCnofeacode] = useState("");
   const [tax, setTax] = useState(1);
   const [piecesUnint, setPiecesUnint] = useState(0);
   const [productBarcode, setProductBarcode] = useState("");
@@ -162,10 +161,6 @@ export default function CreateProduct({ isEditing }) {
     }
     setProductName(pn);
   };
-  const onCnofeacodeEdit = (e) => {
-    let co = e.target.value;
-      setCnofeacode(co);
-    }
 
   const handleFormKeyPress = (e) => {
     if (e.key === "Enter") e.preventDefault();
@@ -348,7 +343,6 @@ export default function CreateProduct({ isEditing }) {
     { label: "Без НДС", value: "0" },
     { label: "Стандартный НДС", value: "1" },
   ];
-
   const onPieceAmountChange = (e) => {
     const num = e.target.value;
     if (num < 2) {
@@ -372,14 +366,14 @@ export default function CreateProduct({ isEditing }) {
       return;
     }
     if (!productName) {
-      Alert.warning("Заполните наименование товара!", {
+      Alert.warning("Заполните наеминование товара!", {
         position: "top-right",
         effect: "bouncyflip",
         timeout: 3000,
       });
       return;
     }
-    if (!unitspr.id) {
+    if (!unitspr) {
       Alert.warning("Укажите единицу измерения!", {
         position: "top-right",
         effect: "bouncyflip",
@@ -404,30 +398,28 @@ export default function CreateProduct({ isEditing }) {
       unitsprid: unitspr.id,
       piece: sellByPieces ? true : false,
       pieceinpack: piecesUnint,
-      attributes:!isEditing
+      details:!isEditing
       ? attributeCode || null
       : editProduct.attributes !== "0" &&
         parseInt(editProduct.attributes, 0) >= attributeCode
       ? editProduct.attributes
       : attributeCode,
-      details: 0,
-      cnofeacode:cnofeacode
     };
-    Axios.post("/api/products/create", { product })
-      .then((res) => {
-        clearForm(res);
-        Alert.success("Товар успешно сохранен", {
-          position: "top-right",
-          effect: "bouncyflip",
-          timeout: 2000,
-        });
-      })
-      .catch((err) => {
-        // ErrorAlert(err);
-        console.log(err);
-      });
+    console.log(product);
+    // Axios.post("/api/products/create", { product })
+    //   .then((res) => {
+    //     clearForm(res);
+    //     Alert.success("Товар успешно сохранен", {
+    //       position: "top-right",
+    //       effect: "bouncyflip",
+    //       timeout: 2000,
+    //     });
+    //   })
+    //   .catch((err) => {
+    //     // ErrorAlert(err);
+    //     console.log(err);
+    //   });
   };
-  
 
   const clearForm = () => {
     setBrand("");
@@ -570,25 +562,59 @@ export default function CreateProduct({ isEditing }) {
                 )}
               />
             </div>
-            <div style={{ marginLeft: "1 rem" }} className="col-md-8 zi-7">
-              <label> Код ТН ВЭД</label>
-              <TextField
-                placeholder="Введите код ТН ВЭД "
+          </div>
+          <Grid container spacing={3} justify="center">
+            <Grid item xs={3} sm={3}>
+              <Typography style={{ paddingBottom: "10px", paddingTop: "8px" }}>
+                Глобальные характеристики
+              </Typography>
+              <Autocomplete
+                multiple
+                align="left"
+                id="tags-outlined"
                 fullWidth
-                id="outlined-full-width"
                 size="small"
-                required
-                variant="outlined"
-                type="number"
-                value={cnofeacode}
-                onChange={onCnofeacodeEdit}
-                error={isValidateName}
-                helperText={
-                  isValidateName ? "Поле обязательно для заполнения" : ""
+                options={globalOptions}
+                // value={globalChar}
+                onChange={globalCharChange}
+                noOptionsText="Категория не найдена"
+                onInputChange={onGlobalCharChange.bind(this)}
+                filterOptions={(options) =>
+                  options.filter((option) => option.globalChar !== "")
                 }
+                getOptionLabel={(option) => (option ? option.title : "")}
+                getOptionSelected={(option, value) =>
+                  option.id === value.id
+                }
+                renderInput={(params) => (
+                  <TextField
+                    label="Выберите категорию"
+                    {...params}
+                    variant="outlined"
+                  />
+                )}
               />
-            </div>
-          </div> 
+              {/* <Autocomplete
+                multiple
+                size="small"
+                id="tags-outlined"
+                options={globalOptions}
+                getOptionLabel={(option) => option.title}
+                onChange={globalCharChange}
+                onInputChange={onGlobalCharChange.bind(this)}
+                filterSelectedOptions ={(options) =>
+                  options.filter((option) => option.globalOptions !== "")
+                }
+                renderInput={(params) => (
+                  <TextField
+                    {...params}
+                    variant="outlined"
+                    placeholder="Favorites"
+                  />
+                )}
+              /> */}
+            </Grid>
+          </Grid>
           <Grid container spacing={3} justify="center">
             <Grid item xs={3} sm={3}>
               <Typography variant="h7" align="left">
@@ -702,13 +728,13 @@ export default function CreateProduct({ isEditing }) {
               </Grid>
             )}
           </Grid>
-          {/* <AddAttribute
+          <AddAttribute
             isEditing={isEditing}
             selected={selectedAttribute}
             // clearBoard={clearBoard}
             attributeCode={getAttributeCode}
             attrListProps={getAttrList}
-          /> */}
+          />
           <div className="row justify-content-center text-right mt-20">
             <div className="col-md-8">
               <Button

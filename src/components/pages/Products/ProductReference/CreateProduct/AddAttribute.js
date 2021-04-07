@@ -3,7 +3,6 @@ import Select from "react-select";
 import Axios from "axios";
 import Alert from "react-s-alert";
 import ErrorAlert from "../../../../ReusableComponents/ErrorAlert";
-import Moment from "moment";
 
 export default function AddAttribute({
   clearBoard,
@@ -25,13 +24,9 @@ export default function AddAttribute({
   const [selectedAttrType, setSelectedAttrType] = useState("TEXT");
   const [oldAttributes, setOldAttributes] = useState([]);
   const [isClear, setClear] = useState(false);
-  const [globalChar, setGlobalChar] = useState("")
-  const [globalOptions, setGlobalOptions] = useState([])
-  const [date, setDate] = useState(Moment().format("YYYY-MM-DD"));
 
   useEffect(() => {
     getAttributes();
-    getGlobal();
   }, []);
 
   useEffect(() => {
@@ -112,22 +107,6 @@ export default function AddAttribute({
         console.log(err);
       });
   };
-  const getGlobal=() =>{
-    Axios.get("/api/foramir")
-    .then((res)=>res.data)
-    .then((globAtt) =>{
-      const globa = globAtt.map((char) => {
-        return {
-          value: char.id,
-          label: char.values,
-        };
-      });
-      setGlobalOptions(globa)
-    })
-    .catch((err)=>{
-      console.log(err);
-    })
-  }
 
   const formatAttributes = (attributes) => {
     let optionsToRenderChanged = [];
@@ -159,32 +138,27 @@ export default function AddAttribute({
     setAttrValueSpr("");
     setOptionsToRenderSpr(optionsToRenderSprChanged);
   };
-  const onAttributeChar = (charchange) => {
-    setGlobalChar(charchange);
+
+  const onAttrValueChange = (e) => {
+    const attrValueChanged =
+      optionsToRenderSpr.length > 0 ? e.value : e.target.value;
+    const attrValueSprChanged = optionsToRenderSpr.length > 0 ? e : "";
+
+    if (selectedAttrType === "DATE" && attrValueChanged.indexOf("-") === 5)
+      return;
+
+    setAttrValue(attrValueChanged);
+    setAttrValueSpr(attrValueSprChanged);
   };
 
-  // const onAttrValueChange = (e) => {
-  //   const attrValueChanged =
-  //     optionsToRenderSpr.length > 0 ? e.value : e.target.value;
-  //   const attrValueSprChanged = optionsToRenderSpr.length > 0 ? e : "";
-
-  //   if (selectedAttrType === "DATE" && attrValueChanged.indexOf("-") === 5)
-  //     return;
-
-  //   setAttrValue(attrValueChanged);
-  //   setAttrValueSpr(attrValueSprChanged);
-  // };
-
-  const handleAdd = (e) => {
-    // if (Object.keys(attrName).length === 0 || !attrValue) {
-    //   return setAttrNameError("Поле обязательно для заполнения");
-    // } else {
-    //   setAttrNameError("");
-    // }
+  const handleAdd = () => {
+    if (Object.keys(attrName).length === 0 || !attrValue) {
+      return setAttrNameError("Поле обязательно для заполнения");
+    } else {
+      setAttrNameError("");
+    }
 
     let attrListChanged = attrList;
-
-    let par = e.target.id;
 
     if (attrListChanged.some((attr) => attr.name === attrName.label)) {
       return Alert.info("Выбранная характеристика товара уже в списке", {
@@ -198,17 +172,12 @@ export default function AddAttribute({
       value: attrValue,
       attribcode: attrName.value,
     };
-
-    if (reqbody.attribcode === "2") {
-      reqbody.value = Moment(date).format("YYYY-MM-DD")
-    };
-
     attrListChanged.push({
       value: attrValue,
       name: attrName.label,
       code: attrName.value,
     });
-   postAttributes(attrListChanged, reqbody);
+    postAttributes(attrListChanged, reqbody);
   };
 
   const postAttributes = (attrListChanged, reqbody) => {
@@ -267,57 +236,70 @@ export default function AddAttribute({
           <h6>Дополнительная информация</h6>
         </div>
       </div>
-      <div className="row justify-content-center">
-        <div className="col-md-8 zi-3">
-          <label htmlFor="" >партийные характеристики</label>
-          <div className="input-group">
-            <Select
-              className="col-md-9"
-              value={attrName}
-              onChange={onAttrNameChange}
-              options={optionsToRender}
-              placeholder={"Выберите"}
-              noOptionsMessage={() => "Характеристики не найдены"}
-            />
 
-            <span className="message text-danger">{attrNameError}</span>
-            <div className="input-group-append">
-              <button
-              id="part"
-                type="button"
-                className="btn btn-outline-info"
-                onClick={handleAdd}
-              >
-                Добавить атрибут
-              </button>
+      {!isHidden && (
+        <Fragment>
+          <div className="row justify-content-center">
+            <div className="col-md-8 zi-3">
+              <label htmlFor="">Характеристика товара</label>
+              <Select
+                value={attrName}
+                onChange={onAttrNameChange}
+                options={optionsToRender}
+                placeholder={"Выберите"}
+                noOptionsMessage={() => "Характеристики не найдены"}
+              />
+
+              <span className="message text-danger">{attrNameError}</span>
             </div>
           </div>
-        </div>
-        <div className="col-md-8 zi-3">
-          <label htmlFor="">Постояные  характеристики</label>
-          <div className="input-group">
-            <Select
-              className="col-md-9"
-              value={globalChar}
-              onChange={onAttributeChar}
-              options={globalOptions}
-              placeholder={"Выберите"}
-              noOptionsMessage={() => "Характеристики не найдены"}
-            />
-            <span className="message text-danger">{attrNameError}</span>
-            <div className="input-group-append">
-              <button
-              id="global"
-                type="button"
-                className="btn btn-outline-info"
-                onClick={handleAdd}
-              >
-                Добавить атрибут
-              </button>
+
+          <div className="row justify-content-center">
+            <div className="col-md-8">
+              <label htmlFor="">Укажите значение</label>
+              <div className="input-group">
+                {selectedAttrType === "TEXT" && (
+                  <input
+                    value={attrValue}
+                    type="text"
+                    className="form-control"
+                    placeholder="Введите значение"
+                    onChange={onAttrValueChange}
+                  />
+                )}
+                {selectedAttrType === "DATE" && (
+                  <input
+                    value={attrValue}
+                    type="date"
+                    className="form-control"
+                    placeholder="Введите значение"
+                    onChange={onAttrValueChange}
+                  />
+                )}
+                {selectedAttrType === "SPR" && (
+                  <Select
+                    value={attrValueSpr}
+                    onChange={onAttrValueChange}
+                    options={optionsToRenderSpr}
+                    className="form-control attr-spr"
+                    placeholder={"Введите значение"}
+                    noOptionsMessage={() => "Характеристики не найдены"}
+                  />
+                )}
+                <div className="input-group-append">
+                  <button
+                    type="button"
+                    className="btn btn-outline-info"
+                    onClick={handleAdd}
+                  >
+                    Добавить атрибут
+                  </button>
+                </div>
+              </div>
             </div>
           </div>
-        </div>
-      </div>
+        </Fragment>
+      )}
 
       {attrList.length > 0 && (
         <div className="row justify-content-center mt-20">
@@ -326,6 +308,7 @@ export default function AddAttribute({
               <thead>
                 <tr>
                   <th>Наименование</th>
+                  <th>Значение</th>
                   <th />
                 </tr>
               </thead>
@@ -334,6 +317,7 @@ export default function AddAttribute({
                 {attrList.map((attr) => (
                   <tr key={attr.name}>
                     <td>{attr.name}</td>
+                    <td>{attr.value}</td>
                     <td className="text-right">
                       {!isHidden && (
                         <button

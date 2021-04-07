@@ -59,8 +59,6 @@ export default function EditProduct({
   setUnitOptions,
   unitListChange,
   onUnitListInput,
-  cnofeacode,
-  onCnofeacodeEdit,
   // onPieceAmountChange,
   // sellByPieces,
   // onSellByPiecesChange,
@@ -72,6 +70,7 @@ export default function EditProduct({
   companyData,
   errorAlert,
   errorMessage,
+  
 }) {
   const classes = useStyles();
   const [editingName, setEditingName] = useState(true);
@@ -79,7 +78,6 @@ export default function EditProduct({
   const [editingBrandName, setEditingBrandName] = useState(true);
   const [editingUnit, setEditingUnit] = useState(true);
   const [editingTax, setEditingTax] = useState(true);
-  const [editCnofeacode, setEditCnofeacode] = useState(true)
 
   return (
     <Fragment>
@@ -231,42 +229,6 @@ export default function EditProduct({
                   }}
                 >
                   <EditRoundedIcon aria-label="edit" />
-                </IconButton>
-              </TableCell>
-            </TableRow>
-            <TableRow>
-            <TableCell>Код ТН ВЭД:</TableCell>
-              <TableCell className={classes.textField}>
-                {editCnofeacode && (
-                  <Typography variant="h7" align="left">
-                    {productDetails.cnofeacode}
-                  </Typography>
-                )}
-                {!editCnofeacode && (
-                  <TextField
-                  fullWidth
-                  className={classes.textField}
-                  align="left"
-                  id="outlined-full-width"
-                  size="small"
-                  required
-                  variant="outlined"
-                  type="number"
-                  value={cnofeacode}
-                  defaultValue={productDetails.cnofeacode}
-                  onChange={onCnofeacodeEdit}
-                  />
-                )}
-              </TableCell>
-              <TableCell align="left">
-                <IconButton
-                  aria-label="редактировать"
-                  component="span"
-                  onClick={() => {
-                    setEditCnofeacode(false);
-                  }}
-                >
-                  <EditIcon aria-label="edit" />
                 </IconButton>
               </TableCell>
             </TableRow>
