@@ -75,7 +75,7 @@ export default function ReportCertificateUsed({ companyProps, classes }) {
   const getCertificates = () => {
     setSearched(true);
     setLoading(true);
-    Axios.get("/api/report/certificates/used", { params: { dateFrom, dateTo } })
+    Axios.get("/api/report/certificates/used", { params: { dateFrom: moment(dateFrom).format("L"), dateTo: moment(dateTo).format("L") } })
       .then((res) => res.data)
       .then((certs) => {
         console.log(certs);
