@@ -13,7 +13,7 @@ import Autocomplete from "@material-ui/lab/Autocomplete";
 import Typography from "@material-ui/core/Typography";
 import Checkbox from "@material-ui/core/Checkbox";
 import FormControlLabel from "@material-ui/core/FormControlLabel";
-import ErrorAlert from "../../../../ReusableComponents/ErrorAlert";
+import AddAttribute from "./AddAttribute"
 import { makeStyles } from "@material-ui/core/styles";
 import Divider from "@material-ui/core/Divider";
 import IconButton from "@material-ui/core/IconButton";
@@ -87,9 +87,21 @@ export default function CreateProduct({ isEditing }) {
   const [unitspr, setUnitspr] = useState(1);
   const [sellByPieces, setSellByPieces] = useState(false);
   const [productName, setProductName] = useState("");
+  const [cnofeacode, setCnofeacode] = useState("");
   const [tax, setTax] = useState(1);
   const [piecesUnint, setPiecesUnint] = useState(0);
   const [productBarcode, setProductBarcode] = useState("");
+  const [selectedAttribute, setSelectedAttribute] = useState([]);
+  const [attributeCode, setAttributeCode] = useState("");
+  const [attrList, setAttrList] = useState([]);
+  const [globalChar, setGlobalChar]= useState({});
+  const [editProduct, setEditProduct] = useState("")
+  const [globalOptions,setGlobalOptions] = useState([{ title: "att1", id: "1" },
+  { title: "att2", id: "2" },
+  { title: "att3", id: "3" },
+  { title: "att4", id: "4" },
+  { title: "att5", id: "5" },
+  { title: "att6", id: "6" },])
   const companyData =
     JSON.parse(sessionStorage.getItem("isme-company-data")) || {};
   const classes = useStyles();
@@ -150,6 +162,10 @@ export default function CreateProduct({ isEditing }) {
     }
     setProductName(pn);
   };
+  const onCnofeacodeEdit = (e) => {
+    let co = e.target.value;
+      setCnofeacode(co);
+    }
 
   const handleFormKeyPress = (e) => {
     if (e.key === "Enter") e.preventDefault();
@@ -312,6 +328,22 @@ export default function CreateProduct({ isEditing }) {
     setTax(e.target.value);
   };
 
+  const globalCharChange = (e,t) =>{
+    setGlobalChar(t)
+  }
+
+  const onGlobalCharChange = (e, char) => {
+    if (char.lenght > 0) setGlobalChar(char);
+  };
+
+  const getAttributeCode = (attributeCodeChanged) => {
+    setAttributeCode(attributeCodeChanged);
+  };
+
+  const getAttrList = (attrListChanged) => {
+    setAttrList(attrListChanged);
+  };
+
   const taxes = [
     { label: "Без НДС", value: "0" },
     { label: "Стандартный НДС", value: "1" },
@@ -340,14 +372,14 @@ export default function CreateProduct({ isEditing }) {
       return;
     }
     if (!productName) {
-      Alert.warning("Заполните наеминование товара!", {
+      Alert.warning("Заполните наименование товара!", {
         position: "top-right",
         effect: "bouncyflip",
         timeout: 3000,
       });
       return;
     }
-    if (!unitspr) {
+    if (!unitspr.id) {
       Alert.warning("Укажите единицу измерения!", {
         position: "top-right",
         effect: "bouncyflip",
@@ -372,7 +404,14 @@ export default function CreateProduct({ isEditing }) {
       unitsprid: unitspr.id,
       piece: sellByPieces ? true : false,
       pieceinpack: piecesUnint,
-      details: "5"
+      attributes:!isEditing
+      ? attributeCode || null
+      : editProduct.attributes !== "0" &&
+        parseInt(editProduct.attributes, 0) >= attributeCode
+      ? editProduct.attributes
+      : attributeCode,
+      details: 0,
+      cnofeacode:cnofeacode
     };
     Axios.post("/api/products/create", { product })
       .then((res) => {
@@ -384,10 +423,11 @@ export default function CreateProduct({ isEditing }) {
         });
       })
       .catch((err) => {
-        ErrorAlert(err);
+        // ErrorAlert(err);
         console.log(err);
       });
   };
+  
 
   const clearForm = () => {
     setBrand("");
@@ -530,31 +570,25 @@ export default function CreateProduct({ isEditing }) {
                 )}
               />
             </div>
-          </div>
-          {/* <Grid container spacing={3} justify="center">
-            <Grid item xs={3} sm={3}>
-            <Typography style={{ paddingBottom: "10px", paddingTop: "8px" }}>
-            Глобальные характеристики
-              </Typography>
-            <Autocomplete
-        multiple
-        size="small"
-        id="tags-outlined"
-        options={top100Films}
-        getOptionLabel={(option) => option.title}
-        // defaultValue={[top100Films[5]]}
-        filterSelectedOptions
-        renderInput={(params) => (
-          <TextField
-            {...params}
-            variant="outlined"
-            label="filterSelectedOptions"
-            placeholder="Favorites"
-          />
-        )}
-      />
-      </Grid>
-      </Grid> */}
+            <div style={{ marginLeft: "1 rem" }} className="col-md-8 zi-7">
+              <label> Код ТН ВЭД</label>
+              <TextField
+                placeholder="Введите код ТН ВЭД "
+                fullWidth
+                id="outlined-full-width"
+                size="small"
+                required
+                variant="outlined"
+                type="number"
+                value={cnofeacode}
+                onChange={onCnofeacodeEdit}
+                error={isValidateName}
+                helperText={
+                  isValidateName ? "Поле обязательно для заполнения" : ""
+                }
+              />
+            </div>
+          </div> 
           <Grid container spacing={3} justify="center">
             <Grid item xs={3} sm={3}>
               <Typography variant="h7" align="left">
@@ -668,6 +702,13 @@ export default function CreateProduct({ isEditing }) {
               </Grid>
             )}
           </Grid>
+          <AddAttribute
+            isEditing={isEditing}
+            selected={selectedAttribute}
+            // clearBoard={clearBoard}
+            attributeCode={getAttributeCode}
+            attrListProps={getAttrList}
+          />
           <div className="row justify-content-center text-right mt-20">
             <div className="col-md-8">
               <Button
