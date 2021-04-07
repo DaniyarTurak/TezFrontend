@@ -13,7 +13,7 @@ import {
   LessThanZero,
   NotEqualZero,
   NoMoreThan10,
-  NoMoreThan20,
+  NoMoreThan16,
   RequiredSelect,
 } from "../../../../validation";
 
@@ -1060,7 +1060,7 @@ let AddProductForm = ({
                     </button>
                   </Fragment>
                 }
-                validate={!isEditing ? [RequiredField, NoMoreThan20] : []}
+                validate={!isEditing ? [RequiredField, NoMoreThan16] : []}
               />
             </div>
           </div>

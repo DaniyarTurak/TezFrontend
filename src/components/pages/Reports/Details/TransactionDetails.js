@@ -107,9 +107,13 @@ export default function TransactionDetails({
           <div className="row">
             <div className="col-md-6">
               <h6 className="tenge">
-              {parseFloat(
-                details.price + details.discount + details.bonuspay
-              ).toLocaleString("ru", { minimumFractionDigits: 2 })}
+                {parseFloat(
+                  parentDetail !== "consignment"
+                    ? transaction.price
+                    : transaction.totalprice
+                ).toLocaleString("ru", {
+                  minimumFractionDigits: 2,
+                })}
               </h6>
             </div>
           </div>
@@ -125,21 +129,21 @@ export default function TransactionDetails({
               </span>
               {(parentDetail === 1 || parentDetail === "consignment") && (
                 <div>
-                  <span>{`Кассир: ${details.cashier}`}</span>
+                  <span>{`Кассир: ${transaction.cashboxuser}`}</span>
                   <br />
-                  <span>{`Точка: ${details.pointname}`}</span>
+                  <span>{`Точка: ${transaction.pointname}`}</span>
                   <br />
-                  <span>{`Касса: ${details.cashboxname}`}</span>
+                  <span>{`Касса: ${transaction.cashbox}`}</span>
                   <br />
-                  {details.consultant && details.consultant !== "" &&
+                  {transaction.consultant && transaction.consultant !== "" &&
                     <Fragment>
-                      <span>{`Консультант: ${details.consultant}`}</span>
+                      <span>{`Консультант: ${transaction.consultant}`}</span>
                       <br />
                     </Fragment>
                   }
-                  {details.fio && details.fio !== "" &&
+                  {transaction.fio && transaction.fio !== "" &&
                     <Fragment>
-                      <span>{`Клиент: ${details.fio}`}</span>
+                      <span>{`Клиент: ${transaction.fio}`}</span>
                       <br />
                     </Fragment>
                   }
@@ -147,9 +151,9 @@ export default function TransactionDetails({
               )}
               {parentDetail === 3 && (
                 <div>
-                  <span>{details.pointname}</span>
+                  <span>{transaction.pointname}</span>
                   <br />
-                  <span>{`Кассир: ${details.cashier}`}</span>
+                  <span>{`Кассир: ${transaction.name}`}</span>
                 </div>
               )}
             </div>
@@ -263,6 +267,7 @@ export default function TransactionDetails({
               })}
             </div>
           </div>
+
           <div className="row">
             <div className="col-md-6">Сертификатом:</div>
             <div className="col-md-6 text-right tenge">

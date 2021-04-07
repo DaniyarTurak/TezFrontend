@@ -1,8 +1,6 @@
 import React, { useState, Fragment } from "react";
 import ReportCertificateStatus from "./ReportCertificateStatus";
 import ReportCertificateDetails from "./ReportCertificateDetails";
-import ReportCertificateSold from "./ReportCertificateSold";
-import ReportCertificateUsed from "./ReportCertificateUsed";
 import certificates from "../../../../data/certificates";
 import { makeStyles } from "@material-ui/core/styles";
 
@@ -74,9 +72,9 @@ const useStyles = makeStyles((theme) => ({
   },
 }));
 
-export default function CertificatesPage({ companyProps, parameters }) {
+export default function CertificatesPage({ companyProps }) {
   const classes = useStyles();
-  const [reportMode, setReportMode] = useState("ReportCertificateSold");
+  const [reportMode, setReportMode] = useState("ReportCertificateStatus");
 
   const changeReportMode = (e) => {
     setReportMode(e.target.name);
@@ -88,8 +86,9 @@ export default function CertificatesPage({ companyProps, parameters }) {
         {certificates.map((report) => (
           <div className="col-md-3 report-btn-block" key={report.id}>
             <button
-              className={`btn btn-sm btn-block btn-report ${reportMode === report.route ? "btn-info" : "btn-outline-info"
-                }`}
+              className={`btn btn-sm btn-block btn-report ${
+                reportMode === report.route ? "btn-info" : "btn-outline-info"
+              }`}
               name={report.route}
               onClick={changeReportMode}
             >
@@ -114,20 +113,6 @@ export default function CertificatesPage({ companyProps, parameters }) {
 
               {reportMode === "ReportCertificateDetails" && (
                 <ReportCertificateDetails
-                  companyProps={companyProps}
-                  classes={classes}
-                />
-              )}
-
-              {reportMode === "ReportCertificateSold" && (
-                <ReportCertificateSold
-                  companyProps={companyProps}
-                  classes={classes}
-                />
-              )}
-
-              {reportMode === "ReportCertificateUsed" && (
-                <ReportCertificateUsed
                   companyProps={companyProps}
                   classes={classes}
                 />

@@ -18,8 +18,7 @@ export default function ShelfLifePage() {
   }, []);
 
   const periodProps = [
-    { label: "Просроченные товары", background: "#ff5252", gradient: "linear-gradient(#ff5252 1%, white 50%)" },
-    { label: "от 0 до 3 месяцев", background: "#fa855e", gradient: "linear-gradient(#fa855e 1%, white 50%)" },
+    { label: "от 0 до 3 месяцев", background: "#ff5252", gradient: "linear-gradient(#ff5252 1%, white 50%)" },
     { label: "от 3 до 6 месяцев", background: "#ffcc80", gradient: "linear-gradient(#ffcc80 1%, white 50%)" },
     { label: "от 6 до 9 месяцев", background: "#fff59d", gradient: "linear-gradient(#fff59d 1%, white 50%)" },
     { label: "от 9 до 12 месяцев", background: "#a5d6a7", gradient: "linear-gradient(#a5d6a7 1%, white 50%)" },
@@ -31,7 +30,6 @@ export default function ShelfLifePage() {
       .then((res) => res.data)
       .then((expiredates) => {
         let newarr = [];
-        newarr.push(expiredates[0].rep_exp_date.array0);
         newarr.push(expiredates[0].rep_exp_date.array3);
         newarr.push(expiredates[0].rep_exp_date.array6);
         newarr.push(expiredates[0].rep_exp_date.array9);
@@ -49,7 +47,6 @@ export default function ShelfLifePage() {
 
   const getShelfLifeExcel = () => {
     setExcelLoading(true);
-    let arr0 = [];
     let arr3 = [];
     let arr6 = [];
     let arr9 = [];
@@ -57,30 +54,24 @@ export default function ShelfLifePage() {
 
     if (datesExcel[0]) {
       datesExcel[0].forEach((e) => {
-        arr0.push({ ...e, dt: moment(e.dt).format('L') })
+        arr3.push({ ...e, dt: moment(e.dt).format('L') })
       })
     };
 
     if (datesExcel[1]) {
       datesExcel[1].forEach((e) => {
-        arr3.push({ ...e, dt: moment(e.dt).format('L') })
+        arr6.push({ ...e, dt: moment(e.dt).format('L') })
       })
     };
 
     if (datesExcel[2]) {
       datesExcel[2].forEach((e) => {
-        arr6.push({ ...e, dt: moment(e.dt).format('L') })
+        arr9.push({ ...e, dt: moment(e.dt).format('L') })
       })
     };
 
     if (datesExcel[3]) {
       datesExcel[3].forEach((e) => {
-        arr9.push({ ...e, dt: moment(e.dt).format('L') })
-      })
-    };
-
-    if (datesExcel[4]) {
-      datesExcel[4].forEach((e) => {
         arr12.push({ ...e, dt: moment(e.dt).format('L') })
       })
     };
@@ -88,7 +79,7 @@ export default function ShelfLifePage() {
     Axios({
       method: "POST",
       url: "/api/report/expire_date/excel",
-      data: { arr0, arr3, arr6, arr9, arr12 },
+      data: { arr3, arr6, arr9, arr12 },
       responseType: "blob",
     })
       .then((res) => res.data)

@@ -96,7 +96,7 @@ export default function ReportPage({ type, history, location }) {
           <div className="row mt-10">
             <div className="col-md-12">
               {typeMode === "report" && reportMode === "certificatespage" && (
-                <CertificatesPage history={history} location={location} parameters={parameters} />
+                <CertificatesPage history={history} location={location} />
               )}
 
               {typeMode === "report" && reportMode === "reportcashboxstate" && (
