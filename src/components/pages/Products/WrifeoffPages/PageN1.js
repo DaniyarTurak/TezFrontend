@@ -5,6 +5,17 @@ import Alert from "react-s-alert";
 import ReactModal from "react-modal";
 import Searching from "../../../Searching";
 import ErrorAlert from "../../../ReusableComponents/ErrorAlert";
+import TableBody from "@material-ui/core/TableBody";
+import TableContainer from "@material-ui/core/TableContainer";
+import TableHead from "@material-ui/core/TableHead";
+import TableRow from "@material-ui/core/TableRow";
+import { withStyles, makeStyles, useTheme } from "@material-ui/core/styles";
+import Paper from "@material-ui/core/Paper";
+import TableCell from "@material-ui/core/TableCell"
+import Table from "@material-ui/core/Table";
+import Button from '@material-ui/core/Button';
+import Characteristics from './Characteristics';
+import Grid from "@material-ui/core/Grid";
 
 const customStyles = {
   content: {
@@ -14,11 +25,36 @@ const customStyles = {
     bottom: "auto",
     marginRight: "-50%",
     transform: "translate(-50%, -50%)",
-    width: "500px",
+    width: "700px",
     zIndex: 11,
   },
   overlay: { zIndex: 10 },
 };
+
+const StyledTableCell = withStyles((theme) => ({
+  head: {
+    backgroundColor: "#17a2b8",
+    color: theme.palette.common.white,
+    fontSize: ".875rem",
+  },
+  body: {
+    fontSize: ".875rem",
+  },
+  footer: {
+    fontWeight: "bold",
+    fontSize: ".875rem",
+  },
+}))(TableCell);
+
+const CancelButton = withStyles((theme) => ({
+  root: {
+    color: "black",
+    backgroundColor: "#DCDCDC",
+    '&:hover': {
+      backgroundColor: "#D3D3D3",
+    },
+  },
+}))(Button);
 
 ReactModal.setAppElement("#root");
 
@@ -34,6 +70,7 @@ export default function PageN1({ stockFrom, invoicenumber, productListProps }) {
   const [productSelectValue, setProductSelectValue] = useState("");
   const [writeoffAmount, setWriteoffAmount] = useState(0);
   const [writeoffReason, setWriteoffReason] = useState("");
+  const [prodName, setProdName] = useState("");
 
   useEffect(() => {
     getStockCurrentProducts();
@@ -122,6 +159,7 @@ export default function PageN1({ stockFrom, invoicenumber, productListProps }) {
             getStockCurrentDetail(product.id);
           } else {
             setProducts(res);
+            setProdName(res[0].name);
             setModalOpen(true);
           }
         })
@@ -166,7 +204,7 @@ export default function PageN1({ stockFrom, invoicenumber, productListProps }) {
     setProductBarcode(psv.code);
     getStockCurrentDetail(psv.value);
   };
- 
+
   const onReasonChange = (e) => {
     const wr = e.target.value;
     setWriteoffReason(wr);
@@ -209,10 +247,10 @@ export default function PageN1({ stockFrom, invoicenumber, productListProps }) {
         !productSelectValue.value
           ? "Выберите товар"
           : !writeoffAmount
-          ? "Внесите количество для списания"
-          : !writeoffReason
-          ? "Внесите причину для списания"
-          : "",
+            ? "Внесите количество для списания"
+            : !writeoffReason
+              ? "Внесите причину для списания"
+              : "",
         {
           position: "top-right",
           effect: "bouncyflip",
@@ -311,47 +349,38 @@ export default function PageN1({ stockFrom, invoicenumber, productListProps }) {
       });
   };
 
-    const onAmountChange = (e) => {
-      let amount = isNaN(e.target.value) ? 0 : e.target.value;
-      if (amount > detail.units) {
-        setAmountExceeds(true)
-        setWriteoffAmount(amount)
-      }
-      else {
-        setAmountExceeds(false)
-        setWriteoffAmount(amount)
-      }
+  const onAmountChange = (e) => {
+    let amount = isNaN(e.target.value) ? 0 : e.target.value;
+    if (amount > detail.units) {
+      setAmountExceeds(true)
+      setWriteoffAmount(amount)
+    }
+    else {
+      setAmountExceeds(false)
+      setWriteoffAmount(amount)
+    }
   };
 
   return (
     <div className="product-write-off-page-n1">
       <ReactModal isOpen={modalIsOpen} style={customStyles}>
-        <Fragment>
-          <h6>Для данного товара, найдены следующие характеристики:</h6>
-          <table className="table table-hover">
-            <tbody>
-              {products.map((product) => (
-                <tr key={product.attributes + product.attributescaption}>
-                  <td>
-                    {product.attributes === "0"
-                      ? "Без дополнительных характеристик"
-                      : product.attributescaption}
-                  </td>
-                  <td style={{ width: "20%" }}>
-                    <button
-                      className="btn btn-sm btn-block btn-outline-secondary"
-                      onClick={() => selectAttribute(product)}
-                    >
-                      Выбрать
-                    </button>
-                  </td>
-                </tr>
-              ))}
-            </tbody>
-          </table>
-        </Fragment>
+        <Grid container spacing={3}>
+          <Grid item xs={12}>
+            <Characteristics products={products} prodName={prodName} selectAttribute={selectAttribute} />
+          </Grid>
+          <Grid item xs={12}>
+            <Grid
+              container
+              direction="row"
+              justify="flex-end"
+              alignItems="center">
+              <CancelButton onClick={() => { setModalOpen(false); }}>
+                Отмена
+            </CancelButton>
+            </Grid>
+          </Grid>
+        </Grid>
       </ReactModal>
-
       <div className="row">
         <div className="col-md-12">
           <label htmlFor="">Выберите товары на складе</label>
@@ -387,11 +416,10 @@ export default function PageN1({ stockFrom, invoicenumber, productListProps }) {
               {Object.keys(detail).length > 0 && (
                 <Fragment>
                   <span className="input-group-text">
-                    {`${
-                      detail.units === 0
-                        ? "Товар на складе отсутствует"
-                        : "Товаров на складе: "
-                    } ${detail.units}`}
+                    {`${detail.units === 0
+                      ? "Товар на складе отсутствует"
+                      : "Товаров на складе: "
+                      } ${detail.units}`}
                   </span>
                   <span className="input-group-text">
                     {`Цена на складе: ${detail.price}`}
