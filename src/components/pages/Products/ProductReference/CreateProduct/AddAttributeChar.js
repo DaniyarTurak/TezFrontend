@@ -98,7 +98,7 @@ export default function AddAttribute({
   };
 
   const getAttributes = () => {
-    Axios.get("/api/foramir")
+    Axios.get("/api/attributes")
       .then((res) => res.data)
       .then((attributes) => {
         formatAttributes(attributes);
@@ -139,17 +139,17 @@ export default function AddAttribute({
     setOptionsToRenderSpr(optionsToRenderSprChanged);
   };
 
-  const onAttrValueChange = (e) => {
-    const attrValueChanged =
-      optionsToRenderSpr.length > 0 ? e.value : e.target.value;
-    const attrValueSprChanged = optionsToRenderSpr.length > 0 ? e : "";
+  // const onAttrValueChange = (e) => {
+  //   const attrValueChanged =
+  //     optionsToRenderSpr.length > 0 ? e.value : e.target.value;
+  //   const attrValueSprChanged = optionsToRenderSpr.length > 0 ? e : "";
 
-    if (selectedAttrType === "DATE" && attrValueChanged.indexOf("-") === 5)
-      return;
+  //   if (selectedAttrType === "DATE" && attrValueChanged.indexOf("-") === 5)
+  //     return;
 
-    setAttrValue(attrValueChanged);
-    setAttrValueSpr(attrValueSprChanged);
-  };
+  //   setAttrValue(attrValueChanged);
+  //   setAttrValueSpr(attrValueSprChanged);
+  // };
 
   const handleAdd = () => {
     // if (Object.keys(attrName).length === 0 || !attrValue) {
@@ -238,7 +238,7 @@ export default function AddAttribute({
       </div>
       <div className="row justify-content-center">
         <div className="col-md-8 zi-3">
-          <label htmlFor="">партийные характеристики</label>
+          <label htmlFor="">Постоянные характеристики</label>
           <div className="input-group">
             <Select
               className="col-md-9"
@@ -277,9 +277,8 @@ export default function AddAttribute({
               <tbody>
                 {attrList.map((attr) => (
                   <tr key={attr.name}>
-                    <td>{attr.name}</td>
-                    <td>{attr.value}</td>
-                    <td className="text-right">
+                    <td className="text-center">{attr.name}</td>
+                    <td className="text-center">
                       {!isHidden && (
                         <button
                           type="button"
@@ -297,7 +296,6 @@ export default function AddAttribute({
           </div>
         </div>
       )}
-      <hr />
     </Fragment>
   );
 }

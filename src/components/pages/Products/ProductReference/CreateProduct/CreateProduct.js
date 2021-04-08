@@ -20,6 +20,7 @@ import IconButton from "@material-ui/core/IconButton";
 import SearchIcon from "@material-ui/icons/Search";
 import Button from "@material-ui/core/Button";
 import CircularProgress from "@material-ui/core/CircularProgress";
+import AddAttributeChar from "./AddAttributeChar"
 const useStyles = makeStyles((theme) => ({
   topDiv: {
     borderRadius: "4px",
@@ -93,15 +94,10 @@ export default function CreateProduct({ isEditing }) {
   const [productBarcode, setProductBarcode] = useState("");
   const [selectedAttribute, setSelectedAttribute] = useState([]);
   const [attributeCode, setAttributeCode] = useState("");
+  const [attributeGlobCode, setAttributeGlobCode] = useState("")
   const [attrList, setAttrList] = useState([]);
-  const [globalChar, setGlobalChar]= useState({});
+  const [attrListGlob,setAttrListGlob] = useState([])
   const [editProduct, setEditProduct] = useState("")
-  const [globalOptions,setGlobalOptions] = useState([{ title: "att1", id: "1" },
-  { title: "att2", id: "2" },
-  { title: "att3", id: "3" },
-  { title: "att4", id: "4" },
-  { title: "att5", id: "5" },
-  { title: "att6", id: "6" },])
   const companyData =
     JSON.parse(sessionStorage.getItem("isme-company-data")) || {};
   const classes = useStyles();
@@ -328,20 +324,18 @@ export default function CreateProduct({ isEditing }) {
     setTax(e.target.value);
   };
 
-  const globalCharChange = (e,t) =>{
-    setGlobalChar(t)
-  }
-
-  const onGlobalCharChange = (e, char) => {
-    if (char.lenght > 0) setGlobalChar(char);
-  };
-
   const getAttributeCode = (attributeCodeChanged) => {
     setAttributeCode(attributeCodeChanged);
+  };
+  const getAttributeCharCode = (attributeCodeChanged) => {
+    setAttributeGlobCode(attributeCodeChanged);
   };
 
   const getAttrList = (attrListChanged) => {
     setAttrList(attrListChanged);
+  };
+  const getAttrListGlob = (attrListChangedcode) => {
+    setAttrListGlob(attrListChangedcode);
   };
 
   const taxes = [
@@ -410,22 +404,28 @@ export default function CreateProduct({ isEditing }) {
         parseInt(editProduct.attributes, 0) >= attributeCode
       ? editProduct.attributes
       : attributeCode,
-      details: 0,
+      details: !isEditing
+      ? attributeGlobCode || null
+      : editProduct.attributes !== "0" &&
+        parseInt(editProduct.attributes, 0) >= attributeGlobCode
+      ? editProduct.attributes
+      : attributeGlobCode,
       cnofeacode:cnofeacode
     };
-    Axios.post("/api/products/create", { product })
-      .then((res) => {
-        clearForm(res);
-        Alert.success("Товар успешно сохранен", {
-          position: "top-right",
-          effect: "bouncyflip",
-          timeout: 2000,
-        });
-      })
-      .catch((err) => {
-        // ErrorAlert(err);
-        console.log(err);
-      });
+    console.log(product);
+    // Axios.post("/api/products/create", { product })
+    //   .then((res) => {
+    //     clearForm(res);
+    //     Alert.success("Товар успешно сохранен", {
+    //       position: "top-right",
+    //       effect: "bouncyflip",
+    //       timeout: 2000,
+    //     });
+    //   })
+    //   .catch((err) => {
+    //     // ErrorAlert(err);
+    //     console.log(err);
+    //   });
   };
   
 
@@ -702,13 +702,20 @@ export default function CreateProduct({ isEditing }) {
               </Grid>
             )}
           </Grid>
+          {/* <AddAttributeChar
+            isEditing={isEditing}
+            selected={selectedAttribute}
+            // clearBoard={clearBoard}
+            attributeCode={getAttributeCharCode}
+            attrListProps={getAttrListGlob}
+          />
           <AddAttribute
             isEditing={isEditing}
             selected={selectedAttribute}
             // clearBoard={clearBoard}
             attributeCode={getAttributeCode}
             attrListProps={getAttrList}
-          />
+          /> */}
           <div className="row justify-content-center text-right mt-20">
             <div className="col-md-8">
               <Button
