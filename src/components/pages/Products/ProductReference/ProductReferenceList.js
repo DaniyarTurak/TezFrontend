@@ -475,9 +475,10 @@ export default function ProductReferenceList({
                   <TableCell className={classes.head} align="center">
                     Брeнд
                   </TableCell>
+                  {reference.cnofeacode ===null||
                   <TableCell className={classes.head} align="center">
                     Код ТН ВЭД
-                  </TableCell>
+                  </TableCell>}
                   <TableCell className={classes.head} align="center">
                     НДС
                   </TableCell>
@@ -490,7 +491,8 @@ export default function ProductReferenceList({
                   <TableCell align="center"> {reference.code} </TableCell>
                   <TableCell align="center"> {reference.category} </TableCell>
                   <TableCell align="center"> {reference.brand}</TableCell>
-                  <TableCell align="center">{reference.cnofeacode}</TableCell>
+                  {reference.cnofeacode ===null||
+                  <TableCell align="center">{reference.cnofeacode}</TableCell>}
                   <TableCell align="center">
                     {reference.taxid === "0" ? "Без НДС" : "Стандартный НДС"}
                   </TableCell>

@@ -234,6 +234,7 @@ export default function EditProduct({
                 </IconButton>
               </TableCell>
             </TableRow>
+            {productDetails.cnofeacode ===null||
             <TableRow>
             <TableCell>Код ТН ВЭД:</TableCell>
               <TableCell className={classes.textField}>
@@ -269,7 +270,7 @@ export default function EditProduct({
                   <EditIcon aria-label="edit" />
                 </IconButton>
               </TableCell>
-            </TableRow>
+            </TableRow>}
             <TableRow>
               <TableCell>Единица измерения:</TableCell>
               <TableCell>
