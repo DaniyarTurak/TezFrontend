@@ -437,6 +437,10 @@ export default function CreateProduct({ isEditing }) {
     setTax(1);
     setProductName("");
     setPiecesUnint(0);
+    setAttributeCode(null);
+    setAttrList([]);
+    setSelectedAttribute([]);
+    setCnofeacode("")
   };
 
   return (

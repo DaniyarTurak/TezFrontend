@@ -238,6 +238,7 @@ export default function ProductReferenceList({
     setSellByPieces("");
     setUnitspr("");
     setTax("");
+    setCnofeacode("")
   };
 
   const editProd = () => {
