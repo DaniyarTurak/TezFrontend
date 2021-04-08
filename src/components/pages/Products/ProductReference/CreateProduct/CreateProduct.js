@@ -412,20 +412,20 @@ export default function CreateProduct({ isEditing }) {
       : attributeGlobCode,
       cnofeacode:cnofeacode
     };
-    console.log(product);
-    // Axios.post("/api/products/create", { product })
-    //   .then((res) => {
-    //     clearForm(res);
-    //     Alert.success("Товар успешно сохранен", {
-    //       position: "top-right",
-    //       effect: "bouncyflip",
-    //       timeout: 2000,
-    //     });
-    //   })
-    //   .catch((err) => {
-    //     // ErrorAlert(err);
-    //     console.log(err);
-    //   });
+    // console.log(product);
+    Axios.post("/api/products/create", { product })
+      .then((res) => {
+        clearForm(res);
+        Alert.success("Товар успешно сохранен", {
+          position: "top-right",
+          effect: "bouncyflip",
+          timeout: 2000,
+        });
+      })
+      .catch((err) => {
+        // ErrorAlert(err);
+        console.log(err);
+      });
   };
   
 
