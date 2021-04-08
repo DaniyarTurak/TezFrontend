@@ -286,6 +286,7 @@ export default function ProductReferenceList({
     })
       .then((res) => res.data)
       .then((res) => {
+        getProductReference()
         setProductBarcode("");
         getBarcodeProps(productBarcode);
         setReference([]);
