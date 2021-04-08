@@ -230,27 +230,26 @@ export default function AddAttribute({
 
   return (
     <Fragment>
-      <hr />
-      <div className="row justify-content-center" style={{ marginBottom: -10 }}>
-        <div className="col-md-8">
+      {/* <hr /> */}
+      <div className="row justify-content-center" style={{ marginBottom: 5 }}>
+        {/* <div className="col-md-8">
           <h6>Дополнительная информация</h6>
-        </div>
+        </div> */}
       </div>
-      <div className="row justify-content-center">
-        <div className="col-md-8 zi-3">
-          <label htmlFor="">Постоянные характеристики</label>
-          <div className="input-group">
+      <div className="row justify-content-right">
+        <div >
+          <label  className="text-center">Постоянные характеристики</label>
+          <span className="input-group-text border-0"
+          style = {{background: "transparent"}}>
             <Select
-              className="col-md-9"
+              className="col-md-11"
               value={attrName}
               onChange={onAttrNameChange}
               options={optionsToRender}
               placeholder={"Выберите"}
               noOptionsMessage={() => "Характеристики не найдены"}
             />
-
             <span className="message text-danger">{attrNameError}</span>
-            <div className="input-group-append">
               <button
                 type="button"
                 className="btn btn-outline-info"
@@ -258,8 +257,7 @@ export default function AddAttribute({
               >
                 Добавить атрибут
               </button>
-            </div>
-          </div>
+              </span>
         </div>
       </div>
 
@@ -277,7 +275,7 @@ export default function AddAttribute({
               <tbody>
                 {attrList.map((attr) => (
                   <tr key={attr.name}>
-                    <td className="text-center">{attr.name}</td>
+                    <td>{attr.name}</td>
                     <td className="text-center">
                       {!isHidden && (
                         <button

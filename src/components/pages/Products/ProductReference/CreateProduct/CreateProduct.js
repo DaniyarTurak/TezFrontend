@@ -13,14 +13,14 @@ import Autocomplete from "@material-ui/lab/Autocomplete";
 import Typography from "@material-ui/core/Typography";
 import Checkbox from "@material-ui/core/Checkbox";
 import FormControlLabel from "@material-ui/core/FormControlLabel";
-import AddAttribute from "./AddAttribute"
+import AddAttribute from "./AddAttribute";
 import { makeStyles } from "@material-ui/core/styles";
 import Divider from "@material-ui/core/Divider";
 import IconButton from "@material-ui/core/IconButton";
 import SearchIcon from "@material-ui/icons/Search";
 import Button from "@material-ui/core/Button";
 import CircularProgress from "@material-ui/core/CircularProgress";
-import AddAttributeChar from "./AddAttributeChar"
+import AddAttributeChar from "./AddAttributeChar";
 const useStyles = makeStyles((theme) => ({
   topDiv: {
     borderRadius: "4px",
@@ -94,10 +94,10 @@ export default function CreateProduct({ isEditing }) {
   const [productBarcode, setProductBarcode] = useState("");
   const [selectedAttribute, setSelectedAttribute] = useState([]);
   const [attributeCode, setAttributeCode] = useState("");
-  const [attributeGlobCode, setAttributeGlobCode] = useState("")
+  const [attributeGlobCode, setAttributeGlobCode] = useState("");
   const [attrList, setAttrList] = useState([]);
-  const [attrListGlob,setAttrListGlob] = useState([])
-  const [editProduct, setEditProduct] = useState("")
+  const [attrListGlob, setAttrListGlob] = useState([]);
+  const [editProduct, setEditProduct] = useState("");
   const companyData =
     JSON.parse(sessionStorage.getItem("isme-company-data")) || {};
   const classes = useStyles();
@@ -160,8 +160,8 @@ export default function CreateProduct({ isEditing }) {
   };
   const onCnofeacodeEdit = (e) => {
     let co = e.target.value;
-      setCnofeacode(co);
-    }
+    setCnofeacode(co);
+  };
 
   const handleFormKeyPress = (e) => {
     if (e.key === "Enter") e.preventDefault();
@@ -398,21 +398,21 @@ export default function CreateProduct({ isEditing }) {
       unitsprid: unitspr.id,
       piece: sellByPieces ? true : false,
       pieceinpack: piecesUnint,
-      attributes:!isEditing
-      ? attributeCode || null
-      : editProduct.attributes !== "0" &&
-        parseInt(editProduct.attributes, 0) >= attributeCode
-      ? editProduct.attributes
-      : attributeCode,
+      attributes: !isEditing
+        ? attributeCode || null
+        : editProduct.attributes !== "0" &&
+          parseInt(editProduct.attributes, 0) >= attributeCode
+        ? editProduct.attributes
+        : attributeCode,
       details: !isEditing
-      ? attributeGlobCode || null
-      : editProduct.attributes !== "0" &&
-        parseInt(editProduct.attributes, 0) >= attributeGlobCode
-      ? editProduct.attributes
-      : attributeGlobCode,
-      cnofeacode:cnofeacode
+        ? attributeGlobCode || null
+        : editProduct.attributes !== "0" &&
+          parseInt(editProduct.attributes, 0) >= attributeGlobCode
+        ? editProduct.attributes
+        : attributeGlobCode,
+      cnofeacode: cnofeacode,
     };
-    // console.log(product);
+    console.log(product);
     Axios.post("/api/products/create", { product })
       .then((res) => {
         clearForm(res);
@@ -427,7 +427,6 @@ export default function CreateProduct({ isEditing }) {
         console.log(err);
       });
   };
-  
 
   const clearForm = () => {
     setBrand("");
@@ -588,134 +587,145 @@ export default function CreateProduct({ isEditing }) {
                 }
               />
             </div>
-          </div> 
-          <Grid container spacing={3} justify="center">
-            <Grid item xs={3} sm={3}>
-              <Typography variant="h7" align="left">
-                <FormControlLabel
-                  control={
-                    <Checkbox
-                      size="small"
-                      onChange={onSellByPiecesChange}
-                      name="checkedB"
-                      color="primary"
-                    />
-                  }
-                  size="small"
-                  label="Продажа поштучно"
-                />
-              </Typography>
-              <span
-                className="input-group-text border-0"
-                style={{ backgroundColor: "transparent", padding: "0px" }}
-              >
-                <TextField
-                  type="number"
-                  fullWidth
-                  placeholder="Количество в упаковке/пачке(мин. 2)"
-                  size="small"
-                  name="pieceinpack"
-                  id="outlined-error"
-                  variant="outlined"
-                  disabled={!sellByPieces}
-                  onWheel={(event) => event.currentTarget.blur()}
-                  onChange={onPieceAmountChange}
-                  error={isValidateUnit}
-                  helperText={
-                    isValidateUnit ? "Значение не может быть меньше 2" : ""
-                  }
-                />
-                <Tooltip
-                  title={
-                    <h6>
-                      Укажите цену за штуку товара при приеме на склад. Или в
-                      разделе "Изменение цен"
-                    </h6>
-                  }
-                >
-                  <span>
-                    <Button disabled>
-                      <InfoIcon color="primary" fontSize="large" />
-                    </Button>
-                  </span>
-                </Tooltip>
-              </span>
-            </Grid>
-            <Grid item xs={2} sm={2}>
-              <Typography style={{ paddingBottom: "10px", paddingTop: "8px" }}>
-                Единица измерения
-              </Typography>
-              <Autocomplete
-                fullWidth
-                size="small"
-                options={unitOptions}
-                value={unitspr}
-                onChange={unitListChange}
-                noOptionsText="Единица измерения не найдена"
-                onInputChange={onUnitListInput.bind(this)}
-                filterOptions={(options) =>
-                  options.filter((option) => option.unitOptions !== "")
-                }
-                getOptionLabel={(option) => (option ? option.name : "")}
-                getOptionSelected={(option, value) =>
-                  option.label === value.label
-                }
-                renderInput={(params) => (
-                  <TextField
-                    {...params}
-                    variant="outlined"
-                    placeholder="Штука"
-                  />
-                )}
-              />
-            </Grid>
-            {companyData.certificatenum && (
-              <Grid
-                item
-                xs={3}
-                sm={3}
-                style={{ paddingBottom: "20px", paddingTop: "20px" }}
-              >
-                <label> Налоговая категория</label>
-                <FormControl
-                  style={{ paddingBottom: "5px", paddingTop: "10px" }}
-                  fullWidth
-                  variant="outlined"
-                  size="small"
-                  value="Выберите налоговую катергию"
-                >
-                  <Select
-                    fullWidth
-                    labelId="demo-simple-select-filled-label"
-                    id="demo-simple-select-filled"
+            <Grid container spacing={3} justify="center">
+              <Grid item xs={3} sm={3}>
+                <Typography variant="h7" align="left">
+                  <FormControlLabel
+                    control={
+                      <Checkbox
+                        size="small"
+                        onChange={onSellByPiecesChange}
+                        name="checkedB"
+                        color="primary"
+                      />
+                    }
                     size="small"
-                    value={tax}
-                    onChange={onTaxChange}
+                    label="Продажа поштучно"
+                  />
+                </Typography>
+                <span
+                  className="input-group-text border-0"
+                  style={{ backgroundColor: "transparent", padding: "0px" }}
+                >
+                  <TextField
+                    type="number"
+                    fullWidth
+                    placeholder="Количество в упаковке/пачке(мин. 2)"
+                    size="small"
+                    name="pieceinpack"
+                    id="outlined-error"
+                    variant="outlined"
+                    disabled={!sellByPieces}
+                    onWheel={(event) => event.currentTarget.blur()}
+                    onChange={onPieceAmountChange}
+                    error={isValidateUnit}
+                    helperText={
+                      isValidateUnit ? "Значение не может быть меньше 2" : ""
+                    }
+                  />
+                  <Tooltip
+                    title={
+                      <h6>
+                        Укажите цену за штуку товара при приеме на склад. Или в
+                        разделе "Изменение цен"
+                      </h6>
+                    }
                   >
-                    {taxes.map((option) => (
-                      <MenuItem key={option.value} value={option.value}>
-                        {option.label}
-                      </MenuItem>
-                    ))}
-                  </Select>
-                </FormControl>
+                    <span>
+                      <Button disabled>
+                        <InfoIcon color="primary" fontSize="large" />
+                      </Button>
+                    </span>
+                  </Tooltip>
+                </span>
               </Grid>
-            )}
-          </Grid>
-          {/* <AddAttributeChar
-            isEditing={isEditing}
-            selected={selectedAttribute}
-            // clearBoard={clearBoard}
-            attributeCode={getAttributeCharCode}
-            attrListProps={getAttrListGlob}
-          />
-          <AddAttribute
-            isEditing={isEditing}
-            selected={selectedAttribute}
-            // clearBoard={clearBoard}
-            attributeCode={getAttributeCode}
-            attrListProps={getAttrList}
-          /> */}
+              <Grid item xs={2} sm={2}>
+                <Typography
+                  style={{ paddingBottom: "10px", paddingTop: "8px" }}
+                >
+                  Единица измерения
+                </Typography>
+                <Autocomplete
+                  fullWidth
+                  size="small"
+                  options={unitOptions}
+                  value={unitspr}
+                  onChange={unitListChange}
+                  noOptionsText="Единица измерения не найдена"
+                  onInputChange={onUnitListInput.bind(this)}
+                  filterOptions={(options) =>
+                    options.filter((option) => option.unitOptions !== "")
+                  }
+                  getOptionLabel={(option) => (option ? option.name : "")}
+                  getOptionSelected={(option, value) =>
+                    option.label === value.label
+                  }
+                  renderInput={(params) => (
+                    <TextField
+                      {...params}
+                      variant="outlined"
+                      placeholder="Штука"
+                    />
+                  )}
+                />
+              </Grid>
+              {companyData.certificatenum && (
+                <Grid
+                  item
+                  xs={3}
+                  sm={3}
+                  style={{ paddingBottom: "20px", paddingTop: "20px" }}
+                >
+                  <label> Налоговая категория</label>
+                  <FormControl
+                    style={{ paddingBottom: "5px", paddingTop: "10px" }}
+                    fullWidth
+                    variant="outlined"
+                    size="small"
+                    value="Выберите налоговую катергию"
+                  >
+                    <Select
+                      fullWidth
+                      labelId="demo-simple-select-filled-label"
+                      id="demo-simple-select-filled"
+                      size="small"
+                      value={tax}
+                      onChange={onTaxChange}
+                    >
+                      {taxes.map((option) => (
+                        <MenuItem key={option.value} value={option.value}>
+                          {option.label}
+                        </MenuItem>
+                      ))}
+                    </Select>
+                  </FormControl>
+                </Grid>
+              )}
+            </Grid>
+            <div  className="row justify-content-center">
+            <label  style={{ marginTop: 10 }} >Дополнительная информация</label>
+              <Grid container spacing={9} justify="center">
+                <Grid  item xs={12} sm={6}>
+                  <AddAttributeChar
+                    isEditing={isEditing}
+                    selected={selectedAttribute}
+                    // clearBoard={clearBoard}
+                    attributeCode={getAttributeCharCode}
+                    attrListProps={getAttrListGlob}
+                  />
+                  </Grid>
+                  <Grid  item xs={12} sm={6}>
+                  <AddAttribute
+                    isEditing={isEditing}
+                    selected={selectedAttribute}
+                    // clearBoard={clearBoard}
+                    attributeCode={getAttributeCode}
+                    attrListProps={getAttrList}
+                  />
+                  </Grid>
+              </Grid>
+              </div>
+          </div>
           <div className="row justify-content-center text-right mt-20">
             <div className="col-md-8">
               <Button
