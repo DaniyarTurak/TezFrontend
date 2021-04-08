@@ -203,7 +203,7 @@ export default function ReportCertificateUsed({ companyProps, classes }) {
                   style={{ backgroundColor: "#FFF59D" }}
                   expandIcon={<ExpandMoreIcon />}
                 >
-                  <Typography className={classes.heading}>
+                  <Typography>
                     Сертификаты на &nbsp; <strong>{nom} тг.</strong>
                   </Typography>
                 </AccordionSummary>
