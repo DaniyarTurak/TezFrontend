@@ -234,15 +234,15 @@ export default function EditProduct({
                 </IconButton>
               </TableCell>
             </TableRow>
-            {productDetails.cnofeacode ===null||
+            
             <TableRow>
             <TableCell>Код ТН ВЭД:</TableCell>
               <TableCell className={classes.textField}>
                 {editCnofeacode && (
                   <Typography variant="h7" align="left">
-                    {productDetails.cnofeacode}
+                    {!productDetails.cnofeacode ? "Н/Д" : productDetails.cnofeacode}
                   </Typography>
-                )}
+                  )}
                 {!editCnofeacode && (
                   <TextField
                   fullWidth
@@ -270,7 +270,7 @@ export default function EditProduct({
                   <EditIcon aria-label="edit" />
                 </IconButton>
               </TableCell>
-            </TableRow>}
+            </TableRow>
             <TableRow>
               <TableCell>Единица измерения:</TableCell>
               <TableCell>
