@@ -21,6 +21,7 @@ import SearchIcon from "@material-ui/icons/Search";
 import Button from "@material-ui/core/Button";
 import CircularProgress from "@material-ui/core/CircularProgress";
 import AddAttributeChar from "./AddAttributeChar";
+import ErrorAlert from "../../../../ReusableComponents/ErrorAlert"
 const useStyles = makeStyles((theme) => ({
   topDiv: {
     borderRadius: "4px",
@@ -423,7 +424,7 @@ export default function CreateProduct({ isEditing }) {
         });
       })
       .catch((err) => {
-        // ErrorAlert(err);
+        ErrorAlert(err);
         console.log(err);
       });
   };
