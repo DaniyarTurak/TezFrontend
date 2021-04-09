@@ -98,7 +98,7 @@ export default function AddAttribute({
   };
 
   const getAttributes = () => {
-    Axios.get("/api/attributes")
+    Axios.get("/api/foramir")
       .then((res) => res.data)
       .then((attributes) => {
         formatAttributes(attributes);
