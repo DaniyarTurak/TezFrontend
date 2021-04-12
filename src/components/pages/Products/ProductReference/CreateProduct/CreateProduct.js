@@ -170,7 +170,7 @@ export default function CreateProduct({ isEditing }) {
   const brandListChange = (e, brandChanged) => {
     setBrand(brandChanged);
   };
-
+ 
   const onSellByPiecesChange = (e) => {
     const piece = e.target.checked;
     setSellByPieces(piece);
@@ -441,7 +441,9 @@ export default function CreateProduct({ isEditing }) {
     setAttributeCode(null);
     setAttrList([]);
     setSelectedAttribute([]);
+    setAttributeGlobCode("")
     setCnofeacode("")
+
   };
 
   return (
@@ -586,10 +588,6 @@ export default function CreateProduct({ isEditing }) {
                 type="number"
                 value={cnofeacode}
                 onChange={onCnofeacodeEdit}
-                error={isValidateName}
-                helperText={
-                  isValidateName ? "Поле обязательно для заполнения" : ""
-                }
               />
             </div>
             <Grid container spacing={3} justify="center">
