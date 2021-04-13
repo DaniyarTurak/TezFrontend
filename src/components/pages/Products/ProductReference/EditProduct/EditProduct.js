@@ -1,4 +1,5 @@
-import React, { useState,Fragment } from "react";
+import React, { useState, Fragment } from "react";
+import Axios from "axios";
 import { makeStyles } from "@material-ui/core/styles";
 import Paper from "@material-ui/core/Paper";
 import TextField from "@material-ui/core/TextField";
@@ -20,8 +21,10 @@ import TableCell from "@material-ui/core/TableCell";
 import TableRow from "@material-ui/core/TableRow";
 import IconButton from "@material-ui/core/IconButton";
 import TableFooter from "@material-ui/core/TableFooter";
-import AlertMaterial from '@material-ui/lab/Alert';
-
+import AlertMaterial from "@material-ui/lab/Alert";
+import Alert from "react-s-alert";
+import AddAttributeChar from "../AddAttributeChar";
+import AddAttribute from "../AddAttribute";
 
 const useStyles = makeStyles((theme) => ({
   table: {},
@@ -45,6 +48,7 @@ const useStyles = makeStyles((theme) => ({
 }));
 
 export default function EditProduct({
+  isEditing,
   productName,
   productDetails,
   brand,
@@ -62,7 +66,7 @@ export default function EditProduct({
   cnofeacode,
   onCnofeacodeEdit,
   // onPieceAmountChange,
-  // sellByPieces,
+  sellByPieces,
   // onSellByPiecesChange,
   onProductNameChange,
   editProd,
@@ -72,6 +76,12 @@ export default function EditProduct({
   companyData,
   errorAlert,
   errorMessage,
+  tax,
+  piecesUnint,
+  setErrorAlert,
+  setReference,
+  getBarcodeProps,
+  setErrorMessage,
 }) {
   const classes = useStyles();
   const [editingName, setEditingName] = useState(true);
@@ -79,11 +89,86 @@ export default function EditProduct({
   const [editingBrandName, setEditingBrandName] = useState(true);
   const [editingUnit, setEditingUnit] = useState(true);
   const [editingTax, setEditingTax] = useState(true);
-  const [editCnofeacode, setEditCnofeacode] = useState(true)
+  const [editingAttrGlob, setEditingAttrGlob] = useState(true);
+  const [editingAttr, setEditingAttr] = useState(true);
+  const [editCnofeacode, setEditCnofeacode] = useState(true);
+  const [selectedAttribute, setSelectedAttribute] = useState([]);
+  const [attributeCode, setAttributeCode] = useState("");
+  const [attributeGlobCode, setAttributeGlobCode] = useState("");
+  const [attrList, setAttrList] = useState([]);
+  const [attrListGlob, setAttrListGlob] = useState([]);
+  const [editProductAttr, setEditProductAttr] = useState("");
+
+  const getAttributeCharCode = (attributeCodeChanged) => {
+    setAttributeGlobCode(attributeCodeChanged);
+  };
+
+  const getAttrListGlob = (attrListChangedcode) => {
+    setAttrListGlob(attrListChangedcode);
+  };
+
+  const getAttributeCode = (attributeCodeChanged) => {
+    setAttributeCode(attributeCodeChanged);
+  };
+
+  const getAttrList = (attrListChanged) => {
+    setAttrList(attrListChanged);
+  };
+
+  const editProdRes = () => {
+    let product = {
+      id: productDetails.id,
+      name: productName,
+      category: category.id,
+      brand: brand.id,
+      taxid: companyData.certificatenum ? tax.value : "0",
+      unitsprid: unitspr.id,
+      piece: sellByPieces,
+      pieceinpack: piecesUnint,
+      cnofeacode: cnofeacode,
+      details: !isEditing
+        ? attributeGlobCode || null
+        : editProductAttr.attributes !== "0" &&
+          parseInt(editProductAttr.attributes, 0) >= attributeGlobCode
+        ? editProductAttr.attributes
+        : attributeGlobCode,
+      attributes: !isEditing
+        ? attributeCode || null
+        : editProductAttr.attributes !== "0" &&
+          parseInt(editProductAttr.attributes, 0) >= attributeCode
+        ? editProductAttr.attributes
+        : attributeCode,
+      delete: "",
+    };
+    Axios.post("/api/products/update", {
+      product,
+    })
+      .then((res) => {
+        setErrorAlert(false);
+        setReference([]);
+        // setEditProduct([]);
+        getBarcodeProps(productDetails.code);
+        closeModal(false);
+        // clear(res);
+        Alert.success("Товар успешно сохранен", {
+          position: "top-right",
+          effect: "bouncyflip",
+          timeout: 2000,
+        });
+      })
+      .catch((err) => {
+        setErrorAlert(true);
+        setErrorMessage(err);
+      });
+  };
 
   return (
     <Fragment>
-      {errorAlert && (<AlertMaterial severity="error">{errorMessage.response&& errorMessage.response.data.text}</AlertMaterial>)}
+      {errorAlert && (
+        <AlertMaterial severity="error">
+          {errorMessage.response && errorMessage.response.data.text}
+        </AlertMaterial>
+      )}
       <TableContainer component={Paper}>
         <Table className={classes.table} aria-label="customized table">
           <TableHead className={classes.head} align="left">
@@ -234,28 +319,30 @@ export default function EditProduct({
                 </IconButton>
               </TableCell>
             </TableRow>
-            
+
             <TableRow>
-            <TableCell>Код ТН ВЭД:</TableCell>
+              <TableCell>Код ТН ВЭД:</TableCell>
               <TableCell className={classes.textField}>
                 {editCnofeacode && (
                   <Typography variant="h7" align="left">
-                    {!productDetails.cnofeacode ? "Н/Д" : productDetails.cnofeacode}
+                    {!productDetails.cnofeacode
+                      ? "Н/Д"
+                      : productDetails.cnofeacode}
                   </Typography>
-                  )}
+                )}
                 {!editCnofeacode && (
                   <TextField
-                  fullWidth
-                  className={classes.textField}
-                  align="left"
-                  id="outlined-full-width"
-                  size="small"
-                  required
-                  variant="outlined"
-                  type="number"
-                  value={cnofeacode}
-                  defaultValue={productDetails.cnofeacode}
-                  onChange={onCnofeacodeEdit}
+                    fullWidth
+                    className={classes.textField}
+                    align="left"
+                    id="outlined-full-width"
+                    size="small"
+                    required
+                    variant="outlined"
+                    type="number"
+                    value={cnofeacode}
+                    defaultValue={productDetails.cnofeacode}
+                    onChange={onCnofeacodeEdit}
                   />
                 )}
               </TableCell>
@@ -364,10 +451,67 @@ export default function EditProduct({
                 </TableCell>
               </TableRow>
             )}
-              <TableRow>
+            <TableRow>
               <TableCell>Постоянные характеристики</TableCell>
-              <TableCell></TableCell>
-              </TableRow>
+              <TableCell>
+                {" "}
+                {editingAttrGlob && (
+                  <Typography variant="h7" align="left">
+                    {productDetails.detailscaption}
+                  </Typography>
+                )}
+                {!editingAttrGlob && (
+                  <AddAttributeChar
+                    isEditing={isEditing}
+                    selected={selectedAttribute}
+                    // clearBoard={clearBoard}
+                    attributeCode={getAttributeCharCode}
+                    attrListProps={getAttrListGlob}
+                  />
+                )}
+              </TableCell>
+              <TableCell align="left">
+                <IconButton
+                  aria-label="редактировать"
+                  component="span"
+                  onClick={() => {
+                    setEditingAttrGlob(false);
+                  }}
+                >
+                  <EditRoundedIcon aria-label="edit" />
+                </IconButton>
+              </TableCell>
+            </TableRow>
+            <TableRow>
+              <TableCell>Партийные характеристики</TableCell>
+              <TableCell>
+                {editingAttr && (
+                  <Typography variant="h7" align="left">
+                    {productDetails.attributescaption}
+                  </Typography>
+                )}
+                {!editingAttr && (
+                  <AddAttribute
+                    isEditing={isEditing}
+                    selected={selectedAttribute}
+                    // clearBoard={clearBoard}
+                    attributeCode={getAttributeCode}
+                    attrListProps={getAttrList}
+                  />
+                )}
+              </TableCell>
+              <TableCell align="left">
+                <IconButton
+                  aria-label="редактировать"
+                  component="span"
+                  onClick={() => {
+                    setEditingAttr(false);
+                  }}
+                >
+                  <EditRoundedIcon aria-label="edit" />
+                </IconButton>
+              </TableCell>
+            </TableRow>
           </TableBody>
           <TableFooter>
             <TableRow>
@@ -377,7 +521,7 @@ export default function EditProduct({
                     <Button
                       variant="contained"
                       color="primary"
-                      onClick={() => editProd()}
+                      onClick={() => editProdRes()}
                     >
                       Сохранить
                     </Button>
