@@ -276,6 +276,7 @@ export default function ProductReferenceList({
       });
   };
 
+
   const handleDelete = (e, idx) => {
     const product = {
       id: productSelectValue.value,

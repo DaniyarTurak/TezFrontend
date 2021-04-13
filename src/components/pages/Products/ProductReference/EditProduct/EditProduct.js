@@ -364,6 +364,10 @@ export default function EditProduct({
                 </TableCell>
               </TableRow>
             )}
+              <TableRow>
+              <TableCell>Постоянные характеристики</TableCell>
+              <TableCell></TableCell>
+              </TableRow>
           </TableBody>
           <TableFooter>
             <TableRow>

@@ -2,8 +2,7 @@ import React, { useState, useEffect, Fragment } from "react";
 import Select from "react-select";
 import Axios from "axios";
 import Alert from "react-s-alert";
-import ErrorAlert from "../../../../ReusableComponents/ErrorAlert";
-import Moment from "moment";
+import ErrorAlert from "../../../ReusableComponents/ErrorAlert";
 
 export default function AddAttribute({
   clearBoard,
@@ -25,7 +24,6 @@ export default function AddAttribute({
   const [selectedAttrType, setSelectedAttrType] = useState("TEXT");
   const [oldAttributes, setOldAttributes] = useState([]);
   const [isClear, setClear] = useState(false);
-  const [date, setDate] = useState(Moment().format("YYYY-MM-DD"));
 
   useEffect(() => {
     getAttributes();
@@ -100,7 +98,7 @@ export default function AddAttribute({
   };
 
   const getAttributes = () => {
-    Axios.get("/api/attributes")
+    Axios.get("/api/foramir")
       .then((res) => res.data)
       .then((attributes) => {
         formatAttributes(attributes);
@@ -162,7 +160,6 @@ export default function AddAttribute({
           timeout: 3000,
         });
         return;}}
-
     let attrListChanged = attrList;
 
     if (attrListChanged.some((attr) => attr.name === attrName.label)) {
@@ -177,17 +174,12 @@ export default function AddAttribute({
       value: attrValue,
       attribcode: attrName.value,
     };
-
-    if (reqbody.attribcode === "2") {
-      reqbody.value = Moment(date).format("YYYY-MM-DD")
-    };
-
     attrListChanged.push({
       value: attrValue,
       name: attrName.label,
       code: attrName.value,
     });
-   postAttributes(attrListChanged, reqbody);
+    postAttributes(attrListChanged, reqbody);
   };
 
   const postAttributes = (attrListChanged, reqbody) => {
@@ -240,25 +232,25 @@ export default function AddAttribute({
 
   return (
     <Fragment>
+      {/* <hr /> */}
       <div className="row justify-content-center" style={{ marginBottom: 5 }}>
-        <div className="col-md-8">
-        </div>
+        {/* <div className="col-md-8">
+          <h6>Дополнительная информация</h6>
+        </div> */}
       </div>
       <div className="row justify-content-right">
         <div >
-          <label  className="text-center" >Партийные характеристики</label>
           <span className="input-group-text border-0"
           style = {{background: "transparent"}}>
             <Select
-              className="col-md-10"
+              className="col-md-11"
               value={attrName}
               onChange={onAttrNameChange}
               options={optionsToRender}
               placeholder={"Выберите"}
               noOptionsMessage={() => "Характеристики не найдены"}
             />
-
-            {/* <span className="message text-danger">{attrNameError}</span> */}
+            <span className="message text-danger">{attrNameError}</span>
               <button
                 type="button"
                 className="btn btn-outline-info"
@@ -266,7 +258,7 @@ export default function AddAttribute({
               >
                 Добавить атрибут
               </button>
-          </span>
+              </span>
         </div>
       </div>
 
