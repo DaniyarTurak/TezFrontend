@@ -2,7 +2,7 @@ import React, { useState, useEffect, Fragment } from "react";
 import Select from "react-select";
 import Axios from "axios";
 import Alert from "react-s-alert";
-import ErrorAlert from "../../../../ReusableComponents/ErrorAlert";
+import ErrorAlert from "../../../ReusableComponents/ErrorAlert";
 import Moment from "moment";
 
 export default function AddAttribute({
@@ -246,11 +246,10 @@ export default function AddAttribute({
       </div>
       <div className="row justify-content-right">
         <div >
-          <label  className="text-center" >Партийные характеристики</label>
           <span className="input-group-text border-0"
           style = {{background: "transparent"}}>
             <Select
-              className="col-md-10"
+              className="col-md-11"
               value={attrName}
               onChange={onAttrNameChange}
               options={optionsToRender}
@@ -271,8 +270,8 @@ export default function AddAttribute({
       </div>
 
       {attrList.length > 0 && (
-        <div className="row justify-content-center mt-20">
-          <div className="col-md-8">
+        <div className="row justify-content-right mt-8">
+          <div className="col-md-2">
             <table className="table">
               <thead>
                 <tr>

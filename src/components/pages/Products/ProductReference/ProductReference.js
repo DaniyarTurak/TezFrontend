@@ -34,6 +34,7 @@ export default function ProductReference() {
 	}, [productSelectValue]);
 
 	const changeProductList = e => {
+		getProducts();
 		setProductList(e.target.name);
 		setReference({})
 		setProductBarcode("")

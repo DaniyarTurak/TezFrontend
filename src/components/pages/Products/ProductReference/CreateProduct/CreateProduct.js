@@ -13,14 +13,15 @@ import Autocomplete from "@material-ui/lab/Autocomplete";
 import Typography from "@material-ui/core/Typography";
 import Checkbox from "@material-ui/core/Checkbox";
 import FormControlLabel from "@material-ui/core/FormControlLabel";
-import AddAttribute from "./AddAttribute";
 import { makeStyles } from "@material-ui/core/styles";
 import Divider from "@material-ui/core/Divider";
 import IconButton from "@material-ui/core/IconButton";
 import SearchIcon from "@material-ui/icons/Search";
 import Button from "@material-ui/core/Button";
 import CircularProgress from "@material-ui/core/CircularProgress";
+import AddAttribute from "./AddAttribute";
 import AddAttributeChar from "./AddAttributeChar";
+import ErrorAlert from "../../../../ReusableComponents/ErrorAlert"
 const useStyles = makeStyles((theme) => ({
   topDiv: {
     borderRadius: "4px",
@@ -169,7 +170,7 @@ export default function CreateProduct({ isEditing }) {
   const brandListChange = (e, brandChanged) => {
     setBrand(brandChanged);
   };
-
+ 
   const onSellByPiecesChange = (e) => {
     const piece = e.target.checked;
     setSellByPieces(piece);
@@ -412,6 +413,7 @@ export default function CreateProduct({ isEditing }) {
         : attributeGlobCode,
       cnofeacode: cnofeacode,
     };
+    
     console.log(product);
     Axios.post("/api/products/create", { product })
       .then((res) => {
@@ -423,7 +425,7 @@ export default function CreateProduct({ isEditing }) {
         });
       })
       .catch((err) => {
-        // ErrorAlert(err);
+        ErrorAlert(err);
         console.log(err);
       });
   };
@@ -440,8 +442,12 @@ export default function CreateProduct({ isEditing }) {
     setAttributeCode(null);
     setAttrList([]);
     setSelectedAttribute([]);
+    setAttributeGlobCode("")
     setCnofeacode("")
+
   };
+
+
 
   return (
     <Fragment>
@@ -585,10 +591,6 @@ export default function CreateProduct({ isEditing }) {
                 type="number"
                 value={cnofeacode}
                 onChange={onCnofeacodeEdit}
-                error={isValidateName}
-                helperText={
-                  isValidateName ? "Поле обязательно для заполнения" : ""
-                }
               />
             </div>
             <Grid container spacing={3} justify="center">

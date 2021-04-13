@@ -241,41 +241,6 @@ export default function ProductReferenceList({
     setCnofeacode("")
   };
 
-  const editProd = () => {
-    let product = {
-      id: editProduct.id,
-      name: productName,
-      category: category.id,
-      brand: brand.id,
-      taxid: companyData.certificatenum ? tax.value : "0",
-      unitsprid: unitspr.id,
-      piece: sellByPieces,
-      pieceinpack: piecesUnint,
-	  cnofeacode:cnofeacode,
-      delete: "",
-    };
-    Axios.post("/api/products/update", {
-      product,
-    })
-      .then((res) => {
-        setErrorAlert(false);
-        setReference([]);
-        setEditProduct([]);
-        getBarcodeProps(editProduct.code);
-        closeModal(false);
-        clear(res);
-        Alert.success("Товар успешно сохранен", {
-          position: "top-right",
-          effect: "bouncyflip",
-          timeout: 2000,
-        });
-      })
-      .catch((err) => {
-        setErrorAlert(true);
-        setErrorMessage(err);
-      });
-  };
-
   const handleDelete = (e, idx) => {
     const product = {
       id: productSelectValue.value,
@@ -394,7 +359,7 @@ export default function ProductReferenceList({
         cnofeacode={cnofeacode}
         onCnofeacodeEdit={onCnofeacodeEdit}
         onProductNameChange={onProductNameChange}
-        editProd={editProd}
+        // editProd={editProd}
         closeModal={closeModal}
         taxes={taxes}
         tax={tax}
@@ -403,6 +368,10 @@ export default function ProductReferenceList({
         errorAlert={errorAlert}
         errorMessage={errorMessage}
         companyData={companyData}
+        setErrorAlert={setErrorAlert}
+        setReference={setReference}
+        getBarcodeProps={getBarcodeProps}
+        setErrorMessage={setErrorMessage}
       />
     </Dialog>
   ) : (

@@ -98,7 +98,7 @@ export default function AddAttribute({
   };
 
   const getAttributes = () => {
-    Axios.get("/api/attributes")
+    Axios.get("/api/foramir")
       .then((res) => res.data)
       .then((attributes) => {
         formatAttributes(attributes);
@@ -152,12 +152,14 @@ export default function AddAttribute({
   // };
 
   const handleAdd = () => {
-    // if (Object.keys(attrName).length === 0 || !attrValue) {
-    //   return setAttrNameError("Поле обязательно для заполнения");
-    // } else {
-    //   setAttrNameError("");
-    // }
-
+    if (Object.keys(attrName).length === 0) {
+      {
+        Alert.warning("Выберите значение!", {
+          position: "top-right",
+          effect: "bouncyflip",
+          timeout: 3000,
+        });
+        return;}}
     let attrListChanged = attrList;
 
     if (attrListChanged.some((attr) => attr.name === attrName.label)) {
