@@ -263,8 +263,8 @@ export default function AddAttribute({
       </div>
 
       {attrList.length > 0 && (
-        <div className="row justify-content-center mt-20">
-          <div className="col-md-8">
+        <div className="row justify-content-right mt-8">
+          <div className="col-md-2">
             <table className="table">
               <thead>
                 <tr>

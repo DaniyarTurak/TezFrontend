@@ -92,12 +92,12 @@ export default function EditProduct({
   const [editingAttrGlob, setEditingAttrGlob] = useState(true);
   const [editingAttr, setEditingAttr] = useState(true);
   const [editCnofeacode, setEditCnofeacode] = useState(true);
-  const [selectedAttribute, setSelectedAttribute] = useState([]);
+  const [selectedAttribute] = useState([]);
   const [attributeCode, setAttributeCode] = useState("");
   const [attributeGlobCode, setAttributeGlobCode] = useState("");
   const [attrList, setAttrList] = useState([]);
   const [attrListGlob, setAttrListGlob] = useState([]);
-  const [editProductAttr, setEditProductAttr] = useState("");
+  const [editProductAttr] = useState("");
 
   const getAttributeCharCode = (attributeCodeChanged) => {
     setAttributeGlobCode(attributeCodeChanged);
@@ -452,9 +452,8 @@ export default function EditProduct({
               </TableRow>
             )}
             <TableRow>
-              <TableCell>Постоянные характеристики</TableCell>
+              <TableCell>Постоянные характеристики:</TableCell>
               <TableCell>
-                {" "}
                 {editingAttrGlob && (
                   <Typography variant="h7" align="left">
                     {productDetails.detailscaption}
@@ -483,7 +482,7 @@ export default function EditProduct({
               </TableCell>
             </TableRow>
             <TableRow>
-              <TableCell>Партийные характеристики</TableCell>
+              <TableCell>Партийные характеристики:</TableCell>
               <TableCell>
                 {editingAttr && (
                   <Typography variant="h7" align="left">
