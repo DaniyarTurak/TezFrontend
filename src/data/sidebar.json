@@ -135,7 +135,7 @@
       {
         "id": 11,
         "name": "Предельные цены",
-        "route": "product/marginalprice"
+        "route": "product/marginalpricepage"
       },
       {
         "id": 12,

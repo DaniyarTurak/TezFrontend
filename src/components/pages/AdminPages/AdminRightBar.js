@@ -43,9 +43,16 @@ export default function AdminRightBar({
         case "nomenclature":
           return <ImpNomenclature history={history} location={location} />;
         case "createinvoice":
-          return <CreateInvoicePage history={history} location={location} />;
+          return (
+            user.login === "admin" ?
+              <CreateInvoicePage history={history} location={location} />
+              :
+              <NotAllowed />);
         case "consolidated":
-          return <ConsolidatedReports history={history} location={location} />;
+          return (user.login === "admin" ?
+            <ConsolidatedReports history={history} location={location} />
+            :
+            <NotAllowed />);
         case "updateattribute":
           switch (action) {
             case "manage":
@@ -83,14 +90,16 @@ export default function AdminRightBar({
                   isAdmin={true}
                 />
               );
-
             default:
               return (
-                <AdminNews
-                  history={history}
-                  location={location}
-                  isAdmin={true}
-                />
+                user.login === "admin" ?
+                  <AdminNews
+                    history={history}
+                    location={location}
+                    isAdmin={true}
+                  />
+                  :
+                  <NotAllowed />
               );
           }
         case "references":
@@ -109,7 +118,10 @@ export default function AdminRightBar({
           }
         default:
           return (
-            <AdminNews history={history} location={location} isAdmin={true} />
+            user.login === "admin" ?
+              <AdminNews history={history} location={location} isAdmin={true} />
+              :
+              <CompanyListPage history={history} location={location} />
           );
       }
     } else {
