@@ -139,6 +139,8 @@ export default function EditProduct({
         ? editProductAttr.attributes
         : attributeCode,
       delete: "",
+      attrList,
+      attrListGlob
     };
     Axios.post("/api/products/update", {
       product,

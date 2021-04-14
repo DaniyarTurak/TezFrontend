@@ -18,11 +18,11 @@ export default function AddAttribute({
   const [attrName, setAttrName] = useState("");
   const [attrNameError, setAttrNameError] = useState("");
   const [attrValue, setAttrValue] = useState("");
-  const [attrValueSpr, setAttrValueSpr] = useState("");
+  // const [attrValueSpr, setAttrValueSpr] = useState("");
   const [optionsToRender, setOptionsToRender] = useState([]);
-  const [optionsToRenderSpr, setOptionsToRenderSpr] = useState([]);
+  // const [optionsToRenderSpr, setOptionsToRenderSpr] = useState([]);
   const [isHidden, setHidden] = useState(false);
-  const [selectedAttrType, setSelectedAttrType] = useState("TEXT");
+ // const [selectedAttrType, setSelectedAttrType] = useState("TEXT");
   const [oldAttributes, setOldAttributes] = useState([]);
   const [isClear, setClear] = useState(false);
   const [date, setDate] = useState(Moment().format("YYYY-MM-DD"));
@@ -93,7 +93,7 @@ export default function AddAttribute({
     setHidden(false);
     setAttrValue([]);
     setAttrName([]);
-    setAttrValueSpr([]);
+    // setAttrValueSpr([]);
     if (isEditing) {
       setClear(true);
     }
@@ -135,10 +135,10 @@ export default function AddAttribute({
       attrNameChanged.length === 0 ? "TEXT" : attrNameChanged.type;
     const optionsToRenderSprChanged = attrNameChanged.sprvalues;
     setAttrName(attrNameChanged);
-    setSelectedAttrType(selectedAttrTypeChanged);
+    // setSelectedAttrType(selectedAttrTypeChanged);
     setAttrValue("");
-    setAttrValueSpr("");
-    setOptionsToRenderSpr(optionsToRenderSprChanged);
+    // setAttrValueSpr("");
+    // setOptionsToRenderSpr(optionsToRenderSprChanged);
   };
 
   // const onAttrValueChange = (e) => {
@@ -200,7 +200,7 @@ export default function AddAttribute({
         setAttrList(attrListChanged);
         setAttrValue("");
         setAttrName("");
-        setAttrValueSpr("");
+        // setAttrValueSpr("");
         setAttrNameError("");
       })
       .catch((err) => {
@@ -216,7 +216,6 @@ export default function AddAttribute({
       attribcode: item.code,
     };
     setAttrList(newList);
-
     Axios.post("/api/attributes/delete", req)
       .then(() => {
         attrListProps(newList);
@@ -258,7 +257,7 @@ export default function AddAttribute({
               noOptionsMessage={() => "Характеристики не найдены"}
             />
 
-            {/* <span className="message text-danger">{attrNameError}</span> */}
+            <span className="message text-danger">{attrNameError}</span>
               <button
                 type="button"
                 className="btn btn-outline-info"
