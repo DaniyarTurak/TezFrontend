@@ -20,9 +20,3 @@
 npm-debug.log*
 yarn-debug.log*
 yarn-error.log*
-src/data/sidebar.json
-src/components/pages/Products/MarginalPricePage/MarginalPricePage.js
-src/components/pages/Products/MarginalPricePage/index.js
-src/components/pages/Products/MarginalPricePage/AddMarginalPrice.js
-src/components/pages/Products/MarginalPrice.js
-src/components/CabinetRightBar/CabinetBody.js

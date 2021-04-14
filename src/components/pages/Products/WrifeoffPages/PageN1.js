@@ -5,14 +5,7 @@ import Alert from "react-s-alert";
 import ReactModal from "react-modal";
 import Searching from "../../../Searching";
 import ErrorAlert from "../../../ReusableComponents/ErrorAlert";
-import TableBody from "@material-ui/core/TableBody";
-import TableContainer from "@material-ui/core/TableContainer";
-import TableHead from "@material-ui/core/TableHead";
-import TableRow from "@material-ui/core/TableRow";
-import { withStyles, makeStyles, useTheme } from "@material-ui/core/styles";
-import Paper from "@material-ui/core/Paper";
-import TableCell from "@material-ui/core/TableCell"
-import Table from "@material-ui/core/Table";
+import { withStyles } from "@material-ui/core/styles";
 import Button from '@material-ui/core/Button';
 import Characteristics from './Characteristics';
 import Grid from "@material-ui/core/Grid";
@@ -25,26 +18,12 @@ const customStyles = {
     bottom: "auto",
     marginRight: "-50%",
     transform: "translate(-50%, -50%)",
+    maxHeight: "600px",
     width: "700px",
     zIndex: 11,
   },
   overlay: { zIndex: 10 },
 };
-
-const StyledTableCell = withStyles((theme) => ({
-  head: {
-    backgroundColor: "#17a2b8",
-    color: theme.palette.common.white,
-    fontSize: ".875rem",
-  },
-  body: {
-    fontSize: ".875rem",
-  },
-  footer: {
-    fontWeight: "bold",
-    fontSize: ".875rem",
-  },
-}))(TableCell);
 
 const CancelButton = withStyles((theme) => ({
   root: {
@@ -139,7 +118,6 @@ export default function PageN1({ stockFrom, invoicenumber, productListProps }) {
         .then((res) => res.data)
         .then((res) => {
           if (res.length === 0) return;
-
           if (res.length === 1) {
             const product = res[0];
             const prod = {
@@ -307,7 +285,6 @@ export default function PageN1({ stockFrom, invoicenumber, productListProps }) {
           reason: writeoffReason,
           attributes: productSelectValue.attributes,
         };
-
         pl.push(newProduct);
         setProductList(pl);
         setWriteoffAmount(0);
@@ -446,7 +423,6 @@ export default function PageN1({ stockFrom, invoicenumber, productListProps }) {
           )}
         </div>
       </div>
-
       <div className="row">
         <div className="col-md-12">
           <label>Внесите причину списания</label>
@@ -473,13 +449,10 @@ export default function PageN1({ stockFrom, invoicenumber, productListProps }) {
           </button>
         </div>
       </div>
-
       {isLoading && <Searching />}
-
       {!isLoading && productList.length > 0 && (
         <Fragment>
           <div className="empty-space"></div>
-
           <table className="table table-hover mt-10">
             <thead>
               <tr>
