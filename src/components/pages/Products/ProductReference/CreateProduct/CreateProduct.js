@@ -99,10 +99,13 @@ export default function CreateProduct({ isEditing }) {
   const [attrList, setAttrList] = useState([]);
   const [attrListGlob, setAttrListGlob] = useState([]);
   const [editProduct, setEditProduct] = useState("");
+  const [clearBoard, setClearBoard] = useState(false);
   const companyData =
     JSON.parse(sessionStorage.getItem("isme-company-data")) || {};
   const classes = useStyles();
   const classes2 = useStyles2();
+  console.log("attributeCode",attributeCode);
+  console.log("attributeGlobCode",attributeGlobCode);
 
   useEffect(() => {
     getTaxes();
@@ -413,11 +416,11 @@ export default function CreateProduct({ isEditing }) {
         : attributeGlobCode,
       cnofeacode: cnofeacode,
     };
-    
     console.log(product);
     Axios.post("/api/products/create", { product })
       .then((res) => {
         clearForm(res);
+        setClearBoard(res.code);
         Alert.success("Товар успешно сохранен", {
           position: "top-right",
           effect: "bouncyflip",
@@ -440,11 +443,11 @@ export default function CreateProduct({ isEditing }) {
     setProductName("");
     setPiecesUnint(0);
     setAttributeCode(null);
+    setAttributeGlobCode(null)
     setAttrList([]);
     setSelectedAttribute([]);
-    setAttributeGlobCode("")
     setCnofeacode("")
-
+    setAttrListGlob([])
   };
 
 
@@ -715,7 +718,7 @@ export default function CreateProduct({ isEditing }) {
                   <AddAttributeChar
                     isEditing={isEditing}
                     selected={selectedAttribute}
-                    // clearBoard={clearBoard}
+                    clearBoard={clearBoard}
                     attributeCode={getAttributeCharCode}
                     attrListProps={getAttrListGlob}
                   />
@@ -724,7 +727,7 @@ export default function CreateProduct({ isEditing }) {
                   <AddAttribute
                     isEditing={isEditing}
                     selected={selectedAttribute}
-                    // clearBoard={clearBoard}
+                    clearBoard={clearBoard}
                     attributeCode={getAttributeCode}
                     attrListProps={getAttrList}
                   />

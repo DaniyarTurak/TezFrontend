@@ -211,6 +211,7 @@ export default function AddAttribute({
 
     Axios.post("/api/attributes/delete", req)
       .then(() => {
+        
         attrListProps(newList);
         if (attrList.length === 0) {
           attributeCode("0");

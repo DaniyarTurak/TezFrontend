@@ -139,17 +139,17 @@ export default function AddAttribute({
     setOptionsToRenderSpr(optionsToRenderSprChanged);
   };
 
-  // const onAttrValueChange = (e) => {
-  //   const attrValueChanged =
-  //     optionsToRenderSpr.length > 0 ? e.value : e.target.value;
-  //   const attrValueSprChanged = optionsToRenderSpr.length > 0 ? e : "";
+  const onAttrValueChange = (e) => {
+    const attrValueChanged =
+      optionsToRenderSpr.length > 0 ? e.value : e.target.value;
+    const attrValueSprChanged = optionsToRenderSpr.length > 0 ? e : "";
 
-  //   if (selectedAttrType === "DATE" && attrValueChanged.indexOf("-") === 5)
-  //     return;
+    if (selectedAttrType === "DATE" && attrValueChanged.indexOf("-") === 5)
+      return;
 
-  //   setAttrValue(attrValueChanged);
-  //   setAttrValueSpr(attrValueSprChanged);
-  // };
+    setAttrValue(attrValueChanged);
+    setAttrValueSpr(attrValueSprChanged);
+  };
 
   const handleAdd = () => {
     if (Object.keys(attrName).length === 0) {
@@ -204,8 +204,8 @@ export default function AddAttribute({
       return atr !== item;
     });
     const req = {
-      listcode: attrListCode,
       attribcode: item.code,
+      listcode: attrListCode,
     };
     setAttrList(newList);
 
