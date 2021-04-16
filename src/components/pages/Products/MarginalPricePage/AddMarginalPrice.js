@@ -71,7 +71,6 @@ export default function AddMarginalPrice({ getProducts, listForSelect, isLoading
     const [prodName, setProdName] = useState("");
 
     const getProductByBarcode = () => {
-        console.log(barcode);
         Axios.get("/api/products/barcode", { params: { barcode: barcode.trim() } })
             .then((res) => res.data)
             .then((product) => {
@@ -185,7 +184,6 @@ export default function AddMarginalPrice({ getProducts, listForSelect, isLoading
                 getProducts();
             })
             .catch((err) => {
-                console.log(err);
                 if (
                     err.response &&
                     err.response.data &&

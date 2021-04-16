@@ -144,7 +144,6 @@ export default function PeriodTable({ products, save, getProducts, makeDisabled,
                     changedProducts.push({ product: element.id, price: element.staticprice });
                 }
             });
-            console.log(changedProducts);
             let changes = changedProducts;
             Axios.post("/api/invoice/changestaticprice", {
                 changes,
@@ -161,7 +160,6 @@ export default function PeriodTable({ products, save, getProducts, makeDisabled,
                     makeEnabled();
                 })
                 .catch((err) => {
-                    console.log(err);
                     ErrorAlert(err);
                     setSending(false);
                 });
@@ -217,7 +215,6 @@ export default function PeriodTable({ products, save, getProducts, makeDisabled,
         })
             .then((result) => result.data)
             .then((result) => {
-                console.log(result);
                 Alert.success("Товар успешно удалён", {
                     position: "top-right",
                     effect: "bouncyflip",
@@ -228,7 +225,6 @@ export default function PeriodTable({ products, save, getProducts, makeDisabled,
                 makeEnabled();
             })
             .catch((err) => {
-                console.log(err);
                 if (
                     err.response &&
                     err.response.data &&

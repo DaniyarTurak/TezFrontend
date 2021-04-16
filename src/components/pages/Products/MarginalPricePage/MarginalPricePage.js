@@ -107,7 +107,6 @@ export default function MarginalPricePage() {
     if (data && data.value !== 0) {
       arr.forEach(product => {
         if (product.id === data.value) {
-          console.log(product.name)
           setProdName(product.name);
           setProductNameForSelect({ label: product.name, value: product.id });
           // setFilteredProds([{ ...product, indx: 1 }]);
