@@ -95,8 +95,8 @@ export default function HistoryDetails({
                 {["1", "2", "7", "16", "17"].includes(
                   markedInvoice.invoicetypeid
                 ) && (
-                  <StyledTableCell align="center">Количество</StyledTableCell>
-                )}
+                    <StyledTableCell align="center">Количество</StyledTableCell>
+                  )}
                 {["7"].includes(markedInvoice.invoicetypeid) && (
                   <StyledTableCell align="center">Причина</StyledTableCell>
                 )}
@@ -115,6 +115,9 @@ export default function HistoryDetails({
                 )}
                 {["2", "16", "17"].includes(markedInvoice.invoicetypeid) && (
                   <StyledTableCell align="center">Цена продажи</StyledTableCell>
+                )}
+                {["2", "16", "17"].includes(markedInvoice.invoicetypeid) && (
+                  <StyledTableCell align="center">Цена за штуку</StyledTableCell>
                 )}
                 {["0"].includes(markedInvoice.invoicetypeid) && (
                   <StyledTableCell align="center">Новая цена</StyledTableCell>
@@ -138,12 +141,12 @@ export default function HistoryDetails({
                   {["1", "2", "7", "16", "17"].includes(
                     markedInvoice.invoicetypeid
                   ) && (
-                    <StyledTableCell align="center">
-                      {parseFloat(detail.units).toLocaleString("ru", {
-                        maximumFractionDigits: 2,
-                      })}
-                    </StyledTableCell>
-                  )}
+                      <StyledTableCell align="center">
+                        {parseFloat(detail.units).toLocaleString("ru", {
+                          maximumFractionDigits: 2,
+                        })}
+                      </StyledTableCell>
+                    )}
                   {["7"].includes(markedInvoice.invoicetypeid) && (
                     <StyledTableCell align="center">
                       {detail.reason}
@@ -186,9 +189,21 @@ export default function HistoryDetails({
                     </StyledTableCell>
                   )}
 
+
                   {["0", "2"].includes(markedInvoice.invoicetypeid) && (
                     <StyledTableCell align="center" className="tenge">
                       {detail.newprice}
+                    </StyledTableCell>
+                  )}
+                  {["2", "16", "17"].includes(markedInvoice.invoicetypeid) && (
+                    <StyledTableCell
+                      align="center"
+                      className={`${detail.pieceprice ? "tenge" : ""}`}
+                    >
+                      {detail.pieceprice &&
+                        parseFloat(detail.pieceprice).toLocaleString("ru", {
+                          minimumFractionDigits: 2,
+                        })}
                     </StyledTableCell>
                   )}
                 </TableRow>
@@ -197,63 +212,63 @@ export default function HistoryDetails({
             {["1", "2", "7", "16", "17"].includes(
               markedInvoice.invoicetypeid
             ) && (
-              <TableFooter>
-                <TableRow>
-                  <StyledTableCell
-                    colSpan={
-                      markedInvoice.invoicetypeid === "7"
-                        ? 3
-                        : markedInvoice.invoicetypeid === "2"
-                        ? 3
-                        : 3
-                    }
-                  >
-                    Итого
+                <TableFooter>
+                  <TableRow>
+                    <StyledTableCell
+                      colSpan={
+                        markedInvoice.invoicetypeid === "7"
+                          ? 3
+                          : markedInvoice.invoicetypeid === "2"
+                            ? 3
+                            : 3
+                      }
+                    >
+                      Итого
                   </StyledTableCell>
-                  <StyledTableCell align="center">
-                    {details
-                      .reduce((prev, cur) => {
-                        return prev + parseFloat(cur.units);
-                      }, 0)
-                      .toLocaleString("ru", { minimumFractionDigits: 2 })}
-                  </StyledTableCell>
-                  {["2", "7"].includes(markedInvoice.invoicetypeid) && (
-                    <StyledTableCell colSpan="2" />
-                  )}
+                    <StyledTableCell align="center">
+                      {details
+                        .reduce((prev, cur) => {
+                          return prev + parseFloat(cur.units);
+                        }, 0)
+                        .toLocaleString("ru", { minimumFractionDigits: 2 })}
+                    </StyledTableCell>
+                    {["2", "7"].includes(markedInvoice.invoicetypeid) && (
+                      <StyledTableCell colSpan="2" />
+                    )}
 
-                  {["16", "17"].includes(markedInvoice.invoicetypeid) && (
-                    <StyledTableCell />
-                  )}
-                  {["2"].includes(markedInvoice.invoicetypeid) && (
-                    <StyledTableCell align="center" className="tenge">
-                      {details
-                        .reduce((prev, cur) => {
-                          return prev + cur.purchaseprice * cur.units;
-                        }, 0)
-                        .toLocaleString("ru", { minimumFractionDigits: 2 })}
-                    </StyledTableCell>
-                  )}
-                  {["16", "17"].includes(markedInvoice.invoicetypeid) && (
-                    <StyledTableCell align="center" className="tenge">
-                      {details
-                        .reduce((prev, cur) => {
-                          return prev + cur.price * cur.units;
-                        }, 0)
-                        .toLocaleString("ru", { minimumFractionDigits: 2 })}
-                    </StyledTableCell>
-                  )}
-                  {["2"].includes(markedInvoice.invoicetypeid) && (
-                    <StyledTableCell align="center" className="tenge">
-                      {details
-                        .reduce((prev, cur) => {
-                          return prev + cur.newprice * cur.units;
-                        }, 0)
-                        .toLocaleString("ru", { minimumFractionDigits: 2 })}
-                    </StyledTableCell>
-                  )}
-                </TableRow>
-              </TableFooter>
-            )}
+                    {["16", "17"].includes(markedInvoice.invoicetypeid) && (
+                      <StyledTableCell />
+                    )}
+                    {["2"].includes(markedInvoice.invoicetypeid) && (
+                      <StyledTableCell align="center" className="tenge">
+                        {details
+                          .reduce((prev, cur) => {
+                            return prev + cur.purchaseprice * cur.units;
+                          }, 0)
+                          .toLocaleString("ru", { minimumFractionDigits: 2 })}
+                      </StyledTableCell>
+                    )}
+                    {["16", "17"].includes(markedInvoice.invoicetypeid) && (
+                      <StyledTableCell align="center" className="tenge">
+                        {details
+                          .reduce((prev, cur) => {
+                            return prev + cur.price * cur.units;
+                          }, 0)
+                          .toLocaleString("ru", { minimumFractionDigits: 2 })}
+                      </StyledTableCell>
+                    )}
+                    {["2"].includes(markedInvoice.invoicetypeid) && (
+                      <StyledTableCell align="center" className="tenge">
+                        {details
+                          .reduce((prev, cur) => {
+                            return prev + cur.newprice * cur.units;
+                          }, 0)
+                          .toLocaleString("ru", { minimumFractionDigits: 2 })}
+                      </StyledTableCell>
+                    )}
+                  </TableRow>
+                </TableFooter>
+              )}
           </Table>
         </TableContainer>
       </Grid>
@@ -262,19 +277,18 @@ export default function HistoryDetails({
         <ReactHTMLTableToExcel
           className="btn btn-sm btn-outline-success"
           table="table-transfer"
-          filename={`${
-            invoicetype.value === "1"
-              ? "Перемещение товара"
-              : invoicetype.value === "2"
+          filename={`${invoicetype.value === "1"
+            ? "Перемещение товара"
+            : invoicetype.value === "2"
               ? "Добавление товара"
               : invoicetype.value === "0"
-              ? "Смена цен"
-              : invoicetype.value === "16" || invoicetype.value === "17"
-              ? "Детали консигнации"
-              : "Списание товара"
-          } c ${Moment(dateFrom).format("DD.MM.YYYY")} по ${Moment(
-            dateTo
-          ).format("DD.MM.YYYY")}`}
+                ? "Смена цен"
+                : invoicetype.value === "16" || invoicetype.value === "17"
+                  ? "Детали консигнации"
+                  : "Списание товара"
+            } c ${Moment(dateFrom).format("DD.MM.YYYY")} по ${Moment(
+              dateTo
+            ).format("DD.MM.YYYY")}`}
           sheet="tablexls"
           buttonText="Выгрузить в excel"
         />

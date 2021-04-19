@@ -98,8 +98,8 @@ export default function HistoryTable({
                   >
                     {invoice.purchaseprice
                       ? parseFloat(invoice.purchaseprice).toLocaleString("ru", {
-                          minimumFractionDigits: 2,
-                        })
+                        minimumFractionDigits: 2,
+                      })
                       : "Н/Д"}
                   </StyledTableCell>
                 )}
@@ -110,8 +110,8 @@ export default function HistoryTable({
                   >
                     {invoice.newprice
                       ? parseFloat(invoice.newprice).toLocaleString("ru", {
-                          minimumFractionDigits: 2,
-                        })
+                        minimumFractionDigits: 2,
+                      })
                       : "Н/Д"}
                   </StyledTableCell>
                 )}
