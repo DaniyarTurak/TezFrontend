@@ -99,6 +99,7 @@ export default function ChangePrice({ history }) {
           newprice: product.price,
           pieceprice: product.pieceprice,
           pointid: point.id,
+          oldprice: product.oldPrice.toString(),
         };
 
         changes.push(change);

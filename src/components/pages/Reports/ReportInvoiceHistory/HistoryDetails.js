@@ -120,6 +120,9 @@ export default function HistoryDetails({
                   <StyledTableCell align="center">Цена за штуку</StyledTableCell>
                 )}
                 {["0"].includes(markedInvoice.invoicetypeid) && (
+                  <StyledTableCell align="center">Старая цена</StyledTableCell>
+                )}
+                {["0"].includes(markedInvoice.invoicetypeid) && (
                   <StyledTableCell align="center">Новая цена</StyledTableCell>
                 )}
               </TableRow>
@@ -188,8 +191,11 @@ export default function HistoryDetails({
                         })}
                     </StyledTableCell>
                   )}
-
-
+                  {["0"].includes(markedInvoice.invoicetypeid) && (
+                    <StyledTableCell align="center" className="tenge">
+                      {detail.oldprice ? detail.oldprice : "-"}
+                    </StyledTableCell>
+                  )}
                   {["0", "2"].includes(markedInvoice.invoicetypeid) && (
                     <StyledTableCell align="center" className="tenge">
                       {detail.newprice}
