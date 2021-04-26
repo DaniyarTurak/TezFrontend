@@ -155,6 +155,9 @@ let AddBrandForm = ({
   const [page, setPage] = useState(0);
   const [rowsPerPage, setRowsPerPage] = useState(10);
   const [isChanging, setChanging] = useState(false);
+  const [brand, setBrand] = useState("");
+  const [manufacturer, setManufacturer] = useState("");
+
 
   useEffect(() => {
     if (brandData) {
@@ -277,12 +280,40 @@ let AddBrandForm = ({
     brandChanging();
   };
 
-  const saveBrands = () => {
-    let brnds = [];
-    brands.forEach(brnd => {
-      brnds.push({ brand: brnd.brand, manufacturer: brnd.manufacturer, deleted: false });
-    });
-    console.log({ brands: brnds });
+  const saveBrands = (id) => {
+    let reqdata;
+    if (id.id === 1) {
+      reqdata = { brand: [{ brand: brand, manufacturer: manufacturer, deleted: false }] };
+    }
+    if (id.id === 2) {
+      let brnds = [];
+      brands.forEach((brnd, i) => {
+        brnds.push({ brand: brnd.brand, manufacturer: brnd.manufacturer, deleted: false });
+      });
+      reqdata = { brand: brnds };
+    }
+
+    Axios.post("/api/brand/manage", reqdata)
+      .then((result) => {
+        Alert.success("Бренд успешно создан", {
+          position: "top-right",
+          effect: "bouncyflip",
+          timeout: 2000,
+        });
+        dispatch(reset("addbrandform"));
+      })
+      .catch((err) => {
+        Alert.error(
+          err.response.data.code === "internal_error"
+            ? "Возникла ошибка при обработке вашего запроса. Мы уже работает над решением. Попробуйте позже"
+            : err.response.data.text,
+          {
+            position: "top-right",
+            effect: "bouncyflip",
+            timeout: 2000,
+          }
+        );
+      });
   };
 
   const editBrand = (idx, state) => {
@@ -506,7 +537,7 @@ let AddBrandForm = ({
                 /> : ""}
               <button
                 className="btn btn-info form-control"
-                onClick={saveBrands}
+                onClick={() => saveBrands({ id: 2 })}
               >
                 Сохранить
                 </button>
@@ -516,11 +547,13 @@ let AddBrandForm = ({
       </div>
       <div className="empty-space" />
       {brands.length === 0 &&
-        < form onSubmit={handleSubmit(handleSubmitFunction)}>
+        < Fragment >
           <dl>
             <dt>Наименование бренда</dt>
             <dd>
               <Field
+                value={brand}
+                onChange={(e) => { setBrand(e.target.value) }}
                 name="brand"
                 component={InputField}
                 type="text"
@@ -532,6 +565,8 @@ let AddBrandForm = ({
             <dt>Компания</dt>
             <dd>
               <Field
+                value={manufacturer}
+                onChange={(e) => { setManufacturer(e.target.value) }}
                 name="manufacturer"
                 component={InputField}
                 type="text"
@@ -542,7 +577,8 @@ let AddBrandForm = ({
             </dd>
           </dl>
           <button
-            type="submit"
+            onClick={() => saveBrands({ id: 1 })}
+            // type="submit"
             className="btn btn-success"
             disabled={isSubmiting || pristine || submitting}
           >
@@ -562,7 +598,7 @@ let AddBrandForm = ({
               Очистить
             </button>
           )}
-        </form>
+        </Fragment>
       }
     </div>
   );
