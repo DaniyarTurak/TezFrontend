@@ -1,10 +1,6 @@
 import React, { Fragment, useState, useEffect } from "react";
 import Axios from "axios";
-import Select from "react-select";
-import Alert from "react-s-alert";
 import Searching from "../../../Searching";
-import { RequiredField, LessThanZero, NotEqualZero } from "../../../../validation";
-import _ from "lodash";
 import ErrorAlert from "../../../ReusableComponents/ErrorAlert";
 import AddMarginalPrice from "./AddMarginalPrice";
 import MarginalPriceTable from "./MarginalPriceTable";
@@ -60,7 +56,7 @@ export default function MarginalPricePage() {
   const [listForSelect, setListForSelect] = useState([]);
   const [listForSelectStat, setListForSelectStat] = useState([]);
   const [productNameForSelect, setProductNameForSelect] = useState({ label: "Все товары", value: 0 });
-  const [prodName, setProdName] = useState("");
+  // const [prodName, setProdName] = useState("");
   const [filteredProds, setFilteredProds] = useState([])
   const [save, setSave] = useState(false);
   const [isDisabled, setDisabled] = useState(false);
@@ -107,9 +103,8 @@ export default function MarginalPricePage() {
     if (data && data.value !== 0) {
       arr.forEach(product => {
         if (product.id === data.value) {
-          setProdName(product.name);
+          // setProdName(product.name);
           setProductNameForSelect({ label: product.name, value: product.id });
-          // setFilteredProds([{ ...product, indx: 1 }]);
           setFilteredProds([product]);
         }
       });
@@ -119,9 +114,9 @@ export default function MarginalPricePage() {
     }
   };
 
-  const productOnInputChange = (e, name) => {
-    setProdName(name);
-  };
+  // const productOnInputChange = (e, name) => {
+  //    setProdName(name);
+  // };
 
   const saveChanges = () => {
     setSave(!save);
@@ -161,7 +156,7 @@ export default function MarginalPricePage() {
             value={productNameForSelect}
             onChange={productOnChange}
             noOptionsText="Товар не найден"
-            onInputChange={productOnInputChange}
+            // onInputChange={productOnInputChange}
             filterOptions={(options) =>
               options.filter((option) => option !== "")
             }

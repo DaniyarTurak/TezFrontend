@@ -13,7 +13,7 @@ import TableCell from "@material-ui/core/TableCell";
 import TableContainer from "@material-ui/core/TableContainer";
 import TableRow from "@material-ui/core/TableRow";
 import TableHead from "@material-ui/core/TableHead";
-import { withStyles, makeStyles, useTheme, createStyles } from "@material-ui/core/styles";
+import { withStyles, makeStyles, useTheme } from "@material-ui/core/styles";
 import Paper from "@material-ui/core/Paper";
 import DeleteIcon from '@material-ui/icons/DeleteForever';
 import EditIcon from '@material-ui/icons/Edit';
@@ -104,7 +104,6 @@ TablePaginationActions.propTypes = {
   page: PropTypes.number.isRequired,
   rowsPerPage: PropTypes.number.isRequired,
 };
-//конец пагинации
 
 const BrandInput = withStyles((theme) => ({
   input: {
@@ -153,9 +152,9 @@ let AddBrandForm = ({
   const [selectedFile, setSelectedFile] = useState("");
   const [isLoading, setLoading] = useState(true);
   const [brands, setBrands] = useState([]);
-  const [isChanged, setChanged] = useState(false);
   const [page, setPage] = useState(0);
   const [rowsPerPage, setRowsPerPage] = useState(10);
+  const [isChanging, setChanging] = useState(false);
 
   useEffect(() => {
     if (brandData) {
@@ -220,13 +219,10 @@ let AddBrandForm = ({
     setLoading(true);
     const reader = new FileReader();
     reader.onload = (evt) => {
-      /* Parse data */
       const bstr = evt.target.result;
       const wb = read(bstr, { type: "binary" });
-      /* Get first worksheet */
       const wsname = wb.SheetNames[0];
       const ws = wb.Sheets[wsname];
-      /* Convert array of arrays */
       const prods = utils.sheet_to_json(
         ws,
         { raw: true },
@@ -238,12 +234,17 @@ let AddBrandForm = ({
       }
       else {
         prods.forEach(element => {
-          arr.push({ brand: element.Brand, manufacturer: element.Manufacturer, changed: false, deleted: false })
+          arr.push({
+            brand: element.Brand,
+            manufacturer: element.Manufacturer,
+            changed: false,
+            deleted: false,
+            brandChanging: false,
+            manufacturerChanging: false
+          })
         });
         setBrands(arr);
       }
-
-
     }
     reader.readAsBinaryString(selectedFile);
     setLoading(false)
@@ -277,38 +278,43 @@ let AddBrandForm = ({
   };
 
   const saveBrands = () => {
-    console.log(brands);
-  }
+    let brnds = [];
+    brands.forEach(brnd => {
+      brnds.push({ brand: brnd.brand, manufacturer: brnd.manufacturer, deleted: false });
+    });
+    console.log({ brands: brnds });
+  };
 
   const editBrand = (idx, state) => {
     setBrands(prevState => {
       let obj = prevState[idx];
       obj.changed = !state;
+      obj.brandChanging = true;
       return [...prevState];
     })
     brandChanging();
-  }
+  };
 
   const brandChange = (value, idx) => {
-    // setChanged(true);
     setBrands(prevState => {
       let obj = prevState[idx];
+      obj.brandChanging = true;
+      obj.manufacturerChanging = false;
       obj.brand = value;
       return [...prevState];
     })
   };
 
   const manufacturerChange = (value, idx) => {
-    // setChanged(true);
     setBrands(prevState => {
       let obj = prevState[idx];
+      obj.brandChanging = false;
+      obj.manufacturerChanging = true;
       obj.manufacturer = value;
       return [...prevState];
     })
 
   };
-
-  const [isChanging, setChanging] = useState(false);
 
   const brandChanging = () => {
     setChanging(false);
@@ -320,8 +326,8 @@ let AddBrandForm = ({
       else {
         setChanging(false);
       }
-    }
-  }
+    };
+  };
 
   const handleChangePage = (event, newPage) => {
     setPage(newPage);
@@ -346,7 +352,6 @@ let AddBrandForm = ({
         setLoading(false);
       });
   };
-
 
   return (
     <div id="addBrand">
@@ -436,8 +441,8 @@ let AddBrandForm = ({
                           <StyledTableCell>
                             {brand.changed === true ?
                               <BrandInput
+                                autoFocus={brand.brandChanging}
                                 variant="outlined"
-                                autoFocus={true}
                                 value={brand.brand}
                                 onChange={(e) => brandChange(e.target.value, idx)}
                               /> : brand.brand
@@ -446,8 +451,8 @@ let AddBrandForm = ({
                           <StyledTableCell>
                             {brand.changed === true ?
                               <ManufacturerInput
+                                autoFocus={brand.manufacturerChanging}
                                 variant="outlined"
-                                autoFocus={true}
                                 value={brand.manufacturer}
                                 onChange={(e) => manufacturerChange(e.target.value, idx)}
                               /> : brand.manufacturer

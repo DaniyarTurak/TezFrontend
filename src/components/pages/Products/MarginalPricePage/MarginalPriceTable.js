@@ -14,7 +14,7 @@ import KeyboardArrowLeft from "@material-ui/icons/KeyboardArrowLeft";
 import KeyboardArrowRight from "@material-ui/icons/KeyboardArrowRight";
 import LastPageIcon from "@material-ui/icons/LastPage";
 import IconButton from "@material-ui/core/IconButton";
-import { withStyles, makeStyles, useTheme, createStyles } from "@material-ui/core/styles";
+import { withStyles, makeStyles, useTheme } from "@material-ui/core/styles";
 import DeleteIcon from '@material-ui/icons/DeleteForever';
 import EditIcon from '@material-ui/icons/Edit';
 import InputBase from '@material-ui/core/InputBase';
@@ -202,7 +202,7 @@ export default function PeriodTable({ products, save, getProducts, makeDisabled,
         setChanged(true);
         makeDisabled();
         setProductsWithPrice(prevState => {
-            let obj = prevState[idx];
+            let obj = prevState[idx - 1];
             obj.staticprice = value;
             return [...prevState];
         })
@@ -288,7 +288,7 @@ export default function PeriodTable({ products, save, getProducts, makeDisabled,
                                                     variant="outlined"
                                                     autoFocus={true}
                                                     value={product.staticprice}
-                                                    onChange={(e) => staticPriceChange(e.target.value, idx)}
+                                                    onChange={(e) => staticPriceChange(e.target.value, product.indx)}
                                                 /> : product.staticprice + " тг."
                                             }
                                         </StyledTableCell>
@@ -296,7 +296,7 @@ export default function PeriodTable({ products, save, getProducts, makeDisabled,
                                             <IconButton
                                                 disabled={isSending}
                                                 onClick={() => {
-                                                    editStaticPrice(idx);
+                                                    editStaticPrice(product.indx - 1);
                                                 }}>
                                                 <EditIcon
                                                     fontSize="small"
