@@ -157,7 +157,7 @@ let AddBrandForm = ({
   const [isChanging, setChanging] = useState(false);
   const [brand, setBrand] = useState("");
   const [manufacturer, setManufacturer] = useState("");
-
+  const [isSending, setSending] = useState(false);
 
   useEffect(() => {
     if (brandData) {
@@ -165,46 +165,6 @@ let AddBrandForm = ({
       dispatch(initialize("addbrandform", brandDataChanged));
     }
   }, []);
-
-  const handleSubmitFunction = (data) => {
-    setSubmitting(true);
-    submit(data);
-  };
-
-  const submit = (data) => {
-    data.deleted = false;
-    const reqdata = { brand: data };
-    Axios.post("/api/brand/manage", reqdata)
-      .then(() => {
-        brandData
-          ? history.push({
-            pathname: "../brand",
-            state: {
-              fromEdit: true,
-            },
-          })
-          : Alert.success("Бренд успешно создан", {
-            position: "top-right",
-            effect: "bouncyflip",
-            timeout: 2000,
-          });
-        setSubmitting(false);
-        dispatch(reset("addbrandform"));
-      })
-      .catch((err) => {
-        Alert.error(
-          err.response.data.code === "internal_error"
-            ? "Возникла ошибка при обработке вашего запроса. Мы уже работает над решением. Попробуйте позже"
-            : err.response.data.text,
-          {
-            position: "top-right",
-            effect: "bouncyflip",
-            timeout: 2000,
-          }
-        );
-        setSubmitting(false);
-      });
-  };
 
   const handleSelectedFile = (event) => {
     setSelectedFile(event.target.files[0]);
@@ -281,6 +241,7 @@ let AddBrandForm = ({
   };
 
   const saveBrands = (id) => {
+    setSending(true);
     let reqdata;
     if (id.id === 1) {
       reqdata = { brand: [{ brand: brand, manufacturer: manufacturer, deleted: false }] };
@@ -288,11 +249,10 @@ let AddBrandForm = ({
     if (id.id === 2) {
       let brnds = [];
       brands.forEach((brnd, i) => {
-        brnds.push({ brand: brnd.brand, manufacturer: brnd.manufacturer, deleted: false });
+        brnds.push({brand: brnd.brand, manufacturer: brnd.manufacturer, deleted: false });
       });
       reqdata = { brand: brnds };
     }
-
     Axios.post("/api/brand/manage", reqdata)
       .then((result) => {
         Alert.success("Бренд успешно создан", {
@@ -301,6 +261,10 @@ let AddBrandForm = ({
           timeout: 2000,
         });
         dispatch(reset("addbrandform"));
+        setSending(false);
+        history.push({
+          pathname: "../brand",
+        })
       })
       .catch((err) => {
         Alert.error(
@@ -313,6 +277,7 @@ let AddBrandForm = ({
             timeout: 2000,
           }
         );
+        setSending(false);
       });
   };
 
@@ -538,6 +503,7 @@ let AddBrandForm = ({
               <button
                 className="btn btn-info form-control"
                 onClick={() => saveBrands({ id: 2 })}
+                disabled={isSending}
               >
                 Сохранить
                 </button>
