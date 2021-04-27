@@ -100,7 +100,7 @@ class BrandList extends Component {
     });
 
     item.deleted = true;
-    const req = { brand: item };
+    const req = { brand: [item]};
 
     Axios.post("/api/brand/manage", req)
       .then(() => {

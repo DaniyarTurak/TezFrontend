@@ -249,7 +249,7 @@ let AddBrandForm = ({
     if (id.id === 2) {
       let brnds = [];
       brands.forEach((brnd, i) => {
-        brnds.push({brand: brnd.brand, manufacturer: brnd.manufacturer, deleted: false });
+        brnds.push({ brand: brnd.brand, manufacturer: brnd.manufacturer, deleted: false });
       });
       reqdata = { brand: brnds };
     }
@@ -544,7 +544,6 @@ let AddBrandForm = ({
           </dl>
           <button
             onClick={() => saveBrands({ id: 1 })}
-            // type="submit"
             className="btn btn-success"
             disabled={isSubmiting || pristine || submitting}
           >
