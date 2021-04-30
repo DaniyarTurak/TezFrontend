@@ -12,7 +12,7 @@ import Alert from "react-s-alert";
 import ReconciliationTable from './ReconciliationTable';
 import PublishIcon from '@material-ui/icons/Publish';
 import { Progress } from "reactstrap";
-const fs = require("fs");
+import CompareTable from "./CompareTable";
 
 const CreateButton = withStyles((theme) => ({
   root: {
@@ -27,7 +27,7 @@ const CreateButton = withStyles((theme) => ({
   },
 }))(Button);
 
-const UploadButton = withStyles((theme) => ({
+const CompareButton = withStyles((theme) => ({
   root: {
     color: "white",
     border: "1px solid #28a745",
@@ -90,7 +90,8 @@ export default function ReconciliationPage() {
   const [isReconAllowed, setReconAllowed] = useState(false);
   const [pntName, setPntName] = useState("");
   const [loaded, setLoaded] = useState(0);
-  const [selectedFile, setSelectedFile] = useState("");
+  const [summData, setSummData] = useState([]);
+  const [textData, setTextData] = useState("");
 
   useEffect(() => {
     getPoints();
@@ -256,23 +257,73 @@ export default function ReconciliationPage() {
       });
   };
 
-  const handleSelectedFile = (event) => {
-    let a = JSON.parse(event.target.files[0]);
-    console.log(event.target.files[0]);
-    setSelectedFile(event.target.files[0]);
+  const loadFile = (event) => {
     setLoaded(0);
-    let text = fs.readFileSync(a);
-    
-    let textByLine = text.split("\n")
-    // let data = fs.readFileSync(a);
-    // let testData = {};
-    // let splitList = data.toString().split('\r\n');
-    // for (var i = 0; i < splitList.length; i++) {
-    //      testData['fileNumber' + i.toString()] = splitList[i];
-    // };
+    const file = event.target.files[0];
+    let reader = new FileReader();
 
-     console.log(text)
+    reader.onload = function (event) {
+      const text = event.target.result;
+      setTextData(text)
+    };
+    reader.readAsText(file);
   };
+
+  //творится магия и текстовый файл превращается в массив объектов
+  const fetchFile = () => {
+    if (textData) {
+      let arr = textData.split('\n');
+      let arr2 = [];
+      arr.forEach(element => {
+        if (element !== "") {
+          arr2.push(element);
+        }
+      });
+      let arr3 = [];
+      arr2.forEach(element => {
+        let listIdx = [];
+        let lastIndex = -1
+        while ((lastIndex = element.indexOf(";", lastIndex + 1)) !== -1) {
+          listIdx.push(lastIndex)
+        }
+        let code = '{ "code":"' + element.slice(0, listIdx[0]) + '", ';
+        let units = '"units":' + element.slice(listIdx[0] + 1, listIdx[1]) + '}';
+        let obj = JSON.parse(code + units);
+        arr3.push(obj);
+      });
+      uploadData(arr3);
+    }
+    else {
+      ErrorAlert("Выберите файл")
+    }
+  };
+
+  //загрузка данных из ТСД в базу
+  const uploadData = (products) => {
+    const reqdata = {
+      id: reconciliations[0].id,
+      in_data: products
+    }
+    console.log(reqdata);
+    Axios.post("/api/reconciliation/upload", reqdata)
+      .then((result) => {
+        console.log(result);
+      })
+      .catch((err) => {
+        Alert.error(
+          err.response.data.code === "internal_error"
+            ? this.state.alert.raiseError
+            : err.response.data.text,
+          {
+            position: "top-right",
+            effect: "bouncyflip",
+            timeout: 2000,
+          }
+        );
+        setLoading(false);
+        setReconAllowed(true);
+      });
+  }
 
   return (
     <Fragment>
@@ -306,7 +357,7 @@ export default function ReconciliationPage() {
             disabled={!isReconAllowed}
             onClick={createReconciliation}
           >
-            Запустить сверку
+            Начать сверку
           </CreateButton>
         </Grid>
       </Grid>
@@ -323,28 +374,44 @@ export default function ReconciliationPage() {
           <Grid item xs={12}>
             <ReconciliationTable reconciliations={reconciliations} />
           </Grid>
-          <Grid item xs={12}>
-            {/* <UploadButton>
-              Загрузить файл для сверки 
-              <PublishIcon size="small"/>
-            </UploadButton> */}
+          <Grid item xs={12} style={{ paddingTop: "15px" }}>
             <div className="form-group files download-files">
               <input
                 style={{ color: "#2ea591" }}
                 type="file"
                 className="form-control"
                 name="file"
-                onChange={handleSelectedFile}
+                onChange={loadFile}
               />
             </div>
             {isLoading && loaded !== 0 &&
               <div className="form-group">
                 <Progress max="100" color="success" value={loaded}>
                   {Math.round(loaded, 2)}%
-            </Progress>
+                </Progress>
               </div>
             }
           </Grid>
+          <Grid item xs={12}>
+            <Grid
+              container
+              direction="row"
+              justify="center"
+              alignItems="center"
+            >
+              <CompareButton
+                onClick={fetchFile}
+              >
+                <PublishIcon size="small" /> &nbsp;
+                Выгрузить данные из ТСД
+              </CompareButton>
+            </Grid>
+          </Grid>
+          {summData.length !== 0 &&
+            <Grid item xs={12} style={{ paddingTop: "15px" }}>
+              <CompareTable products={summData} />
+            </Grid>
+          }
         </Fragment>
       }
     </Fragment >
