@@ -145,7 +145,16 @@ export default function CompareTable({ products }) {
                                     Наименование
                                 </StyledTableCell>
                                 <StyledTableCell rowSpan="2" align="center">
-                                    Количество
+                                    Количество во время загрузки в ТСД
+                                </StyledTableCell>
+                                <StyledTableCell rowSpan="2" align="center">
+                                    Продано во время сверки
+                                </StyledTableCell>
+                                <StyledTableCell rowSpan="2" align="center">
+                                    Разница
+                                </StyledTableCell>
+                                <StyledTableCell rowSpan="2" align="center">
+                                    Фактический статок
                                 </StyledTableCell>
                             </TableRow>
                         </TableHead>
@@ -156,8 +165,11 @@ export default function CompareTable({ products }) {
                                     <TableRow key={idx}>
                                         <StyledTableCell align="center">{idx + 1}</StyledTableCell>
                                         <StyledTableCell align="center">{prods.code}</StyledTableCell>
-                                        <StyledTableCell align="center"></StyledTableCell>
-                                        <StyledTableCell align="center">{prods.units}</StyledTableCell>
+                                        <StyledTableCell align="center">{prods.name}</StyledTableCell>
+                                        <StyledTableCell align="center">{prods.tsd_units}</StyledTableCell>
+                                        <StyledTableCell align="center">{prods.sale_units}</StyledTableCell>
+                                        <StyledTableCell align="center">{prods.tsd_units - prods.sale_units}</StyledTableCell>
+                                        <StyledTableCell align="center">{prods.stock_units}</StyledTableCell>
                                     </TableRow>
                                 ))}
                         </TableBody>

@@ -308,6 +308,7 @@ export default function ReconciliationPage() {
     Axios.post("/api/reconciliation/upload", reqdata)
       .then((result) => {
         console.log(result);
+        setSummData(result);
       })
       .catch((err) => {
         Alert.error(
@@ -409,7 +410,7 @@ export default function ReconciliationPage() {
           </Grid>
           {summData.length !== 0 &&
             <Grid item xs={12} style={{ paddingTop: "15px" }}>
-              <CompareTable products={summData} />
+              <CompareTable products={summData.result} />
             </Grid>
           }
         </Fragment>
