@@ -143,6 +143,7 @@ export default function AddMarginalPrice({ isLoading }) {
             .then((res) => res.data)
             .then((product) => {
                 setProdName(product.name);
+                setProdId(product.id);
                 if (product.staticprice) {
                     setMarginalPrice(product.staticprice)
                 }
