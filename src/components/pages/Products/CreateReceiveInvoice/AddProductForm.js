@@ -964,7 +964,7 @@ let AddProductForm = ({
       attrlist: attrIdandValue,
       productid: idProduct,
     };
-    Axios.post("/api/invoice/add/product/attributes", req)
+    Axios.post("/api/invoice/add/product/attributes_test", req)
       .then((res) => res.data)
       .catch((err) => {
         ErrorAlert(err);
