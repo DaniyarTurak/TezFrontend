@@ -206,10 +206,10 @@ export default function HistoryDetails({
                       align="center"
                       className={`${detail.pieceprice ? "tenge" : ""}`}
                     >
-                      {detail.pieceprice &&
+                      {detail.pieceprice !== 0 ?
                         parseFloat(detail.pieceprice).toLocaleString("ru", {
                           minimumFractionDigits: 2,
-                        })}
+                        }) : "-"}
                     </StyledTableCell>
                   )}
                 </TableRow>

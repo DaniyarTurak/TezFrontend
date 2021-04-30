@@ -54,6 +54,7 @@ import CreateCertificates from "../pages/Products/CreateCertificates";
 import PromotionsPage from "../pages/Products/PromotionsPage";
 import MarginalPricePage from "../pages/Products/MarginalPricePage";
 import ProductReference from "../pages/Products/ProductReference";
+import ReconciliationPage from "../pages/Products/ReconciliationPage";
 
 import ReportPage from "../pages/Reports/ReportPage";
 import NotAllowed from "../NotAllowed";
@@ -221,6 +222,8 @@ export default function getBody({
             return <PromotionsPage history={history} location={location} />;
           case "marginalpricepage":
             return <MarginalPricePage history={history} location={location} />;
+          case "reconciliationpage":
+            return <ReconciliationPage history={history} location={location} />;
           default:
             return <Products history={history} location={location} />;
           case "productreference":

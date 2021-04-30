@@ -1,4 +1,4 @@
-import React, { Fragment, useState } from "react";
+import React, { Fragment, useState, useEffect } from "react";
 import Axios from "axios";
 import Grid from '@material-ui/core/Grid';
 import ErrorAlert from "../../../ReusableComponents/ErrorAlert";
@@ -8,6 +8,7 @@ import Autocomplete from "@material-ui/lab/Autocomplete";
 import { withStyles, makeStyles, createStyles } from '@material-ui/core/styles';
 import Button from '@material-ui/core/Button';
 import InputBase from '@material-ui/core/InputBase';
+import useDebounce from "../../../ReusableComponents/useDebounce";
 
 const AddButton = withStyles((theme) => ({
     root: {
@@ -38,8 +39,7 @@ const StyledInput = withStyles((theme) => ({
     },
 }))(InputBase);
 
-export default function AddMarginalPrice({ getProducts, listForSelect, isLoading, products }) {
-
+export default function AddMarginalPrice({ isLoading }) {
     const useStyles = makeStyles(theme =>
         createStyles({
             root: {
@@ -65,17 +65,84 @@ export default function AddMarginalPrice({ getProducts, listForSelect, isLoading
     );
     const classes = useStyles();
 
-    const [productNameForSelect, setProductNameForSelect] = useState("");
     const [barcode, setBarcode] = useState("");
     const [marginalPrice, setMarginalPrice] = useState("");
     const [prodName, setProdName] = useState("");
+    const [prods, setProds] = useState([]);
+    const [prodId, setProdId] = useState("");
+    const debouncedSearchTerm = useDebounce(prodName, 500);
+
+    useEffect(() => {
+        getProducts();
+    }, []);
+
+    useEffect(() => {
+        prods.forEach(product => {
+            if (product.name === prodName) {
+                if (product.code) {
+                    setBarcode(product.code)
+                }
+                if (product.staticprice) {
+                    setMarginalPrice(product.staticprice);
+                }
+                else {
+                    setMarginalPrice("");
+                }
+                if (product.id) {
+                    setProdId(product.id)
+                }
+            }
+        });
+    }, [prodName]
+    );
+
+    useEffect(
+        () => {
+            if (debouncedSearchTerm) {
+                if (debouncedSearchTerm.trim().length === 0) {
+                    Axios.get("/api/products/withprice", { params: { productName: "", type: "add" } })
+                        .then((res) => res.data)
+                        .then((list) => {
+                            setProds(list);
+                        })
+                        .catch((err) => {
+                            ErrorAlert(err);
+                        });
+                }
+                else {
+                    if (debouncedSearchTerm.trim().length >= 3) {
+                        Axios.get("/api/products/withprice", { params: { productName: prodName, type: "add" } })
+                            .then((res) => res.data)
+                            .then((list) => {
+                                setProds(list);
+                            })
+                            .catch((err) => {
+                                ErrorAlert(err);
+                            });
+                    };
+                }
+            }
+        },
+        [debouncedSearchTerm]
+    );
+
+
+    const getProducts = (productName) => {
+        Axios.get("/api/products/withprice", { params: { productName, type: "add" } })
+            .then((res) => res.data)
+            .then((list) => {
+                setProds(list);
+            })
+            .catch((err) => {
+                ErrorAlert(err);
+            });
+    };
 
     const getProductByBarcode = () => {
         Axios.get("/api/products/barcode", { params: { barcode: barcode.trim() } })
             .then((res) => res.data)
             .then((product) => {
                 setProdName(product.name);
-                setProductNameForSelect({ value: product.id, label: product.name });
                 if (product.staticprice) {
                     setMarginalPrice(product.staticprice)
                 }
@@ -97,10 +164,8 @@ export default function AddMarginalPrice({ getProducts, listForSelect, isLoading
     const barcodeChange = (value) => {
         setBarcode(value);
         setProdName("");
-        setProductNameForSelect("");
-        products.forEach(element => {
+        prods.forEach(element => {
             if (value.toString() === element.code) {
-                setProductNameForSelect({ label: element.name, value: element.id });
                 setProdName(element.name);
                 if (element.staticprice) {
                     setMarginalPrice(element.staticprice)
@@ -110,28 +175,6 @@ export default function AddMarginalPrice({ getProducts, listForSelect, isLoading
                 }
             }
         });
-    };
-
-    const productOnChange = (e, data) => {
-        if (data) {
-            products.forEach(product => {
-                if (product.id === data.value) {
-                    setBarcode(product.code);
-                    setProdName(product.name);
-                    setProductNameForSelect({ label: product.name, value: product.id });
-                    if (product.staticprice) {
-                        setMarginalPrice(product.staticprice)
-                    }
-                    else {
-                        setMarginalPrice("")
-                    }
-                }
-            });
-        }
-    };
-
-    const productOnInputChange = (e, name) => {
-        setProdName(name);
     };
 
     const addProduct = () => {
@@ -166,10 +209,9 @@ export default function AddMarginalPrice({ getProducts, listForSelect, isLoading
     };
 
     const changePrice = () => {
-        // setLoading(true);
         Axios.post("/api/invoice/changeprice", {
             isstaticprice: true,
-            product: productNameForSelect.value,
+            product: prodId,
             price: marginalPrice,
         })
             .then((result) => result.data)
@@ -180,7 +222,8 @@ export default function AddMarginalPrice({ getProducts, listForSelect, isLoading
                     timeout: 2000,
                 });
                 setProdName("");
-                // setLoading(false);
+                setMarginalPrice("");
+                setBarcode("");
                 getProducts();
             })
             .catch((err) => {
@@ -202,7 +245,6 @@ export default function AddMarginalPrice({ getProducts, listForSelect, isLoading
                         timeout: 2000,
                     });
                 }
-                // setLoading(false);
             });
     };
 
@@ -230,18 +272,10 @@ export default function AddMarginalPrice({ getProducts, listForSelect, isLoading
                     <label>Выберите товар из списка: </label>
                     <Autocomplete
                         id="outlined-basic"
-                        options={listForSelect}
-                        value={productNameForSelect}
-                        onChange={productOnChange}
+                        value={prodName}
                         noOptionsText="Товар не найден"
-                        onInputChange={productOnInputChange}
-                        filterOptions={(options) =>
-                            options.filter((option) => option !== "")
-                        }
-                        getOptionLabel={(option) => (option ? option.label : "")}
-                        getOptionSelected={(option, value) =>
-                            option.label === value.value
-                        }
+                        onInputChange={(event, value) => { setProdName(value) }}
+                        options={prods.map((option) => option.name)}
                         renderInput={(params) => (
                             <TextField
                                 classes={{
@@ -256,7 +290,7 @@ export default function AddMarginalPrice({ getProducts, listForSelect, isLoading
                     />
                 </Grid>
             </Grid>
-            {products.length === 0 && (
+            {prods.length === 0 && (
                 <Grid item xs={12}>
                     Товар не найден
                 </Grid>

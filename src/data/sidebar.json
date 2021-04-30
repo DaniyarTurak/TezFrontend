@@ -151,6 +151,11 @@
         "id": 14,
         "name": "Номенклатура",
         "route": "product/productreference"
+      },
+      {
+        "id": 15,
+        "name": "Сверка",
+        "route": "product/reconciliationpage"
       }
     ]
   }

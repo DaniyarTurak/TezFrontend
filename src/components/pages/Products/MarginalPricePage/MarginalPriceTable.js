@@ -17,10 +17,12 @@ import IconButton from "@material-ui/core/IconButton";
 import { withStyles, makeStyles, useTheme } from "@material-ui/core/styles";
 import DeleteIcon from '@material-ui/icons/DeleteForever';
 import EditIcon from '@material-ui/icons/Edit';
+import DoneIcon from '@material-ui/icons/Done';
 import InputBase from '@material-ui/core/InputBase';
 import Axios from "axios";
 import ErrorAlert from "../../../ReusableComponents/ErrorAlert";
 import Alert from "react-s-alert";
+import isFirstDayOfMonth from "date-fns/isFirstDayOfMonth/index.js";
 
 const useStyles1 = makeStyles((theme) => ({
     root: {
@@ -118,7 +120,7 @@ TablePaginationActions.propTypes = {
 };
 //конец пагинации
 
-export default function PeriodTable({ products, save, getProducts, makeDisabled, makeEnabled }) {
+export default function MarginalPriceTable({ products, save, getProducts, makeDisabled, makeEnabled, selectState }) {
 
     const [productsWithPrice, setProductsWithPrice] = useState(products);
     const [page, setPage] = useState(0);
@@ -193,9 +195,11 @@ export default function PeriodTable({ products, save, getProducts, makeDisabled,
     const editStaticPrice = (idx) => {
         setProductsWithPrice(prevState => {
             let obj = prevState[idx];
-            obj.ischangedprice = true;
+            obj.ischangedprice = !obj.ischangedprice;
             return [...prevState];
+
         })
+        checkState();
     };
 
     const staticPriceChange = (value, idx) => {
@@ -205,7 +209,17 @@ export default function PeriodTable({ products, save, getProducts, makeDisabled,
             let obj = prevState[idx - 1];
             obj.staticprice = value;
             return [...prevState];
-        })
+        });
+    };
+
+    const checkState = () => {
+        let state = false;
+        productsWithPrice.forEach(element => {
+            if (element.ischangedprice) {
+                state = true;
+            }
+        });
+        selectState(state);
     };
 
     const staticPriceDelete = (product) => {
@@ -255,8 +269,6 @@ export default function PeriodTable({ products, save, getProducts, makeDisabled,
                     <Table id="table-to-xls">
                         <TableHead >
                             <TableRow style={{ fontWeight: "bold" }} >
-                                <StyledTableCell rowSpan="2">
-                                </StyledTableCell>
                                 <StyledTableCell rowSpan="2" align="center">
                                     Наименование товара
                                 </StyledTableCell>
@@ -298,10 +310,18 @@ export default function PeriodTable({ products, save, getProducts, makeDisabled,
                                                 onClick={() => {
                                                     editStaticPrice(product.indx - 1);
                                                 }}>
-                                                <EditIcon
-                                                    fontSize="small"
-                                                    title="Изменить цену"
-                                                />
+                                                {!product.ischangedprice &&
+                                                    <EditIcon
+                                                        fontSize="small"
+                                                        title="Изменить цену"
+                                                    />
+                                                }
+                                                {product.ischangedprice &&
+                                                    <DoneIcon
+                                                        fontSize="small"
+                                                        title="Зафиксировать"
+                                                    />
+                                                }
                                             </IconButton>
                                             <IconButton
                                                 disabled={isSending}

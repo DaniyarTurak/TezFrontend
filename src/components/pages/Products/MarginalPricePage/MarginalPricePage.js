@@ -51,45 +51,56 @@ export default function MarginalPricePage() {
   const classes = useStyles();
 
   const [products, setProducts] = useState([]);
-  const [productsWithStaticPrice, setProductsWithStaticPrice] = useState([]);
+  const [listProducts, setListProducts] = useState([]);
   const [isLoading, setLoading] = useState(false);
-  const [listForSelect, setListForSelect] = useState([]);
-  const [listForSelectStat, setListForSelectStat] = useState([]);
-  const [productNameForSelect, setProductNameForSelect] = useState({ label: "Все товары", value: 0 });
-  // const [prodName, setProdName] = useState("");
-  const [filteredProds, setFilteredProds] = useState([])
+  const [selectedProd, setSelectedProd] = useState("");
+  const [filteredProds, setFilteredProds] = useState([]);
   const [save, setSave] = useState(false);
   const [isDisabled, setDisabled] = useState(false);
+
   useEffect(() => {
     getProducts();
   }, []);
 
+  useEffect(() => {
+    let arr = [];
+    if (selectedProd === "Все товары") {
+      arr = products;
+      setFilteredProds(arr);
+    }
+    else {
+      products.forEach(prod => {
+        if (prod.name === selectedProd) {
+          arr.push(prod);
+        }
+        setFilteredProds(arr);
+      });
+    }
+  }, [selectedProd]);
+
   const getProducts = (productName) => {
     setLoading(true);
-    Axios.get("/api/products/withprice", { params: { productName } })
+    Axios.get("/api/products/withprice", { params: { productName, type: "list" } })
       .then((res) => res.data)
       .then((list) => {
-        let opts = [];
+
         let stat = [];
-        let optsstat = [];
         list.map((product) => {
-          opts.push({ label: product.name, value: product.id })
-          if (product.staticprice) {
+          if (product.staticprice !== null) {
             stat.push(product);
-            optsstat.push({ label: product.name, value: product.id });
           }
         });
+
         let newStat = [];
         stat.forEach((element, i) => {
           element = { ...element, indx: i + 1, ischangedprice: false };
           newStat.push(element);
         });
-        optsstat.unshift({ value: 0, label: "Все товары" });
-        setProducts(list);
-        setListForSelect(opts);
-        setProductsWithStaticPrice(newStat);
+        setProducts(newStat);
         setFilteredProds(newStat);
-        setListForSelectStat(optsstat);
+        let listProds = stat;
+        listProds.unshift({ name: "Все товары" })
+        setListProducts(listProds);
         setLoading(false);
       })
       .catch((err) => {
@@ -98,25 +109,6 @@ export default function MarginalPricePage() {
       });
   };
 
-  const productOnChange = (e, data) => {
-    let arr = productsWithStaticPrice;
-    if (data && data.value !== 0) {
-      arr.forEach(product => {
-        if (product.id === data.value) {
-          // setProdName(product.name);
-          setProductNameForSelect({ label: product.name, value: product.id });
-          setFilteredProds([product]);
-        }
-      });
-    }
-    else {
-      setFilteredProds(arr);
-    }
-  };
-
-  // const productOnInputChange = (e, name) => {
-  //    setProdName(name);
-  // };
 
   const saveChanges = () => {
     setSave(!save);
@@ -128,84 +120,81 @@ export default function MarginalPricePage() {
 
   const makeDisabled = () => {
     setDisabled(true);
-  }
+  };
 
   const makeEnabled = () => {
     setDisabled(false);
-    setProductNameForSelect({ label: "Все товары", value: 0 });
-  }
+  };
 
-  return (
-    <Fragment>
-      <AddMarginalPrice getProducts={getProducts} isLoading={isLoading} products={products} listForSelect={listForSelect} />
-      <br />
-      <div className="empty-space"></div>
-      <br />
-      <Grid item xs={12} >
-        <h6 style={{ fontWeight: "bold" }}>Перечень товаров с предельной ценой</h6>
+  const [selectDisabled, setSelectDisable] = useState(false);
+
+  const selectState = (state) => {
+    setSelectDisable(state);
+}
+
+return (
+  <Fragment>
+    <AddMarginalPrice isLoading={isLoading} />
+    <br />
+    <div className="empty-space"></div>
+    <br />
+    <Grid item xs={12} >
+      <h6 style={{ fontWeight: "bold" }}>Перечень товаров с предельной ценой</h6>
+    </Grid>
+    <Grid item xs={12} >
+      Быстрый поиск по перечню:
       </Grid>
-      <Grid item xs={12} >
-        Быстрый поиск по перечню:
-      </Grid>
-      <Grid container style={{ paddingBottom: "15px" }} spacing={3}>
-        <Grid item xs={6}>
-          <Autocomplete
-            id="outlined-basic"
-            disabled={isDisabled}
-            options={listForSelectStat}
-            value={productNameForSelect}
-            onChange={productOnChange}
-            noOptionsText="Товар не найден"
-            // onInputChange={productOnInputChange}
-            filterOptions={(options) =>
-              options.filter((option) => option !== "")
-            }
-            getOptionLabel={(option) => (option ? option.label : "")}
-            getOptionSelected={(option, value) =>
-              option.label === value.value
-            }
-            renderInput={(params) => (
-              <TextField
-                classes={{
-                  root: classes.root,
-                }}
-                {...params}
-                placeholder="Выберите товар"
-                variant="outlined"
-                size="small"
-              />
-            )}
-          />
-        </Grid>
-        <Grid item xs={6}>
-          <SaveButton
-            disabled={!isDisabled}
-            onClick={saveChanges}
-          >
-            Cохранить изменения
-          </SaveButton>
-        </Grid>
-      </Grid>
-      {isLoading && <Searching />}
-      <Fragment>
-        {productsWithStaticPrice.length > 0 && !isLoading && (
-          <Grid item xs={12} >
-            <MarginalPriceTable
-              products={filteredProds}
-              save={save}
-              saveFalse={saveFalse}
-              getProducts={getProducts}
-              makeDisabled={makeDisabled}
-              makeEnabled={makeEnabled}
+    <Grid container style={{ paddingBottom: "15px" }} spacing={3}>
+      <Grid item xs={6}>
+        <Autocomplete
+          id="prods"
+          disabled={selectDisabled}
+          options={listProducts.map((option) => option.name)}
+          onChange={(e, value) => { setSelectedProd(value) }}
+          noOptionsText="Товар не найден"
+          renderInput={(params) => (
+            <TextField
+              classes={{
+                root: classes.root,
+              }}
+              {...params}
+              placeholder="Выберите товар"
+              variant="outlined"
+              size="small"
             />
-          </Grid>
-        )}
-      </Fragment>
-      {products.length === 0 && !isLoading && (
+          )}
+        />
+      </Grid>
+      <Grid item xs={6}>
+        <SaveButton
+          disabled={!isDisabled}
+          onClick={saveChanges}
+        >
+          Cохранить изменения
+          </SaveButton>
+      </Grid>
+    </Grid>
+    {isLoading && <Searching />}
+    <Fragment>
+      {filteredProds.length > 0 && !isLoading && (
         <Grid item xs={12} >
-          Товары не найден
+          <MarginalPriceTable
+            products={filteredProds}
+            save={save}
+            saveFalse={saveFalse}
+            getProducts={getProducts}
+            makeDisabled={makeDisabled}
+            makeEnabled={makeEnabled}
+            selectState={selectState}
+          />
         </Grid>
       )}
     </Fragment>
-  );
+    {products.length === 0 && !isLoading && (
+      <Grid item xs={12} >
+        Товары не найден
+      </Grid>
+    )}
+  </Fragment>
+);
 };
