@@ -4,6 +4,7 @@ import Axios from "axios";
 import Alert from "react-s-alert";
 import ErrorAlert from "../../../../ReusableComponents/ErrorAlert";
 import Moment from "moment";
+import Grid from "@material-ui/core/Grid";
 
 export default function AddAttribute({
   clearBoard,
@@ -22,7 +23,7 @@ export default function AddAttribute({
   const [optionsToRender, setOptionsToRender] = useState([]);
   // const [optionsToRenderSpr, setOptionsToRenderSpr] = useState([]);
   const [isHidden, setHidden] = useState(false);
- // const [selectedAttrType, setSelectedAttrType] = useState("TEXT");
+  // const [selectedAttrType, setSelectedAttrType] = useState("TEXT");
   const [oldAttributes, setOldAttributes] = useState([]);
   const [isClear, setClear] = useState(false);
   const [date, setDate] = useState(Moment().format("YYYY-MM-DD"));
@@ -161,7 +162,9 @@ export default function AddAttribute({
           effect: "bouncyflip",
           timeout: 3000,
         });
-        return;}}
+        return;
+      }
+    }
 
     let attrListChanged = attrList;
 
@@ -179,15 +182,15 @@ export default function AddAttribute({
     };
 
     if (reqbody.attribcode === "2") {
-      reqbody.value = Moment(date).format("YYYY-MM-DD")
-    };
+      reqbody.value = Moment(date).format("YYYY-MM-DD");
+    }
 
     attrListChanged.push({
       value: attrValue,
       name: attrName.label,
       code: attrName.value,
     });
-   postAttributes(attrListChanged, reqbody);
+    postAttributes(attrListChanged, reqbody);
   };
 
   const postAttributes = (attrListChanged, reqbody) => {
@@ -239,38 +242,34 @@ export default function AddAttribute({
 
   return (
     <Fragment>
-      <div className="row justify-content-center" style={{ marginBottom: 5 }}>
-        <div className="col-md-8">
-        </div>
-      </div>
-      <div className="row justify-content-right">
-        <div >
-          <label  className="text-center" >Партийные характеристики</label>
-          <span className="input-group-text border-0"
-          style = {{background: "transparent"}}>
-            <Select
-              className="col-md-10"
-              value={attrName}
-              onChange={onAttrNameChange}
-              options={optionsToRender}
-              placeholder={"Выберите"}
-              noOptionsMessage={() => "Характеристики не найдены"}
-            />
-
-            <span className="message text-danger">{attrNameError}</span>
-              <button
-                type="button"
-                className="btn btn-outline-info"
-                onClick={handleAdd}
-              >
-                Добавить атрибут
-              </button>
-          </span>
-        </div>
-      </div>
-
+      <Grid container direction="row" justify="center" alignItems="center">
+        <Grid item xs={3}>
+          <label htmlFor="">Партийные характеристики</label>
+        </Grid>
+      </Grid>
+      <Grid container justify="center">
+        <Grid item xs={4}>
+          <Select
+            className="col-md-12"
+            value={attrName}
+            onChange={onAttrNameChange}
+            options={optionsToRender}
+            placeholder={"Выберите"}
+            noOptionsMessage={() => "Характеристики не найдены"}
+          />
+        </Grid>
+        <Grid item xs={4}>
+          <button
+            type="button"
+            className="btn btn-outline-info"
+            onClick={handleAdd}
+          >
+            Добавить атрибут
+          </button>
+        </Grid>
+      </Grid>
       {attrList.length > 0 && (
-        <div className="row justify-content-center mt-20">
+        <div className="row justify-content-center mt-8">
           <div className="col-md-8">
             <table className="table">
               <thead>

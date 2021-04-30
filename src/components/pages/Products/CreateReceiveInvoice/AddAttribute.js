@@ -208,7 +208,11 @@ export default function AddAttribute({
   const getAttrListId = () => {
     let a = [];
     changedAttr.map((el, i) => {
-      a.push({ code: el.attribute_id, value: el.attribute_value });
+      a.push({
+        code: el.attribute_id,
+        value: el.attribute_value,
+        name: el.attribute_name,
+      });
     });
     changeState(a);
   };

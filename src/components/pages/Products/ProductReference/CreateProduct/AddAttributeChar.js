@@ -3,6 +3,7 @@ import Select from "react-select";
 import Axios from "axios";
 import Alert from "react-s-alert";
 import ErrorAlert from "../../../../ReusableComponents/ErrorAlert";
+import Grid from "@material-ui/core/Grid";
 
 export default function AddAttribute({
   clearBoard,
@@ -237,9 +238,22 @@ export default function AddAttribute({
 
       {!isHidden && (
         <Fragment>
-          <div className="row justify-content-center">
-            <div className="col-md-8 zi-3">
+          <Grid container direction="row" justify="center" alignItems="center">
+            <Grid item xs={4}>
               <label htmlFor="">Характеристика товара</label>
+            </Grid>
+            <Grid item xs={4}>
+              <label htmlFor="">Укажите значение</label>
+            </Grid>
+          </Grid>
+          <Grid
+            container
+            direction="row"
+            justify="center"
+            alignItems="center"
+            spacing={3}
+          >
+            <Grid item xs={4}>
               <Select
                 value={attrName}
                 onChange={onAttrNameChange}
@@ -247,14 +261,8 @@ export default function AddAttribute({
                 placeholder={"Выберите"}
                 noOptionsMessage={() => "Характеристики не найдены"}
               />
-
-              <span className="message text-danger">{attrNameError}</span>
-            </div>
-          </div>
-
-          <div className="row justify-content-center">
-            <div className="col-md-8">
-              <label htmlFor="">Укажите значение</label>
+            </Grid>
+            <Grid item xs={4}>
               <div className="input-group">
                 {selectedAttrType === "TEXT" && (
                   <input
@@ -294,8 +302,9 @@ export default function AddAttribute({
                   </button>
                 </div>
               </div>
-            </div>
-          </div>
+            </Grid>
+          </Grid>
+          <span className="message text-danger">{attrNameError}</span>
         </Fragment>
       )}
 

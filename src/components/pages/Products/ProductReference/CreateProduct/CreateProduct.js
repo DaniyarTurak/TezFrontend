@@ -709,9 +709,11 @@ export default function CreateProduct({ isEditing }) {
               )}
             </Grid>
             <div className="row justify-content-center">
-              <label style={{ marginTop: 10 }}>Дополнительная информация</label>
-              <Grid container spacing={9} justify="center">
-                <Grid item xs={12} sm={6}>
+              <label style={{ marginTop: 10 }}>
+                Дополнительная характиристика
+              </label>
+              <Grid container spacing={3} justify="center">
+                <Grid item xs={12}>
                   <AddAttributeChar
                     isEditing={isEditing}
                     selected={selectedAttribute}
@@ -720,7 +722,7 @@ export default function CreateProduct({ isEditing }) {
                     attrListProps={getAttrListGlob}
                   />
                 </Grid>
-                <Grid item xs={12} sm={6}>
+                <Grid item xs={12}>
                   <AddAttribute
                     isEditing={isEditing}
                     selected={selectedAttribute}
