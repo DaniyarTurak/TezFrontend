@@ -148,7 +148,7 @@ export default function ReportFizCustomers({ companyProps, holding }) {
   const user = JSON.parse(sessionStorage.getItem("isme-user-data")) || null;
 
   const companyID =
-    JSON.parse(sessionStorage.getItem("isme-company-data")) || null;
+    JSON.parse(sessionStorage.getItem("isme-user-data")).id || null;
 
   useEffect(() => {
     getCustomersInfo();

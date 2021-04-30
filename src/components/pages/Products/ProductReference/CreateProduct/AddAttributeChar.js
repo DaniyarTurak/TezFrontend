@@ -98,7 +98,7 @@ export default function AddAttribute({
   };
 
   const getAttributes = () => {
-    Axios.get("/api/foramir")
+    Axios.get("/api/attributes")
       .then((res) => res.data)
       .then((attributes) => {
         formatAttributes(attributes);
@@ -152,14 +152,12 @@ export default function AddAttribute({
   };
 
   const handleAdd = () => {
-    if (Object.keys(attrName).length === 0) {
-      {
-        Alert.warning("Выберите значение!", {
-          position: "top-right",
-          effect: "bouncyflip",
-          timeout: 3000,
-        });
-        return;}}
+    if (Object.keys(attrName).length === 0 || !attrValue) {
+      return setAttrNameError("Поле обязательно для заполнения");
+    } else {
+      setAttrNameError("");
+    }
+
     let attrListChanged = attrList;
 
     if (attrListChanged.some((attr) => attr.name === attrName.label)) {
@@ -204,8 +202,8 @@ export default function AddAttribute({
       return atr !== item;
     });
     const req = {
-      attribcode: item.code,
       listcode: attrListCode,
+      attribcode: item.code,
     };
     setAttrList(newList);
 
@@ -232,36 +230,74 @@ export default function AddAttribute({
 
   return (
     <Fragment>
-      {/* <hr /> */}
-      <div className="row justify-content-center" style={{ marginBottom: 5 }}>
-        {/* <div className="col-md-8">
-          <h6>Дополнительная информация</h6>
-        </div> */}
-      </div>
-      <div className="row justify-content-right">
-        <div >
-          <label  className="text-center">Постоянные характеристики</label>
-          <span className="input-group-text border-0"
-          style = {{background: "transparent"}}>
-            <Select
-              className="col-md-11"
-              value={attrName}
-              onChange={onAttrNameChange}
-              options={optionsToRender}
-              placeholder={"Выберите"}
-              noOptionsMessage={() => "Характеристики не найдены"}
-            />
-            <span className="message text-danger">{attrNameError}</span>
-              <button
-                type="button"
-                className="btn btn-outline-info"
-                onClick={handleAdd}
-              >
-                Добавить атрибут
-              </button>
-              </span>
-        </div>
-      </div>
+      <div
+        className="row justify-content-center"
+        style={{ marginBottom: 5 }}
+      ></div>
+
+      {!isHidden && (
+        <Fragment>
+          <div className="row justify-content-center">
+            <div className="col-md-8 zi-3">
+              <label htmlFor="">Характеристика товара</label>
+              <Select
+                value={attrName}
+                onChange={onAttrNameChange}
+                options={optionsToRender}
+                placeholder={"Выберите"}
+                noOptionsMessage={() => "Характеристики не найдены"}
+              />
+
+              <span className="message text-danger">{attrNameError}</span>
+            </div>
+          </div>
+
+          <div className="row justify-content-center">
+            <div className="col-md-8">
+              <label htmlFor="">Укажите значение</label>
+              <div className="input-group">
+                {selectedAttrType === "TEXT" && (
+                  <input
+                    value={attrValue}
+                    type="text"
+                    className="form-control"
+                    placeholder="Введите значение"
+                    onChange={onAttrValueChange}
+                  />
+                )}
+                {selectedAttrType === "DATE" && (
+                  <input
+                    value={attrValue}
+                    type="date"
+                    className="form-control"
+                    placeholder="Введите значение"
+                    onChange={onAttrValueChange}
+                  />
+                )}
+                {selectedAttrType === "SPR" && (
+                  <Select
+                    value={attrValueSpr}
+                    onChange={onAttrValueChange}
+                    options={optionsToRenderSpr}
+                    className="form-control attr-spr"
+                    placeholder={"Введите значение"}
+                    noOptionsMessage={() => "Характеристики не найдены"}
+                  />
+                )}
+                <div className="input-group-append">
+                  <button
+                    type="button"
+                    className="btn btn-outline-info"
+                    onClick={handleAdd}
+                  >
+                    Добавить
+                  </button>
+                </div>
+              </div>
+            </div>
+          </div>
+        </Fragment>
+      )}
 
       {attrList.length > 0 && (
         <div className="row justify-content-center mt-20">
@@ -270,6 +306,7 @@ export default function AddAttribute({
               <thead>
                 <tr>
                   <th>Наименование</th>
+                  <th>Значение</th>
                   <th />
                 </tr>
               </thead>
@@ -278,7 +315,8 @@ export default function AddAttribute({
                 {attrList.map((attr) => (
                   <tr key={attr.name}>
                     <td>{attr.name}</td>
-                    <td className="text-center">
+                    <td>{attr.value}</td>
+                    <td className="text-right">
                       {!isHidden && (
                         <button
                           type="button"

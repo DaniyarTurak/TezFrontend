@@ -161,7 +161,9 @@ export default function AddAttribute({
           effect: "bouncyflip",
           timeout: 3000,
         });
-        return;}}
+        return;
+      }
+    }
 
     let attrListChanged = attrList;
 
@@ -179,15 +181,15 @@ export default function AddAttribute({
     };
 
     if (reqbody.attribcode === "2") {
-      reqbody.value = Moment(date).format("YYYY-MM-DD")
-    };
+      reqbody.value = Moment(date).format("YYYY-MM-DD");
+    }
 
     attrListChanged.push({
       value: attrValue,
       name: attrName.label,
       code: attrName.value,
     });
-   postAttributes(attrListChanged, reqbody);
+    postAttributes(attrListChanged, reqbody);
   };
 
   const postAttributes = (attrListChanged, reqbody) => {
@@ -219,7 +221,6 @@ export default function AddAttribute({
 
     Axios.post("/api/attributes/delete", req)
       .then(() => {
-        
         attrListProps(newList);
         if (attrList.length === 0) {
           attributeCode("0");
@@ -242,13 +243,14 @@ export default function AddAttribute({
   return (
     <Fragment>
       <div className="row justify-content-center" style={{ marginBottom: 5 }}>
-        <div className="col-md-8">
-        </div>
+        <div className="col-md-8"></div>
       </div>
       <div className="row justify-content-right">
-        <div >
-          <span className="input-group-text border-0"
-          style = {{background: "transparent"}}>
+        <div>
+          <span
+            className="input-group-text border-0"
+            style={{ background: "transparent" }}
+          >
             <Select
               className="col-md-11"
               value={attrName}
@@ -259,13 +261,13 @@ export default function AddAttribute({
             />
 
             {/* <span className="message text-danger">{attrNameError}</span> */}
-              <button
-                type="button"
-                className="btn btn-outline-info"
-                onClick={handleAdd}
-              >
-                Добавить атрибут
-              </button>
+            <button
+              type="button"
+              className="btn btn-outline-info"
+              onClick={handleAdd}
+            >
+              Добавить атрибут
+            </button>
           </span>
         </div>
       </div>

@@ -57,6 +57,7 @@ export default function ProductReferenceList({
   const [maxWidth] = useState("md");
   const [errorMessage, setErrorMessage] = useState({});
   const [errorAlert, setErrorAlert] = useState(false);
+
   const companyData =
     JSON.parse(sessionStorage.getItem("isme-company-data")) || {};
 
@@ -101,8 +102,8 @@ export default function ProductReferenceList({
   useEffect(() => {
     if (isEditing) {
       setProductName(reference.name);
-	  setCnofeacode(reference.cnofeacode);
-    };
+      setCnofeacode(reference.cnofeacode);
+    }
   }, [isEditing, editingProduct]);
 
   const getBrands = (inputValue) => {
@@ -194,7 +195,7 @@ export default function ProductReferenceList({
   };
 
   const onCnofeacodeEdit = (e) => {
-	let co = e.target.value;
+    let co = e.target.value;
     setCnofeacode(co);
   };
 
@@ -238,7 +239,7 @@ export default function ProductReferenceList({
     setSellByPieces("");
     setUnitspr("");
     setTax("");
-    setCnofeacode("")
+    setCnofeacode("");
   };
 
   const handleDelete = (e, idx) => {
@@ -251,10 +252,11 @@ export default function ProductReferenceList({
     })
       .then((res) => res.data)
       .then((res) => {
-        getProductReference()
+        getProductReference();
+        setReference([]);
         setProductBarcode("");
         getBarcodeProps(productBarcode);
-        setReference([]);
+        getProducts();
         if (res.code === "success") {
           Alert.success("Товар удален успешно.", {
             position: "top-right",
@@ -272,7 +274,6 @@ export default function ProductReferenceList({
         console.log(err);
       });
     closeModal(false);
-    getProducts();
   };
 
   const handleDeleteProduct = (item) => {
@@ -331,7 +332,6 @@ export default function ProductReferenceList({
   return isEditing && !isAddingAmount ? (
     <Dialog
       style={{ marginLeft: "300px" }}
-      // fullWidth={fullWidth}
       maxWidth={maxWidth}
       onClose={handleClose}
       open={modalIsOpen}
@@ -359,7 +359,6 @@ export default function ProductReferenceList({
         cnofeacode={cnofeacode}
         onCnofeacodeEdit={onCnofeacodeEdit}
         onProductNameChange={onProductNameChange}
-        // editProd={editProd}
         closeModal={closeModal}
         taxes={taxes}
         tax={tax}
@@ -461,7 +460,10 @@ export default function ProductReferenceList({
                   <TableCell align="center"> {reference.code} </TableCell>
                   <TableCell align="center"> {reference.category} </TableCell>
                   <TableCell align="center"> {reference.brand}</TableCell>
-                  <TableCell align="center"> {!reference.cnofeacode ? "Н/Д" : reference.cnofeacode}</TableCell>
+                  <TableCell align="center">
+                    {" "}
+                    {!reference.cnofeacode ? "Н/Д" : reference.cnofeacode}
+                  </TableCell>
                   <TableCell align="center">
                     {reference.taxid === "0" ? "Без НДС" : "Стандартный НДС"}
                   </TableCell>

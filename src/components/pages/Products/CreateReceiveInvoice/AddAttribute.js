@@ -7,27 +7,82 @@ import ErrorAlert from "../../../ReusableComponents/ErrorAlert";
 export default function AddAttribute({
   clearBoard,
   selected,
+  changeState,
   attributeCode,
   attrListProps,
   isEditing,
   editProduct,
+  attributescaption,
 }) {
   const [attrList, setAttrList] = useState([]);
   const [attrListCode, setAttrListCode] = useState(null);
-  const [attrName, setAttrName] = useState("");
-  const [attrNameError, setAttrNameError] = useState("");
-  const [attrValue, setAttrValue] = useState("");
-  const [attrValueSpr, setAttrValueSpr] = useState("");
+  //const [attrName, setAttrName] = useState("");
+  //const [attrValue, setAttrValue] = useState({ id: "", value: "" });
+  // const [attrValueSpr, setAttrValueSpr] = useState("");
   const [optionsToRender, setOptionsToRender] = useState([]);
-  const [optionsToRenderSpr, setOptionsToRenderSpr] = useState([]);
   const [isHidden, setHidden] = useState(false);
-  const [selectedAttrType, setSelectedAttrType] = useState("TEXT");
   const [oldAttributes, setOldAttributes] = useState([]);
   const [isClear, setClear] = useState(false);
+  //const [allAttributes, setAllAttributes] = useState([]);
+  const [changedAttr, setChangedAttr] = useState([]);
+  // const [attrIdVal, setAttrIdVal] = useState([]);
 
   useEffect(() => {
-    getAttributes();
-  }, []);
+    if (attributescaption && attributescaption.length > 0) {
+      attributescaption.forEach((element) => {
+        element = { ...element, value_select: "" };
+      });
+      setChangedAttr(attributescaption);
+      getAttributes();
+    }
+  }, [attributescaption]);
+
+  const getAttributes = () => {
+    Axios.get("/api/attributes")
+      .then((res) => res.data)
+      .then((attributes) => {
+        formatAttributes(attributes);
+        //setAllAttributes(attributes);
+        filterSpr(attributes);
+      })
+      .catch((err) => {
+        console.log(err);
+      });
+  };
+
+  const filterSpr = (attributes) => {
+    let product = attributescaption;
+    let allSpr = [];
+    attributes.forEach((attr) => {
+      if (attr.format === "SPR") {
+        allSpr.push(attr);
+      }
+    });
+    let sprToProd = [];
+
+    attributescaption.forEach((ca) => {
+      allSpr.forEach((as) => {
+        if (ca.attribute_id.toString() === as.id) {
+          sprToProd.push({ id: as.id, values: as.sprvalues });
+        }
+      });
+    });
+    sprToProd.forEach((element, indx) => {
+      let a = [];
+      element.values.forEach((el, i) => {
+        a.push({ id: i, label: el });
+      });
+      sprToProd[indx] = { ...sprToProd[indx], options: a };
+    });
+    product.forEach((prod, i) => {
+      sprToProd.forEach((element) => {
+        if (prod.attribute_id.toString() === element.id) {
+          product[i] = { ...product[i], options: element.options };
+        }
+      });
+    });
+    setChangedAttr(product);
+  };
 
   useEffect(() => {
     clear();
@@ -89,23 +144,11 @@ export default function AddAttribute({
     setAttrList([]);
     setAttrListCode(null);
     setHidden(false);
-    setAttrValue([]);
-    setAttrName([]);
-    setAttrValueSpr([]);
+    // setAttrValue([]);
+    // setAttrName([]);
     if (isEditing) {
       setClear(true);
     }
-  };
-
-  const getAttributes = () => {
-    Axios.get("/api/attributes")
-      .then((res) => res.data)
-      .then((attributes) => {
-        formatAttributes(attributes);
-      })
-      .catch((err) => {
-        console.log(err);
-      });
   };
 
   const formatAttributes = (attributes) => {
@@ -128,215 +171,110 @@ export default function AddAttribute({
     setOptionsToRender(optionsToRenderChanged);
   };
 
-  const onAttrNameChange = (attrNameChanged) => {
-    const selectedAttrTypeChanged =
-      attrNameChanged.length === 0 ? "TEXT" : attrNameChanged.type;
-    const optionsToRenderSprChanged = attrNameChanged.sprvalues;
-    setAttrName(attrNameChanged);
-    setSelectedAttrType(selectedAttrTypeChanged);
-    setAttrValue("");
-    setAttrValueSpr("");
-    setOptionsToRenderSpr(optionsToRenderSprChanged);
-  };
-
-  const onAttrValueChange = (e) => {
-    const attrValueChanged =
-      optionsToRenderSpr.length > 0 ? e.value : e.target.value;
-    const attrValueSprChanged = optionsToRenderSpr.length > 0 ? e : "";
-
-    if (selectedAttrType === "DATE" && attrValueChanged.indexOf("-") === 5)
-      return;
-
-    setAttrValue(attrValueChanged);
-    setAttrValueSpr(attrValueSprChanged);
-  };
-
-  const handleAdd = () => {
-    if (Object.keys(attrName).length === 0 || !attrValue) {
-      return setAttrNameError("Поле обязательно для заполнения");
-    } else {
-      setAttrNameError("");
-    }
-
-    let attrListChanged = attrList;
-
-    if (attrListChanged.some((attr) => attr.name === attrName.label)) {
-      return Alert.info("Выбранная характеристика товара уже в списке", {
-        position: "top-right",
-        effect: "bouncyflip",
-        timeout: 2000,
-      });
-    }
-    const reqbody = {
-      listcode: attrListCode,
-      value: attrValue,
-      attribcode: attrName.value,
-    };
-    attrListChanged.push({
-      value: attrValue,
-      name: attrName.label,
-      code: attrName.value,
+  const nonSprChange = (event, attribute) => {
+    let index;
+    changedAttr.forEach((attr, i) => {
+      if (attr.attribute_id === attribute.attribute_id) {
+        index = i;
+      }
     });
-    postAttributes(attrListChanged, reqbody);
-  };
-
-  const postAttributes = (attrListChanged, reqbody) => {
-    Axios.post("/api/attributes/add", reqbody)
-      .then((res) => res.data)
-      .then((result) => {
-        setAttrListCode(result.text);
-        attributeCode(result.text);
-        attrListProps(attrListChanged);
-        setAttrList(attrListChanged);
-        setAttrValue("");
-        setAttrName("");
-        setAttrValueSpr("");
-        setAttrNameError("");
-      })
-      .catch((err) => {
-        ErrorAlert(err);
-      });
-  };
-  const handleDelete = (item) => {
-    const newList = attrList.filter((atr) => {
-      return atr !== item;
+    const temp = event.target.value;
+    setChangedAttr((prevState) => {
+      let obj = prevState[index];
+      obj.attribute_value = temp;
+      return [...prevState];
     });
-    const req = {
-      listcode: attrListCode,
-      attribcode: item.code,
-    };
-    setAttrList(newList);
+  };
 
-    Axios.post("/api/attributes/delete", req)
-      .then(() => {
-        attrListProps(newList);
-        if (attrList.length === 0) {
-          attributeCode("0");
-        }
-      })
-      .catch((err) => {
-        Alert.error(
-          err.response.data.code === "internal_error"
-            ? "Возникла ошибка при обработке вашего запроса. Мы уже работает над решением. Попробуйте позже"
-            : err.response.data.text,
-          {
-            position: "top-right",
-            effect: "bouncyflip",
-            timeout: 2000,
-          }
-        );
-      });
+  const onAttrValueChange = (event, attribute) => {
+    let index;
+    changedAttr.forEach((attr, i) => {
+      if (attr.attribute_id === attribute.attribute_id) {
+        index = i;
+      }
+    });
+
+    setChangedAttr((prevState) => {
+      let obj = prevState[index];
+      obj.attribute_value = event.label;
+      obj.value_select = event;
+      return [...prevState];
+    });
+  };
+  useEffect(() => {
+    getAttrListId(changedAttr);
+  }, [changedAttr]);
+
+  const getAttrListId = () => {
+    let a = [];
+    changedAttr.map((el, i) => {
+      a.push({ code: el.attribute_id, value: el.attribute_value });
+    });
+    changeState(a);
   };
 
   return (
     <Fragment>
-      <hr />
       <div className="row justify-content-center" style={{ marginBottom: -10 }}>
         <div className="col-md-8">
-          <h6>Дополнительная информация</h6>
+          <h6> </h6>
         </div>
       </div>
+      {changedAttr.length > 0 &&
+        changedAttr.map((attribute, idx) => {
+          return (
+            <Fragment key={idx}>
+              <div className="row justify-content-center">
+                <div className="col-md-12 zi-3"></div>
+              </div>
 
-      {!isHidden && (
-        <Fragment>
-          <div className="row justify-content-center">
-            <div className="col-md-8 zi-3">
-              <label htmlFor="">Характеристика товара</label>
-              <Select
-                value={attrName}
-                onChange={onAttrNameChange}
-                options={optionsToRender}
-                placeholder={"Выберите"}
-                noOptionsMessage={() => "Характеристики не найдены"}
-              />
-
-              <span className="message text-danger">{attrNameError}</span>
-            </div>
-          </div>
-
-          <div className="row justify-content-center">
-            <div className="col-md-8">
-              <label htmlFor="">Укажите значение</label>
-              <div className="input-group">
-                {selectedAttrType === "TEXT" && (
-                  <input
-                    value={attrValue}
-                    type="text"
-                    className="form-control"
-                    placeholder="Введите значение"
-                    onChange={onAttrValueChange}
-                  />
-                )}
-                {selectedAttrType === "DATE" && (
-                  <input
-                    value={attrValue}
-                    type="date"
-                    className="form-control"
-                    placeholder="Введите значение"
-                    onChange={onAttrValueChange}
-                  />
-                )}
-                {selectedAttrType === "SPR" && (
-                  <Select
-                    value={attrValueSpr}
-                    onChange={onAttrValueChange}
-                    options={optionsToRenderSpr}
-                    className="form-control attr-spr"
-                    placeholder={"Введите значение"}
-                    noOptionsMessage={() => "Характеристики не найдены"}
-                  />
-                )}
-                <div className="input-group-append">
-                  <button
-                    type="button"
-                    className="btn btn-outline-info"
-                    onClick={handleAdd}
-                  >
-                    Добавить атрибут
-                  </button>
+              <div className="row justify-content-center">
+                <div className="col-md-8">
+                  <label htmlFor="">{attribute.attribute_name}</label>
+                  <div className="input-group">
+                    {attribute.attribute_format === "TEXT" && (
+                      <input
+                        name="text"
+                        value={attribute.attribute_value}
+                        type="text"
+                        className="form-control"
+                        placeholder="Введите значение"
+                        onChange={(event) => nonSprChange(event, attribute)}
+                      />
+                    )}
+                    {attribute.attribute_format === "DATE" && (
+                      <input
+                        name="date"
+                        value={attribute.attribute_value}
+                        type="date"
+                        className="form-control"
+                        placeholder="Введите значение"
+                        onChange={(event) => {
+                          nonSprChange(event, attribute);
+                        }}
+                      />
+                    )}
+                    {attribute.attribute_format === "SPR" && (
+                      <Fragment>
+                        <Select
+                          placeholder={attribute.attribute_value}
+                          value={attribute.value_select}
+                          onChange={(event) =>
+                            onAttrValueChange(event, attribute)
+                          }
+                          options={attribute.options}
+                          className="form-control attr-spr"
+                          placeholder={"Введите значение"}
+                          noOptionsMessage={() => "Характеристики не найдены"}
+                        />
+                      </Fragment>
+                    )}
+                  </div>
                 </div>
               </div>
-            </div>
-          </div>
-        </Fragment>
-      )}
-
-      {attrList.length > 0 && (
-        <div className="row justify-content-center mt-20">
-          <div className="col-md-8">
-            <table className="table">
-              <thead>
-                <tr>
-                  <th>Наименование</th>
-                  <th>Значение</th>
-                  <th />
-                </tr>
-              </thead>
-
-              <tbody>
-                {attrList.map((attr) => (
-                  <tr key={attr.name}>
-                    <td>{attr.name}</td>
-                    <td>{attr.value}</td>
-                    <td className="text-right">
-                      {!isHidden && (
-                        <button
-                          type="button"
-                          className="btn"
-                          onClick={() => handleDelete(attr)}
-                        >
-                          &times;
-                        </button>
-                      )}
-                    </td>
-                  </tr>
-                ))}
-              </tbody>
-            </table>
-          </div>
-        </div>
-      )}
-      <hr />
+            </Fragment>
+          );
+        })}
     </Fragment>
   );
 }

@@ -104,6 +104,9 @@ let AddProductForm = ({
   const [unitOptions, setUnitOptions] = useState([]);
   const [updateprice, setUpdatePrice] = useState(true);
   const [completedProduct, setCompletedProduct] = useState("");
+  const [attributescaption, setAttributeCapation] = useState([]);
+  const [attrIdandValue, setAttrIdandValue] = useState([]);
+  const [idProduct, setIdProduct] = useState("");
 
   const companyData =
     JSON.parse(sessionStorage.getItem("isme-company-data")) || {};
@@ -123,6 +126,7 @@ let AddProductForm = ({
       fillPrices(completedProduct);
     }
   }, [completedProduct]);
+
   //при редактировании товара вызывается изменения всех полей, кроме штрихкода и названия.
   useEffect(() => {
     if (editProduct && taxOptions.length > 0 && !isAdding) {
@@ -368,6 +372,8 @@ let AddProductForm = ({
     setBarcodeExists(false);
     setStaticPrice("");
     reset();
+    setAttributeCapation("");
+    setAttrIdandValue([]);
 
     const tx = taxOptions.find((tax) => {
       return tax.id === "1";
@@ -739,6 +745,7 @@ let AddProductForm = ({
           setBarcode(barcodeChanged);
           setLoading(false);
           setNewProductGenerating(true);
+
           return;
         }
         const isstaticpriceCheck = product.isstaticprice;
@@ -761,20 +768,30 @@ let AddProductForm = ({
         setLoading(false);
         setProductSelectValue(name);
 
+        const attributeCapat = product.attributescaption;
+        setAttributeCapation(attributeCapat);
+
+        const productIdTest = product.id;
+        setIdProduct(productIdTest);
+        console.log(idProduct);
+
+        const attrCode = product.attributes;
+        setAttributeCode(attrCode);
+
         const productCategory = {
           label: product.category,
           value: product.categoryid,
         };
         const brand = { label: product.brand, value: product.brandid };
 
-        // if (!product.categoryid || !product.category) {
-        //   dispatch(change("AddProductForm", "category", ""));
-        // } else {
-        //   dispatch(change("AddProductForm", "category", productCategory));
-        // }
+        if (!product.categoryid || !product.category) {
+          dispatch(change("AddProductForm", "category", ""));
+        } else {
+          dispatch(change("AddProductForm", "category", productCategory));
+        }
         getBrands(product.brand, brand, product);
         getCategories(product.category, productCategory, product);
-        // dispatch(change("AddProductForm", "brand", product.brand ? brand : 0));
+        dispatch(change("AddProductForm", "brand", product.brand ? brand : 0));
 
         dispatch(change("AddProductForm", "name", name));
         dispatch(change("AddProductForm", "isstaticprice", isstaticpriceCheck));
@@ -782,7 +799,7 @@ let AddProductForm = ({
         dispatch(change("AddProductForm", "cnofea", product.cnofeacode));
         dispatch(change("AddProductForm", "code", barcodeChanged));
 
-        //  dispatch(change("AddProductForm", "newprice", product.price));
+        dispatch(change("AddProductForm", "newprice", product.price));
 
         //Изменения единиц измерения ****************BEGIN*************
         if (product.unitsprid) {
@@ -794,7 +811,7 @@ let AddProductForm = ({
 
           dispatch(change("AddProductForm", "unitsprid", unit));
         }
-        //Услуга
+        // //Услуга
         if (product.unitsprid === "3") {
           setDisableUnits(true);
           dispatch(change("AddProductForm", "lastpurchaseprice", 0));
@@ -941,7 +958,17 @@ let AddProductForm = ({
       taxid: companyData.certificatenum ? data.taxid.value : "0",
       unitsprid: data.unitsprid.value,
       updateprice,
+      attrlist: attrIdandValue,
     };
+    const req = {
+      attrlist: attrIdandValue,
+      productid: idProduct,
+    };
+    Axios.post("/api/invoice/add/product/attributes", req)
+      .then((res) => res.data)
+      .catch((err) => {
+        ErrorAlert(err);
+      });
     // всё что выше переписывалось 100500 раз, трогать осторожно.
 
     let reqdata = {
@@ -966,7 +993,6 @@ let AddProductForm = ({
           purchaseprice: newData.lastpurchaseprice,
           stock: res.data.text,
           amount: newData.amount,
-          attrList,
         };
         newProduct(newProductChanged);
         setSubmitting(false);
@@ -984,6 +1010,9 @@ let AddProductForm = ({
         setSubmitting(false);
         ErrorAlert(err);
       });
+  };
+  const changeState = (value) => {
+    setAttrIdandValue(value);
   };
 
   const numberValidation = (e) => {
@@ -1024,6 +1053,11 @@ let AddProductForm = ({
       )}
 
       <div className="add-product-form">
+        {/* //test */}
+        {/* <button className="btn btn-success" onClick={handleTest}>
+          test
+        </button> */}
+        {/* test */}
         <form
           onSubmit={handleSubmit(handleAddProduct)}
           onKeyPress={handleFormKeyPress}
@@ -1275,15 +1309,29 @@ let AddProductForm = ({
               />
             </div>
           </div>
+          <div className="row justify-content-center">
+            <div className="col-md-4">
+              <label htmlFor="attribute">Дополнительная информация</label>
+            </div>
+          </div>
+          <div className="row justify-content-center">
+            <div style={{ marginLeft: "2.2rem" }} className="col-md-8 zi-6">
+              <div className="col-md-12">
+                <AddAttribute
+                  attributescaption={attributescaption}
+                  changeState={changeState}
+                  isEditing={isEditing}
+                  editProduct={editProduct}
+                  selected={selectedAttribute}
+                  clearBoard={clearBoard}
+                  attributeCode={getAttributeCode}
+                  attrListProps={getAttrList}
+                />
+              </div>
+            </div>
+          </div>
+          {/* <label>{attributescaption}</label> */}
 
-          <AddAttribute
-            isEditing={isEditing}
-            editProduct={editProduct}
-            selected={selectedAttribute}
-            clearBoard={clearBoard}
-            attributeCode={getAttributeCode}
-            attrListProps={getAttrList}
-          />
           <div className="row justify-content-center text-right mt-20">
             <div className="col-md-8">
               <button

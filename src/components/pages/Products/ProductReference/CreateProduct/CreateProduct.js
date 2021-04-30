@@ -21,7 +21,7 @@ import Button from "@material-ui/core/Button";
 import CircularProgress from "@material-ui/core/CircularProgress";
 import AddAttribute from "./AddAttribute";
 import AddAttributeChar from "./AddAttributeChar";
-import ErrorAlert from "../../../../ReusableComponents/ErrorAlert"
+import ErrorAlert from "../../../../ReusableComponents/ErrorAlert";
 const useStyles = makeStyles((theme) => ({
   topDiv: {
     borderRadius: "4px",
@@ -104,8 +104,6 @@ export default function CreateProduct({ isEditing }) {
     JSON.parse(sessionStorage.getItem("isme-company-data")) || {};
   const classes = useStyles();
   const classes2 = useStyles2();
-  console.log("attributeCode",attributeCode);
-  console.log("attributeGlobCode",attributeGlobCode);
 
   useEffect(() => {
     getTaxes();
@@ -173,7 +171,7 @@ export default function CreateProduct({ isEditing }) {
   const brandListChange = (e, brandChanged) => {
     setBrand(brandChanged);
   };
- 
+
   const onSellByPiecesChange = (e) => {
     const piece = e.target.checked;
     setSellByPieces(piece);
@@ -415,6 +413,7 @@ export default function CreateProduct({ isEditing }) {
         ? editProduct.attributes
         : attributeGlobCode,
       cnofeacode: cnofeacode,
+      attrList,
     };
     console.log(product);
     Axios.post("/api/products/create", { product })
@@ -443,14 +442,12 @@ export default function CreateProduct({ isEditing }) {
     setProductName("");
     setPiecesUnint(0);
     setAttributeCode(null);
-    setAttributeGlobCode(null)
+    setAttributeGlobCode(null);
     setAttrList([]);
     setSelectedAttribute([]);
-    setCnofeacode("")
-    setAttrListGlob([])
+    setCnofeacode("");
+    setAttrListGlob([]);
   };
-
-
 
   return (
     <Fragment>
@@ -711,10 +708,10 @@ export default function CreateProduct({ isEditing }) {
                 </Grid>
               )}
             </Grid>
-            <div  className="row justify-content-center">
-            <label  style={{ marginTop: 10 }} >Дополнительная информация</label>
+            <div className="row justify-content-center">
+              <label style={{ marginTop: 10 }}>Дополнительная информация</label>
               <Grid container spacing={9} justify="center">
-                <Grid  item xs={12} sm={6}>
+                <Grid item xs={12} sm={6}>
                   <AddAttributeChar
                     isEditing={isEditing}
                     selected={selectedAttribute}
@@ -722,8 +719,8 @@ export default function CreateProduct({ isEditing }) {
                     attributeCode={getAttributeCharCode}
                     attrListProps={getAttrListGlob}
                   />
-                  </Grid>
-                  <Grid  item xs={12} sm={6}>
+                </Grid>
+                <Grid item xs={12} sm={6}>
                   <AddAttribute
                     isEditing={isEditing}
                     selected={selectedAttribute}
@@ -731,9 +728,9 @@ export default function CreateProduct({ isEditing }) {
                     attributeCode={getAttributeCode}
                     attrListProps={getAttrList}
                   />
-                  </Grid>
+                </Grid>
               </Grid>
-              </div>
+            </div>
           </div>
           <div className="row justify-content-center text-right mt-20">
             <div className="col-md-8">

@@ -159,7 +159,9 @@ export default function AddAttribute({
           effect: "bouncyflip",
           timeout: 3000,
         });
-        return;}}
+        return;
+      }
+    }
     let attrListChanged = attrList;
 
     if (attrListChanged.some((attr) => attr.name === attrName.label)) {
@@ -211,7 +213,6 @@ export default function AddAttribute({
 
     Axios.post("/api/attributes/delete", req)
       .then(() => {
-        
         attrListProps(newList);
         if (attrList.length === 0) {
           attributeCode("0");
@@ -240,9 +241,11 @@ export default function AddAttribute({
         </div> */}
       </div>
       <div className="row justify-content-right">
-        <div >
-          <span className="input-group-text border-0"
-          style = {{background: "transparent"}}>
+        <div>
+          <span
+            className="input-group-text border-0"
+            style={{ background: "transparent" }}
+          >
             <Select
               className="col-md-11"
               value={attrName}
@@ -252,14 +255,14 @@ export default function AddAttribute({
               noOptionsMessage={() => "Характеристики не найдены"}
             />
             <span className="message text-danger">{attrNameError}</span>
-              <button
-                type="button"
-                className="btn btn-outline-info"
-                onClick={handleAdd}
-              >
-                Добавить атрибут
-              </button>
-              </span>
+            <button
+              type="button"
+              className="btn btn-outline-info"
+              onClick={handleAdd}
+            >
+              Добавить атрибут
+            </button>
+          </span>
         </div>
       </div>
 

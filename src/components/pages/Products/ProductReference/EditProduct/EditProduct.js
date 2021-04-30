@@ -69,7 +69,6 @@ export default function EditProduct({
   sellByPieces,
   // onSellByPiecesChange,
   onProductNameChange,
-  editProd,
   closeModal,
   onTaxChange,
   taxes,
@@ -98,6 +97,7 @@ export default function EditProduct({
   const [attrList, setAttrList] = useState([]);
   const [attrListGlob, setAttrListGlob] = useState([]);
   const [editProductAttr] = useState("");
+  const [clearBoard, setClearBoard] = useState(false);
 
   const getAttributeCharCode = (attributeCodeChanged) => {
     setAttributeGlobCode(attributeCodeChanged);
@@ -139,8 +139,6 @@ export default function EditProduct({
         ? editProductAttr.attributes
         : attributeCode,
       delete: "",
-      attrList,
-      attrListGlob
     };
     Axios.post("/api/products/update", {
       product,
@@ -148,10 +146,9 @@ export default function EditProduct({
       .then((res) => {
         setErrorAlert(false);
         setReference([]);
-        // setEditProduct([]);
         getBarcodeProps(productDetails.code);
         closeModal(false);
-        // clear(res);
+        setClearBoard(res.code);
         Alert.success("Товар успешно сохранен", {
           position: "top-right",
           effect: "bouncyflip",
@@ -166,35 +163,35 @@ export default function EditProduct({
 
   return (
     <Fragment>
-      {errorAlert && (
-        <AlertMaterial severity="error">
-          {errorMessage.response && errorMessage.response.data.text}
-        </AlertMaterial>
-      )}
       <TableContainer component={Paper}>
-        <Table className={classes.table} aria-label="customized table">
-          <TableHead className={classes.head} align="left">
+        {errorAlert && (
+          <AlertMaterial severity="error">
+            {errorMessage.response && errorMessage.response.data.text}
+          </AlertMaterial>
+        )}
+        <Table className={classes.table} ariaLabel="customized table">
+          <TableHead className={classes.head} alingItem="left">
             <CardHeader
               avatar={<ListAltSharpIcon fontSize="large" />}
               title="Карточка товара"
             />
-            <TableCell className={classes.head} align="left"></TableCell>
-            <TableCell className={classes.head} align="left"></TableCell>
+            <TableCell className={classes.head} alingItem="left"></TableCell>
+            <TableCell className={classes.head} alingItem="left"></TableCell>
           </TableHead>
           <TableBody>
             <TableRow>
               <TableCell>Штрих код:</TableCell>
-              <TableCell align="left">
+              <TableCell alingItem="left">
                 <Typography variant="h7">{productDetails.code} </Typography>
               </TableCell>
-              <TableCell align="left"></TableCell>
+              <TableCell alingItem="left"></TableCell>
             </TableRow>
 
             <TableRow>
               <TableCell>Наименование:</TableCell>
               <TableCell className={classes.textField}>
                 {editingName && (
-                  <Typography variant="h7" align="left">
+                  <Typography variant="h7" alingItem="left">
                     {productDetails.name}
                   </Typography>
                 )}
@@ -202,7 +199,7 @@ export default function EditProduct({
                   <TextField
                     fullWidth
                     className={classes.textField}
-                    align="left"
+                    alingItem="left"
                     id="outlined-full-width"
                     size="small"
                     required
@@ -215,15 +212,15 @@ export default function EditProduct({
                   />
                 )}
               </TableCell>
-              <TableCell align="left">
+              <TableCell alingItem="left">
                 <IconButton
-                  aria-label="редактировать"
+                  ariaLabel="редактировать"
                   component="span"
                   onClick={() => {
                     setEditingName(false);
                   }}
                 >
-                  <EditIcon aria-label="edit" />
+                  <EditIcon ariaLabel="edit" />
                 </IconButton>
               </TableCell>
             </TableRow>
@@ -231,13 +228,13 @@ export default function EditProduct({
               <TableCell>Категория:</TableCell>
               <TableCell>
                 {categoryName && (
-                  <Typography variant="h7" align="left">
+                  <Typography variant="h7" alingItem="left">
                     {productDetails.category}
                   </Typography>
                 )}
                 {!categoryName && (
                   <Autocomplete
-                    align="left"
+                    alingItem="left"
                     fullWidth
                     size="small"
                     options={categoryOptions}
@@ -263,15 +260,15 @@ export default function EditProduct({
                   />
                 )}
               </TableCell>
-              <TableCell align="left">
+              <TableCell alingItem="left">
                 <IconButton
-                  aria-label="редактировать"
+                  ariaLabel="редактировать"
                   component="span"
                   onClick={() => {
                     setCategoryName(false);
                   }}
                 >
-                  <EditRoundedIcon aria-label="edit" />
+                  <EditRoundedIcon ariaLabel="edit" />
                 </IconButton>
               </TableCell>
             </TableRow>
@@ -279,7 +276,7 @@ export default function EditProduct({
               <TableCell>Бренд:</TableCell>
               <TableCell>
                 {editingBrandName && (
-                  <Typography variant="h7" align="left">
+                  <Typography variant="h7" alingItem="left">
                     {productDetails.brand}
                   </Typography>
                 )}
@@ -309,15 +306,15 @@ export default function EditProduct({
                   />
                 )}
               </TableCell>
-              <TableCell align="left">
+              <TableCell alingItem="left">
                 <IconButton
-                  aria-label="редактировать"
+                  ariaLabel="редактировать"
                   component="span"
                   onClick={() => {
                     setEditingBrandName(false);
                   }}
                 >
-                  <EditRoundedIcon aria-label="edit" />
+                  <EditRoundedIcon ariaLabel="edit" />
                 </IconButton>
               </TableCell>
             </TableRow>
@@ -326,7 +323,7 @@ export default function EditProduct({
               <TableCell>Код ТН ВЭД:</TableCell>
               <TableCell className={classes.textField}>
                 {editCnofeacode && (
-                  <Typography variant="h7" align="left">
+                  <Typography variant="h7" alingItem="left">
                     {!productDetails.cnofeacode
                       ? "Н/Д"
                       : productDetails.cnofeacode}
@@ -336,7 +333,7 @@ export default function EditProduct({
                   <TextField
                     fullWidth
                     className={classes.textField}
-                    align="left"
+                    alingItem="left"
                     id="outlined-full-width"
                     size="small"
                     required
@@ -348,15 +345,15 @@ export default function EditProduct({
                   />
                 )}
               </TableCell>
-              <TableCell align="left">
+              <TableCell alingItem="left">
                 <IconButton
-                  aria-label="редактировать"
+                  ariaLabel="редактировать"
                   component="span"
                   onClick={() => {
                     setEditCnofeacode(false);
                   }}
                 >
-                  <EditIcon aria-label="edit" />
+                  <EditIcon ariaLabel="edit" />
                 </IconButton>
               </TableCell>
             </TableRow>
@@ -364,7 +361,7 @@ export default function EditProduct({
               <TableCell>Единица измерения:</TableCell>
               <TableCell>
                 {editingUnit && (
-                  <Typography variant="h7" align="left">
+                  <Typography variant="h7" alingItem="left">
                     {productDetails.unitspr_name}
                   </Typography>
                 )}
@@ -393,15 +390,15 @@ export default function EditProduct({
                   />
                 )}
               </TableCell>
-              <TableCell align="left">
+              <TableCell alingItem="left">
                 <IconButton
-                  aria-label="редактировать"
+                  ariaLabel="редактировать"
                   component="span"
                   onClick={() => {
                     setEditingUnit(false);
                   }}
                 >
-                  <EditRoundedIcon aria-label="edit" />
+                  <EditRoundedIcon ariaLabel="edit" />
                 </IconButton>
               </TableCell>
             </TableRow>
@@ -410,7 +407,7 @@ export default function EditProduct({
                 <TableCell>Налоговая категория</TableCell>
                 <TableCell>
                   {editingTax && (
-                    <Typography variant="h7" align="left">
+                    <Typography variant="h7" alingItem="left">
                       {productDetails.taxid === "0"
                         ? "Без НДС"
                         : "Стандартный НДС"}
@@ -440,15 +437,15 @@ export default function EditProduct({
                     </FormControl>
                   )}
                 </TableCell>
-                <TableCell align="left">
+                <TableCell alingItem="left">
                   <IconButton
-                    aria-label="редактировать"
+                    ariaLabel="редактировать"
                     component="span"
                     onClick={() => {
                       setEditingTax(false);
                     }}
                   >
-                    <EditRoundedIcon aria-label="edit" />
+                    <EditRoundedIcon ariaLabel="edit" />
                   </IconButton>
                 </TableCell>
               </TableRow>
@@ -457,7 +454,7 @@ export default function EditProduct({
               <TableCell>Постоянные характеристики:</TableCell>
               <TableCell>
                 {editingAttrGlob && (
-                  <Typography variant="h7" align="left">
+                  <Typography variant="h7" alingItem="left">
                     {productDetails.detailscaption}
                   </Typography>
                 )}
@@ -465,21 +462,21 @@ export default function EditProduct({
                   <AddAttributeChar
                     isEditing={isEditing}
                     selected={selectedAttribute}
-                    // clearBoard={clearBoard}
+                    clearBoard={clearBoard}
                     attributeCode={getAttributeCharCode}
                     attrListProps={getAttrListGlob}
                   />
                 )}
               </TableCell>
-              <TableCell align="left">
+              <TableCell alingItem="left">
                 <IconButton
-                  aria-label="редактировать"
+                  ariaLabel="редактировать"
                   component="span"
                   onClick={() => {
                     setEditingAttrGlob(false);
                   }}
                 >
-                  <EditRoundedIcon aria-label="edit" />
+                  <EditRoundedIcon ariaLabel="edit" />
                 </IconButton>
               </TableCell>
             </TableRow>
@@ -487,29 +484,29 @@ export default function EditProduct({
               <TableCell>Партийные характеристики:</TableCell>
               <TableCell>
                 {editingAttr && (
-                  <Typography variant="h7" align="left">
-                    {productDetails.attributescaption}
+                  <Typography variant="h7" alingItem="left">
+                    {productDetails.attributescaption.attribute_name}
                   </Typography>
                 )}
                 {!editingAttr && (
                   <AddAttribute
                     isEditing={isEditing}
                     selected={selectedAttribute}
-                    // clearBoard={clearBoard}
+                    clearBoard={clearBoard}
                     attributeCode={getAttributeCode}
                     attrListProps={getAttrList}
                   />
                 )}
               </TableCell>
-              <TableCell align="left">
+              <TableCell alingItem="left">
                 <IconButton
-                  aria-label="редактировать"
+                  ariaLabel="редактировать"
                   component="span"
                   onClick={() => {
                     setEditingAttr(false);
                   }}
                 >
-                  <EditRoundedIcon aria-label="edit" />
+                  <EditRoundedIcon ariaLabel="edit" />
                 </IconButton>
               </TableCell>
             </TableRow>
@@ -529,7 +526,7 @@ export default function EditProduct({
                   </TableCell>
                   <TableCell>
                     <Button
-                      align="right"
+                      alingItem="right"
                       onClick={closeModal}
                       variant="contained"
                     >
@@ -539,7 +536,7 @@ export default function EditProduct({
                   <TableCell></TableCell>
                 </TableRow>
               </TableCell>
-              <TableCell align="left"></TableCell>
+              <TableCell alingItem="left"></TableCell>
             </TableRow>
           </TableFooter>
         </Table>
