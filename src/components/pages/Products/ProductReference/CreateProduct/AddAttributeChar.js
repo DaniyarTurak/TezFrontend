@@ -80,7 +80,7 @@ export default function AddAttribute({
       };
       attrListChanged.push(field);
       setOldAttributes(attrListChanged);
-      attrListProps(attrListChanged);
+      // attrListProps(attrListChanged);
       setAttrListCode(fields[2]);
       setAttrList(attrListChanged);
     });
@@ -187,7 +187,7 @@ export default function AddAttribute({
       .then((result) => {
         setAttrListCode(result.text);
         attributeCode(result.text);
-        attrListProps(attrListChanged);
+        // attrListProps(attrListChanged);
         setAttrList(attrListChanged);
         setAttrValue("");
         setAttrName("");
@@ -210,7 +210,7 @@ export default function AddAttribute({
 
     Axios.post("/api/attributes/delete", req)
       .then(() => {
-        attrListProps(newList);
+        // attrListProps(newList);
         if (attrList.length === 0) {
           attributeCode("0");
         }

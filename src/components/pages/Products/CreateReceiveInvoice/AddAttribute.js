@@ -16,16 +16,11 @@ export default function AddAttribute({
 }) {
   const [attrList, setAttrList] = useState([]);
   const [attrListCode, setAttrListCode] = useState(null);
-  //const [attrName, setAttrName] = useState("");
-  //const [attrValue, setAttrValue] = useState({ id: "", value: "" });
-  // const [attrValueSpr, setAttrValueSpr] = useState("");
-  const [optionsToRender, setOptionsToRender] = useState([]);
-  const [isHidden, setHidden] = useState(false);
+  // const [optionsToRender, setOptionsToRender] = useState([]);
+  // const [isHidden, setHidden] = useState(false);
   const [oldAttributes, setOldAttributes] = useState([]);
   const [isClear, setClear] = useState(false);
-  //const [allAttributes, setAllAttributes] = useState([]);
   const [changedAttr, setChangedAttr] = useState([]);
-  // const [attrIdVal, setAttrIdVal] = useState([]);
 
   useEffect(() => {
     if (attributescaption && attributescaption.length > 0) {
@@ -41,7 +36,7 @@ export default function AddAttribute({
     Axios.get("/api/attributes")
       .then((res) => res.data)
       .then((attributes) => {
-        formatAttributes(attributes);
+        // formatAttributes(attributes);
         //setAllAttributes(attributes);
         filterSpr(attributes);
       })
@@ -98,11 +93,11 @@ export default function AddAttribute({
         };
       });
       setAttrList(attrListChanged);
-      setHidden(true);
+      // setHidden(true);
     } else if (!isEditing) {
       setAttrList([]);
-      setAttrListCode(null);
-      setHidden(false);
+      // setAttrListCode(null);
+      // setHidden(false);
     }
   }, [selected]);
 
@@ -135,15 +130,15 @@ export default function AddAttribute({
       attrListChanged.push(field);
       setOldAttributes(attrListChanged);
       attrListProps(attrListChanged);
-      setAttrListCode(fields[2]);
+      // setAttrListCode(fields[2]);
       setAttrList(attrListChanged);
     });
   };
 
   const clear = () => {
     setAttrList([]);
-    setAttrListCode(null);
-    setHidden(false);
+    // setAttrListCode(null);
+    // setHidden(false);
     // setAttrValue([]);
     // setAttrName([]);
     if (isEditing) {
@@ -151,25 +146,25 @@ export default function AddAttribute({
     }
   };
 
-  const formatAttributes = (attributes) => {
-    let optionsToRenderChanged = [];
-    attributes.forEach((attr) => {
-      const sprvalues = attr.sprvalues.map((sprValue) => {
-        return {
-          label: sprValue,
-          value: sprValue,
-        };
-      });
-      const option = {
-        label: attr.values,
-        value: attr.id,
-        type: attr.format,
-        sprvalues: sprvalues,
-      };
-      optionsToRenderChanged.push(option);
-    });
-    setOptionsToRender(optionsToRenderChanged);
-  };
+  // const formatAttributes = (attributes) => {
+  //   let optionsToRenderChanged = [];
+  //   attributes.forEach((attr) => {
+  //     const sprvalues = attr.sprvalues.map((sprValue) => {
+  //       return {
+  //         label: sprValue,
+  //         value: sprValue,
+  //       };
+  //     });
+  //     const option = {
+  //       label: attr.values,
+  //       value: attr.id,
+  //       type: attr.format,
+  //       sprvalues: sprvalues,
+  //     };
+  //     optionsToRenderChanged.push(option);
+  //   });
+  //   setOptionsToRender(optionsToRenderChanged);
+  // };
 
   const nonSprChange = (event, attribute) => {
     let index;
@@ -219,11 +214,10 @@ export default function AddAttribute({
 
   return (
     <Fragment>
-      <div className="row justify-content-center" style={{ marginBottom: -10 }}>
-        <div className="col-md-8">
-          <h6> </h6>
-        </div>
-      </div>
+      <div
+        className="row justify-content-center"
+        style={{ marginBottom: -10 }}
+      ></div>
       {changedAttr.length > 0 &&
         changedAttr.map((attribute, idx) => {
           return (
@@ -233,7 +227,7 @@ export default function AddAttribute({
               </div>
 
               <div className="row justify-content-center">
-                <div className="col-md-8">
+                <div className="col-md-9">
                   <label htmlFor="">{attribute.attribute_name}</label>
                   <div className="input-group">
                     {attribute.attribute_format === "TEXT" && (

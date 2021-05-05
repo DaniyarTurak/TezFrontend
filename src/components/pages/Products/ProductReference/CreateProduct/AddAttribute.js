@@ -17,7 +17,7 @@ export default function AddAttribute({
   const [attrList, setAttrList] = useState([]);
   const [attrListCode, setAttrListCode] = useState(null);
   const [attrName, setAttrName] = useState("");
-  const [attrNameError, setAttrNameError] = useState("");
+  // const [attrNameError, setAttrNameError] = useState("");
   const [attrValue, setAttrValue] = useState("");
   // const [attrValueSpr, setAttrValueSpr] = useState("");
   const [optionsToRender, setOptionsToRender] = useState([]);
@@ -26,7 +26,7 @@ export default function AddAttribute({
   // const [selectedAttrType, setSelectedAttrType] = useState("TEXT");
   const [oldAttributes, setOldAttributes] = useState([]);
   const [isClear, setClear] = useState(false);
-  const [date, setDate] = useState(Moment().format("YYYY-MM-DD"));
+  const [date] = useState(Moment().format("YYYY-MM-DD"));
 
   useEffect(() => {
     getAttributes();
@@ -204,7 +204,7 @@ export default function AddAttribute({
         setAttrValue("");
         setAttrName("");
         // setAttrValueSpr("");
-        setAttrNameError("");
+        // setAttrNameError("");
       })
       .catch((err) => {
         ErrorAlert(err);

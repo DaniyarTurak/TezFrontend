@@ -7,7 +7,6 @@ import productreference from "../../../../data/productreference.json";
 import CreateProduct from "./CreateProduct";
 import UpdateCategoryPage from "../../Updates/UpdateCategoryPage";
 import AttrSprPage from "../../AttrSprPage";
-import { RefreshIndicator } from "material-ui";
 
 const useStyles = makeStyles((theme) => ({
   root: {

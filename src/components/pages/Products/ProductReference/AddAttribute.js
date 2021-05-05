@@ -4,6 +4,7 @@ import Axios from "axios";
 import Alert from "react-s-alert";
 import ErrorAlert from "../../../ReusableComponents/ErrorAlert";
 import Moment from "moment";
+import Grid from "@material-ui/core/Grid";
 
 export default function AddAttribute({
   clearBoard,
@@ -242,38 +243,34 @@ export default function AddAttribute({
 
   return (
     <Fragment>
-      <div className="row justify-content-center" style={{ marginBottom: 5 }}>
-        <div className="col-md-8"></div>
-      </div>
-      <div className="row justify-content-right">
-        <div>
-          <span
-            className="input-group-text border-0"
-            style={{ background: "transparent" }}
+      <Grid
+        container
+        direction="row"
+        justify="flex-start"
+        alignItems="center"
+        spacing={3}
+      >
+        <Grid item xs={5}>
+          <Select
+            value={attrName}
+            onChange={onAttrNameChange}
+            options={optionsToRender}
+            placeholder="Выберите"
+            noOptionsMessage={() => "Характеристики не найдены"}
+          />
+        </Grid>
+        <Grid item xs={5}>
+          <button
+            type="button"
+            className="btn btn-outline-info"
+            onClick={handleAdd}
           >
-            <Select
-              className="col-md-11"
-              value={attrName}
-              onChange={onAttrNameChange}
-              options={optionsToRender}
-              placeholder={"Выберите"}
-              noOptionsMessage={() => "Характеристики не найдены"}
-            />
-
-            {/* <span className="message text-danger">{attrNameError}</span> */}
-            <button
-              type="button"
-              className="btn btn-outline-info"
-              onClick={handleAdd}
-            >
-              Добавить атрибут
-            </button>
-          </span>
-        </div>
-      </div>
-
+            Добавить атрибут
+          </button>
+        </Grid>
+      </Grid>
       {attrList.length > 0 && (
-        <div className="row justify-content-right mt-8">
+        <div className="row justify-content-left mt-8">
           <div className="col-md-2">
             <table className="table">
               <thead>

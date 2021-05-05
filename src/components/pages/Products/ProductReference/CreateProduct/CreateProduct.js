@@ -97,7 +97,7 @@ export default function CreateProduct({ isEditing }) {
   const [attributeCode, setAttributeCode] = useState("");
   const [attributeGlobCode, setAttributeGlobCode] = useState("");
   const [attrList, setAttrList] = useState([]);
-  const [attrListGlob, setAttrListGlob] = useState([]);
+  // const [attrListGlob, setAttrListGlob] = useState([]);
   const [editProduct, setEditProduct] = useState("");
   const [clearBoard, setClearBoard] = useState(false);
   const companyData =
@@ -336,9 +336,9 @@ export default function CreateProduct({ isEditing }) {
   const getAttrList = (attrListChanged) => {
     setAttrList(attrListChanged);
   };
-  const getAttrListGlob = (attrListChangedcode) => {
-    setAttrListGlob(attrListChangedcode);
-  };
+  // const getAttrListGlob = (attrListChangedcode) => {
+  //   setAttrListGlob(attrListChangedcode);
+  // };
 
   const taxes = [
     { label: "Без НДС", value: "0" },
@@ -446,7 +446,7 @@ export default function CreateProduct({ isEditing }) {
     setAttrList([]);
     setSelectedAttribute([]);
     setCnofeacode("");
-    setAttrListGlob([]);
+    // setAttrListGlob([]);
   };
 
   return (
@@ -719,7 +719,7 @@ export default function CreateProduct({ isEditing }) {
                     selected={selectedAttribute}
                     clearBoard={clearBoard}
                     attributeCode={getAttributeCharCode}
-                    attrListProps={getAttrListGlob}
+                    // attrListProps={getAttrListGlob}
                   />
                 </Grid>
                 <Grid item xs={12}>

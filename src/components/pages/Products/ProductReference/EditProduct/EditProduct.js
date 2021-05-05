@@ -483,11 +483,14 @@ export default function EditProduct({
             <TableRow>
               <TableCell>Партийные характеристики:</TableCell>
               <TableCell>
-                {editingAttr && (
-                  <Typography variant="h7" alingItem="left">
-                    {productDetails.attributescaption.attribute_name}
-                  </Typography>
-                )}
+                {editingAttr &&
+                  productDetails.attributescaption.map((element) => {
+                    return (
+                      <Typography variant="h7" alingItem="left">
+                        {element.attribute_name},
+                      </Typography>
+                    );
+                  })}
                 {!editingAttr && (
                   <AddAttribute
                     isEditing={isEditing}

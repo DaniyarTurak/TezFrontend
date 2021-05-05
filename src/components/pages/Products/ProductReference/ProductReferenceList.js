@@ -314,8 +314,8 @@ export default function ProductReferenceList({
         timeout: 2000,
       });
     }
+    getProductReference();
     setSweetAlert(null);
-    getProductReference([]);
   };
 
   const onPieceAmountChange = (e) => {
@@ -331,7 +331,7 @@ export default function ProductReferenceList({
 
   return isEditing && !isAddingAmount ? (
     <Dialog
-      style={{ marginLeft: "300px" }}
+      style={{ marginLeft: "100px" }}
       maxWidth={maxWidth}
       onClose={handleClose}
       open={modalIsOpen}
