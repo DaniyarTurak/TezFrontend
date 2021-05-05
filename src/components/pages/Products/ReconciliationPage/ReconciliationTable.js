@@ -131,6 +131,10 @@ export default function ReconciliationTable({ reconciliations }) {
                                     Статус
                                 </StyledTableCell>
                                 <StyledTableCell rowSpan="2" align="center">
+                                    Файл для ТСД
+                                </StyledTableCell>
+                                <StyledTableCell rowSpan="2" align="center">
+                                    Удалить сверку
                                 </StyledTableCell>
                             </TableRow>
                         </TableHead>
@@ -140,7 +144,7 @@ export default function ReconciliationTable({ reconciliations }) {
                                     <TableRow key={idx} >
                                         <StyledTableCell align="center">{recon.id}</StyledTableCell>
                                         <StyledTableCell align="center">{Moment(recon.begin_date).format('LLL')}</StyledTableCell>
-                                        <StyledTableCell align="center" style={{ color: "#28a745" }}>Не завершена</StyledTableCell>
+                                        <StyledTableCell align="center" style={{ color: "#fd7e14" }}>Не завершена</StyledTableCell>
                                         <StyledTableCell align="center">
                                             <IconButton
                                                 onClick={() => downloadFile(recon.begin_date, recon.out_data.out_data)}
@@ -151,6 +155,8 @@ export default function ReconciliationTable({ reconciliations }) {
                                                     size="small"
                                                 />
                                             </IconButton>
+                                        </StyledTableCell>
+                                        <StyledTableCell align="center">
                                             <IconButton
                                                 disabled={isLoading}
                                                 title="Удалить сверку"

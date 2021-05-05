@@ -161,7 +161,8 @@ export default function ReconciliationPage() {
             setLoading(false);
           }
           else {
-            ErrorAlert("На точке нет товаров");
+            setReconAllowed(false);
+            ErrorAlert("Сверка невозможна. На выбранной точке нет остатков.");
             setLoading(false);
           }
         })
@@ -472,7 +473,7 @@ export default function ReconciliationPage() {
                 onClick={fetchFile}
               >
                 <PublishIcon size="small" /> &nbsp;
-                Выгрузить данные из ТСД
+                Загрузить данные из ТСД
               </CompareButton>
             </Grid>
           </Grid>
