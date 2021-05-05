@@ -64,7 +64,7 @@ export default function ReconciliationTable({ reconciliations, getDetails, selec
                                         <StyledTableCell align="center">{idx + 1}</StyledTableCell>
                                         <StyledTableCell align="center">{recon.id}</StyledTableCell>
                                         <StyledTableCell align="center">{Moment(recon.begin_date).format('LLL')}</StyledTableCell>
-                                        <StyledTableCell align="center">{Moment(recon.end_date).format('LLL')}</StyledTableCell>
+                                        <StyledTableCell align="center">{recon.end_date ? Moment(recon.end_date).format('LLL') : "-"}</StyledTableCell>
                                         <StyledTableCell align="center">
                                             {recon.status === 0 ? <span style={{ color: "#fd7e14" }}>Не завершена</span> :
                                                 recon.status === 1 ? <span style={{ color: "#28a745" }}>Завершена</span> :
