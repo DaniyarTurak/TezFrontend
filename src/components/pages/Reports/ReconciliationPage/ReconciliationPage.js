@@ -58,8 +58,10 @@ export default function ReconciliationPage() {
 
   const getDetails = (data) => {
     setSelectedID(data.id);
-    setDetails(data);
-    setShowDetails(true);
+    if (parseInt(data.status) !== 2) {
+      setDetails(data);
+      setShowDetails(true);
+    }
   };
 
   const closeDetails = () => {

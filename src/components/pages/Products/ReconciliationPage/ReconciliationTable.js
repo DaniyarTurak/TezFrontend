@@ -18,7 +18,7 @@ import Alert from "react-s-alert";
 import "moment/locale/ru";
 Moment.locale("ru");
 
-export default function ReconciliationTable({ reconciliations }) {
+export default function ReconciliationTable({ reconciliations, getReconciliation }) {
 
     const [isLoading, setLoading] = useState(false);
 
@@ -44,6 +44,7 @@ export default function ReconciliationTable({ reconciliations }) {
         }
         Axios.post("/api/reconciliation/delete", reqdata)
             .then((result) => {
+                getReconciliation();
                 setLoading(false);
             })
             .catch((err) => {

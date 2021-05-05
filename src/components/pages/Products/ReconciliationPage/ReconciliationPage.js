@@ -109,7 +109,7 @@ export default function ReconciliationPage() {
 
   //загрузка списка торговых точек компании
   const getPoints = () => {
-    Axios.get("/api/point", { params: { company: "", holding: false } })
+    Axios.get("/api/reconciliation/points", { params: { company: "", holding: false } })
       .then((res) => res.data)
       .then((points) => {
         setPoints(points);
@@ -442,7 +442,7 @@ export default function ReconciliationPage() {
             На точке <strong>"{pntName}"</strong> имеется незавершённая сверка
           </Grid>
           <Grid item xs={12}>
-            <ReconciliationTable reconciliations={reconciliations} />
+            <ReconciliationTable reconciliations={reconciliations} getReconciliation={getReconciliation} />
           </Grid>
           <Grid item xs={12} style={{ paddingTop: "15px" }}>
             <div className="form-group files download-files">
