@@ -13,6 +13,8 @@ import ReconciliationTable from './ReconciliationTable';
 import PublishIcon from '@material-ui/icons/Publish';
 import { Progress } from "reactstrap";
 import CompareTable from "./CompareTable";
+Moment.locale("ru");
+const CryptoJS = require("crypto-js");
 
 const CreateButton = withStyles((theme) => ({
   root: {
@@ -90,12 +92,20 @@ export default function ReconciliationPage() {
   const [isReconAllowed, setReconAllowed] = useState(false);
   const [pntName, setPntName] = useState("");
   const [loaded, setLoaded] = useState(0);
-  const [summData, setSummData] = useState([]);
+  const [summData, setSummData] = useState({});
+  const [summDataResult, setSummDataResults] = useState([]);
   const [textData, setTextData] = useState("");
+  const [user, setUser] = useState("");
+  const [newRecon, setNewRecon] = useState(false);
+
 
   useEffect(() => {
     getPoints();
   }, []);
+
+  useEffect(() => {
+    getReconciliation();
+  }, [pntName]);
 
   //загрузка списка торговых точек компании
   const getPoints = () => {
@@ -110,11 +120,10 @@ export default function ReconciliationPage() {
   };
 
   //проверка наличия активных сверок
-  const getReconciliation = (pointName) => {
+  const getReconciliation = () => {
     let pointid = "";
-    setPntName(pointName)
     points.forEach(point => {
-      if (point.name === pointName) {
+      if (point.name === pntName) {
         pointid = point.id
       }
     });
@@ -144,7 +153,6 @@ export default function ReconciliationPage() {
       Axios.get("/api/reconciliation/stock", { params: { pointid } })
         .then((res) => res.data)
         .then((results) => {
-
           prods = results;
           if (prods.length > 0) {
             setReconAllowed(true);
@@ -178,7 +186,6 @@ export default function ReconciliationPage() {
     }
     Axios.post("/api/reconciliation/create", reqdata)
       .then((result) => {
-        console.log(result);
         toText();
       })
       .catch((err) => {
@@ -200,7 +207,7 @@ export default function ReconciliationPage() {
   //выгрузка списка товаров в текстовый файл для ТСД 
   const toText = () => {
     let arr = [];
-    const date = `recon_${Moment().format("L").split(".").join("")}.txt`;
+    const date = `recon_${Moment().format("DD-MM-YYYY").toString().replaceAll("-", "")}.txt`;
     products.map((product, idx) =>
       arr.push(
         Object.values({
@@ -248,6 +255,7 @@ export default function ReconciliationPage() {
             });
             setLoading(false);
             setReconAllowed(true);
+            getReconciliation();
           });
       })
       .catch((err) => {
@@ -282,7 +290,7 @@ export default function ReconciliationPage() {
       let arr3 = [];
       arr2.forEach(element => {
         let listIdx = [];
-        let lastIndex = -1
+        let lastIndex = -1;
         while ((lastIndex = element.indexOf(";", lastIndex + 1)) !== -1) {
           listIdx.push(lastIndex)
         }
@@ -304,11 +312,11 @@ export default function ReconciliationPage() {
       id: reconciliations[0].id,
       in_data: products
     }
-    console.log(reqdata);
     Axios.post("/api/reconciliation/upload", reqdata)
       .then((result) => {
-        console.log(result);
-        setSummData(result);
+        if (result.statusText === "OK") {
+          executeReconciliation();
+        }
       })
       .catch((err) => {
         Alert.error(
@@ -322,9 +330,64 @@ export default function ReconciliationPage() {
           }
         );
         setLoading(false);
-        setReconAllowed(true);
+        // setReconAllowed(true);
+      });
+  };
+
+  const executeReconciliation = () => {
+    const reqdata = { id: reconciliations[0].id }
+    Axios.post("/api/reconciliation/execute", reqdata)
+      .then((result) => {
+        decryptName(result.data.user_name);
+        setSummData(result.data);
+        setSummDataResults(result.data.result);
+        setNewRecon(true);
+      })
+      .catch((err) => {
+        Alert.error(
+          err.response.data.code === "internal_error"
+            ? this.state.alert.raiseError
+            : err.response.data.text,
+          {
+            position: "top-right",
+            effect: "bouncyflip",
+            timeout: 2000,
+          }
+        );
       });
   }
+
+  const decryptName = (user_name) => {
+    const key = CryptoJS.lib.WordArray.create("$C&F)J@NcRfUjWnZr4u7x!A%D*G-KaPdSgVkYp2s5v8y/B?E(H+MbQeThWmZq4t6");
+    const iv = CryptoJS.lib.WordArray.create("A?D(G+KbPeShVmYq3t6v9y$B&E)H@McQ");
+    let bytes = CryptoJS.AES.decrypt(user_name, key, { iv });
+    setUser(bytes.toString(CryptoJS.enc.Utf8));
+  };
+
+  const getReconciliationExcel = () => {
+    setLoading(true);
+    let date = Moment(summDataResult.begin_date).format('DD-MM-YYYY').toString().replaceAll("-", "_")
+    Axios({
+      method: "POST",
+      url: "/api/reconciliation/toexcel",
+      data: { summDataResult },
+      responseType: "blob",
+    })
+      .then((res) => res.data)
+      .then((res) => {
+        const url = window.URL.createObjectURL(new Blob([res]));
+        const link = document.createElement("a");
+        link.href = url;
+        link.setAttribute("download", `Сверка ${date}.xlsx`);
+        document.body.appendChild(link);
+        link.click();
+        setLoading(false);
+      })
+      .catch((err) => {
+        ErrorAlert(err);
+        setLoading(false);
+      });
+  };
 
   return (
     <Fragment>
@@ -337,7 +400,7 @@ export default function ReconciliationPage() {
             id="point"
             style={{ width: "100%" }}
             options={points.map((option) => option.name)}
-            onChange={(event, value) => { getReconciliation(value) }}
+            onChange={(event, value) => { setPntName(value) }}
             renderInput={params => (
               <TextField
                 classes={{
@@ -354,12 +417,17 @@ export default function ReconciliationPage() {
           />
         </Grid>
         <Grid item xs={6}>
-          <CreateButton
+          {!newRecon && <CreateButton
             disabled={!isReconAllowed}
             onClick={createReconciliation}
           >
             Начать сверку
-          </CreateButton>
+          </CreateButton>}
+          {newRecon && <CreateButton
+            onClick={() => { window.location.reload(); }}
+          >
+            Начать новую сверку
+          </CreateButton>}
         </Grid>
       </Grid>
       {isLoading &&
@@ -367,7 +435,7 @@ export default function ReconciliationPage() {
           <BorderLinearProgress />
         </Grid>
       }
-      {reconciliations.length > 0 &&
+      {reconciliations.length > 0 && summDataResult.length === 0 &&
         <Fragment>
           <Grid item xs={12} style={{ paddingBottom: "10px" }}>
             На точке <strong>"{pntName}"</strong> имеется незавершённая сверка
@@ -408,13 +476,33 @@ export default function ReconciliationPage() {
               </CompareButton>
             </Grid>
           </Grid>
-          {summData.length !== 0 &&
-            <Grid item xs={12} style={{ paddingTop: "15px" }}>
-              <CompareTable products={summData.result} />
-            </Grid>
-          }
+
         </Fragment>
       }
-    </Fragment >
+      {summDataResult.length !== 0 &&
+        <Fragment>
+          <Grid item xs={4}>
+            Дата начала: {summData.begin_date}
+          </Grid>
+          <Grid item xs={4}>
+            Дата конца: {summData.end_date}
+          </Grid>
+          <Grid item xs={4}>
+            Пользователь: {user}
+          </Grid>
+          <Grid item xs={12} style={{ paddingTop: "15px" }}>
+            <CompareTable products={summDataResult} />
+          </Grid>
+          <Grid item xs={12}>
+            <button
+              className="btn btn-sm btn-outline-success"
+              onClick={getReconciliationExcel}
+            >
+              Выгрузить в Excel
+        </button>
+          </Grid>
+        </Fragment>
+      }
+    </Fragment>
   );
 }

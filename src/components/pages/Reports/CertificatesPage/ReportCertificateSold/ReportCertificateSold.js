@@ -108,9 +108,8 @@ export default function ReportCertificateSold({ companyProps, classes }) {
   const getSoldCertificatesExcel = () => {
     setExcelLoading(true);
     let arr = [];
-
     certExcell.forEach((e) => {
-      arr.push({ ...e, sell_date: moment(e.sell_date).format('L'), shelflife: moment(e.sell_date).format('L') })
+      arr.push({ ...e, sell_date: moment(e.sell_date).format('L'), shelflife: moment(e.shelflife).format('L') })
     });
 
     Axios({
@@ -163,7 +162,7 @@ export default function ReportCertificateSold({ companyProps, classes }) {
         <CertificateExpand
           certificate={certificate}
           closeExpand={closeExpand}
-          closeExpandAndReload = {closeExpandAndReload}
+          closeExpandAndReload={closeExpandAndReload}
         />
       </ReactModal>
       <Grid container spacing={3}>

@@ -17,7 +17,14 @@ import LastPageIcon from "@material-ui/icons/LastPage";
 import TablePagination from "@material-ui/core/TablePagination";
 import "moment/locale/ru";
 import PropTypes from "prop-types";
+import Button from "@material-ui/core/Button";
+import { Typography } from "@material-ui/core";
+import ErrorAlert from "../../../ReusableComponents/ErrorAlert";
+import Axios from "axios";
+
+const CryptoJS = require("crypto-js");
 Moment.locale("ru");
+
 
 const useStyles1 = makeStyles((theme) => ({
     root: {
@@ -99,10 +106,11 @@ TablePaginationActions.propTypes = {
 };
 //конец пагинации
 
-export default function CompareTable({ products }) {
+export default function DetailsTable({ details, closeDetails }) {
 
     const [page, setPage] = useState(0);
     const [rowsPerPage, setRowsPerPage] = useState(10);
+    const [isLoading, setLoading] = useState(false);
 
     const StyledTableCell = withStyles((theme) => ({
         head: {
@@ -128,10 +136,73 @@ export default function CompareTable({ products }) {
         setPage(0);
     };
 
+    const decryptName = () => {
+        let user = "test";
+        const key = CryptoJS.lib.WordArray.create("$C&F)J@NcRfUjWnZr4u7x!A%D*G-KaPdSgVkYp2s5v8y/B?E(H+MbQeThWmZq4t6");
+        const iv = CryptoJS.lib.WordArray.create("A?D(G+KbPeShVmYq3t6v9y$B&E)H@McQ");
+        let bytes = CryptoJS.AES.decrypt(details.result.user_name, key, { iv });
+        user = bytes.toString(CryptoJS.enc.Utf8);
+        return user
+    };
+
+    const getReconciliationExcel = () => {
+        let summDataResult = details.result.result;
+        let date = Moment(details.begin_date).format('DD-MM-YYYY').toString().replaceAll("-", "_");
+        setLoading(true);
+        Axios({
+            method: "POST",
+            url: "/api/reconciliation/toexcel",
+            data: { summDataResult },
+            responseType: "blob",
+        })
+            .then((res) => res.data)
+            .then((res) => {
+                const url = window.URL.createObjectURL(new Blob([res]));
+                const link = document.createElement("a");
+                link.href = url;
+                link.setAttribute("download", `Сверка ${date}.xlsx`);
+                document.body.appendChild(link);
+                link.click();
+                setLoading(false);
+            })
+            .catch((err) => {
+                ErrorAlert(err);
+                setLoading(false);
+            });
+    };
+
     return (
         < Fragment >
-            { products.length > 0 &&
+            { details.result.result.length > 0 &&
                 <Fragment>
+                    <Grid item xs={8}>
+                        <Typography >
+                            Номер сверки: {details.id}
+                        </Typography>
+                        <Typography >
+                            Дата начала: {Moment(details.begin_date).format('LLL')}
+                        </Typography>
+                        <Typography >
+                            Дата окончания: {Moment(details.end_date).format('LLL')}
+                        </Typography>
+                        <Typography >
+                            Пользователь: {decryptName()}
+                        </Typography>
+                        <Typography >
+                            Статус:  {details.status === 0 ? <span style={{ color: "#fd7e14" }}>Не завершена</span> :
+                                details.status === 1 ? <span style={{ color: "#28a745" }}>Завершена</span> :
+                                    <span style={{ color: "#dc3545" }}>Удалена</span>}
+                        </Typography>
+                    </Grid>
+                    <Grid item xs={4}>
+                        <Button
+                            fullWidth
+                            variant="outlined"
+                            onClick={closeDetails}
+                        >
+                            Вернуться назад
+                        </Button>
+                    </Grid>
                     < Grid item xs={12}>
                         <TableContainer component={Paper} style={{ boxShadow: "0px -1px 1px 1px white" }}>
                             <Table id="table-to-xls">
@@ -157,28 +228,28 @@ export default function CompareTable({ products }) {
                                     </TableRow>
                                 </TableHead>
                                 <TableBody>
-                                    {products
+                                    {details.result.result
                                         .slice(page * rowsPerPage, page * rowsPerPage + rowsPerPage)
-                                        .map((prods, idx) => (
+                                        .map((prod, idx) => (
                                             <TableRow key={idx}>
                                                 <StyledTableCell
-                                                    style={{ color: (prods.tsd_units - prods.sale_units) !== prods.stock_units ? "black" : "#bbc0c4" }}
+                                                    style={{ color: (prod.tsd_units - prod.sale_units) !== prod.stock_units ? "black" : "#bbc0c4" }}
                                                     align="center">{idx + 1}</StyledTableCell>
                                                 <StyledTableCell
-                                                    style={{ color: (prods.tsd_units - prods.sale_units) !== prods.stock_units ? "black" : "#bbc0c4" }}
-                                                    align="center">{prods.code}</StyledTableCell>
+                                                    style={{ color: (prod.tsd_units - prod.sale_units) !== prod.stock_units ? "black" : "#bbc0c4" }}
+                                                    align="center">{prod.code}</StyledTableCell>
                                                 <StyledTableCell
-                                                    style={{ color: (prods.tsd_units - prods.sale_units) !== prods.stock_units ? "black" : "#bbc0c4" }}
-                                                    align="center">{prods.name}</StyledTableCell>
+                                                    style={{ color: (prod.tsd_units - prod.sale_units) !== prod.stock_units ? "black" : "#bbc0c4" }}
+                                                    align="center">{prod.name}</StyledTableCell>
                                                 <StyledTableCell
-                                                    style={{ color: (prods.tsd_units - prods.sale_units) !== prods.stock_units ? "black" : "#bbc0c4" }}
-                                                    align="center">{prods.tsd_units}</StyledTableCell>
+                                                    style={{ color: (prod.tsd_units - prod.sale_units) !== prod.stock_units ? "black" : "#bbc0c4" }}
+                                                    align="center">{prod.tsd_units}</StyledTableCell>
                                                 <StyledTableCell
-                                                    style={{ color: (prods.tsd_units - prods.sale_units) !== prods.stock_units ? "black" : "#bbc0c4" }}
-                                                    align="center">{prods.sale_units}</StyledTableCell>
+                                                    style={{ color: (prod.tsd_units - prod.sale_units) !== prod.stock_units ? "black" : "#bbc0c4" }}
+                                                    align="center">{prod.sale_units}</StyledTableCell>
                                                 <StyledTableCell
-                                                    style={{ color: (prods.tsd_units - prods.sale_units) !== prods.stock_units ? "black" : "#bbc0c4" }}
-                                                    align="center">{prods.stock_units}</StyledTableCell>
+                                                    style={{ color: (prod.tsd_units - prod.sale_units) !== prod.stock_units ? "black" : "#bbc0c4" }}
+                                                    align="center">{prod.stock_units}</StyledTableCell>
                                             </TableRow>
                                         ))}
                                 </TableBody>
@@ -187,7 +258,7 @@ export default function CompareTable({ products }) {
                         <TablePagination
                             rowsPerPageOptions={[10, 20, 50]}
                             component="div"
-                            count={products.length}
+                            count={details.result.result.length}
                             backIconButtonText="Предыдущая страница"
                             labelRowsPerPage="Строк в странице"
                             nextIconButtonText="Следующая страница"
@@ -197,6 +268,14 @@ export default function CompareTable({ products }) {
                             onChangeRowsPerPage={handleChangeRowsPerPage}
                             ActionsComponent={TablePaginationActions}
                         />
+                    </Grid>
+                    < Grid item xs={12}>
+                        <button
+                            className="btn btn-sm btn-outline-success"
+                            onClick={getReconciliationExcel}
+                        >
+                            Выгрузить в Excel
+                        </button>
                     </Grid>
                 </Fragment >
             }

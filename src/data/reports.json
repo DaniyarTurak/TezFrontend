@@ -112,5 +112,11 @@
     "type": "stockreport",
     "route": "shelflife",
     "caption": "Сроки годности"
+  },
+  {
+    "id": 19,
+    "type": "stockreport",
+    "route": "reconciliation",
+    "caption": "Сверка"
   }
 ]
