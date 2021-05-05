@@ -1,4 +1,4 @@
-import React, { Fragment, useState, useEffect } from "react";
+import React, { Fragment, useState } from "react";
 import Moment from "moment";
 import Table from "@material-ui/core/Table";
 import TableBody from "@material-ui/core/TableBody";
@@ -196,6 +196,7 @@ export default function DetailsTable({ details, closeDetails }) {
                     </Grid>
                     <Grid item xs={4}>
                         <Button
+                            disabled={isLoading}
                             fullWidth
                             variant="outlined"
                             onClick={closeDetails}
@@ -271,6 +272,7 @@ export default function DetailsTable({ details, closeDetails }) {
                     </Grid>
                     < Grid item xs={12}>
                         <button
+                            disabled={isLoading}
                             className="btn btn-sm btn-outline-success"
                             onClick={getReconciliationExcel}
                         >

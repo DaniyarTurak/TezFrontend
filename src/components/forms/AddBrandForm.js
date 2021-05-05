@@ -146,7 +146,6 @@ let AddBrandForm = ({
   reset,
   submitting,
 }) => {
-  const [isSubmiting, setSubmitting] = useState(false);
   const brandData = location.state ? location.state.brandData : null;
   const [loaded, setLoaded] = useState(0);
   const [selectedFile, setSelectedFile] = useState("");
@@ -545,9 +544,9 @@ let AddBrandForm = ({
           <button
             onClick={() => saveBrands({ id: 1 })}
             className="btn btn-success"
-            disabled={isSubmiting || pristine || submitting}
+            disabled={isSending || pristine || submitting}
           >
-            {isSubmiting
+            {isSending
               ? "Пожалуйста подождите..."
               : !brandData
                 ? "Добавить"
@@ -557,7 +556,7 @@ let AddBrandForm = ({
             <button
               type="button"
               className="btn btn-secondary ml-10"
-              disabled={isSubmiting || pristine || submitting}
+              disabled={isSending || pristine || submitting}
               onClick={reset}
             >
               Очистить
