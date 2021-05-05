@@ -1296,7 +1296,7 @@ let AddProductForm = ({
               </div>
             )}
 
-            <div className="col-md-3 zi-4" className={{ zIndex: 11 }}>
+            <div className="col-md-3 zi-4" style={{ zIndex: 11 }}>
               <label>Единица измерения</label>
               <Field
                 name="unitsprid"
@@ -1316,7 +1316,7 @@ let AddProductForm = ({
           </div>
           <div className="row justify-content-center">
             <div style={{ marginLeft: "2.2rem" }} className="col-md-8 zi-6">
-              <div className="col-md-12" className={{ zIndex: 8 }}>
+              <div className="col-md-12">
                 <AddAttribute
                   attributescaption={attributescaption}
                   changeState={changeState}
