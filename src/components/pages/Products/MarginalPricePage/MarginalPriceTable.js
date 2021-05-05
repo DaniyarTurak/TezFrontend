@@ -22,7 +22,6 @@ import InputBase from '@material-ui/core/InputBase';
 import Axios from "axios";
 import ErrorAlert from "../../../ReusableComponents/ErrorAlert";
 import Alert from "react-s-alert";
-import isFirstDayOfMonth from "date-fns/isFirstDayOfMonth/index.js";
 
 const useStyles1 = makeStyles((theme) => ({
     root: {
