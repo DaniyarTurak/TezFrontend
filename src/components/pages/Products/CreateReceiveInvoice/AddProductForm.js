@@ -960,15 +960,6 @@ let AddProductForm = ({
       updateprice,
       attrlist: attrIdandValue,
     };
-    const req = {
-      attrlist: attrIdandValue,
-      productid: idProduct,
-    };
-    Axios.post("/api/invoice/add/product/attributes_test", req)
-      .then((res) => res.data)
-      .catch((err) => {
-        ErrorAlert(err);
-      });
     // всё что выше переписывалось 100500 раз, трогать осторожно.
 
     let reqdata = {
@@ -1008,6 +999,14 @@ let AddProductForm = ({
       })
       .catch((err) => {
         setSubmitting(false);
+        ErrorAlert(err);
+      });
+    const req = {
+      productid: idProduct,
+    };
+    Axios.post("/api/invoice/product1", req)
+      .then((res) => res.data)
+      .catch((err) => {
         ErrorAlert(err);
       });
   };
