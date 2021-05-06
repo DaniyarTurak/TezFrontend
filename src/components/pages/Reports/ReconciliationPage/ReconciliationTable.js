@@ -12,7 +12,7 @@ import { withStyles } from "@material-ui/core/styles";
 import "moment/locale/ru";
 Moment.locale("ru");
 
-export default function ReconciliationTable({ reconciliations, getDetails, selectedID }) {
+export default function CompareTable({ reconciliations, getDetails, selectedID }) {
 
     const StyledTableCell = withStyles((theme) => ({
         head: {

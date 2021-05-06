@@ -17,6 +17,7 @@ import LastPageIcon from "@material-ui/icons/LastPage";
 import TablePagination from "@material-ui/core/TablePagination";
 import "moment/locale/ru";
 import PropTypes from "prop-types";
+import NonAlert from "../../Reports/ReconciliationPage/NonAlert"
 Moment.locale("ru");
 
 const useStyles1 = makeStyles((theme) => ({
@@ -99,7 +100,7 @@ TablePaginationActions.propTypes = {
 };
 //конец пагинации
 
-export default function CompareTable({ products }) {
+export default function CompareTable({ products, none }) {
 
     const [page, setPage] = useState(0);
     const [rowsPerPage, setRowsPerPage] = useState(10);
@@ -132,6 +133,9 @@ export default function CompareTable({ products }) {
         < Fragment >
             { products.length > 0 &&
                 <Fragment>
+                    {none.length > 0 &&
+                        <NonAlert products={none} style={{paddingBottom: "15px"}}/>
+                    }
                     < Grid item xs={12}>
                         <TableContainer component={Paper} style={{ boxShadow: "0px -1px 1px 1px white" }}>
                             <Table id="table-to-xls">
@@ -141,44 +145,50 @@ export default function CompareTable({ products }) {
                                         </StyledTableCell>
                                         <StyledTableCell rowSpan="2" align="center">
                                             Штрих-код
-                                </StyledTableCell>
+                                        </StyledTableCell>
                                         <StyledTableCell rowSpan="2" align="center">
                                             Наименование
-                                </StyledTableCell>
+                                        </StyledTableCell>
                                         <StyledTableCell rowSpan="2" align="center">
-                                            Количество во время загрузки в ТСД
-                                </StyledTableCell>
+                                            Текущий остаток на складе
+                                        </StyledTableCell>
                                         <StyledTableCell rowSpan="2" align="center">
                                             Продано во время сверки
-                                </StyledTableCell>
+                                        </StyledTableCell>
                                         <StyledTableCell rowSpan="2" align="center">
-                                            Текущий остаток
-                                </StyledTableCell>
+                                            Данные из ТСД
+                                        </StyledTableCell>
+                                        <StyledTableCell rowSpan="2" align="center">
+                                            Разница
+                                        </StyledTableCell>
                                     </TableRow>
                                 </TableHead>
                                 <TableBody>
                                     {products
                                         .slice(page * rowsPerPage, page * rowsPerPage + rowsPerPage)
-                                        .map((prods, idx) => (
+                                        .map((prod, idx) => (
                                             <TableRow key={idx}>
                                                 <StyledTableCell
-                                                    style={{ color: (prods.tsd_units - prods.sale_units) !== prods.stock_units ? "black" : "#bbc0c4" }}
+                                                    style={{ color: (prod.stock_units + prod.sale_units - prod.tsd_units) !== 0 ? "black" : "#bbc0c4" }}
                                                     align="center">{idx + 1}</StyledTableCell>
                                                 <StyledTableCell
-                                                    style={{ color: (prods.tsd_units - prods.sale_units) !== prods.stock_units ? "black" : "#bbc0c4" }}
-                                                    align="center">{prods.code}</StyledTableCell>
+                                                    style={{ color: (prod.stock_units + prod.sale_units - prod.tsd_units) !== 0 ? "black" : "#bbc0c4" }}
+                                                    align="center">{prod.code}</StyledTableCell>
                                                 <StyledTableCell
-                                                    style={{ color: (prods.tsd_units - prods.sale_units) !== prods.stock_units ? "black" : "#bbc0c4" }}
-                                                    align="center">{prods.name}</StyledTableCell>
+                                                    style={{ color: (prod.stock_units + prod.sale_units - prod.tsd_units) !== 0 ? "black" : "#bbc0c4" }}
+                                                    align="center">{prod.name}</StyledTableCell>
                                                 <StyledTableCell
-                                                    style={{ color: (prods.tsd_units - prods.sale_units) !== prods.stock_units ? "black" : "#bbc0c4" }}
-                                                    align="center">{prods.tsd_units}</StyledTableCell>
+                                                    style={{ color: (prod.stock_units + prod.sale_units - prod.tsd_units) !== 0 ? "black" : "#bbc0c4" }}
+                                                    align="center">{prod.stock_units}</StyledTableCell>
                                                 <StyledTableCell
-                                                    style={{ color: (prods.tsd_units - prods.sale_units) !== prods.stock_units ? "black" : "#bbc0c4" }}
-                                                    align="center">{prods.sale_units}</StyledTableCell>
+                                                    style={{ color: (prod.stock_units + prod.sale_units - prod.tsd_units) !== 0 ? "black" : "#bbc0c4" }}
+                                                    align="center">{prod.sale_units}</StyledTableCell>
                                                 <StyledTableCell
-                                                    style={{ color: (prods.tsd_units - prods.sale_units) !== prods.stock_units ? "black" : "#bbc0c4" }}
-                                                    align="center">{prods.stock_units}</StyledTableCell>
+                                                    style={{ color: (prod.stock_units + prod.sale_units - prod.tsd_units) !== 0 ? "black" : "#bbc0c4" }}
+                                                    align="center">{prod.tsd_units}</StyledTableCell>
+                                                <StyledTableCell
+                                                    style={{ color: (prod.stock_units + prod.sale_units - prod.tsd_units) !== 0 ? "black" : "#bbc0c4" }}
+                                                    align="center">{prod.stock_units + prod.sale_units - prod.tsd_units}</StyledTableCell>
                                             </TableRow>
                                         ))}
                                 </TableBody>

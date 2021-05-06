@@ -20,6 +20,7 @@ import PropTypes from "prop-types";
 import Button from "@material-ui/core/Button";
 import { Typography } from "@material-ui/core";
 import ErrorAlert from "../../../ReusableComponents/ErrorAlert";
+import NonAlert from "./NonAlert";
 import Axios from "axios";
 
 const CryptoJS = require("crypto-js");
@@ -175,6 +176,9 @@ export default function DetailsTable({ details, closeDetails }) {
         < Fragment >
             { details.result.result.length > 0 &&
                 <Fragment>
+                    {details.result.none.length > 0 &&
+                        <NonAlert products={details.result.none} />
+                    }
                     <Grid item xs={8}>
                         <Typography >
                             Номер сверки: {details.id}
@@ -213,19 +217,22 @@ export default function DetailsTable({ details, closeDetails }) {
                                         </StyledTableCell>
                                         <StyledTableCell rowSpan="2" align="center">
                                             Штрих-код
-                                </StyledTableCell>
+                                        </StyledTableCell>
                                         <StyledTableCell rowSpan="2" align="center">
                                             Наименование
-                                </StyledTableCell>
+                                        </StyledTableCell>
                                         <StyledTableCell rowSpan="2" align="center">
-                                            Количество во время загрузки в ТСД
-                                </StyledTableCell>
+                                            Текущий остаток на складе
+                                        </StyledTableCell>
                                         <StyledTableCell rowSpan="2" align="center">
                                             Продано во время сверки
-                                </StyledTableCell>
+                                        </StyledTableCell>
                                         <StyledTableCell rowSpan="2" align="center">
-                                            Текущий остаток
-                                </StyledTableCell>
+                                            Данные из ТСД
+                                        </StyledTableCell>
+                                        <StyledTableCell rowSpan="2" align="center">
+                                            Разница
+                                        </StyledTableCell>
                                     </TableRow>
                                 </TableHead>
                                 <TableBody>
@@ -234,23 +241,26 @@ export default function DetailsTable({ details, closeDetails }) {
                                         .map((prod, idx) => (
                                             <TableRow key={idx}>
                                                 <StyledTableCell
-                                                    style={{ color: (prod.tsd_units - prod.sale_units) !== prod.stock_units ? "black" : "#bbc0c4" }}
+                                                    style={{ color: (prod.stock_units + prod.sale_units - prod.tsd_units) !== 0 ? "black" : "#bbc0c4" }}
                                                     align="center">{idx + 1}</StyledTableCell>
                                                 <StyledTableCell
-                                                    style={{ color: (prod.tsd_units - prod.sale_units) !== prod.stock_units ? "black" : "#bbc0c4" }}
+                                                    style={{ color: (prod.stock_units + prod.sale_units - prod.tsd_units) !== 0 ? "black" : "#bbc0c4" }}
                                                     align="center">{prod.code}</StyledTableCell>
                                                 <StyledTableCell
-                                                    style={{ color: (prod.tsd_units - prod.sale_units) !== prod.stock_units ? "black" : "#bbc0c4" }}
+                                                    style={{ color: (prod.stock_units + prod.sale_units - prod.tsd_units) !== 0 ? "black" : "#bbc0c4" }}
                                                     align="center">{prod.name}</StyledTableCell>
                                                 <StyledTableCell
-                                                    style={{ color: (prod.tsd_units - prod.sale_units) !== prod.stock_units ? "black" : "#bbc0c4" }}
-                                                    align="center">{prod.tsd_units}</StyledTableCell>
+                                                    style={{ color: (prod.stock_units + prod.sale_units - prod.tsd_units) !== 0 ? "black" : "#bbc0c4" }}
+                                                    align="center">{prod.stock_units}</StyledTableCell>
                                                 <StyledTableCell
-                                                    style={{ color: (prod.tsd_units - prod.sale_units) !== prod.stock_units ? "black" : "#bbc0c4" }}
+                                                    style={{ color: (prod.stock_units + prod.sale_units - prod.tsd_units) !== 0 ? "black" : "#bbc0c4" }}
                                                     align="center">{prod.sale_units}</StyledTableCell>
                                                 <StyledTableCell
-                                                    style={{ color: (prod.tsd_units - prod.sale_units) !== prod.stock_units ? "black" : "#bbc0c4" }}
-                                                    align="center">{prod.stock_units}</StyledTableCell>
+                                                    style={{ color: (prod.stock_units + prod.sale_units - prod.tsd_units) !== 0 ? "black" : "#bbc0c4" }}
+                                                    align="center">{prod.tsd_units}</StyledTableCell>
+                                                <StyledTableCell
+                                                    style={{ color: (prod.stock_units + prod.sale_units - prod.tsd_units) !== 0 ? "black" : "#bbc0c4" }}
+                                                    align="center">{prod.stock_units + prod.sale_units - prod.tsd_units}</StyledTableCell>
                                             </TableRow>
                                         ))}
                                 </TableBody>

@@ -281,7 +281,9 @@ export default function ReconciliationPage() {
   //творится магия и текстовый файл превращается в массив объектов
   const fetchFile = () => {
     if (textData) {
+      console.log(textData);
       let arr = textData.split('\n');
+      console.log(arr);
       let arr2 = [];
       arr.forEach(element => {
         if (element !== "") {
@@ -289,6 +291,7 @@ export default function ReconciliationPage() {
         }
       });
       let arr3 = [];
+      console.log(arr2);
       arr2.forEach(element => {
         let listIdx = [];
         let lastIndex = -1;
@@ -492,7 +495,7 @@ export default function ReconciliationPage() {
             Пользователь: {user}
           </Grid>
           <Grid item xs={12} style={{ paddingTop: "15px" }}>
-            <CompareTable products={summDataResult} />
+            <CompareTable products={summDataResult} none={summData.none} />
           </Grid>
           <Grid item xs={12}>
             <button
