@@ -1001,14 +1001,6 @@ let AddProductForm = ({
         setSubmitting(false);
         ErrorAlert(err);
       });
-    const req = {
-      productid: idProduct,
-    };
-    Axios.post("/api/invoice/product1", req)
-      .then((res) => res.data)
-      .catch((err) => {
-        ErrorAlert(err);
-      });
   };
   const changeState = (value) => {
     setAttrIdandValue(value);
