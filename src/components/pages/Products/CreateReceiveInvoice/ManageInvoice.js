@@ -46,6 +46,7 @@ export default function ManageInvoice({ location, history }) {
   const [selectedFile, setSelectedFile] = useState("");
   const scrollRef = useRef();
   const [open, setOpen] = React.useState(false);
+  const [message, setMessage] = useState("");
 
   const breadcrumb = [
     { caption: "Товары" },
@@ -112,18 +113,18 @@ export default function ManageInvoice({ location, history }) {
       params: { invoicenumber },
     })
       .then((res) => res.data)
-      .then((productList) => {
-        productList.sort(function (a, b) {
+      .then((result) => {
+        result.sort(function (a, b) {
           var textA = a.name.toUpperCase();
           var textB = b.name.toUpperCase();
           return textA < textB ? -1 : textA > textB ? 1 : 0;
         });
-        productList.forEach(product => {
-          if (product.code.toLowerCase().search(/[а-яё]/i) >= 0) {
-          }
+        let attr = [];
+        result.forEach((element) => {
+          attr.push({ ...element, attrs_json: JSON.parse(element.attrs_json) });
         });
-        setDisableEdit(new Array(productList.length).fill(false));
-        setProductList(productList);
+        setDisableEdit(new Array(result.length).fill(false));
+        setProductList(attr);
         setLoading(false);
       })
       .catch((err) => {
@@ -179,7 +180,6 @@ export default function ManageInvoice({ location, history }) {
     setSelectedFile(event.target.files[0]);
     setLoaded(0);
   };
-  const [message, setMessage] = useState("");
 
   const handleFetchFromExcel = () => {
     if (!selectedFile) {
@@ -219,7 +219,11 @@ export default function ManageInvoice({ location, history }) {
       );
 
       prods.forEach((product, i) => {
-        if (product.Code.toString().toLowerCase().search(/[а-яё]/i) >= 0) {
+        if (
+          product.Code.toString()
+            .toLowerCase()
+            .search(/[а-яё]/i) >= 0
+        ) {
           pwk.push(i + 1);
         }
       });
@@ -228,21 +232,19 @@ export default function ManageInvoice({ location, history }) {
         if (pwk.length > 1) {
           pwk.forEach((number, i) => {
             if (i !== pwk.length - 1) {
-              errMsg += number.toString() + ', ';
-            }
-            else {
-              errMsg += number.toString() + ' ';
+              errMsg += number.toString() + ", ";
+            } else {
+              errMsg += number.toString() + " ";
             }
           });
           errMsg = "В строках " + errMsg + "имеются символы кириллицы";
+        } else {
+          errMsg =
+            "В строке " + pwk[0].toString() + "имеются символы кириллицы";
         }
-        else {
-          errMsg = "В строке " + pwk[0].toString() + "имеются символы кириллицы";
-        }
-        setMessage(errMsg)
+        setMessage(errMsg);
         setOpen(true);
-      }
-      else {
+      } else {
         /* Update state */
         let params = new URLSearchParams();
 
@@ -292,7 +294,7 @@ export default function ManageInvoice({ location, history }) {
             ErrorAlert(err);
             getInvoiceProducts(invoiceNumber);
           });
-      };
+      }
     };
     reader.readAsBinaryString(selectedFile);
   };
@@ -395,25 +397,36 @@ export default function ManageInvoice({ location, history }) {
 
   return (
     <div className="manage-invoice-page">
-      <ReactModal isOpen={open}
+      <ReactModal
+        isOpen={open}
         style={{
-
           content: {
             textAlign: "center",
-            top: '50%',
-            left: '50%',
-            right: 'auto',
-            bottom: 'auto',
-          }
+            top: "50%",
+            left: "50%",
+            right: "auto",
+            bottom: "auto",
+          },
         }}
-        onRequestClose={() => { setOpen(false) }}
+        onRequestClose={() => {
+          setOpen(false);
+        }}
       >
-        <p style={{ color: 'red' }}>Символы кириллицы в штрих-коде недопустимы.</p>
-        <p>
-          {message}.
-          </p>
+        <p style={{ color: "red" }}>
+          Символы кириллицы в штрих-коде недопустимы.
+        </p>
+        <p>{message}.</p>
         <p />
-        <button className="btn btn-success btn-sm" style={{ minWidth: "40px" }} onClick={() => { setOpen(false) }}> Ок </button>
+        <button
+          className="btn btn-success btn-sm"
+          style={{ minWidth: "40px" }}
+          onClick={() => {
+            setOpen(false);
+          }}
+        >
+          {" "}
+          Ок{" "}
+        </button>
       </ReactModal>
       <ReactModal isOpen={modalIsOpen} style={customStyles}>
         <ProductDetails
@@ -563,7 +576,13 @@ export default function ManageInvoice({ location, history }) {
                     <td>
                       {product.name}
                       <br />
-                      <span className="hint">{product.attributescaption}</span>
+                      {product.attrs_json.map((e, indx) => {
+                        return (
+                          <tr className="hint" key={indx}>
+                            {e.name}: {e.value},
+                          </tr>
+                        );
+                      })}
                     </td>
                     <td className="text-center">{product.code}</td>
                     <td className="text-center tenge">
