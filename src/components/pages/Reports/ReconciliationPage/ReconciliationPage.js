@@ -58,7 +58,6 @@ export default function ReconciliationPage() {
 
   const getDetails = (data) => {
     setSelectedID(data.id);
-    console.log(data.status);
     if (data.status !== 2 && data.status !== 0) {
       setDetails(data);
       setShowDetails(true);

@@ -1,4 +1,4 @@
-import React, { Fragment, useState } from "react";
+import React, { Fragment, useState, useEffect } from "react";
 import Moment from "moment";
 import Table from "@material-ui/core/Table";
 import TableBody from "@material-ui/core/TableBody";
@@ -104,6 +104,15 @@ export default function NonTable({ products }) {
 
     const [page, setPage] = useState(0);
     const [rowsPerPage, setRowsPerPage] = useState(10);
+    const [prods, setProds] = useState([]);
+
+    useEffect(() => {
+        let arr = [];
+        products.forEach((product, i) => {
+            arr.push({ ...product, n: i + 1 });
+        });
+        setProds(arr)
+    }, [products]);
 
     const StyledTableCell = withStyles((theme) => ({
         head: {
@@ -145,12 +154,12 @@ export default function NonTable({ products }) {
                         </TableRow>
                     </TableHead>
                     <TableBody>
-                        {products
+                        {prods
                             .slice(page * rowsPerPage, page * rowsPerPage + rowsPerPage)
                             .map((prod, idx) => (
                                 <TableRow key={idx}>
                                     <StyledTableCell align="center">
-                                        {idx + 1}
+                                        {prod.n}
                                     </StyledTableCell>
                                     <StyledTableCell align="center">
                                         {prod.code}

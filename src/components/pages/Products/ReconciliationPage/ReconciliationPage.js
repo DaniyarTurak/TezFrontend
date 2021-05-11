@@ -281,9 +281,7 @@ export default function ReconciliationPage() {
   //творится магия и текстовый файл превращается в массив объектов
   const fetchFile = () => {
     if (textData) {
-      console.log(textData);
       let arr = textData.split('\n');
-      console.log(arr);
       let arr2 = [];
       arr.forEach(element => {
         if (element !== "") {
@@ -291,7 +289,6 @@ export default function ReconciliationPage() {
         }
       });
       let arr3 = [];
-      console.log(arr2);
       arr2.forEach(element => {
         let listIdx = [];
         let lastIndex = -1;
