@@ -88,6 +88,16 @@ export default function TransactionDetails({
     setModalOpen(false);
   };
 
+  const summDiscounts = () => {
+    let summ = 0;
+    if (products.length > 0) {
+      products.forEach(element => {
+        summ = summ + element.discount;
+      });
+    }
+    return summ;
+  };
+
   return (
     <div className="transaction-details">
       <ReactModal isOpen={modalIsOpen} style={customStyles}>
@@ -107,13 +117,12 @@ export default function TransactionDetails({
           <div className="row">
             <div className="col-md-6">
               <h6 className="tenge">
-              {parseFloat(
-                details.price + details.discount + details.bonuspay
-              ).toLocaleString("ru", { minimumFractionDigits: 2 })}
+                {parseFloat(
+                  details.price + details.discount + details.bonuspay
+                ).toLocaleString("ru", { minimumFractionDigits: 2 })}
               </h6>
             </div>
           </div>
-
           <hr />
           <div className="row">
             <div className="col-md-12 hint">
@@ -168,34 +177,41 @@ export default function TransactionDetails({
                 <tbody>
                   {Object.keys(details).length > 0 &&
                     products.map((detail, idx) => (
-                      <tr key={idx}>
-                        <td
-                          className="link-row"
-                          onClick={() => {
-                            handleProductDtl(detail, transaction.pointid);
-                          }}
-                        >
-                          {detail.name} [{detail.unitspr_shortname}]
+                      <Fragment key={idx}>
+                        <tr>
+                          <td
+                            className="link-row"
+                            onClick={() => {
+                              handleProductDtl(detail, transaction.pointid);
+                            }}
+                          >
+                            {detail.name} [{detail.unitspr_shortname}]
                         </td>
-                        <td className="tenge">{`${detail.units} x ${parseFloat(
-                          detail.price
-                        ).toLocaleString("ru", {
-                          minimumFractionDigits: 2,
-                        })}`}</td>
-                        <td className="tenge">
-                          {parseFloat(detail.totalprice).toLocaleString("ru", {
+                          <td className="tenge">{`${detail.units} x ${parseFloat(
+                            detail.price
+                          ).toLocaleString("ru", {
                             minimumFractionDigits: 2,
-                          })}
-                        </td>
-                      </tr>
+                          })}`}</td>
+                          <td className="tenge">
+                            {parseFloat(detail.totalprice).toLocaleString("ru", {
+                              minimumFractionDigits: 2,
+                            })}
+                          </td>
+                        </tr>
+                        {detail.discount !== 0 &&
+                          <tr>
+                            <td> &#10551; Скидка</td>
+                            <td></td>
+                            <td className="tenge">{detail.discount}</td>
+                          </tr>
+                        }
+                      </Fragment>
                     ))}
                 </tbody>
               </table>
             </div>
           </div>
-
           <hr />
-
           <div className="row">
             <div className="col-md-6">Итого сумма</div>
             <div className="col-md-6 text-right tenge">
@@ -205,7 +221,7 @@ export default function TransactionDetails({
             </div>
           </div>
           <div className="row">
-            <div className="col-md-6">Скидка</div>
+            <div className="col-md-6">Скидка на чек</div>
             <div className="col-md-6 text-right tenge">
               {parseFloat(details.discount).toLocaleString("ru", {
                 minimumFractionDigits: 2,
@@ -221,6 +237,12 @@ export default function TransactionDetails({
             </div>
           </div>
           <div className="row">
+            <div className="col-md-6">Итого скидка</div>
+            <div className="col-md-6 text-right tenge">
+              {parseFloat(summDiscounts()).toLocaleString("ru", {
+                minimumFractionDigits: 2,
+              })}
+            </div>
             <div className="col-md-6">Итого к оплате</div>
             <div className="col-md-6 text-right tenge">
               {parseFloat(details.price).toLocaleString("ru", {
@@ -271,7 +293,6 @@ export default function TransactionDetails({
               })}
             </div>
           </div>
-
           <div className="row">
             <div className="col-md-6">Бонусами:</div>
             <div className="col-md-6 text-right tenge">
@@ -280,7 +301,6 @@ export default function TransactionDetails({
               })}
             </div>
           </div>
-
           <div className="row">
             <div className="col-md-6">Безналичным переводом:</div>
             <div className="col-md-6 text-right tenge">
@@ -289,7 +309,6 @@ export default function TransactionDetails({
               })}
             </div>
           </div>
-
           <div className="row">
             <div className="col-md-6">В долг:</div>
             <div className="col-md-6 text-right tenge">
@@ -298,7 +317,6 @@ export default function TransactionDetails({
               })}
             </div>
           </div>
-
           <div className="row mt-30">
             <div className="col-md-12 text-right">
               <button className="btn btn-success" onClick={closeModal}>
@@ -307,7 +325,8 @@ export default function TransactionDetails({
             </div>
           </div>
         </Fragment>
-      )}
-    </div>
+      )
+      }
+    </div >
   );
 }
