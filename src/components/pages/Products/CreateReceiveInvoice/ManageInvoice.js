@@ -578,13 +578,14 @@ export default function ManageInvoice({ location, history }) {
                     <td>
                       {product.name}
                       <br />
-                      {product.attrs_json.map((e, indx) => {
-                        return (
-                          <tr className="hint" key={indx}>
-                            {e.name}: {e.value},
-                          </tr>
-                        );
-                      })}
+                      {product.attrs_json !== null &&
+                        product.attrs_json.map((e, indx) => {
+                          return (
+                            <tr className="hint" key={indx}>
+                              {e.name}: {e.value},
+                            </tr>
+                          );
+                        })}
                     </td>
                     <td className="text-center">{product.code}</td>
                     <td className="text-center tenge">
