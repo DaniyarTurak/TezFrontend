@@ -176,8 +176,7 @@ export default function TransactionDetails({
                 <tbody>
                   {Object.keys(details).length > 0 &&
                     products.map((detail, idx) => (
-                      <Fragment key={idx}>
-                        <tr>
+                        <tr key={idx}>
                           <td
                             className="link-row"
                             onClick={() => {
@@ -197,19 +196,18 @@ export default function TransactionDetails({
                           ).toLocaleString("ru", {
                             minimumFractionDigits: 2,
                           })}`}</td>
-                          <td className="tenge">
+                          <td>
                             {parseFloat(detail.totalprice).toLocaleString("ru", {
                               minimumFractionDigits: 2,
-                            })}
+                            })} &#8376;
                             {detail.discount !== 0 &&
                               <Fragment >
                                 <br />
-                                {detail.discount}
+                                {detail.discount} &#8376;
                               </Fragment>
                             }
                           </td>
                         </tr>
-                      </Fragment>
                     ))}
                 </tbody>
               </table>
@@ -243,7 +241,7 @@ export default function TransactionDetails({
           <div className="row">
             <div className="col-md-6">Итого скидка</div>
             <div className="col-md-6 text-right tenge">
-              {parseFloat(summDiscounts()).toLocaleString("ru", {
+              {parseFloat(summDiscounts() + details.discount).toLocaleString("ru", {
                 minimumFractionDigits: 2,
               })}
             </div>
@@ -329,8 +327,7 @@ export default function TransactionDetails({
             </div>
           </div>
         </Fragment>
-      )
-      }
-    </div >
+      )}
+    </div>
   );
 }
