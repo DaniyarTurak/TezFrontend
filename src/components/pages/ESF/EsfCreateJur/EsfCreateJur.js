@@ -51,6 +51,11 @@ export default class EsfCreateJur extends Component {
       })
       .catch((err) => {
         console.log(err);
+        Alert.warning(err, {
+          position: "top-right",
+          effect: "bouncyflip",
+          timeout: 10000,
+        });
       });
   };
 
@@ -78,6 +83,11 @@ export default class EsfCreateJur extends Component {
       })
       .catch((err) => {
         console.log(err);
+        Alert.warning(err, {
+          position: "top-right",
+          effect: "bouncyflip",
+          timeout: 10000,
+        });
       });
   };
 
