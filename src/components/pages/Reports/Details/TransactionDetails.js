@@ -4,7 +4,6 @@ import Axios from "axios";
 import Moment from "moment";
 import ReactModal from "react-modal";
 import ProductDetails from "../../Products/ProductDetails";
-
 import "moment/locale/ru";
 Moment.locale("ru");
 
@@ -186,7 +185,13 @@ export default function TransactionDetails({
                             }}
                           >
                             {detail.name} [{detail.unitspr_shortname}]
-                        </td>
+                            {detail.discount !== 0 &&
+                              <Fragment >
+                                <br />
+                                &#10551; Скидка
+                              </Fragment>
+                            }
+                          </td>
                           <td className="tenge">{`${detail.units} x ${parseFloat(
                             detail.price
                           ).toLocaleString("ru", {
@@ -196,15 +201,14 @@ export default function TransactionDetails({
                             {parseFloat(detail.totalprice).toLocaleString("ru", {
                               minimumFractionDigits: 2,
                             })}
+                            {detail.discount !== 0 &&
+                              <Fragment >
+                                <br />
+                                {detail.discount}
+                              </Fragment>
+                            }
                           </td>
                         </tr>
-                        {detail.discount !== 0 &&
-                          <tr>
-                            <td> &#10551; Скидка</td>
-                            <td></td>
-                            <td className="tenge">{detail.discount}</td>
-                          </tr>
-                        }
                       </Fragment>
                     ))}
                 </tbody>
