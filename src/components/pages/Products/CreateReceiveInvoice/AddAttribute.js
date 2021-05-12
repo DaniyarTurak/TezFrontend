@@ -17,7 +17,7 @@ export default function AddAttribute({
   const [attrList, setAttrList] = useState([]);
   const [attrListCode, setAttrListCode] = useState(null);
   // const [optionsToRender, setOptionsToRender] = useState([]);
-  // const [isHidden, setHidden] = useState(false);
+  const [isHidden, setHidden] = useState(false);
   const [oldAttributes, setOldAttributes] = useState([]);
   const [isClear, setClear] = useState(false);
   const [changedAttr, setChangedAttr] = useState([]);
@@ -31,53 +31,6 @@ export default function AddAttribute({
       getAttributes();
     }
   }, [attributescaption]);
-
-  const getAttributes = () => {
-    Axios.get("/api/attributes")
-      .then((res) => res.data)
-      .then((attributes) => {
-        // formatAttributes(attributes);
-        //setAllAttributes(attributes);
-        filterSpr(attributes);
-      })
-      .catch((err) => {
-        console.log(err);
-      });
-  };
-
-  const filterSpr = (attributes) => {
-    let product = attributescaption;
-    let allSpr = [];
-    attributes.forEach((attr) => {
-      if (attr.format === "SPR") {
-        allSpr.push(attr);
-      }
-    });
-    let sprToProd = [];
-
-    attributescaption.forEach((ca) => {
-      allSpr.forEach((as) => {
-        if (ca.attribute_id.toString() === as.id) {
-          sprToProd.push({ id: as.id, values: as.sprvalues });
-        }
-      });
-    });
-    sprToProd.forEach((element, indx) => {
-      let a = [];
-      element.values.forEach((el, i) => {
-        a.push({ id: i, label: el });
-      });
-      sprToProd[indx] = { ...sprToProd[indx], options: a };
-    });
-    product.forEach((prod, i) => {
-      sprToProd.forEach((element) => {
-        if (prod.attribute_id.toString() === element.id) {
-          product[i] = { ...product[i], options: element.options };
-        }
-      });
-    });
-    setChangedAttr(product);
-  };
 
   useEffect(() => {
     clear();
@@ -118,6 +71,57 @@ export default function AddAttribute({
     }
   }, [isEditing, editProduct]);
 
+  useEffect(() => {
+    getAttrListId(changedAttr);
+  }, [changedAttr]);
+
+  const filterSpr = (attributes) => {
+    let product = attributescaption;
+    let allSpr = [];
+    attributes.forEach((attr) => {
+      if (attr.format === "SPR") {
+        allSpr.push(attr);
+      }
+    });
+    let sprToProd = [];
+
+    attributescaption.forEach((ca) => {
+      allSpr.forEach((as) => {
+        if (ca.attribute_id.toString() === as.id) {
+          sprToProd.push({ id: as.id, values: as.sprvalues });
+        }
+      });
+    });
+    sprToProd.forEach((element, indx) => {
+      let a = [];
+      element.values.forEach((el, i) => {
+        a.push({ id: i, label: el });
+      });
+      sprToProd[indx] = { ...sprToProd[indx], options: a };
+    });
+    product.forEach((prod, i) => {
+      sprToProd.forEach((element) => {
+        if (prod.attribute_id.toString() === element.id) {
+          product[i] = { ...product[i], options: element.options };
+        }
+      });
+    });
+    setChangedAttr(product);
+  };
+
+  const getAttributes = () => {
+    Axios.get("/api/attributes")
+      .then((res) => res.data)
+      .then((attributes) => {
+        // formatAttributes(attributes);
+        //setAllAttributes(attributes);
+        filterSpr(attributes);
+      })
+      .catch((err) => {
+        console.log(err);
+      });
+  };
+
   const pushNewAttribute = () => {
     const attrListChanged = attrList;
     editProduct.attributesarray.forEach((attr, ind) => {
@@ -137,8 +141,9 @@ export default function AddAttribute({
 
   const clear = () => {
     setAttrList([]);
-    // setAttrListCode(null);
-    // setHidden(false);
+    setAttrListCode(null);
+    setHidden(false);
+    setChangedAttr(attributescaption);
     // setAttrValue([]);
     // setAttrName([]);
     if (isEditing) {
@@ -196,19 +201,17 @@ export default function AddAttribute({
       return [...prevState];
     });
   };
-  useEffect(() => {
-    getAttrListId(changedAttr);
-  }, [changedAttr]);
 
   const getAttrListId = () => {
     let a = [];
-    changedAttr.map((el, i) => {
-      a.push({
-        code: el.attribute_id,
-        value: el.attribute_value,
-        name: el.attribute_name,
+    changedAttr.length > 0 &&
+      changedAttr.map((el, i) => {
+        a.push({
+          code: el.attribute_id,
+          value: el.attribute_value,
+          name: el.attribute_name,
+        });
       });
-    });
     changeState(a);
   };
 
