@@ -669,6 +669,7 @@ let AddProductForm = ({
 
   const generateBarcode = () => {
     clearForm();
+    setClearBoard(true);
     Axios.get("/api/invoice/newbarcode")
       .then((res) => res.data)
       .then((barcodeseq) => {
@@ -773,7 +774,6 @@ let AddProductForm = ({
 
         const productIdTest = product.id;
         setIdProduct(productIdTest);
-        console.log(idProduct);
 
         const attrCode = product.attributes;
         setAttributeCode(attrCode);
@@ -974,7 +974,7 @@ let AddProductForm = ({
     Axios.post("/api/invoice/add/product", reqdata)
       .then((res) => {
         const newProductChanged = {
-          invoice: newData.invoice,
+          invoice: reqdata.invoice,
           attributes: attributeCode || null,
           categoryName: newData.category,
           brand: newData.brand,
@@ -989,8 +989,9 @@ let AddProductForm = ({
         setSubmitting(false);
         setAdding(false);
         handleEditing();
-        setClearBoard(newData.code);
+
         clearForm();
+        setClearBoard(newData.code);
         alert.success("Товар успешно добавлен", {
           position: "top-right",
           effect: "bouncyflip",

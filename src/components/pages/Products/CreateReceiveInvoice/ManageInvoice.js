@@ -85,10 +85,12 @@ export default function ManageInvoice({ location, history }) {
 
   const addProduct = (newProduct) => {
     let newProductList = productList;
-    let attributescaption = "";
+    let newProd = newProduct;
+    let attributescaption = [];
     getInvoiceProducts(invoiceNumber);
-    if (newProduct.attrList.length > 0) {
-      newProduct.attrList.forEach((attr) => {
+
+    if (newProd.attrs_json && newProd.attrs_json.length > 0) {
+      newProd.attrs_json.forEach((attr) => {
         attributescaption =
           attributescaption +
           (attributescaption ? ", " : "") +
@@ -97,7 +99,7 @@ export default function ManageInvoice({ location, history }) {
           attr.value;
       });
     }
-    newProduct.attributescaption = attributescaption;
+    newProd.attrs_json = attributescaption;
     newProductList.push(newProduct);
     newProductList.sort(function (a, b) {
       var textA = a.name.toUpperCase();
