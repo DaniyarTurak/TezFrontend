@@ -468,7 +468,6 @@ export default function ManageInvoice({ location, history }) {
               `Контрагент: ${counterparty.label}`}
           </p>
         </div>
-
         <div
           className="col-md-3"
           style={{ display: "flex", justifyContent: "center" }}
