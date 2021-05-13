@@ -958,7 +958,7 @@ let AddProductForm = ({
       taxid: companyData.certificatenum ? data.taxid.value : "0",
       unitsprid: data.unitsprid.value,
       updateprice,
-      attrlist: attrIdandValue,
+      attrlist: attributeCode === "0" ? [] : attrIdandValue,
     };
     // всё что выше переписывалось 100500 раз, трогать осторожно.
 
@@ -975,7 +975,7 @@ let AddProductForm = ({
       .then((res) => {
         const newProductChanged = {
           invoice: reqdata.invoice,
-          attributes: attributeCode || null,
+          attributes: attributeCode === 0 || null,
           categoryName: newData.category,
           brand: newData.brand,
           code: newData.code,

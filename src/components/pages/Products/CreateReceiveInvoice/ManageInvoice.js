@@ -155,6 +155,8 @@ export default function ManageInvoice({ location, history }) {
     })
       .then((res) => res.data)
       .then((det) => {
+        console.log("det", det);
+        console.log("product", product);
         toggleDisabled(idx);
         setProduct({
           ...det,

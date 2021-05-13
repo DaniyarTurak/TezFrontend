@@ -413,7 +413,7 @@ export default function CreateProduct({ isEditing }) {
         ? editProduct.attributes
         : attributeGlobCode,
       cnofeacode: cnofeacode,
-      attrList,
+      // attrList,
     };
     console.log(product);
     Axios.post("/api/products/create", { product })

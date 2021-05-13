@@ -451,7 +451,7 @@ export default function EditProduct({
               </TableRow>
             )}
             <TableRow>
-              <TableCell>Постоянные характеристики:</TableCell>
+              <TableCell>Характеристика товара:</TableCell>
               <TableCell>
                 {editingAttrGlob && (
                   <Typography variant="h7" alingItem="left">
