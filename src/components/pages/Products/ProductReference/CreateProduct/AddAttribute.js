@@ -243,14 +243,19 @@ export default function AddAttribute({
   return (
     <Fragment>
       <Grid container direction="row" justify="center" alignItems="center">
-        <Grid item xs={3}>
+        <Grid item xs={4}>
           <label htmlFor="">Партийные характеристики</label>
         </Grid>
       </Grid>
-      <Grid container justify="center">
+      <Grid
+        container
+        direction="row"
+        justify="center"
+        alignItems="center"
+        spacing={3}
+      >
         <Grid item xs={4}>
           <Select
-            className="col-md-12"
             value={attrName}
             onChange={onAttrNameChange}
             options={optionsToRender}
