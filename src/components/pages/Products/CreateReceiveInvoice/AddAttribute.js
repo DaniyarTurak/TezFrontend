@@ -134,7 +134,7 @@ export default function AddAttribute({
       attrListChanged.push(field);
       setOldAttributes(attrListChanged);
       attrListProps(attrListChanged);
-      setAttrListCode(fields[2]);
+      // setAttrListCode(fields[2]);
       setAttrList(attrListChanged);
     });
   };

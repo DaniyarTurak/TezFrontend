@@ -151,7 +151,6 @@ let AddProductForm = ({
           ? editProduct.brand_id_new
           : editProduct.brandid,
       };
-
       //Форматирование Налоговой категории
       const tax = {
         label: editProduct.taxid === "0" ? "Без НДС" : "Стандартный НДС",
