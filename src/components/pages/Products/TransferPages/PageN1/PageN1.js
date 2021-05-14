@@ -31,7 +31,7 @@ export default function PageN1({
   const [productOptions, setproductOptions] = useState([]);
   const [productList, setproductList] = useState([]);
   const [productBarcode, setproductBarcode] = useState("");
-  const [products, setproducts] = useState([]);
+  const [products, setProducts] = useState([]);
 
   useEffect(() => {
     getStockCurrentProducts();
@@ -85,7 +85,6 @@ export default function PageN1({
             attributes: product.attributes,
           })
         );
-
         setLoadingProducts(false);
         setproductOptions(newproductOptions);
       })
@@ -107,8 +106,9 @@ export default function PageN1({
       })
         .then((res) => res.data)
         .then((newproducts) => {
-          if (newproducts.length === 0) return;
-
+          if (newproducts.length === 0) {
+            ErrorAlert("Товар отсутсвует на складе");
+          };
           if (newproducts.length === 1) {
             const product = newproducts[0];
             const newproductSelectValue = {
@@ -126,9 +126,12 @@ export default function PageN1({
             };
             setproductSelectValue(newproductSelectValue);
             getStockCurrentDetail(product.id, product.idto);
+            setProducts(newproducts);
           }
-          setproducts(newproducts);
-          setModalOpen(true);
+          if (newproducts.length > 1) {
+            setProducts(newproducts);
+            setModalOpen(true);
+          }
         })
         .catch((err) => {
           ErrorAlert(err);
@@ -227,10 +230,10 @@ export default function PageN1({
         !productSelectValue.value
           ? "Выберите товар"
           : !newAmount
-          ? "Внесите количество товара для перемещения"
-          : !newPriceCheck && !oldPriceCheck
-          ? "Выберите цену для перемещения"
-          : "",
+            ? "Внесите количество товара для перемещения"
+            : !newPriceCheck && !oldPriceCheck
+              ? "Выберите цену для перемещения"
+              : "",
         {
           position: "top-right",
           effect: "bouncyflip",
@@ -238,14 +241,12 @@ export default function PageN1({
         }
       );
     }
-
     if (newAmount > detail.units) {
       return setamountExceeds(true);
     }
     const alreadyExist = productList.filter(
       (product) => product.code === productSelectValue.code
     );
-
     if (alreadyExist.length > 0) {
       return Alert.info("Данный товар уже в списке", {
         position: "top-right",
@@ -412,7 +413,6 @@ export default function PageN1({
           />
         </Grid>
       </Grid>
-
       {!isLoading && detail && (
         <DetailTable
           fromPointProps={fromPointProps}
@@ -433,7 +433,6 @@ export default function PageN1({
         </span>
       )}
       {isLoading && <SkeletonTable />}
-
       {!isLoadingProducts && productList.length > 0 && (
         <ProductListTable
           productList={productList}
