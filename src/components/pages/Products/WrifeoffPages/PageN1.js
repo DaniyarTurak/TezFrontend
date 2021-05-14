@@ -136,9 +136,20 @@ export default function PageN1({ stockFrom, invoicenumber, productListProps }) {
 
             getStockCurrentDetail(product.id);
           } else {
-            setProducts(res);
             setProdName(res[0].name);
-            setModalOpen(true);
+            let arr = [];
+            res.forEach(element => {
+              if (parseInt(element.units) > 0) {
+                arr.push(element);
+              }
+            });
+            if (arr.length !== 0) {
+              setProducts(arr);
+              setModalOpen(true);
+            }
+            else {
+              ErrorAlert("Товар отсутсвует на складе");
+            }
           }
         })
         .catch((err) => {

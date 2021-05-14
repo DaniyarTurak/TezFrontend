@@ -24,7 +24,6 @@ const StyledTableCell = withStyles((theme) => ({
 }))(TableCell);
 
 export default function Characteristics({ prodName, products, selectAttribute }) {
-
   return (
     <Fragment>
       <h6>Для товара <span style={{ color: "#17a2b8" }}>{prodName}</span>  найдены следующие характеристики:</h6>
