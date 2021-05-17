@@ -202,6 +202,17 @@ export default function SalesTable({
                     <OrderArrowMaterial ascending={ascending} />
                   )}
                 </StyledTableCell>
+                <StyledTableCell rowSpan="2" align="center">
+                  <span
+                    className="hand"
+                    onClick={() => orderByFunction("sell_date")}
+                  >
+                    Дата
+                  </span>
+                  {orderBy === "type" && (
+                    <OrderArrowMaterial ascending={ascending} />
+                  )}
+                </StyledTableCell>
                 <StyledTableCell rowSpan="2">
                   <span
                     className="hand"
@@ -346,6 +357,7 @@ export default function SalesTable({
                     >
                       {product.type}
                     </StyledTableCell>
+                    <StyledTableCell align="center">{Moment(product.sell_date).format('lll')}</StyledTableCell>
                     <StyledTableCell>{product.name}</StyledTableCell>
                     <StyledTableCell align="center" className="tenge">
                       {parseFloat(product.price_discount).toLocaleString("ru", {
