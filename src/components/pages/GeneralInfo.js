@@ -119,7 +119,6 @@ class GeneralInfo extends Component {
   };
 
   submit = (data) => {
-    delete data.name;
     delete data.bin;
     const reqdata = { company: data };
 
@@ -297,10 +296,21 @@ class GeneralInfo extends Component {
               </tr>
               <tr>
                 <td>{label.companyName}</td>
-                <td className="bold-text">
+                {/* <td className="bold-text">
                   <a data-toggle="tooltip" title={companyData.id}>
                     {companyData.name}
                   </a>
+                </td> */}
+                <td
+                  className={`bold-text ${isEdit ? "edit-general-info" : ""}`}
+                >
+                  <Field
+                    name="name"
+                    component={InputField}
+                    type={field.type}
+                    className="form-control"
+                    validate={[RequiredField]}
+                  />
                 </td>
               </tr>
               <tr>
@@ -364,7 +374,6 @@ class GeneralInfo extends Component {
                     component={InputField}
                     type={field.type}
                     className="form-control"
-                    validate={[RequiredField]}
                   />
                 </td>
               </tr>
@@ -381,7 +390,6 @@ class GeneralInfo extends Component {
                     type={field.type}
                     onChange={this.IinValidation}
                     className="form-control"
-                    validate={[RequiredField, ValidateIDN]}
                   />
                 </td>
               </tr>
@@ -422,11 +430,10 @@ class GeneralInfo extends Component {
                 >
                   <td style={{ width: "12rem" }}>
                     <div
-                      className={`${
-                        isEdit && !companyData.certificateseries
-                          ? "edit-general-info-title"
-                          : ""
-                      }`}
+                      className={`${isEdit && !companyData.certificateseries
+                        ? "edit-general-info-title"
+                        : ""
+                        }`}
                     >
                       {label.hasNds}
                     </div>
@@ -436,9 +443,8 @@ class GeneralInfo extends Component {
                       </div>
                     ) : (
                       <div
-                        className={`bold-text ${
-                          isEdit ? "edit-general-info" : ""
-                        }`}
+                        className={`bold-text ${isEdit ? "edit-general-info" : ""
+                          }`}
                       >
                         <Field
                           name="certificateseries"
@@ -453,11 +459,10 @@ class GeneralInfo extends Component {
                   </td>
                   <td style={{ width: "12rem" }}>
                     <div
-                      className={`${
-                        isEdit && !companyData.certificateseries
-                          ? "edit-general-info-title"
-                          : ""
-                      }`}
+                      className={`${isEdit && !companyData.certificateseries
+                        ? "edit-general-info-title"
+                        : ""
+                        }`}
                     >
                       {label.ndsRegisterNumber}
                     </div>
@@ -467,9 +472,8 @@ class GeneralInfo extends Component {
                       </div>
                     ) : (
                       <div
-                        className={`bold-text ${
-                          isEdit ? "edit-general-info" : ""
-                        }`}
+                        className={`bold-text ${isEdit ? "edit-general-info" : ""
+                          }`}
                       >
                         <Field
                           name="certificatenum"
@@ -484,11 +488,10 @@ class GeneralInfo extends Component {
                   </td>
                   <td style={{ width: "12rem" }}>
                     <div
-                      className={`${
-                        isEdit && !companyData.certificateseries
-                          ? "edit-general-info-title"
-                          : ""
-                      }`}
+                      className={`${isEdit && !companyData.certificateseries
+                        ? "edit-general-info-title"
+                        : ""
+                        }`}
                     >
                       {label.ndsDate}
                     </div>
