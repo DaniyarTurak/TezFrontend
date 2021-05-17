@@ -8,10 +8,7 @@ export default function AddAttribute({
   clearBoard,
   selected,
   changeState,
-  attributeCode,
-  attrListProps,
   isEditing,
-  editProduct,
   attributescaption,
   editAttrubutes,
 }) {
@@ -19,7 +16,6 @@ export default function AddAttribute({
   const [attrListCode, setAttrListCode] = useState(null);
   // const [optionsToRender, setOptionsToRender] = useState([]);
   const [isHidden, setHidden] = useState(false);
-  const [oldAttributes, setOldAttributes] = useState([]);
   const [isClear, setClear] = useState(false);
   const [changedAttr, setChangedAttr] = useState([]);
   const [readyOpt, setReadyOpt] = useState([]);
@@ -151,6 +147,7 @@ export default function AddAttribute({
     setAttrListCode(null);
     setHidden(false);
     setChangedAttr(attributescaption);
+    clearBoard;
     // setAttrValue([]);
     // setAttrName([]);
     if (isEditing) {

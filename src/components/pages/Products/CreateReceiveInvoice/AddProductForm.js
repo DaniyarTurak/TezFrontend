@@ -212,6 +212,9 @@ let AddProductForm = ({
       dispatch(change("AddProductForm", "amount", editProduct.amount));
       dispatch(change("AddProductForm", "taxid", tax));
       dispatch(change("AddProductForm", "unitsprid", unit));
+      dispatch(
+        change("AddProductFrom", "attribute", editProduct.attributescaption)
+      );
     }
   }, [isEditing, editProduct]);
 
@@ -372,12 +375,14 @@ let AddProductForm = ({
     setSelectedAttribute([]);
     setLastPurchasePrice(0);
     setNewPrice(0);
+    setClearBoard(true);
     setNewProductGenerating(false);
     setBarcodeExists(false);
     setStaticPrice("");
     reset();
     setAttributeCapation([]);
     setAttrIdandValue([]);
+    setEditAttrubutes([]);
 
     const tx = taxOptions.find((tax) => {
       return tax.id === "1";
@@ -932,6 +937,7 @@ let AddProductForm = ({
       }
     }
   };
+  console.log(editProduct);
 
   const addProduct = (data) => {
     setLimitAlert(false);
@@ -948,7 +954,7 @@ let AddProductForm = ({
       category: data.category ? data.category.value : null,
       cnofea: data.cnofea,
       code: !isEditing ? data.code : editProduct.code,
-      id: !isEditing ? productID : editProduct.is_new ? null : editProduct.id,
+      id: !isEditing ? productID : editProduct.is_new ? null : editProduct.idc,
       isstaticprice: data.isstaticprice,
       lastpurchaseprice: oldprice,
       name: !isEditing ? data.name.label || data.name : editProduct.name,
@@ -990,12 +996,11 @@ let AddProductForm = ({
           amount: newData.amount,
         };
         newProduct(newProductChanged);
+        clearForm();
         setSubmitting(false);
         setAdding(false);
         handleEditing();
-
-        clearForm();
-        setClearBoard(newData.code);
+        setClearBoard(newData);
         alert.success("Товар успешно добавлен", {
           position: "top-right",
           effect: "bouncyflip",
