@@ -1049,11 +1049,6 @@ let AddProductForm = ({
       )}
 
       <div className="add-product-form">
-        {/* //test */}
-        {/* <button className="btn btn-success" onClick={handleTest}>
-          test
-        </button> */}
-        {/* test */}
         <form
           onSubmit={handleSubmit(handleAddProduct)}
           onKeyPress={handleFormKeyPress}
