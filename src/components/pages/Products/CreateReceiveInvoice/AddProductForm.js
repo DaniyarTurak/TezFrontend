@@ -107,6 +107,11 @@ let AddProductForm = ({
   const [attributescaption, setAttributeCapation] = useState([]);
   const [attrIdandValue, setAttrIdandValue] = useState([]);
   const [idProduct, setIdProduct] = useState("");
+  const [editAttrubutes, setEditAttrubutes] = useState([]);
+
+  useEffect(() => {
+    setEditAttrubutes(editProduct.attributescaption);
+  }, [editProduct]);
 
   const companyData =
     JSON.parse(sessionStorage.getItem("isme-company-data")) || {};
@@ -151,7 +156,6 @@ let AddProductForm = ({
           ? editProduct.brand_id_new
           : editProduct.brandid,
       };
-
       //Форматирование Налоговой категории
       const tax = {
         label: editProduct.taxid === "0" ? "Без НДС" : "Стандартный НДС",
@@ -159,7 +163,7 @@ let AddProductForm = ({
       };
       //Расчёт Единиц измерения
       const unitLabel = unitOptions.filter((e) => {
-        return e && e.id === editProduct.unitsprid;
+        return e && e.id === editProduct.unitspridc;
       });
       const unit = {
         label: editProduct.units_name_new
@@ -372,7 +376,7 @@ let AddProductForm = ({
     setBarcodeExists(false);
     setStaticPrice("");
     reset();
-    setAttributeCapation("");
+    setAttributeCapation([]);
     setAttrIdandValue([]);
 
     const tx = taxOptions.find((tax) => {
@@ -935,11 +939,11 @@ let AddProductForm = ({
     const newData = {
       amount: unitsprid === "3" ? 0 : data.amount,
       attributes: !isEditing
-        ? attributeCode || null
+        ? attributeCode || 0
         : editProduct.attributes !== "0" &&
-          parseInt(editProduct.attributes, 0) >= attributeCode
-        ? editProduct.attributes
-        : attributeCode,
+          parseInt(editProduct.attributes, 0) >= 0
+        ? 0
+        : 0,
       brand: data.brand ? data.brand.value : 0,
       category: data.category ? data.category.value : null,
       cnofea: data.cnofea,
@@ -958,7 +962,7 @@ let AddProductForm = ({
       taxid: companyData.certificatenum ? data.taxid.value : "0",
       unitsprid: data.unitsprid.value,
       updateprice,
-      attrlist: attrIdandValue,
+      attrlist: attributeCode === 0 || null ? [] : attrIdandValue,
     };
     // всё что выше переписывалось 100500 раз, трогать осторожно.
 
@@ -1129,7 +1133,6 @@ let AddProductForm = ({
           <div className="row justify-content-center">
             <div style={{ marginLeft: "2.2rem" }} className="col-md-8 zi-6">
               <label htmlFor="category">Категория</label>
-
               <Field
                 name="category"
                 component={SelectField}
@@ -1178,18 +1181,15 @@ let AddProductForm = ({
               />
             </div>
           </div>
-
           <SellByPieces
             sellByPieces={sellByPieces}
             onSellByPiecesChange={onSellByPiecesChange}
             onPieceAmountChange={onPieceAmountChange}
             onPiecePriceChange={onPiecePriceChange}
           />
-
           <div className="row justify-content-center">
             <div className="col-md-8 cnofea-name-text">{cnofeaName}</div>
           </div>
-
           <div className="row justify-content-center">
             <div style={{ minWidth: "8rem" }} className="col-md-2">
               <label>Цена закупки</label>
@@ -1207,7 +1207,6 @@ let AddProductForm = ({
                 }
               />
             </div>
-
             <div style={{ minWidth: "8rem" }} className="col-md-2">
               <label>Надбавка</label>
               <Field
@@ -1221,7 +1220,6 @@ let AddProductForm = ({
                 appendItem={<span className="input-group-text">%</span>}
               />
             </div>
-
             <div style={{ minWidth: "8rem" }} className="col-md-2">
               <label>Цена продажи</label>
               <Field
@@ -1238,7 +1236,6 @@ let AddProductForm = ({
                 }
               />
             </div>
-
             <div className="col-md-2">
               <FormControlLabel
                 control={
@@ -1274,7 +1271,6 @@ let AddProductForm = ({
                 }
               />
             </div>
-
             {companyData.certificatenum && (
               <div className="col-md-3 zi-4">
                 <label>Налоговая категория</label>
@@ -1287,7 +1283,6 @@ let AddProductForm = ({
                 />
               </div>
             )}
-
             <div className="col-md-3 zi-4" style={{ zIndex: 11 }}>
               <label>Единица измерения</label>
               <Field
@@ -1311,6 +1306,7 @@ let AddProductForm = ({
               <div className="col-md-12">
                 <AddAttribute
                   attributescaption={attributescaption}
+                  editAttrubutes={editAttrubutes}
                   changeState={changeState}
                   isEditing={isEditing}
                   editProduct={editProduct}
@@ -1322,8 +1318,6 @@ let AddProductForm = ({
               </div>
             </div>
           </div>
-          {/* <label>{attributescaption}</label> */}
-
           <div className="row justify-content-center text-right mt-20">
             <div className="col-md-8">
               <button

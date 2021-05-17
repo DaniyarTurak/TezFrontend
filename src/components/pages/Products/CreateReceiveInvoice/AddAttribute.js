@@ -13,6 +13,7 @@ export default function AddAttribute({
   isEditing,
   editProduct,
   attributescaption,
+  editAttrubutes,
 }) {
   const [attrList, setAttrList] = useState([]);
   const [attrListCode, setAttrListCode] = useState(null);
@@ -21,7 +22,7 @@ export default function AddAttribute({
   const [oldAttributes, setOldAttributes] = useState([]);
   const [isClear, setClear] = useState(false);
   const [changedAttr, setChangedAttr] = useState([]);
-
+  const [readyOpt, setReadyOpt] = useState([]);
   useEffect(() => {
     if (attributescaption && attributescaption.length > 0) {
       attributescaption.forEach((element) => {
@@ -29,6 +30,14 @@ export default function AddAttribute({
       });
       setChangedAttr(attributescaption);
       getAttributes();
+    } else {
+      if (editAttrubutes && editAttrubutes.length > 0) {
+        editAttrubutes.forEach((element) => {
+          element = { ...element, value_select: "" };
+        });
+        setChangedAttr(editAttrubutes);
+        getAttributes();
+      }
     }
   }, [attributescaption]);
 
@@ -54,29 +63,30 @@ export default function AddAttribute({
     }
   }, [selected]);
 
-  useEffect(() => {
-    if (isEditing && isClear) {
-      pushNewAttribute();
-    }
-    return () => {
-      setClear(false);
-    };
-  }, [isClear]);
+  // useEffect(() => {
+  //   if (isEditing && isClear) {
+  //     pushNewAttribute();
+  //   }
+  //   return () => {
+  //     setClear(false);
+  //   };
+  // }, [isClear]);
 
-  useEffect(() => {
-    if (isEditing && oldAttributes.length > 0) {
-      clear();
-    } else if (isEditing) {
-      pushNewAttribute();
-    }
-  }, [isEditing, editProduct]);
+  // useEffect(() => {
+  //   if (isEditing && oldAttributes.length > 0) {
+  //     clear();
+  //   } else if (isEditing) {
+  //     pushNewAttribute();
+  //   }
+  // }, [isEditing, editProduct]);
 
   useEffect(() => {
     getAttrListId(changedAttr);
   }, [changedAttr]);
 
   const filterSpr = (attributes) => {
-    let product = attributescaption;
+    let product =
+      attributescaption.length > 0 ? attributescaption : editAttrubutes;
     let allSpr = [];
     attributes.forEach((attr) => {
       if (attr.format === "SPR") {
@@ -84,8 +94,7 @@ export default function AddAttribute({
       }
     });
     let sprToProd = [];
-
-    attributescaption.forEach((ca) => {
+    product.forEach((ca) => {
       allSpr.forEach((as) => {
         if (ca.attribute_id.toString() === as.id) {
           sprToProd.push({ id: as.id, values: as.sprvalues });
@@ -106,15 +115,13 @@ export default function AddAttribute({
         }
       });
     });
-    setChangedAttr(product);
+    setReadyOpt(product);
   };
 
   const getAttributes = () => {
     Axios.get("/api/attributes")
       .then((res) => res.data)
       .then((attributes) => {
-        // formatAttributes(attributes);
-        //setAllAttributes(attributes);
         filterSpr(attributes);
       })
       .catch((err) => {
@@ -122,22 +129,22 @@ export default function AddAttribute({
       });
   };
 
-  const pushNewAttribute = () => {
-    const attrListChanged = attrList;
-    editProduct.attributesarray.forEach((attr, ind) => {
-      const fields = attr.split("|");
-      const field = {
-        value: fields[1],
-        name: fields[3],
-        code: fields[0],
-      };
-      attrListChanged.push(field);
-      setOldAttributes(attrListChanged);
-      attrListProps(attrListChanged);
-      // setAttrListCode(fields[2]);
-      setAttrList(attrListChanged);
-    });
-  };
+  // const pushNewAttribute = () => {
+  //   const attrListChanged = attrList;
+  //   editProduct.attributesarray.forEach((attr, ind) => {
+  //     const fields = attr.split("|");
+  //     const field = {
+  //       value: fields[1],
+  //       name: fields[3],
+  //       code: fields[0],
+  //     };
+  //     attrListChanged.push(field);
+  //     setOldAttributes(attrListChanged);
+  //     attrListProps(attrListChanged);
+  //     // setAttrListCode(fields[2]);
+  //     setAttrList(attrListChanged);
+  //   });
+  // };
 
   const clear = () => {
     setAttrList([]);
@@ -150,26 +157,6 @@ export default function AddAttribute({
       setClear(true);
     }
   };
-
-  // const formatAttributes = (attributes) => {
-  //   let optionsToRenderChanged = [];
-  //   attributes.forEach((attr) => {
-  //     const sprvalues = attr.sprvalues.map((sprValue) => {
-  //       return {
-  //         label: sprValue,
-  //         value: sprValue,
-  //       };
-  //     });
-  //     const option = {
-  //       label: attr.values,
-  //       value: attr.id,
-  //       type: attr.format,
-  //       sprvalues: sprvalues,
-  //     };
-  //     optionsToRenderChanged.push(option);
-  //   });
-  //   setOptionsToRender(optionsToRenderChanged);
-  // };
 
   const nonSprChange = (event, attribute) => {
     let index;
@@ -221,8 +208,8 @@ export default function AddAttribute({
         className="row justify-content-center"
         style={{ marginBottom: -10 }}
       ></div>
-      {changedAttr.length > 0 &&
-        changedAttr.map((attribute, idx) => {
+      {readyOpt.length > 0 &&
+        readyOpt.map((attribute, idx) => {
           return (
             <Fragment key={idx}>
               <div className="row justify-content-center">
@@ -258,11 +245,12 @@ export default function AddAttribute({
                     {attribute.attribute_format === "SPR" && (
                       <Fragment>
                         <Select
+                          id="select"
                           placeholder={attribute.attribute_value}
                           value={attribute.value_select}
-                          onChange={(event) =>
-                            onAttrValueChange(event, attribute)
-                          }
+                          onChange={(event) => {
+                            onAttrValueChange(event, attribute);
+                          }}
                           options={attribute.options}
                           className="form-control attr-spr"
                           placeholder={"Введите значение"}
