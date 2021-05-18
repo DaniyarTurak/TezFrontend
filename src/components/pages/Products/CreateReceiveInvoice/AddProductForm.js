@@ -68,7 +68,6 @@ let AddProductForm = ({
 }) => {
   const [addProductData, setAddProductData] = useState("");
   const [attributeCode, setAttributeCode] = useState("");
-  const [attrList, setAttrList] = useState([]);
   const [barcode, setBarcode] = useState("");
   const [bottomLimit, setBottomLimit] = useState(0);
   const [brand, setBrand] = useState(0);
@@ -106,7 +105,6 @@ let AddProductForm = ({
   const [completedProduct, setCompletedProduct] = useState("");
   const [attributescaption, setAttributeCapation] = useState([]);
   const [attrIdandValue, setAttrIdandValue] = useState([]);
-  const [idProduct, setIdProduct] = useState("");
   const [editAttrubutes, setEditAttrubutes] = useState([]);
 
   useEffect(() => {
@@ -212,6 +210,9 @@ let AddProductForm = ({
       dispatch(change("AddProductForm", "amount", editProduct.amount));
       dispatch(change("AddProductForm", "taxid", tax));
       dispatch(change("AddProductForm", "unitsprid", unit));
+      dispatch(
+        change("AddProductFrom", "attribute", editProduct.attributescaption)
+      );
     }
   }, [isEditing, editProduct]);
 
@@ -361,6 +362,7 @@ let AddProductForm = ({
   };
 
   const clearForm = () => {
+    setClearBoard(!clearBoard);
     setBarcode(null);
     setCnofeaName(null);
     setUpdatePrice(true);
@@ -368,17 +370,17 @@ let AddProductForm = ({
     setProductSelectValue("");
     setProductID(null);
     setAttributeCode(null);
-    setAttrList([]);
     setSelectedAttribute([]);
     setLastPurchasePrice(0);
     setNewPrice(0);
+    // setClearBoard(true);
     setNewProductGenerating(false);
     setBarcodeExists(false);
     setStaticPrice("");
-    reset();
     setAttributeCapation([]);
     setAttrIdandValue([]);
-
+    // setEditAttrubutes([]);
+    reset();
     const tx = taxOptions.find((tax) => {
       return tax.id === "1";
     });
@@ -640,8 +642,8 @@ let AddProductForm = ({
   };
 
   const productListChange = (productChanged) => {
+    clearForm();
     setProductSelectValue(productChanged);
-
     if (productChanged.code) {
       setBarcode(productChanged.code);
       handleSearch(productChanged.code);
@@ -673,7 +675,6 @@ let AddProductForm = ({
 
   const generateBarcode = () => {
     clearForm();
-    setClearBoard(true);
     Axios.get("/api/invoice/newbarcode")
       .then((res) => res.data)
       .then((barcodeseq) => {
@@ -775,9 +776,6 @@ let AddProductForm = ({
 
         const attributeCapat = product.attributescaption;
         setAttributeCapation(attributeCapat);
-
-        const productIdTest = product.id;
-        setIdProduct(productIdTest);
 
         const attrCode = product.attributes;
         setAttributeCode(attrCode);
@@ -881,10 +879,6 @@ let AddProductForm = ({
     setAttributeCode(attributeCodeChanged);
   };
 
-  const getAttrList = (attrListChanged) => {
-    setAttrList(attrListChanged);
-  };
-
   const handleFormKeyPress = (e) => {
     if (e.key === "Enter") e.preventDefault();
   };
@@ -948,7 +942,7 @@ let AddProductForm = ({
       category: data.category ? data.category.value : null,
       cnofea: data.cnofea,
       code: !isEditing ? data.code : editProduct.code,
-      id: !isEditing ? productID : editProduct.is_new ? null : editProduct.id,
+      id: !isEditing ? productID : editProduct.is_new ? null : editProduct.idc,
       isstaticprice: data.isstaticprice,
       lastpurchaseprice: oldprice,
       name: !isEditing ? data.name.label || data.name : editProduct.name,
@@ -977,6 +971,7 @@ let AddProductForm = ({
     newData.code = newData.code.replace(/\\t| {2}/g, "").trim();
     Axios.post("/api/invoice/add/product", reqdata)
       .then((res) => {
+        setEditAttrubutes(newData.attrlist);
         const newProductChanged = {
           invoice: reqdata.invoice,
           attributes: attributeCode || null,
@@ -993,9 +988,7 @@ let AddProductForm = ({
         setSubmitting(false);
         setAdding(false);
         handleEditing();
-
         clearForm();
-        setClearBoard(newData.code);
         alert.success("Товар успешно добавлен", {
           position: "top-right",
           effect: "bouncyflip",
@@ -1308,7 +1301,6 @@ let AddProductForm = ({
                   selected={selectedAttribute}
                   clearBoard={clearBoard}
                   attributeCode={getAttributeCode}
-                  attrListProps={getAttrList}
                 />
               </div>
             </div>

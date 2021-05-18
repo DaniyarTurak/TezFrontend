@@ -604,9 +604,10 @@ export default function ManageInvoice({ location, history }) {
                       })}
                     </td>
                     <td className="text-center tenge">
-                      {(
-                        product.amount * product.purchaseprice
-                      ).toLocaleString("ru", { minimumFractionDigits: 2 })}
+                      {(product.amount * product.purchaseprice).toLocaleString(
+                        "ru",
+                        { minimumFractionDigits: 2 }
+                      )}
                     </td>
                     <td className="text-center tenge">
                       {(product.amount * product.newprice).toLocaleString(
