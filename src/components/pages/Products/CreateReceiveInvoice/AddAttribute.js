@@ -6,19 +6,13 @@ import ErrorAlert from "../../../ReusableComponents/ErrorAlert";
 
 export default function AddAttribute({
   clearBoard,
-  selected,
   changeState,
-  isEditing,
   attributescaption,
   editAttrubutes,
 }) {
-  const [attrList, setAttrList] = useState([]);
-  const [attrListCode, setAttrListCode] = useState(null);
-  // const [optionsToRender, setOptionsToRender] = useState([]);
-  const [isHidden, setHidden] = useState(false);
-  const [isClear, setClear] = useState(false);
   const [changedAttr, setChangedAttr] = useState([]);
   const [readyOpt, setReadyOpt] = useState([]);
+
   useEffect(() => {
     if (attributescaption && attributescaption.length > 0) {
       attributescaption.forEach((element) => {
@@ -38,43 +32,11 @@ export default function AddAttribute({
   }, [attributescaption]);
 
   useEffect(() => {
-    clear();
-  }, [clearBoard]);
-
-  useEffect(() => {
-    if (selected.length > 0) {
-      const attrListChanged = selected.map((attr) => {
-        return {
-          value: attr.value,
-          name: attr.values,
-          code: attr.attribute,
-        };
-      });
-      setAttrList(attrListChanged);
-      // setHidden(true);
-    } else if (!isEditing) {
-      setAttrList([]);
-      // setAttrListCode(null);
-      // setHidden(false);
+    if (!editAttrubutes || editAttrubutes === []) {
+      clear();
     }
-  }, [selected]);
-
-  // useEffect(() => {
-  //   if (isEditing && isClear) {
-  //     pushNewAttribute();
-  //   }
-  //   return () => {
-  //     setClear(false);
-  //   };
-  // }, [isClear]);
-
-  // useEffect(() => {
-  //   if (isEditing && oldAttributes.length > 0) {
-  //     clear();
-  //   } else if (isEditing) {
-  //     pushNewAttribute();
-  //   }
-  // }, [isEditing, editProduct]);
+    setReadyOpt([]);
+  }, [clearBoard]);
 
   useEffect(() => {
     getAttrListId(changedAttr);
@@ -92,8 +54,11 @@ export default function AddAttribute({
     let sprToProd = [];
     product.forEach((ca) => {
       allSpr.forEach((as) => {
-        if (ca.attribute_id.toString() === as.id) {
-          sprToProd.push({ id: as.id, values: as.sprvalues });
+        if (ca.attribute_id !== 0 && !ca.attribute_id) {
+        } else {
+          if (ca.attribute_id.toString() === as.id) {
+            sprToProd.push({ id: as.id, values: as.sprvalues });
+          }
         }
       });
     });
@@ -125,34 +90,9 @@ export default function AddAttribute({
       });
   };
 
-  // const pushNewAttribute = () => {
-  //   const attrListChanged = attrList;
-  //   editProduct.attributesarray.forEach((attr, ind) => {
-  //     const fields = attr.split("|");
-  //     const field = {
-  //       value: fields[1],
-  //       name: fields[3],
-  //       code: fields[0],
-  //     };
-  //     attrListChanged.push(field);
-  //     setOldAttributes(attrListChanged);
-  //     attrListProps(attrListChanged);
-  //     // setAttrListCode(fields[2]);
-  //     setAttrList(attrListChanged);
-  //   });
-  // };
-
   const clear = () => {
-    setAttrList([]);
-    setAttrListCode(null);
-    setHidden(false);
     setChangedAttr(attributescaption);
-    clearBoard;
-    // setAttrValue([]);
-    // setAttrName([]);
-    if (isEditing) {
-      setClear(true);
-    }
+    setReadyOpt([]);
   };
 
   const nonSprChange = (event, attribute) => {
@@ -177,7 +117,6 @@ export default function AddAttribute({
         index = i;
       }
     });
-
     setChangedAttr((prevState) => {
       let obj = prevState[index];
       obj.attribute_value = event.label;
