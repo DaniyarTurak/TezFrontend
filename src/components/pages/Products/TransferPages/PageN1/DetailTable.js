@@ -1,4 +1,4 @@
-import React from "react";
+import React, { Fragment } from "react";
 import TableContainer from "@material-ui/core/TableContainer";
 import Input from "@material-ui/core/Input";
 import Table from "@material-ui/core/Table";
@@ -80,18 +80,20 @@ export default function DetailTable({
             <StyledTableCell className={detail.price && "tenge"}>
               {detail.price}
             </StyledTableCell>
-
-            <StyledTableCell>Цена</StyledTableCell>
-            <StyledTableCell>
-              <input
-                type="checkbox"
-                checked={newPriceCheck}
-                onChange={handleCheckboxChange1}
-              ></input>
-            </StyledTableCell>
-            <StyledTableCell className={detail.priceto && "tenge"}>
-              {detail.priceto}
-            </StyledTableCell>
+            {detail.priceto && <Fragment>
+              <StyledTableCell>Цена</StyledTableCell>
+              <StyledTableCell>
+                <input
+                  type="checkbox"
+                  checked={newPriceCheck}
+                  onChange={handleCheckboxChange1}
+                ></input>
+              </StyledTableCell>
+              <StyledTableCell className={detail.priceto && "tenge"}>
+                {detail.priceto}
+              </StyledTableCell>
+            </Fragment>
+            }
           </TableRow>
           <TableRow>
             <StyledTableCell colSpan="7" align="center">

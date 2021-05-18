@@ -1,4 +1,4 @@
-import React, { Fragment } from "react";
+import React, { Fragment, useEffect } from "react";
 import TableContainer from "@material-ui/core/TableContainer";
 import TableHead from "@material-ui/core/TableHead";
 import TableRow from "@material-ui/core/TableRow";
@@ -27,6 +27,11 @@ const StyledTableCell = withStyles((theme) => ({
 }))(TableCell);
 
 export default function ProductListTable({ productList, removeProduct }) {
+
+  useEffect(() => {
+    console.log(productList);
+  }, [productList]);
+
   return (
     <Fragment>
       <div className="empty-space"></div>
@@ -35,10 +40,11 @@ export default function ProductListTable({ productList, removeProduct }) {
         <Table>
           <TableHead>
             <TableRow>
-              <StyledTableCell>Продукт</StyledTableCell>
-              <StyledTableCell>Штрих код</StyledTableCell>
-              <StyledTableCell>Новая цена</StyledTableCell>
-              <StyledTableCell>Количество</StyledTableCell>
+              <StyledTableCell align="center" >Продукт</StyledTableCell>
+              <StyledTableCell align="center">Штрих код</StyledTableCell>
+              <StyledTableCell align="center">Новая цена</StyledTableCell>
+              <StyledTableCell align="center">Количество</StyledTableCell>
+              <StyledTableCell align="center">Сумма</StyledTableCell>
               <StyledTableCell />
             </TableRow>
           </TableHead>
@@ -56,6 +62,12 @@ export default function ProductListTable({ productList, removeProduct }) {
                   </StyledTableCell>
                   <StyledTableCell align="center">
                     {product.amount}
+                  </StyledTableCell>
+                  <StyledTableCell
+                    className={product.price && "tenge"}
+                    align="center"
+                  >
+                    {product.amount * product.price}
                   </StyledTableCell>
                   <StyledTableCell>
                     <IconButton
@@ -79,6 +91,11 @@ export default function ProductListTable({ productList, removeProduct }) {
               <StyledTableCell align="center">
                 {productList.reduce((prev, cur) => {
                   return prev + parseFloat(cur.amount);
+                }, 0)}
+              </StyledTableCell>
+              <StyledTableCell align="center">
+                {productList.reduce((prev, cur) => {
+                  return prev + parseFloat(cur.price);
                 }, 0)}
               </StyledTableCell>
               <StyledTableCell />
