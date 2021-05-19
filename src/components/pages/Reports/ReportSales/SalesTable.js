@@ -1,4 +1,4 @@
-import React, { Fragment } from "react";
+import React, { Fragment, useState } from "react";
 import Moment from "moment";
 import PropTypes from "prop-types";
 import TablePagination from "@material-ui/core/TablePagination";
@@ -11,7 +11,6 @@ import TableHead from "@material-ui/core/TableHead";
 import TableFooter from "@material-ui/core/TableFooter";
 import Paper from "@material-ui/core/Paper";
 import Grid from "@material-ui/core/Grid";
-import ReactHTMLTableToExcel from "react-html-table-to-excel";
 import OrderArrowMaterial from "../../../ReusableComponents/OrderArrowMaterial";
 import FirstPageIcon from "@material-ui/icons/FirstPage";
 import KeyboardArrowLeft from "@material-ui/icons/KeyboardArrowLeft";
@@ -20,6 +19,8 @@ import LastPageIcon from "@material-ui/icons/LastPage";
 import IconButton from "@material-ui/core/IconButton";
 import "moment/locale/ru";
 import { withStyles, makeStyles, useTheme } from "@material-ui/core/styles";
+import Axios from "axios";
+import ErrorAlert from "../../../ReusableComponents/ErrorAlert";
 Moment.locale("ru");
 
 const useStyles1 = makeStyles((theme) => ({
@@ -128,9 +129,10 @@ export default function SalesTable({
   point,
   sales,
 }) {
-  console.log(ascending, orderBy);
+
   const [page, setPage] = React.useState(0);
   const [rowsPerPage, setRowsPerPage] = React.useState(10);
+  const [isLoading, setLoading] = useState(false);
 
   const handleChangePage = (event, newPage) => {
     setPage(newPage);
@@ -140,6 +142,33 @@ export default function SalesTable({
     setRowsPerPage(+event.target.value);
 
     setPage(0);
+  };
+
+  const getSalesExcel = () => {
+    setLoading(true);
+    let date = `Продажи (${point.label}) с ${Moment(dateFrom).format(
+      "DD.MM.YYYY"
+    )} по ${Moment(dateTo).format("DD.MM.YYYY")}`
+    Axios({
+      method: "POST",
+      url: "/api/report/sales/prods_excel",
+      data: { sales },
+      responseType: "blob",
+    })
+      .then((res) => res.data)
+      .then((res) => {
+        const url = window.URL.createObjectURL(new Blob([res]));
+        const link = document.createElement("a");
+        link.href = url;
+        link.setAttribute("download", `${date}.xlsx`);
+        document.body.appendChild(link);
+        link.click();
+        setLoading(false);
+      })
+      .catch((err) => {
+        ErrorAlert(err);
+        setLoading(false);
+      });
   };
 
   return (
@@ -466,17 +495,14 @@ export default function SalesTable({
           />
         )}
       </Grid>
-
       <Grid item xs={12}>
-        <ReactHTMLTableToExcel
+        <button
           className="btn btn-sm btn-outline-success"
-          table="table-to-xls"
-          filename={`Продажи (${point.label}) с ${Moment(dateFrom).format(
-            "DD.MM.YYYY"
-          )} по ${Moment(dateTo).format("DD.MM.YYYY")}`}
-          sheet="tablexls"
-          buttonText="Выгрузить в excel"
-        />
+          onClick={getSalesExcel}
+          disabled={isLoading}
+        >
+          Выгрузить в Excel
+        </button>
       </Grid>
     </Fragment>
   );
