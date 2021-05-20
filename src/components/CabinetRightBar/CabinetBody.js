@@ -55,6 +55,7 @@ import PromotionsPage from "../pages/Products/PromotionsPage";
 import MarginalPricePage from "../pages/Products/MarginalPricePage";
 import ProductReference from "../pages/Products/ProductReference";
 import ReconciliationPage from "../pages/Products/ReconciliationPage";
+import StockMonitoringPage from '../pages/StockMonitoringPage';
 
 import ReportPage from "../pages/Reports/ReportPage";
 import NotAllowed from "../NotAllowed";
@@ -168,6 +169,8 @@ export default function getBody({
             return <PricingMasterPage history={history} location={location} />;
           case "createprefix":
             return <CreatePrefix history={history} location={location} />;
+          case "stockmonitoring":
+            return <StockMonitoringPage history={history} location={location} />;
           default:
             return <ReferencesListPage history={history} location={location} />;
         }

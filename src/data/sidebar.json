@@ -74,6 +74,11 @@
         "id": 12,
         "route": "options/createprefix",
         "name": "Префикс весов"
+      },
+      {
+        "id": 13,
+        "route": "options/stockmonitoring",
+        "name": "Мониторинг остатков"
       }
     ]
   },
