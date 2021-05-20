@@ -9,7 +9,6 @@ export default function AddAttribute({
   clearBoard,
   selected,
   attributeCode,
-  attrListProps,
   isEditing,
   editProduct,
 }) {
@@ -80,7 +79,6 @@ export default function AddAttribute({
       };
       attrListChanged.push(field);
       setOldAttributes(attrListChanged);
-      // attrListProps(attrListChanged);
       setAttrListCode(fields[2]);
       setAttrList(attrListChanged);
     });

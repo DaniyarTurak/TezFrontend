@@ -69,6 +69,9 @@ export default function HistoryTable({
               {["1", "2", "16", "17"].includes(invoicetype.value) && (
                 <StyledTableCell align="center">На склад</StyledTableCell>
               )}
+              {["1", "2", "16", "17"].includes(invoicetype.value) && (
+                <StyledTableCell align="center">Сумма</StyledTableCell>
+              )}
               {["2", "16", "17"].includes(invoicetype.value) && (
                 <StyledTableCell align="center">Контрагент</StyledTableCell>
               )}
@@ -98,8 +101,8 @@ export default function HistoryTable({
                   >
                     {invoice.purchaseprice
                       ? parseFloat(invoice.purchaseprice).toLocaleString("ru", {
-                        minimumFractionDigits: 2,
-                      })
+                          minimumFractionDigits: 2,
+                        })
                       : "Н/Д"}
                   </StyledTableCell>
                 )}
@@ -110,8 +113,8 @@ export default function HistoryTable({
                   >
                     {invoice.newprice
                       ? parseFloat(invoice.newprice).toLocaleString("ru", {
-                        minimumFractionDigits: 2,
-                      })
+                          minimumFractionDigits: 2,
+                        })
                       : "Н/Д"}
                   </StyledTableCell>
                 )}
@@ -130,6 +133,11 @@ export default function HistoryTable({
                   <StyledTableCell align="center">
                     {invoice.counterparty &&
                       `${invoice.bin} | ${invoice.counterparty}`}
+                  </StyledTableCell>
+                )}
+                {["1", "2", "16", "17"].includes(invoicetype.value) && (
+                  <StyledTableCell align="center">
+                    {invoice.newprice}
                   </StyledTableCell>
                 )}
               </TableRow>

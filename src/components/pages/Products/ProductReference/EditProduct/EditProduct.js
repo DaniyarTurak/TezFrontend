@@ -94,8 +94,6 @@ export default function EditProduct({
   const [selectedAttribute] = useState([]);
   const [attributeCode, setAttributeCode] = useState("");
   const [attributeGlobCode, setAttributeGlobCode] = useState("");
-  const [attrList, setAttrList] = useState([]);
-  const [attrListGlob, setAttrListGlob] = useState([]);
   const [editProductAttr] = useState("");
   const [clearBoard, setClearBoard] = useState(false);
 
@@ -103,16 +101,8 @@ export default function EditProduct({
     setAttributeGlobCode(attributeCodeChanged);
   };
 
-  const getAttrListGlob = (attrListChangedcode) => {
-    setAttrListGlob(attrListChangedcode);
-  };
-
   const getAttributeCode = (attributeCodeChanged) => {
     setAttributeCode(attributeCodeChanged);
-  };
-
-  const getAttrList = (attrListChanged) => {
-    setAttrList(attrListChanged);
   };
 
   const editProdRes = () => {
@@ -464,7 +454,6 @@ export default function EditProduct({
                     selected={selectedAttribute}
                     clearBoard={clearBoard}
                     attributeCode={getAttributeCharCode}
-                    attrListProps={getAttrListGlob}
                   />
                 )}
               </TableCell>
@@ -497,7 +486,6 @@ export default function EditProduct({
                     selected={selectedAttribute}
                     clearBoard={clearBoard}
                     attributeCode={getAttributeCode}
-                    attrListProps={getAttrList}
                   />
                 )}
               </TableCell>

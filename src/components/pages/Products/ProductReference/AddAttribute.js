@@ -10,7 +10,6 @@ export default function AddAttribute({
   clearBoard,
   selected,
   attributeCode,
-  attrListProps,
   isEditing,
   editProduct,
 }) {
@@ -82,7 +81,6 @@ export default function AddAttribute({
       };
       attrListChanged.push(field);
       setOldAttributes(attrListChanged);
-      attrListProps(attrListChanged);
       setAttrListCode(fields[2]);
       setAttrList(attrListChanged);
     });
@@ -199,8 +197,6 @@ export default function AddAttribute({
       .then((result) => {
         setAttrListCode(result.text);
         attributeCode(result.text);
-        attrListProps(attrListChanged);
-        setAttrList(attrListChanged);
         setAttrValue("");
         setAttrName("");
         setAttrValueSpr("");
@@ -222,7 +218,6 @@ export default function AddAttribute({
 
     Axios.post("/api/attributes/delete", req)
       .then(() => {
-        attrListProps(newList);
         if (attrList.length === 0) {
           attributeCode("0");
         }

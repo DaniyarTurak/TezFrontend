@@ -4,7 +4,9 @@ import Axios from "axios";
 import AlertBox from "../../AlertBox";
 import Alert from "react-s-alert";
 import Searching from "../../Searching";
-import ResetPasswordPage from "../AdminPages/ResetPasswordPage"
+import ResetPasswordPage from "../AdminPages/ResetPasswordPage";
+import TextField from "@material-ui/core/TextField";
+import Autocomplete from "@material-ui/lab/Autocomplete";
 
 const CompanyList = ({ history }) => {
   const [companies, setCompanies] = useState([]);
@@ -19,16 +21,16 @@ const CompanyList = ({ history }) => {
 
   const getCompanies = () => {
     Axios.get("/api/adminpage/companies")
-      .then(res => res.data)
-      .then(companiesList => {
-        companiesList.forEach(comp => {
+      .then((res) => res.data)
+      .then((companiesList) => {
+        companiesList.forEach((comp) => {
           comp.show = false;
         });
         setCompanies(companiesList);
         setLoading(false);
         setUpdating(false);
       })
-      .catch(err => {
+      .catch((err) => {
         setUpdating(false);
         setLoading(false);
       });
@@ -38,18 +40,18 @@ const CompanyList = ({ history }) => {
     const newCompanies = [...companies];
     newCompanies.forEach((e) => {
       if (e.id === id) {
-        e.show = !e.show
+        e.show = !e.show;
       }
-    })
+    });
     setCompanies([...newCompanies]);
     setOpenDialog(true);
     setCompID(id);
-  }
+  };
 
-  const handleInfo = companyData => {
+  const handleInfo = (companyData) => {
     history.push({
       pathname: "companies/info",
-      state: { companyData }
+      state: { companyData },
     });
   };
 
@@ -63,11 +65,11 @@ const CompanyList = ({ history }) => {
         Alert.success("Изменения сохранены", {
           position: "top-right",
           effect: "bouncyflip",
-          timeout: 2000
+          timeout: 2000,
         });
       })
-      .catch(err => {
-        setUpdating(false)
+      .catch((err) => {
+        setUpdating(false);
         Alert.error(
           err.response.data.code === "internal_error"
             ? "Возникла ошибка при обработке вашего запроса. Мы уже работает над решением. Попробуйте позже"
@@ -75,7 +77,7 @@ const CompanyList = ({ history }) => {
           {
             position: "top-right",
             effect: "bouncyflip",
-            timeout: 2000
+            timeout: 2000,
           }
         );
       });
@@ -83,9 +85,13 @@ const CompanyList = ({ history }) => {
 
   return (
     <div className="company-list">
-      {isOpenDialog &&
-        <ResetPasswordPage handleCloseDialog={() => setOpenDialog(false)} comp_id={compID} isOpenDialog={isOpenDialog} />
-      }
+      {isOpenDialog && (
+        <ResetPasswordPage
+          handleCloseDialog={() => setOpenDialog(false)}
+          comp_id={compID}
+          isOpenDialog={isOpenDialog}
+        />
+      )}
       <div className="row">
         <div className="col-md-6">
           <h6 className="btn-one-line">Список активных компаний</h6>
@@ -103,26 +109,27 @@ const CompanyList = ({ history }) => {
               <tr>
                 <th style={{ width: "30%" }}>Название Компании</th>
                 <th style={{ width: "10%", textAlign: "center" }}>Статус</th>
-                <th style={{ width: "12%", textAlign: "center" }}>ID компании</th>
+                <th style={{ width: "12%" }}>ID компании</th>
+                <th style={{ width: "16%", textAlign: "center" }}>БИН</th>
                 <th style={{ width: "16%" }}></th>
                 <th style={{ width: "16%" }}></th>
                 <th style={{ width: "16%" }}></th>
               </tr>
             </thead>
             <tbody>
-              {companies.map(company => (
+              {companies.map((company) => (
                 <tr key={company.id}>
-
                   <td>{company.name}</td>
                   <td
                     style={{
                       textAlign: "center",
-                      color: company.status === "ACTIVE" ? "green" : "red"
+                      color: company.status === "ACTIVE" ? "green" : "red",
                     }}
                   >
                     {company.status}
                   </td>
                   <td style={{ textAlign: "center" }}>{company.id}</td>
+                  <td style={{ textAlign: "center" }}>{company.bin}</td>
                   <td className="text-right">
                     <button
                       className="btn btn-info btn-sm btn-block"
@@ -133,20 +140,19 @@ const CompanyList = ({ history }) => {
                       key={company.id}
                     >
                       Подробно
-                      </button>
+                    </button>
                   </td>
                   <td className="text-right">
-
                     <button
                       className="btn btn-warning btn-sm btn-block"
                       disabled={updating ? true : false}
                       onClick={() => {
-                        handleClick(company.id)
+                        handleClick(company.id);
                       }}
                       key={company.id}
                     >
                       Сбросить пароль
-                      </button>
+                    </button>
                   </td>
                   <td className="text-right">
                     <button
