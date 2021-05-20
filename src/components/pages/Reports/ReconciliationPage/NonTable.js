@@ -16,7 +16,9 @@ import LastPageIcon from "@material-ui/icons/LastPage";
 import TablePagination from "@material-ui/core/TablePagination";
 import "moment/locale/ru";
 import PropTypes from "prop-types";
-
+import Grid from "@material-ui/core/Grid";
+import Axios from "axios";
+import ErrorAlert from "../../../ReusableComponents/ErrorAlert";
 Moment.locale("ru");
 
 
@@ -105,6 +107,7 @@ export default function NonTable({ products }) {
     const [page, setPage] = useState(0);
     const [rowsPerPage, setRowsPerPage] = useState(10);
     const [prods, setProds] = useState([]);
+    const [isLoading, setLoading] = useState(false);
 
     useEffect(() => {
         let arr = [];
@@ -137,6 +140,30 @@ export default function NonTable({ products }) {
         setRowsPerPage(+event.target.value);
         setPage(0);
     }
+
+    const getNoneExcel = () => {
+        setLoading(true);
+        Axios({
+          method: "POST",
+          url: "/api/reconciliation/none_toexcel",
+          data: { prods },
+          responseType: "blob",
+        })
+          .then((res) => res.data)
+          .then((res) => {
+            const url = window.URL.createObjectURL(new Blob([res]));
+            const link = document.createElement("a");
+            link.href = url;
+            link.setAttribute("download", `Не прошедшие сверку.xlsx`);
+            document.body.appendChild(link);
+            link.click();
+            setLoading(false);
+          })
+          .catch((err) => {
+            ErrorAlert(err);
+            setLoading(false);
+          });
+      };
 
     return (
         <Fragment>
@@ -185,6 +212,14 @@ export default function NonTable({ products }) {
                 onChangeRowsPerPage={handleChangeRowsPerPage}
                 ActionsComponent={TablePaginationActions}
             />
+                <Grid item xs={12} style={{ paddingTop: "10px" }}>
+                    <button
+                        className="btn btn-sm btn-outline-success"
+                        onClick={getNoneExcel}
+                    >
+                        Выгрузить в Excel
+                    </button>
+                </Grid>
         </Fragment>
     );
 }

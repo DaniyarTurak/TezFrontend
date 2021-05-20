@@ -13,6 +13,11 @@ import ReconciliationTable from './ReconciliationTable';
 import PublishIcon from '@material-ui/icons/Publish';
 import { Progress } from "reactstrap";
 import CompareTable from "./CompareTable";
+import ReactModal from "react-modal";
+import NonTable from '../../Reports/ReconciliationPage/NonTable';
+import IconButton from '@material-ui/core/IconButton';
+import CloseIcon from '@material-ui/icons/Close';
+
 Moment.locale("ru");
 const CryptoJS = require("crypto-js");
 
@@ -29,7 +34,7 @@ const CreateButton = withStyles((theme) => ({
   },
 }))(Button);
 
-const CompareButton = withStyles((theme) => ({
+const ExecuteButton = withStyles((theme) => ({
   root: {
     color: "white",
     border: "1px solid #28a745",
@@ -37,6 +42,19 @@ const CompareButton = withStyles((theme) => ({
     '&:hover': {
       border: "1px solid #28a745",
       color: "#28a745",
+      backgroundColor: "transparent",
+    },
+  },
+}))(Button);
+
+const CheckButton = withStyles((theme) => ({
+  root: {
+    color: "white",
+    border: "1px solid #17a2b8",
+    backgroundColor: "#17a2b8",
+    '&:hover': {
+      border: "1px solid #17a2b8",
+      color: "#17a2b8",
       backgroundColor: "transparent",
     },
   },
@@ -56,6 +74,22 @@ const BorderLinearProgress = withStyles((theme) => ({
   },
 }))(LinearProgress);
 
+
+const customStyles = {
+  content: {
+    top: "50%",
+    left: "50%",
+    right: "auto",
+    bottom: "auto",
+    marginRight: "-50%",
+    transform: "translate(-50%, -50%)",
+    maxWidth: "800px",
+    maxHeight: "700px",
+    overlfow: "scroll",
+    zIndex: 11,
+  },
+  overlay: { zIndex: 10 },
+};
 
 export default function ReconciliationPage() {
 
@@ -94,10 +128,12 @@ export default function ReconciliationPage() {
   const [loaded, setLoaded] = useState(0);
   const [summData, setSummData] = useState({});
   const [summDataResult, setSummDataResults] = useState([]);
+  const [summDataNone, setSummDataNone] = useState([]);
   const [textData, setTextData] = useState("");
   const [user, setUser] = useState("");
   const [newRecon, setNewRecon] = useState(false);
-
+  const [checkedProds, setCheckedProds] = useState([]);
+  const [modalIsOpen, setModalOpen] = useState(false);
 
   useEffect(() => {
     getPoints();
@@ -260,7 +296,8 @@ export default function ReconciliationPage() {
           });
       })
       .catch((err) => {
-        ErrorAlert(err);
+        ErrorAlert("Возникла ошибка при автоматической загрузке файла для ТСД. Загрузите файл для ТСД вручную.");
+        getReconciliation();
         setLoading(false);
         setReconAllowed(true);
       });
@@ -279,7 +316,7 @@ export default function ReconciliationPage() {
   };
 
   //творится магия и текстовый файл превращается в массив объектов
-  const fetchFile = () => {
+  const fetchFile = (param) => {
     if (textData) {
       let arr = textData.split('\n');
       let arr2 = [];
@@ -300,7 +337,7 @@ export default function ReconciliationPage() {
         let obj = JSON.parse(code + units);
         arr3.push(obj);
       });
-      uploadData(arr3);
+      uploadData(arr3, param);
     }
     else {
       ErrorAlert("Выберите файл")
@@ -308,15 +345,18 @@ export default function ReconciliationPage() {
   };
 
   //загрузка данных из ТСД в базу
-  const uploadData = (products) => {
+  const uploadData = (products, param) => {
     const reqdata = {
       id: reconciliations[0].id,
       in_data: products
     }
     Axios.post("/api/reconciliation/upload", reqdata)
       .then((result) => {
-        if (result.statusText === "OK") {
+        if (result.statusText === "OK" && param === "execute") {
           executeReconciliation();
+        }
+        if (result.statusText === "OK" && param === "check") {
+          checkReconciliation();
         }
       })
       .catch((err) => {
@@ -342,6 +382,7 @@ export default function ReconciliationPage() {
         decryptName(result.data.user_name);
         setSummData(result.data);
         setSummDataResults(result.data.result);
+        setSummDataNone(result.data.none)
         setNewRecon(true);
       })
       .catch((err) => {
@@ -390,8 +431,47 @@ export default function ReconciliationPage() {
       });
   };
 
+  const checkReconciliation = () => {
+    let reqdata = { id: reconciliations[0].id }
+    Axios.post("/api/reconciliation/check", reqdata)
+      .then((result) => {
+        if (result.data.none && result.data.none.length > 0) {
+          setCheckedProds(result.data.none);
+          setModalOpen(true);
+        }
+      })
+      .catch((err) => {
+        Alert.error(
+          err.response.data.code === "internal_error"
+            ? this.state.alert.raiseError
+            : err.response.data.text,
+          {
+            position: "top-right",
+            effect: "bouncyflip",
+            timeout: 2000,
+          }
+        );
+      });
+  };
+
   return (
     <Fragment>
+      <ReactModal
+        style={customStyles}
+        onRequestClose={() => { setModalOpen(false) }}
+        isOpen={modalIsOpen}>
+        <Grid container>
+          <Grid item xs={11}>
+            <span>Список товаров не прошедших сверку</span>
+          </Grid>
+          <Grid item xs={1}>
+            <IconButton onClick={() => { setModalOpen(false) }}>
+              <CloseIcon />
+            </IconButton>
+          </Grid>
+        </Grid>
+        <NonTable style={{ paddingTop: "10px" }} products={checkedProds} />
+      </ReactModal>
       <Grid item xs={12}>
         Выберите торговую точку
       </Grid>
@@ -469,18 +549,22 @@ export default function ReconciliationPage() {
               justify="center"
               alignItems="center"
             >
-              <CompareButton
-                onClick={fetchFile}
+              <ExecuteButton
+                onClick={() => fetchFile("execute")}
               >
-                <PublishIcon size="small" /> &nbsp;
-                Загрузить данные из ТСД
-              </CompareButton>
+                Выполнить сверку
+              </ExecuteButton>
+              &emsp;
+              <CheckButton
+                onClick={() => fetchFile("check")}
+              >
+                Показать оставшиеся товары
+              </CheckButton>
             </Grid>
           </Grid>
-
         </Fragment>
       }
-      {summDataResult.length !== 0 &&
+      {summDataResult.length !== 0 || summDataNone.length !== 0 &&
         <Fragment>
           <Grid item xs={4}>
             Дата начала: {summData.begin_date}
@@ -494,16 +578,17 @@ export default function ReconciliationPage() {
           <Grid item xs={12} style={{ paddingTop: "15px" }}>
             <CompareTable products={summDataResult} none={summData.none} />
           </Grid>
-          <Grid item xs={12}>
-            <button
-              className="btn btn-sm btn-outline-success"
-              onClick={getReconciliationExcel}
-            >
-              Выгрузить в Excel
-        </button>
-          </Grid>
+          {summDataResult.length !== 0 &&
+            <Grid item xs={12} style={{ paddingTop: "10px" }}>
+              <button
+                className="btn btn-sm btn-outline-success"
+                onClick={getReconciliationExcel}
+              >
+                Выгрузить в Excel
+            </button>
+            </Grid>}
         </Fragment>
       }
-    </Fragment>
+    </Fragment >
   );
 }

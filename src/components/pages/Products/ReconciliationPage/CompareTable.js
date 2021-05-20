@@ -178,14 +178,14 @@ export default function CompareTable({ products, none }) {
 
     return (
         < Fragment >
-            { prods.length === 0 &&
+            {/* { prods.length === 0 &&
                 <TableSkeleton />
+            } */}
+            {none.length > 0 &&
+                <NonAlert products={none} />
             }
             { prods.length > 0 &&
                 <Fragment>
-                    {none.length > 0 &&
-                        <NonAlert products={none} />
-                    }
                     < Grid item xs={12}>
                         <FormControlLabel
                             control={<MyCheckbox checked={showDiff} onChange={filtering} name="checkedG" />}
