@@ -580,11 +580,17 @@ export default function ManageInvoice({ location, history }) {
                       <br />
                       {product.attrs_json !== null &&
                         product.attrs_json.map((e, indx) => {
-                          return (
-                            <tr className="hint" key={indx}>
-                              {e.name}: {e.value},
-                            </tr>
-                          );
+                          {
+                            if (e.code === null) {
+                              [];
+                            } else {
+                              return (
+                                <tr className="hint" key={indx}>
+                                  {e.name}: {e.value},
+                                </tr>
+                              );
+                            }
+                          }
                         })}
                     </td>
                     <td className="text-center">{product.code}</td>
