@@ -459,7 +459,6 @@ export default function ReportInvoiceHistory({ companyProps, parameters }) {
         products={products}
         isLoadingProducts={isLoadingProducts}
       />
-
       {isLoading && (
         <Grid item xs={12}>
           <SkeletonTable />

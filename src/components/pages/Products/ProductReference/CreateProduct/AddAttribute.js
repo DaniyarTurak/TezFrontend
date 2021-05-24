@@ -243,14 +243,19 @@ export default function AddAttribute({
   return (
     <Fragment>
       <Grid container direction="row" justify="center" alignItems="center">
-        <Grid item xs={3}>
+        <Grid item xs={4}>
           <label htmlFor="">Партийные характеристики</label>
         </Grid>
       </Grid>
-      <Grid container justify="center">
+      <Grid
+        container
+        direction="row"
+        justify="center"
+        alignItems="center"
+        spacing={3}
+      >
         <Grid item xs={4}>
           <Select
-            className="col-md-12"
             value={attrName}
             onChange={onAttrNameChange}
             options={optionsToRender}
@@ -258,7 +263,14 @@ export default function AddAttribute({
             noOptionsMessage={() => "Характеристики не найдены"}
           />
         </Grid>
-        <Grid item xs={4}>
+        <Grid
+          item
+          xs={4}
+          container
+          direction="row"
+          justify="flex-start"
+          alignItems="flex-start"
+        >
           <button
             type="button"
             className="btn btn-outline-info"

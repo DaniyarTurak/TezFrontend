@@ -140,18 +140,6 @@ export default function AddAttribute({
     setOptionsToRenderSpr(optionsToRenderSprChanged);
   };
 
-  // const onAttrValueChange = (e) => {
-  //   const attrValueChanged =
-  //     optionsToRenderSpr.length > 0 ? e.value : e.target.value;
-  //   const attrValueSprChanged = optionsToRenderSpr.length > 0 ? e : "";
-
-  //   if (selectedAttrType === "DATE" && attrValueChanged.indexOf("-") === 5)
-  //     return;
-
-  //   setAttrValue(attrValueChanged);
-  //   setAttrValueSpr(attrValueSprChanged);
-  // };
-
   const handleAdd = () => {
     if (Object.keys(attrName).length === 0) {
       {

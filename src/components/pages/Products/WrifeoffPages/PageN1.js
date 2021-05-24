@@ -6,8 +6,8 @@ import ReactModal from "react-modal";
 import Searching from "../../../Searching";
 import ErrorAlert from "../../../ReusableComponents/ErrorAlert";
 import { withStyles } from "@material-ui/core/styles";
-import Button from '@material-ui/core/Button';
-import Characteristics from './Characteristics';
+import Button from "@material-ui/core/Button";
+import Characteristics from "./Characteristics";
 import Grid from "@material-ui/core/Grid";
 
 const customStyles = {
@@ -29,7 +29,7 @@ const CancelButton = withStyles((theme) => ({
   root: {
     color: "black",
     backgroundColor: "#DCDCDC",
-    '&:hover': {
+    "&:hover": {
       backgroundColor: "#D3D3D3",
     },
   },
@@ -63,6 +63,7 @@ export default function PageN1({ stockFrom, invoicenumber, productListProps }) {
     })
       .then((res) => res.data)
       .then((res) => {
+        console.log(res);
         setProductList(res);
         setLoading(false);
         productListProps(res);
@@ -138,7 +139,7 @@ export default function PageN1({ stockFrom, invoicenumber, productListProps }) {
           } else {
             setProdName(res[0].name);
             let arr = [];
-            res.forEach(element => {
+            res.forEach((element) => {
               if (parseInt(element.units) > 0) {
                 arr.push(element);
               }
@@ -146,8 +147,7 @@ export default function PageN1({ stockFrom, invoicenumber, productListProps }) {
             if (arr.length !== 0) {
               setProducts(arr);
               setModalOpen(true);
-            }
-            else {
+            } else {
               ErrorAlert("Товар отсутсвует на складе");
             }
           }
@@ -220,6 +220,7 @@ export default function PageN1({ stockFrom, invoicenumber, productListProps }) {
         .then((res) => res.data)
         .then((res) => {
           setDetail(res);
+          console.log(res);
         })
         .catch((err) => {
           ErrorAlert(err);
@@ -236,10 +237,10 @@ export default function PageN1({ stockFrom, invoicenumber, productListProps }) {
         !productSelectValue.value
           ? "Выберите товар"
           : !writeoffAmount
-            ? "Внесите количество для списания"
-            : !writeoffReason
-              ? "Внесите причину для списания"
-              : "",
+          ? "Внесите количество для списания"
+          : !writeoffReason
+          ? "Внесите причину для списания"
+          : "",
         {
           position: "top-right",
           effect: "bouncyflip",
@@ -340,12 +341,11 @@ export default function PageN1({ stockFrom, invoicenumber, productListProps }) {
   const onAmountChange = (e) => {
     let amount = isNaN(e.target.value) ? 0 : e.target.value;
     if (amount > detail.units) {
-      setAmountExceeds(true)
-      setWriteoffAmount(amount)
-    }
-    else {
-      setAmountExceeds(false)
-      setWriteoffAmount(amount)
+      setAmountExceeds(true);
+      setWriteoffAmount(amount);
+    } else {
+      setAmountExceeds(false);
+      setWriteoffAmount(amount);
     }
   };
 
@@ -354,17 +354,26 @@ export default function PageN1({ stockFrom, invoicenumber, productListProps }) {
       <ReactModal isOpen={modalIsOpen} style={customStyles}>
         <Grid container spacing={3}>
           <Grid item xs={12}>
-            <Characteristics products={products} prodName={prodName} selectAttribute={selectAttribute} />
+            <Characteristics
+              products={products}
+              prodName={prodName}
+              selectAttribute={selectAttribute}
+            />
           </Grid>
           <Grid item xs={12}>
             <Grid
               container
               direction="row"
               justify="flex-end"
-              alignItems="center">
-              <CancelButton onClick={() => { setModalOpen(false); }}>
+              alignItems="center"
+            >
+              <CancelButton
+                onClick={() => {
+                  setModalOpen(false);
+                }}
+              >
                 Отмена
-            </CancelButton>
+              </CancelButton>
             </Grid>
           </Grid>
         </Grid>
@@ -404,10 +413,11 @@ export default function PageN1({ stockFrom, invoicenumber, productListProps }) {
               {Object.keys(detail).length > 0 && (
                 <Fragment>
                   <span className="input-group-text">
-                    {`${detail.units === 0
-                      ? "Товар на складе отсутствует"
-                      : "Товаров на складе: "
-                      } ${detail.units}`}
+                    {`${
+                      detail.units === 0
+                        ? "Товар на складе отсутствует"
+                        : "Товаров на складе: "
+                    } ${detail.units}`}
                   </span>
                   <span className="input-group-text">
                     {`Цена на складе: ${detail.price}`}

@@ -1302,6 +1302,14 @@ let AddProductForm = ({
                   clearBoard={clearBoard}
                   attributeCode={getAttributeCode}
                 />
+                <Alert severity="info" style={{ marginTop: 10 }}>
+                  <AlertTitle>
+                    <strong>Внимание!</strong>
+                  </AlertTitle>
+                  Что бы добавить атрибут на товар перейдите в раздел
+                  "Номенклатура", выберите товар и нажмите "редактировать". В
+                  поле "Партийные характеристики" добавьте атрибуты.
+                </Alert>
               </div>
             </div>
           </div>
