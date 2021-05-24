@@ -61,6 +61,7 @@ export default function ProductReference() {
     if (pB.length > 0) {
       getProductByBarcode(pB);
       setProductBarcode(pB);
+      console.log(pB);
       return;
     } else if (pB.length === 0) {
       setProductBarcode("");

@@ -1,8 +1,6 @@
 import React, { useState, useEffect, Fragment } from "react";
 import Select from "react-select";
 import Axios from "axios";
-import Alert from "react-s-alert";
-import ErrorAlert from "../../../ReusableComponents/ErrorAlert";
 
 export default function AddAttribute({
   clearBoard,
@@ -142,8 +140,11 @@ export default function AddAttribute({
     <Fragment>
       <div
         className="row justify-content-center"
-        style={{ marginBottom: -10 }}
+        style={{ marginBottom: 10 }}
       ></div>
+      {/* <div className="col-md-3">
+              <label htmlFor="">Дополнительная информация</label>
+            </div> */}
       {readyOpt.length > 0 &&
         readyOpt.map((attribute, idx) => {
           return (

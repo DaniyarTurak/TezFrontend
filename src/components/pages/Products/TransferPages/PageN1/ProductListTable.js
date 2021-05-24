@@ -27,11 +27,6 @@ const StyledTableCell = withStyles((theme) => ({
 }))(TableCell);
 
 export default function ProductListTable({ productList, removeProduct }) {
-
-  useEffect(() => {
-    console.log(productList);
-  }, [productList]);
-
   return (
     <Fragment>
       <div className="empty-space"></div>
@@ -40,7 +35,7 @@ export default function ProductListTable({ productList, removeProduct }) {
         <Table>
           <TableHead>
             <TableRow>
-              <StyledTableCell align="center" >Продукт</StyledTableCell>
+              <StyledTableCell align="center">Продукт</StyledTableCell>
               <StyledTableCell align="center">Штрих код</StyledTableCell>
               <StyledTableCell align="center">Новая цена</StyledTableCell>
               <StyledTableCell align="center">Количество</StyledTableCell>
@@ -95,7 +90,7 @@ export default function ProductListTable({ productList, removeProduct }) {
               </StyledTableCell>
               <StyledTableCell align="center">
                 {productList.reduce((prev, cur) => {
-                  return prev + parseFloat(cur.price);
+                  return prev + parseFloat(cur.amount * cur.price);
                 }, 0)}
               </StyledTableCell>
               <StyledTableCell />

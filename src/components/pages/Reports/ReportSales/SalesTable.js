@@ -129,7 +129,6 @@ export default function SalesTable({
   point,
   sales,
 }) {
-
   const [page, setPage] = React.useState(0);
   const [rowsPerPage, setRowsPerPage] = React.useState(10);
   const [isLoading, setLoading] = useState(false);
@@ -148,7 +147,7 @@ export default function SalesTable({
     setLoading(true);
     let date = `Продажи (${point.label}) с ${Moment(dateFrom).format(
       "DD.MM.YYYY"
-    )} по ${Moment(dateTo).format("DD.MM.YYYY")}`
+    )} по ${Moment(dateTo).format("DD.MM.YYYY")}`;
     Axios({
       method: "POST",
       url: "/api/report/sales/prods_excel",
@@ -386,7 +385,9 @@ export default function SalesTable({
                     >
                       {product.type}
                     </StyledTableCell>
-                    <StyledTableCell align="center">{Moment(product.sell_date).format('lll')}</StyledTableCell>
+                    <StyledTableCell align="center">
+                      {Moment(product.sell_date).format("lll")}
+                    </StyledTableCell>
                     <StyledTableCell>{product.name}</StyledTableCell>
                     <StyledTableCell align="center" className="tenge">
                       {parseFloat(product.price_discount).toLocaleString("ru", {
@@ -394,9 +395,10 @@ export default function SalesTable({
                       })}
                     </StyledTableCell>
                     <StyledTableCell align="center" className="tenge">
-                      {parseFloat(
-                        product.price_discount_bonus
-                      ).toLocaleString("ru", { minimumFractionDigits: 2 })}
+                      {parseFloat(product.price_discount_bonus).toLocaleString(
+                        "ru",
+                        { minimumFractionDigits: 2 }
+                      )}
                     </StyledTableCell>
                     {handleGrouping && grouping && (
                       <StyledTableCell align="center" className="tax">
@@ -435,6 +437,7 @@ export default function SalesTable({
             <TableFooter>
               <TableRow>
                 <StyledTableCell colSpan="2">Итого</StyledTableCell>
+                <StyledTableCell />
                 <StyledTableCell />
                 <StyledTableCell align="center" className="tenge">
                   {sales

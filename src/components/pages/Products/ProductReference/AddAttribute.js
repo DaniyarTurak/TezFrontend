@@ -10,7 +10,6 @@ export default function AddAttribute({
   clearBoard,
   selected,
   attributeCode,
-  attrListProps,
   isEditing,
   editProduct,
 }) {
@@ -82,7 +81,6 @@ export default function AddAttribute({
       };
       attrListChanged.push(field);
       setOldAttributes(attrListChanged);
-      attrListProps(attrListChanged);
       setAttrListCode(fields[2]);
       setAttrList(attrListChanged);
     });
@@ -142,18 +140,6 @@ export default function AddAttribute({
     setOptionsToRenderSpr(optionsToRenderSprChanged);
   };
 
-  // const onAttrValueChange = (e) => {
-  //   const attrValueChanged =
-  //     optionsToRenderSpr.length > 0 ? e.value : e.target.value;
-  //   const attrValueSprChanged = optionsToRenderSpr.length > 0 ? e : "";
-
-  //   if (selectedAttrType === "DATE" && attrValueChanged.indexOf("-") === 5)
-  //     return;
-
-  //   setAttrValue(attrValueChanged);
-  //   setAttrValueSpr(attrValueSprChanged);
-  // };
-
   const handleAdd = () => {
     if (Object.keys(attrName).length === 0) {
       {
@@ -199,8 +185,6 @@ export default function AddAttribute({
       .then((result) => {
         setAttrListCode(result.text);
         attributeCode(result.text);
-        attrListProps(attrListChanged);
-        setAttrList(attrListChanged);
         setAttrValue("");
         setAttrName("");
         setAttrValueSpr("");
@@ -222,7 +206,6 @@ export default function AddAttribute({
 
     Axios.post("/api/attributes/delete", req)
       .then(() => {
-        attrListProps(newList);
         if (attrList.length === 0) {
           attributeCode("0");
         }
