@@ -5,8 +5,6 @@ import AlertBox from "../../AlertBox";
 import Alert from "react-s-alert";
 import Searching from "../../Searching";
 import ResetPasswordPage from "../AdminPages/ResetPasswordPage";
-import TextField from "@material-ui/core/TextField";
-import Autocomplete from "@material-ui/lab/Autocomplete";
 
 const CompanyList = ({ history }) => {
   const [companies, setCompanies] = useState([]);

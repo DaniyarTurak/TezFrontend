@@ -81,6 +81,7 @@ export default function EditProduct({
   setReference,
   getBarcodeProps,
   setErrorMessage,
+  capations,
 }) {
   const classes = useStyles();
   const [editingName, setEditingName] = useState(true);
@@ -96,6 +97,7 @@ export default function EditProduct({
   const [attributeGlobCode, setAttributeGlobCode] = useState("");
   const [editProductAttr] = useState("");
   const [clearBoard, setClearBoard] = useState(false);
+  const [attributes, setAttributes] = useState([]);
 
   const getAttributeCharCode = (attributeCodeChanged) => {
     setAttributeGlobCode(attributeCodeChanged);
@@ -129,6 +131,7 @@ export default function EditProduct({
         ? editProductAttr.attributes
         : attributeCode,
       delete: "",
+      attributesValue: attributes,
     };
     Axios.post("/api/products/update", {
       product,
@@ -486,6 +489,9 @@ export default function EditProduct({
                     selected={selectedAttribute}
                     clearBoard={clearBoard}
                     attributeCode={getAttributeCode}
+                    capations={capations}
+                    setAttributes={setAttributes}
+                    attributes={attributes}
                   />
                 )}
               </TableCell>

@@ -24,6 +24,7 @@ export default function ProductReference() {
   const [productBarcode, setProductBarcode] = useState("");
   const [productSelectValue, setProductSelectValue] = useState("");
   const [productOptions, setProductOptions] = useState([]);
+  const [capations, setCapations] = useState([]);
 
   useEffect(() => {
     if (productSelectValue.label) {
@@ -80,6 +81,7 @@ export default function ProductReference() {
       .then((res) => res.data)
       .then((res) => {
         setReference(res);
+        setCapations(res.attributescaption);
       })
       .catch((err) => {
         console.log(err);
@@ -179,6 +181,7 @@ export default function ProductReference() {
                     getBarcodeProps={getProductByBarcode}
                     setReference={setReference}
                     getProductByBarcode={getProductByBarcode}
+                    capations={capations}
                   />
                 )}
                 {productList === "UpdateCategoryPage" && <UpdateCategoryPage />}

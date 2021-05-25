@@ -5,6 +5,9 @@ import Alert from "react-s-alert";
 import ErrorAlert from "../../../ReusableComponents/ErrorAlert";
 import Moment from "moment";
 import Grid from "@material-ui/core/Grid";
+import Button from "@material-ui/core/Button";
+import InfoIcon from "@material-ui/icons/Info";
+import Tooltip from "@material-ui/core/Tooltip";
 
 export default function AddAttribute({
   clearBoard,
@@ -12,6 +15,9 @@ export default function AddAttribute({
   attributeCode,
   isEditing,
   editProduct,
+  capations,
+  setAttributes,
+  attributes,
 }) {
   const [attrList, setAttrList] = useState([]);
   const [attrListCode, setAttrListCode] = useState(null);
@@ -25,15 +31,31 @@ export default function AddAttribute({
   const [selectedAttrType, setSelectedAttrType] = useState("TEXT");
   const [oldAttributes, setOldAttributes] = useState([]);
   const [isClear, setClear] = useState(false);
-  const [date, setDate] = useState(Moment().format("YYYY-MM-DD"));
+  const [date] = useState(Moment().format("YYYY-MM-DD"));
 
   useEffect(() => {
     getAttributes();
   }, []);
 
   useEffect(() => {
+    postAttributes(attrList);
+  }, []);
+
+  useEffect(() => {
     clear();
   }, [clearBoard]);
+
+  const getOldAttributes = () => {
+    let arr = [];
+    capations.forEach((element) => {
+      arr.push({
+        value: element.attribute_value,
+        name: element.attribute_name,
+        code: element.attribute_id,
+      });
+    });
+    setAttrList(arr);
+  };
 
   useEffect(() => {
     if (selected.length > 0) {
@@ -50,6 +72,7 @@ export default function AddAttribute({
       setAttrList([]);
       setAttrListCode(null);
       setHidden(false);
+      getOldAttributes();
     }
   }, [selected]);
 
@@ -139,7 +162,6 @@ export default function AddAttribute({
     setAttrValueSpr("");
     setOptionsToRenderSpr(optionsToRenderSprChanged);
   };
-
   const handleAdd = () => {
     if (Object.keys(attrName).length === 0) {
       {
@@ -177,10 +199,13 @@ export default function AddAttribute({
       code: attrName.value,
     });
     postAttributes(attrListChanged, reqbody);
+    setAttributes(attrListChanged, reqbody);
   };
 
   const postAttributes = (attrListChanged, reqbody) => {
+    console.log(reqbody);
     Axios.post("/api/attributes/add", reqbody)
+
       .then((res) => res.data)
       .then((result) => {
         setAttrListCode(result.text);
@@ -231,7 +256,7 @@ export default function AddAttribute({
         direction="row"
         justify="flex-start"
         alignItems="center"
-        spacing={3}
+        spacing={2}
       >
         <Grid item xs={5}>
           <Select
@@ -251,6 +276,15 @@ export default function AddAttribute({
             Добавить атрибут
           </button>
         </Grid>
+        <Grid>
+          <Tooltip title={<h6>Добавьте все нужные атрибуты</h6>}>
+            <span>
+              <Button disabled>
+                <InfoIcon color="primary" fontSize="large" />
+              </Button>
+            </span>
+          </Tooltip>
+        </Grid>
       </Grid>
       {attrList.length > 0 && (
         <div className="row justify-content-left mt-8">
@@ -262,7 +296,6 @@ export default function AddAttribute({
                   <th />
                 </tr>
               </thead>
-
               <tbody>
                 {attrList.map((attr) => (
                   <tr key={attr.name}>
