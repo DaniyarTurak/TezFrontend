@@ -1,9 +1,14 @@
 import React, { Component, Fragment } from "react";
 import { NavLink } from "react-router-dom";
 import Axios from "axios";
-import topics from "../../data/sidebar";
+// import topics from "../../data/sidebar";
+
+import topics_norecon from "../../data/sidebar";
+import topics_recon from "../../data/sidebar_recon";
 import rules from "../../rbacRules";
 import Navigation from "./Navigation";
+
+
 
 const ConvertRoles = (roles) => {
   try {
@@ -54,8 +59,18 @@ const ConvertRoles = (roles) => {
     return roles;
   }
 };
-
+let topics = topics_recon;
 class CabinetSideBar extends Component {
+
+  test = () => {
+    const companies_recon = [38, 56, 57, 68, 69, 81, 78, 98, 231, 241, 269, 96, 2];
+    const comp_id = parseInt(JSON.parse(sessionStorage.getItem("isme-company-data")).id) ?
+      parseInt(JSON.parse(sessionStorage.getItem("isme-company-data")).id) : 0;
+    if (!companies_recon.includes(comp_id)) {
+      topics = topics_norecon;
+    }
+  }
+
   state = {
     user: JSON.parse(sessionStorage.getItem("isme-user-data")) || null,
     accessBars: {},
@@ -63,6 +78,7 @@ class CabinetSideBar extends Component {
   };
 
   componentWillMount() {
+    // this.test();
     document.body.setAttribute("style", "background-color:#f4f4f4 !important");
     Axios.get("/api/erpuser/info")
       .then((res) => res.data)
@@ -132,6 +148,7 @@ class CabinetSideBar extends Component {
   changeReportMode = (e) => {
     this.setState({ reportMode: e });
   };
+
   render() {
     const { newsLoaded } = this.props;
     const { reportMode } = this.state;
@@ -160,67 +177,65 @@ class CabinetSideBar extends Component {
             {topics.map((topic) =>
               !topic.group
                 ? this.Can(
-                    topic.route.substr(
-                      0,
-                      topic.route.indexOf("/") !== -1
-                        ? topic.route.indexOf("/")
-                        : topic.route.length
-                    )
-                  ) && (
-                    <NavLink
-                      key={topic.id}
-                      activeClassName="nav-active"
-                      to={`/usercabinet/${topic.route}`}
-                    >
-                      <li>{topic.name}</li>
-                    </NavLink>
+                  topic.route.substr(
+                    0,
+                    topic.route.indexOf("/") !== -1
+                      ? topic.route.indexOf("/")
+                      : topic.route.length
                   )
+                ) && (
+                  <NavLink
+                    key={topic.id}
+                    activeClassName="nav-active"
+                    to={`/usercabinet/${topic.route}`}
+                  >
+                    <li>{topic.name}</li>
+                  </NavLink>
+                )
                 : this.Can(
-                    topic.group[0].route.substr(
-                      0,
-                      topic.group[0].route.indexOf("/") !== -1
-                        ? topic.group[0].route.indexOf("/")
-                        : topic.group[0].route.length
-                    )
-                  ) && (
-                    <Fragment key={topic.id}>
-                      <li
-                        className="group-tab"
-                        onClick={() => this.showTab(topic.id)}
-                      >
-                        {topic.groupName}
-                        <i
-                          className={`${
-                            topic.status === "active" ? "up" : "down"
-                          }`}
-                        ></i>
-                      </li>
-                      <ul
-                        className={`subgroups-container ${
-                          topic.status === "active" ? "slide-down" : "slide-up"
-                        }`}
-                      >
-                        {topic.group.map(
-                          (subgroup, ind) =>
-                            this.Can(
-                              subgroup.route.substr(
-                                subgroup.route.indexOf("/") + 1
-                              )
-                            ) && (
-                              //если путь "ревизия" он будет в неё же и обращаться, иначе будет пробовать зайти в "/usercabinet/другойпуть"
-                              <Navigation
-                                key={ind}
-                                subgroup={subgroup}
-                                ind={ind}
-                                reportMode={reportMode}
-                                changeReportMode={this.changeReportMode}
-                                newsLoaded={() => newsLoaded()}
-                              />
-                            )
-                        )}
-                      </ul>
-                    </Fragment>
+                  topic.group[0].route.substr(
+                    0,
+                    topic.group[0].route.indexOf("/") !== -1
+                      ? topic.group[0].route.indexOf("/")
+                      : topic.group[0].route.length
                   )
+                ) && (
+                  <Fragment key={topic.id}>
+                    <li
+                      className="group-tab"
+                      onClick={() => this.showTab(topic.id)}
+                    >
+                      {topic.groupName}
+                      <i
+                        className={`${topic.status === "active" ? "up" : "down"
+                          }`}
+                      ></i>
+                    </li>
+                    <ul
+                      className={`subgroups-container ${topic.status === "active" ? "slide-down" : "slide-up"
+                        }`}
+                    >
+                      {topic.group.map(
+                        (subgroup, ind) =>
+                          this.Can(
+                            subgroup.route.substr(
+                              subgroup.route.indexOf("/") + 1
+                            )
+                          ) && (
+                            //если путь "ревизия" он будет в неё же и обращаться, иначе будет пробовать зайти в "/usercabinet/другойпуть"
+                            <Navigation
+                              key={ind}
+                              subgroup={subgroup}
+                              ind={ind}
+                              reportMode={reportMode}
+                              changeReportMode={this.changeReportMode}
+                              newsLoaded={() => newsLoaded()}
+                            />
+                          )
+                      )}
+                    </ul>
+                  </Fragment>
+                )
             )}
 
             {this.Can("esf") && (

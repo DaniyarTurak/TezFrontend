@@ -70,6 +70,8 @@ export default function getBody({
   history,
   location,
 }) {
+  // const companies_recon = [38, 56, 57, 68, 69, 81, 78, 98, 231, 241, 269, 96, 2];
+  // const comp_id = parseInt(JSON.parse(sessionStorage.getItem("isme-company-data")).id);
   if (Can(mode, userRoles, action)) {
     switch (mode) {
       case "general":
@@ -225,8 +227,12 @@ export default function getBody({
             return <PromotionsPage history={history} location={location} />;
           case "marginalpricepage":
             return <MarginalPricePage history={history} location={location} />;
-          case "reconciliationpage":
-            return <ReconciliationPage history={history} location={location} />;
+          case "reconciliationpage": {
+            // if (companies_recon.includes(comp_id)) {
+              return <ReconciliationPage history={history} location={location} />;
+            // }
+            // else { return "" }
+          }
           default:
             return <Products history={history} location={location} />;
           case "productreference":
