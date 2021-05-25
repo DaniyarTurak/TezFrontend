@@ -53,10 +53,8 @@ export default function StockMonitoringPage() {
   const [prodsWithMS, setProdsWithMS] = useState([]);
   const [name, setName] = useState("");
   const [barcode, setBarcode] = useState("");
-  const [prodId, setProdId] = useState("");
   const [minimalStock, setMinimalStock] = useState("");
   const [isSending, setSending] = useState(false);
-  const [selectedProd, setSelectedProd] = useState("");
   const [prodsSelect, setProdsSelect] = useState([]);
   const debouncedName = useDebounce(name, 500);
   const debouncedBarcode = useDebounce(barcode, 500);
@@ -235,7 +233,7 @@ export default function StockMonitoringPage() {
 
   const searchProd = (value) => {
     let arr = [];
-    if (value !== "Все товары") {
+    if (value !== "Все товары" && value !== "") {
       prodsTemp.forEach(prod => {
         if (prod.name === value) {
           arr.push(prod);

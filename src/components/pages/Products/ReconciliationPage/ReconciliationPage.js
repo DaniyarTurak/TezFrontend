@@ -352,10 +352,10 @@ export default function ReconciliationPage() {
     }
     Axios.post("/api/reconciliation/upload", reqdata)
       .then((result) => {
-        if (result.statusText === "OK" && param === "execute") {
+        if (result.data.code === "success" && param === "execute") {
           executeReconciliation();
         }
-        if (result.statusText === "OK" && param === "check") {
+        if (result.data.code === "success" && param === "check") {
           checkReconciliation();
         }
       })

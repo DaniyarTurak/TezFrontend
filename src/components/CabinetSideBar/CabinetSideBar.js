@@ -59,20 +59,16 @@ const ConvertRoles = (roles) => {
     return roles;
   }
 };
-let topics = topics_norecon;
+let topics = topics_recon;
 class CabinetSideBar extends Component {
 
   test = () => {
     const companies_recon = [38, 56, 57, 68, 69, 81, 78, 98, 231, 241, 269, 96, 2];
     const comp_id = parseInt(JSON.parse(sessionStorage.getItem("isme-company-data")).id) ?
       parseInt(JSON.parse(sessionStorage.getItem("isme-company-data")).id) : 0;
-
-    if (companies_recon.includes(comp_id)) {
-      topics = topics_recon;
-    }
-    else {
+    if (!companies_recon.includes(comp_id)) {
       topics = topics_norecon;
-    };
+    }
   }
 
   state = {
