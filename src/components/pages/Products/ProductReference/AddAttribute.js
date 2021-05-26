@@ -43,14 +43,16 @@ export default function AddAttribute({
 
   const getOldAttributes = () => {
     let arr = [];
-    capations.forEach((element) => {
-      arr.push({
-        value: element.attribute_value,
-        name: element.attribute_name,
-        code: element.attribute_id,
+    if (capations.length > 0) {
+      capations.forEach((element) => {
+        arr.push({
+          value: element.attribute_value,
+          name: element.attribute_name,
+          code: element.attribute_id,
+        });
       });
-    });
-    setAttrList(arr);
+      setAttrList(arr);
+    }
   };
 
   useEffect(() => {
@@ -179,29 +181,28 @@ export default function AddAttribute({
         timeout: 2000,
       });
     }
-    const reqbody = {
+    let reqbody = {
       listcode: attrListCode,
       value: attrValue,
       attribcode: attrName.value,
     };
-
     if (reqbody.attribcode === "2") {
       reqbody.value = Moment(date).format("YYYY-MM-DD");
     }
 
     attrListChanged.push({
-      value: attrValue,
+      value:
+        attrName.value === "2" ? Moment(date).format("YYYY-MM-DD") : attrValue,
       name: attrName.label,
       code: attrName.value,
     });
+    console.log(attrListChanged);
     postAttributes(attrListChanged, reqbody);
-    setAttributes(attrListChanged, reqbody);
+    setAttributes(attrListChanged);
   };
 
   const postAttributes = (attrListChanged, reqbody) => {
-    console.log(reqbody);
     Axios.post("/api/attributes/add", reqbody)
-
       .then((res) => res.data)
       .then((result) => {
         setAttrListCode(result.text);
