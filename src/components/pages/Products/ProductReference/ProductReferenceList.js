@@ -36,6 +36,7 @@ export default function ProductReferenceList({
   setReference,
   setProductBarcode,
   getProductReference,
+  capations,
 }) {
   const [isAddingAmount, setAddingAmount] = useState(false);
   const [editProduct, setEditProduct] = useState([]);
@@ -371,6 +372,7 @@ export default function ProductReferenceList({
         setReference={setReference}
         getBarcodeProps={getBarcodeProps}
         setErrorMessage={setErrorMessage}
+        capations={capations}
       />
     </Dialog>
   ) : (

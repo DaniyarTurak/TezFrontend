@@ -415,7 +415,6 @@ export default function CreateProduct({ isEditing }) {
       cnofeacode: cnofeacode,
       attrList,
     };
-    console.log(product);
     Axios.post("/api/products/create", { product })
       .then((res) => {
         clearForm(res);
