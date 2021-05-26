@@ -38,10 +38,6 @@ export default function AddAttribute({
   }, []);
 
   useEffect(() => {
-    postAttributes(attrList);
-  }, []);
-
-  useEffect(() => {
     clear();
   }, [clearBoard]);
 
@@ -236,16 +232,16 @@ export default function AddAttribute({
         }
       })
       .catch((err) => {
-        Alert.error(
-          err.response.data.code === "internal_error"
-            ? "Возникла ошибка при обработке вашего запроса. Мы уже работает над решением. Попробуйте позже"
-            : err.response.data.text,
-          {
-            position: "top-right",
-            effect: "bouncyflip",
-            timeout: 2000,
-          }
-        );
+        // Alert.error(
+        //   err.response.data.code === "internal_error"
+        //     ? "Возникла ошибка при обработке вашего запроса. Мы уже работает над решением. Попробуйте позже"
+        //     : err.response.data.text,
+        //   {
+        //     position: "top-right",
+        //     effect: "bouncyflip",
+        //     timeout: 2000,
+        //   }
+        // );
       });
   };
 
