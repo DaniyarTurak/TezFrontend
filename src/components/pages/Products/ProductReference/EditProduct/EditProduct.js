@@ -99,7 +99,6 @@ export default function EditProduct({
   const [editProductAttr] = useState("");
   const [clearBoard, setClearBoard] = useState(false);
   const [attributes, setAttributes] = useState([]);
-  // const [date] = useState(Moment().format("YYYY-MM-DD"));
 
   const getAttributeCharCode = (attributeCodeChanged) => {
     setAttributeGlobCode(attributeCodeChanged);
@@ -108,15 +107,6 @@ export default function EditProduct({
   const getAttributeCode = (attributeCodeChanged) => {
     setAttributeCode(attributeCodeChanged);
   };
-
-  // const attrValue = () => {
-  //   attributes.forEach((elemenet) => {
-  //     if (elemenet.code === "2") {
-  //       elemenet.value === Moment(date).format("YYYY-MM-DD");
-  //     }
-  //   });
-  //   setAttributes(attributes);
-  // };
 
   const editProdRes = () => {
     let product = {
@@ -488,11 +478,15 @@ export default function EditProduct({
               <TableCell>
                 {editingAttr &&
                   productDetails.attributescaption.map((element) => {
-                    return (
-                      <Typography variant="h7" alingItem="left">
-                        {element.attribute_name},
-                      </Typography>
-                    );
+                    if (productDetails.attributes !== "0") {
+                      return (
+                        <Typography variant="h7" alingItem="left">
+                          {element.attribute_name},
+                        </Typography>
+                      );
+                    } else {
+                      [];
+                    }
                   })}
                 {!editingAttr && (
                   <AddAttribute
