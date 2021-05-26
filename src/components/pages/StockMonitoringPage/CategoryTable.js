@@ -120,23 +120,22 @@ TablePaginationActions.propTypes = {
 };
 //конец пагинации
 
-export default function CategoryTable({ products, getMinimalStock, enabled, setEnabled }) {
+export default function CategoryTable({ categories, getMinimalStock, enabled, setEnabled }) {
 
     const [page, setPage] = useState(0);
     const [rowsPerPage, setRowsPerPage] = useState(10);
-    const [prods, setProds] = useState([]);
-    const [pagEnabled, setPagEnabled] = useState(true);
+    const [categors, setCategors] = useState([]);
     const [isSending, setSending] = useState(false);
 
     useEffect(() => {
-        if (products && products.length !== 0) {
+        if (categories && categories.length !== 0) {
             let arr = [];
-            products.forEach((element, i) => {
+            categories.forEach((element, i) => {
                 arr.push({ ...element, indx: i + 1, editing: false, temp_units: element.units })
             });
-            setProds(arr);
+            setCategors(arr);
         }
-    }, [products]
+    }, [categories]
     );
 
     const StyledTableCell = withStyles((theme) => ({
@@ -164,7 +163,7 @@ export default function CategoryTable({ products, getMinimalStock, enabled, setE
     };
 
     const editMinCount = (idx) => {
-        setProds(prevState => {
+        setCategors(prevState => {
             let obj = prevState[idx];
             obj.editing = !obj.editing;
             return [...prevState];
@@ -173,7 +172,7 @@ export default function CategoryTable({ products, getMinimalStock, enabled, setE
     };
 
     const unitsChange = (value, idx) => {
-        setProds(prevState => {
+        setCategors(prevState => {
             let obj = prevState[idx - 1];
             obj.temp_units = value;
             return [...prevState];
@@ -181,7 +180,7 @@ export default function CategoryTable({ products, getMinimalStock, enabled, setE
     };
 
     const cancelChanges = (idx) => {
-        setProds(prevState => {
+        setCategors(prevState => {
             let obj = prevState[idx];
             obj.temp_units = obj.units;
             obj.editing = false;
@@ -191,21 +190,21 @@ export default function CategoryTable({ products, getMinimalStock, enabled, setE
     };
 
     const saveUnits = (idx) => {
-        let product = {};
-        setProds(prevState => {
+        let category = {};
+        setCategors(prevState => {
             let obj = prevState[idx];
             obj.units = obj.temp_units;
             obj.editing = false;
-            product = { id: obj.id, units: obj.units };
+            category = { id: obj.id, units: obj.units };
             return [...prevState];
         });
-        sendChanges(product);
+        sendChanges(category);
         checkState();
     };
 
-    const sendChanges = (product) => {
+    const sendChanges = (category) => {
         setSending(true);
-        Axios.post("/api/stock/stockm/update", product)
+        Axios.post("/api/stock/stockm/update", category)
             .then((result) => result.data)
             .then((result) => {
                 Alert.success("Минимальный остаток успешно установлен", {
@@ -241,7 +240,7 @@ export default function CategoryTable({ products, getMinimalStock, enabled, setE
 
     const checkState = () => {
         let state = true;
-        prods.forEach(element => {
+        categors.forEach(element => {
             if (element.editing) {
                 state = false;
             }
@@ -249,7 +248,7 @@ export default function CategoryTable({ products, getMinimalStock, enabled, setE
         setEnabled(state);
     };
 
-    const deleteProduct = (id) => {
+    const deleteCategory = (id) => {
         setSending(true);
         Axios.post("/api/stock/stockm/delete", { id: id })
             .then((result) => result.data)
@@ -289,21 +288,18 @@ export default function CategoryTable({ products, getMinimalStock, enabled, setE
     return (
         <Fragment>
             <Grid item xs={12}>
-                {prods.length === 0 &&
+                {categors.length === 0 &&
                     <TableSkeleton />
                 }
-                {prods.length > 0 &&
+                {categors.length > 0 &&
                     <Fragment>
                         <TableContainer component={Paper} style={{ boxShadow: "0px -1px 1px 1px white" }}>
                             <Table id="table-to-xls">
                                 <TableHead >
                                     <TableRow style={{ fontWeight: "bold" }} >
                                         <StyledTableCell rowSpan="2" />
-                                        <StyledTableCell rowSpan="2">
-                                            Штрих-код
-                                </StyledTableCell>
                                         <StyledTableCell rowSpan="2" align="center">
-                                            Наименование товара
+                                            Наименование категории
                                 </StyledTableCell>
                                         <StyledTableCell rowSpan="2" align="center">
                                             Минимальный остаток
@@ -312,47 +308,46 @@ export default function CategoryTable({ products, getMinimalStock, enabled, setE
                                     </TableRow>
                                 </TableHead>
                                 <TableBody>
-                                    {prods
+                                    {categors
                                         .slice(page * rowsPerPage, page * rowsPerPage + rowsPerPage)
-                                        .map((product, idx) => (
+                                        .map((catgr, idx) => (
                                             <TableRow key={idx}>
-                                                <StyledTableCell>{product.indx}</StyledTableCell>
-                                                <StyledTableCell>{product.code}</StyledTableCell>
-                                                <StyledTableCell>{product.name}</StyledTableCell>
+                                                <StyledTableCell>{catgr.indx}</StyledTableCell>
+                                                <StyledTableCell>{catgr.name}</StyledTableCell>
                                                 <StyledTableCell align="center">
-                                                    {product.editing === true ?
+                                                    {catgr.editing === true ?
                                                         <UnitsInput
                                                             variant="outlined"
                                                             autoFocus={true}
-                                                            value={product.temp_units}
-                                                            onChange={(e) => unitsChange(e.target.value, product.indx)}
-                                                        /> : product.units
+                                                            value={catgr.temp_units}
+                                                            onChange={(e) => unitsChange(e.target.value, catgr.indx)}
+                                                        /> : catgr.units
                                                     }
                                                 </StyledTableCell>
                                                 <StyledTableCell align="center">
-                                                    {product.editing &&
+                                                    {catgr.editing &&
                                                         <IconButton
-                                                            onClick={() => saveUnits(product.indx - 1)}
+                                                            onClick={() => saveUnits(catgr.indx - 1)}
                                                             disabled={isSending}
                                                         >
                                                             <DoneIcon fontSize="small" title="Сохранить" />
                                                         </IconButton>
                                                     }
-                                                    {!product.editing &&
-                                                        <IconButton onClick={() => editMinCount(product.indx - 1)}>
+                                                    {!catgr.editing &&
+                                                        <IconButton onClick={() => editMinCount(catgr.indx - 1)}>
                                                             <EditIcon fontSize="small" title="Редактировать" />
                                                         </IconButton>
                                                     }
                                                     &nbsp;
-                                                    {!product.editing &&
+                                                    {!catgr.editing &&
                                                         <IconButton
-                                                            onClick={() => deleteProduct(product.id)}
+                                                            onClick={() => deleteCategory(catgr.id)}
                                                         >
                                                             <DeleteIcon fontSize="small" title="Удалить" />
                                                         </IconButton>
                                                     }
-                                                    {product.editing &&
-                                                        <IconButton onClick={() => cancelChanges(product.indx - 1)}>
+                                                    {catgr.editing &&
+                                                        <IconButton onClick={() => cancelChanges(catgr.indx - 1)}>
                                                             <CancelIcon fontSize="small" title="Отмена" />
                                                         </IconButton>
                                                     }
@@ -366,7 +361,7 @@ export default function CategoryTable({ products, getMinimalStock, enabled, setE
                             <TablePagination
                                 rowsPerPageOptions={[10, 20, 50]}
                                 component="div"
-                                count={products.length}
+                                count={categories.length}
                                 backIconButtonText="Предыдущая страница"
                                 labelRowsPerPage="Строк в странице"
                                 nextIconButtonText="Следующая страница"

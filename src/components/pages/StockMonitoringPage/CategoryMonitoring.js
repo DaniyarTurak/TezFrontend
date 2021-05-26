@@ -23,7 +23,7 @@ const AddButton = withStyles((theme) => ({
   },
 }))(Button);
 
-export default function BrandMonitoring() {
+export default function CategoryMonitoring() {
   const useStyles = makeStyles(theme =>
     createStyles({
       root: {
@@ -49,37 +49,35 @@ export default function BrandMonitoring() {
   );
   const classes = useStyles();
 
-  const [products, setProducts] = useState([]);
-  const [prodsWithMS, setProdsWithMS] = useState([]);
-  const [name, setName] = useState("");
-  const [barcode, setBarcode] = useState("");
+  const [categories, setCategories] = useState([]);
+  const [categoriesWithMS, setCategoriesWithMS] = useState([]);
+  const [category, setCategory] = useState("");
   const [minimalStock, setMinimalStock] = useState("");
   const [isSending, setSending] = useState(false);
-  const [prodsSelect, setProdsSelect] = useState([]);
-  const debouncedName = useDebounce(name, 500);
-  const debouncedBarcode = useDebounce(barcode, 500);
-  const [prodsTemp, setProdsTemp] = useState([]);
+  const [categoriesSelect, setCategoriesSelect] = useState([]);
+  const debouncedCategory = useDebounce(category, 500);
+  const [categoriesTemp, setCategoriesTemp] = useState([]);
   const [enabled, setEnabled] = useState(true);
 
   useEffect(() => {
-    getProducts();
-    getMinimalStock();
+    getCategories();
+    // getMinimalStock();
   }, []);
 
   useEffect(() => {
     let arr = [];
-    prodsTemp.forEach(element => {
+    categoriesTemp.forEach(element => {
       arr.push(element)
     });
-    arr.unshift({ id: 0, name: "Все товары" });
-    setProdsSelect(arr);
-  }, [prodsTemp]);
+    arr.unshift({ id: 0, category: "Все категории" });
+    setCategoriesSelect(arr);
+  }, [categoriesTemp]);
 
-  const getProducts = () => {
-    Axios.get("/api/products/stockmonitoring")
+  const getCategories = () => {
+    Axios.get("/api/categories/search")
       .then((res) => res.data)
       .then((list) => {
-        setProducts(list);
+        setCategories(list);
       })
       .catch((err) => {
         ErrorAlert(err);
@@ -87,11 +85,11 @@ export default function BrandMonitoring() {
   };
 
   const getMinimalStock = () => {
-    Axios.get("/api/products/withminimalstock")
+    Axios.get("/api/categories/withminimalstock")
       .then((res) => res.data)
       .then((list) => {
-        setProdsTemp(list);
-        setProdsWithMS(list);
+        setCategoriesTemp(list);
+        setCategoriesWithMS(list);
       })
       .catch((err) => {
         ErrorAlert(err);
@@ -101,23 +99,23 @@ export default function BrandMonitoring() {
 
   useEffect(
     () => {
-      if (debouncedName) {
-        if (debouncedName.trim().length === 0) {
-          Axios.get("/api/products/stockmonitoring", { params: { productName: "" } })
+      if (debouncedCategory) {
+        if (debouncedCategory.trim().length === 0) {
+          Axios.get("/api/categories/search", { params: { category: "" } })
             .then((res) => res.data)
             .then((list) => {
-              setProducts(list);
+              setCategories(list);
             })
             .catch((err) => {
               ErrorAlert(err);
             });
         }
         else {
-          if (debouncedName.trim().length >= 3) {
-            Axios.get("/api/products/stockmonitoring", { params: { productName: name } })
+          if (debouncedCategory.trim().length >= 2) {
+            Axios.get("/api/categories/search", { params: { category: category } })
               .then((res) => res.data)
               .then((list) => {
-                setProducts(list);
+                setCategories(list);
               })
               .catch((err) => {
                 ErrorAlert(err);
@@ -126,104 +124,51 @@ export default function BrandMonitoring() {
         }
       }
     },
-    [debouncedName]
+    [debouncedCategory]
   );
-
-  useEffect(
-    () => {
-      if (debouncedBarcode) {
-        if (debouncedBarcode.trim().length === 0) {
-          Axios.get("/api/products/stockmonitoring", { params: { barcode: "" } })
-            .then((res) => res.data)
-            .then((list) => {
-              setProducts(list);
-            })
-            .catch((err) => {
-              ErrorAlert(err);
-            });
-        }
-        else {
-          if (debouncedBarcode.trim().length >= 3) {
-            Axios.get("/api/products/stockmonitoring", { params: { barcode: barcode } })
-              .then((res) => res.data)
-              .then((list) => {
-                setProducts(list);
-              })
-              .catch((err) => {
-                ErrorAlert(err);
-              });
-          };
-        }
-      }
-    },
-    [debouncedBarcode]
-  );
-
-  const nameChange = (value) => {
-    setName(value);
-    setBarcode("");
-    products.forEach(element => {
-      if (element.name === value) {
-        setBarcode(element.code);
-        if (element.minimalstock !== null) {
-          setMinimalStock(element.minimalStock);
-        }
-      }
-    });
-  };
-
-  const barcodeChange = (value) => {
-    setBarcode(value);
-    setName("");
-    products.forEach(element => {
-      if (element.code === value) {
-        setName(element.name);
-        if (element.minimalstock !== null) {
-          setMinimalStock(element.minimalStock);
-        }
-      }
-    });
-  };
 
   const addMinimalStock = () => {
     setSending(true);
-    let prodid = "";
-    if (!barcode || barcode === "") {
-      ErrorAlert("Выберите товар")
+    let categoryid = "";
+    if (!category || category === "") {
+      ErrorAlert("Выберите категорию")
     }
     else {
       if (!minimalStock || minimalStock === "") {
         ErrorAlert("Укажите минимальный остаток")
       }
       else {
-        products.forEach(prod => {
-          if (prod.code === barcode && prod.name === name) {
-            prodid = prod.id;
+        categories.forEach(cat => {
+          if (cat.name === category) {
+            categoryid = cat.id;
           }
         });
         const reqdata = {
-          product: prodid,
+          category: categoryid,
           units: minimalStock,
+          type: 2
         };
-        Axios.post("/api/stock/stockm/add", reqdata)
-          .then((result) => {
-            Alert.success("Минимальный остаток успешно установлен", {
-              position: "top-right",
-              effect: "bouncyflip",
-              timeout: 2000,
-            });
-            getMinimalStock();
-            setSending(false);
-          })
-          .catch((err) => {
-            Alert.error(err, {
-              position: "top-right",
-              effect: "bouncyflip",
-              timeout: 2000,
-            }
-            );
-            setSending(false);
-          });
+        console.log(reqdata);
+
+        // Axios.post("/api/stock/stockm/add", reqdata)
+        //   .then((result) => {
+        //     Alert.success("Минимальный остаток успешно установлен", {
+        //       position: "top-right",
+        //       effect: "bouncyflip",
+        //       timeout: 2000,
+        //     });
+        //     getMinimalStock();
+        //     setSending(false);
+        //   })
+        //   .catch((err) => {
+        //     Alert.error(err, {
+        //       position: "top-right",
+        //       effect: "bouncyflip",
+        //       timeout: 2000,
+        //     }
+        //     );
+        //     setSending(false);
+        //   });
       }
     }
   };
@@ -232,69 +177,47 @@ export default function BrandMonitoring() {
     setMinimalStock(e.target.value);
   };
 
-  const searchProd = (value) => {
+  const searchBrand = (value) => {
     let arr = [];
-    if (value !== "Все товары" && value !== null) {
-      prodsTemp.forEach(prod => {
-        if (prod.name === value) {
+    if (value !== "Все категории" && value !== null) {
+      categoriesTemp.forEach(prod => {
+        if (prod.category === value) {
           arr.push(prod);
         }
-        setProdsWithMS(arr);
+        setCategoriesWithMS(arr);
       });
     }
     else {
-      setProdsWithMS(prodsTemp);
+      setCategoriesWithMS(categoriesTemp);
     }
   }
   return (
     <Fragment>
       <Grid container spacing={3}>
-        <Grid item xs={3}>
-          <label>Введите штрих-код:</label>
+        <Grid item xs={4}>
+          <label>Выберите категорию из списка: </label>
           <Autocomplete
-            freeSolo
-            value={barcode}
-            noOptionsText="Товар не найден"
-            onChange={(e, value) => barcodeChange(value)}
-            onInputChange={(event, value) => { setBarcode(value) }}
-            options={products.map((option) => option.code)}
+            value={category}
+            noOptionsText="Категория не найден"
+            onChange={(e, value) => { setCategory(value) }}
+            onInputChange={(event, value) => { setCategory(value) }}
+            options={categories.map((option) => option.name)}
             renderInput={(params) => (
               <TextField
                 classes={{
                   root: classes.root,
                 }}
                 {...params}
-                placeholder="Штрих-код"
+                placeholder="Наименование категории"
                 variant="outlined"
                 size="small"
               />
             )}
           />
         </Grid>
-        <Grid item xs={9}>
-          <label>Выберите товар из списка: </label>
-          <Autocomplete
-            value={name}
-            noOptionsText="Товар не найден"
-            onChange={(e, value) => nameChange(value)}
-            onInputChange={(event, value) => { setName(value) }}
-            options={products.map((option) => option.name)}
-            renderInput={(params) => (
-              <TextField
-                classes={{
-                  root: classes.root,
-                }}
-                {...params}
-                placeholder="Наименование товара"
-                variant="outlined"
-                size="small"
-              />
-            )}
-          />
-        </Grid>
-      </Grid>
-      <Grid container spacing={3}>
-        <Grid item xs={3}>
+
+        <Grid item xs={4}>
+          <label>Введите минимальный остаток: </label>
           <TextField
             fullWidth
             classes={{
@@ -307,7 +230,8 @@ export default function BrandMonitoring() {
             size="small"
           />
         </Grid>
-        <Grid item xs={9}>
+        <Grid item xs={4}>
+          <br />
           <AddButton
             onClick={addMinimalStock}
           >
@@ -315,7 +239,7 @@ export default function BrandMonitoring() {
               </AddButton>
         </Grid>
       </Grid>
-      {prodsWithMS.length > 0 &&
+      {categoriesWithMS.length > 0 &&
         <Fragment>
           <br />
           <div className="empty-space"></div>
@@ -331,8 +255,8 @@ export default function BrandMonitoring() {
               <Autocomplete
                 id="prods"
                 disabled={!enabled}
-                options={prodsSelect.map((option) => option.name)}
-                onChange={(e, value) => { searchProd(value) }}
+                options={categoriesSelect.map((option) => option.name)}
+                onChange={(e, value) => { searchBrand(value) }}
                 noOptionsText="Товар не найден"
                 renderInput={(params) => (
                   <TextField
@@ -351,7 +275,7 @@ export default function BrandMonitoring() {
             </Grid>
             <Grid item xs={12}>
               <CategoryTable
-                products={prodsWithMS}
+                categories={categoriesWithMS}
                 getMinimalStock={getMinimalStock}
                 enabled={enabled}
                 setEnabled={setEnabled}

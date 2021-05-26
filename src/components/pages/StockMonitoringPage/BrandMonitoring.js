@@ -52,7 +52,6 @@ export default function BrandMonitoring() {
   const [brands, setBrands] = useState([]);
   const [brandsWithMS, setBrandsWithMS] = useState([]);
   const [brand, setBrand] = useState("");
-  const [barcode, setBarcode] = useState("");
   const [minimalStock, setMinimalStock] = useState("");
   const [isSending, setSending] = useState(false);
   const [brandsSelect, setbrandsSelect] = useState([]);
@@ -62,7 +61,7 @@ export default function BrandMonitoring() {
 
   useEffect(() => {
     getBrands();
-    getMinimalStock();
+    // getMinimalStock();
   }, []);
 
   useEffect(() => {
@@ -276,7 +275,7 @@ export default function BrandMonitoring() {
             </Grid>
             <Grid item xs={12}>
               <BrandTable
-                products={brandsWithMS}
+                brands={brandsWithMS}
                 getMinimalStock={getMinimalStock}
                 enabled={enabled}
                 setEnabled={setEnabled}
