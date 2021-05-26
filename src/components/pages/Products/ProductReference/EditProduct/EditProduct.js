@@ -1,4 +1,4 @@
-import React, { useState, Fragment } from "react";
+import React, { useState, Fragment, useEffect } from "react";
 import Axios from "axios";
 import { makeStyles } from "@material-ui/core/styles";
 import Paper from "@material-ui/core/Paper";
@@ -25,6 +25,7 @@ import AlertMaterial from "@material-ui/lab/Alert";
 import Alert from "react-s-alert";
 import AddAttributeChar from "../AddAttributeChar";
 import AddAttribute from "../AddAttribute";
+// import Moment from "moment";
 
 const useStyles = makeStyles((theme) => ({
   table: {},
@@ -98,6 +99,7 @@ export default function EditProduct({
   const [editProductAttr] = useState("");
   const [clearBoard, setClearBoard] = useState(false);
   const [attributes, setAttributes] = useState([]);
+  // const [date] = useState(Moment().format("YYYY-MM-DD"));
 
   const getAttributeCharCode = (attributeCodeChanged) => {
     setAttributeGlobCode(attributeCodeChanged);
@@ -106,6 +108,15 @@ export default function EditProduct({
   const getAttributeCode = (attributeCodeChanged) => {
     setAttributeCode(attributeCodeChanged);
   };
+
+  // const attrValue = () => {
+  //   attributes.forEach((elemenet) => {
+  //     if (elemenet.code === "2") {
+  //       elemenet.value === Moment(date).format("YYYY-MM-DD");
+  //     }
+  //   });
+  //   setAttributes(attributes);
+  // };
 
   const editProdRes = () => {
     let product = {
