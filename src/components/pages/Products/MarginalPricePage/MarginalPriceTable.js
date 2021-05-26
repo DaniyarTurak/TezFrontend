@@ -268,10 +268,11 @@ export default function MarginalPriceTable({ products, save, getProducts, makeDi
                     <Table id="table-to-xls">
                         <TableHead >
                             <TableRow style={{ fontWeight: "bold" }} >
+                                <StyledTableCell rowSpan="2" align="center" />
                                 <StyledTableCell rowSpan="2" align="center">
                                     Наименование товара
                                 </StyledTableCell>
-                                <StyledTableCell rowSpan="2">
+                                <StyledTableCell rowSpan="2" align="center">
                                     Штрих-код
                                 </StyledTableCell>
                                 <StyledTableCell rowSpan="2" align="center">

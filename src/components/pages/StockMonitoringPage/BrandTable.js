@@ -120,7 +120,7 @@ TablePaginationActions.propTypes = {
 };
 //конец пагинации
 
-export default function StockMonitoringTable({ products, getMinimalStock }) {
+export default function BrandTable({ products, getMinimalStock, enabled, setEnabled }) {
 
     const [page, setPage] = useState(0);
     const [rowsPerPage, setRowsPerPage] = useState(10);
@@ -246,7 +246,7 @@ export default function StockMonitoringTable({ products, getMinimalStock }) {
                 state = false;
             }
         });
-        setPagEnabled(state);
+        setEnabled(state);
     };
 
     const deleteProduct = (id) => {
@@ -335,25 +335,25 @@ export default function StockMonitoringTable({ products, getMinimalStock }) {
                                                             onClick={() => saveUnits(product.indx - 1)}
                                                             disabled={isSending}
                                                         >
-                                                            <DoneIcon />
+                                                            <DoneIcon fontSize="small" title="Сохранить" />
                                                         </IconButton>
                                                     }
                                                     {!product.editing &&
                                                         <IconButton onClick={() => editMinCount(product.indx - 1)}>
-                                                            <EditIcon />
+                                                            <EditIcon fontSize="small" title="Редактировать" />
                                                         </IconButton>
                                                     }
-                                            &emsp;
-                                            {!product.editing &&
+                                                    &nbsp;
+                                                    {!product.editing &&
                                                         <IconButton
                                                             onClick={() => deleteProduct(product.id)}
                                                         >
-                                                            <DeleteIcon />
+                                                            <DeleteIcon fontSize="small" title="Удалить" />
                                                         </IconButton>
                                                     }
                                                     {product.editing &&
                                                         <IconButton onClick={() => cancelChanges(product.indx - 1)}>
-                                                            <CancelIcon />
+                                                            <CancelIcon fontSize="small" title="Отмена" />
                                                         </IconButton>
                                                     }
                                                 </StyledTableCell>
@@ -362,7 +362,7 @@ export default function StockMonitoringTable({ products, getMinimalStock }) {
                                 </TableBody>
                             </Table>
                         </TableContainer>
-                        {pagEnabled &&
+                        {enabled &&
                             <TablePagination
                                 rowsPerPageOptions={[10, 20, 50]}
                                 component="div"
