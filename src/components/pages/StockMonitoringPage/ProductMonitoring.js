@@ -208,13 +208,23 @@ export default function ProductMonitoring() {
         };
         Axios.post("/api/stock/stockm/add", reqdata)
           .then((result) => {
-            Alert.success("Минимальный остаток успешно установлен", {
-              position: "top-right",
-              effect: "bouncyflip",
-              timeout: 2000,
-            });
-            getMinimalStock();
-            setSending(false);
+            if (result.data.code === "success") {
+              Alert.success("Минимальный остаток успешно установлен", {
+                position: "top-right",
+                effect: "bouncyflip",
+                timeout: 2000,
+              });
+              getMinimalStock();
+              setSending(false);
+            }
+            else {
+                Alert.error(result.data.text, {
+                  position: "top-right",
+                  effect: "bouncyflip",
+                  timeout: 2000,
+                })
+                setSending(false);
+            }
           })
           .catch((err) => {
             Alert.error(err, {

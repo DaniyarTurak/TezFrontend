@@ -1,10 +1,7 @@
 import React, { Component, Fragment } from "react";
 import { NavLink } from "react-router-dom";
 import Axios from "axios";
-// import topics from "../../data/sidebar";
-
-import topics_norecon from "../../data/sidebar";
-import topics_recon from "../../data/sidebar_recon";
+import topics from "../../data/sidebar_recon";
 import rules from "../../rbacRules";
 import Navigation from "./Navigation";
 
@@ -59,17 +56,16 @@ const ConvertRoles = (roles) => {
     return roles;
   }
 };
-let topics = topics_recon;
 class CabinetSideBar extends Component {
 
-  test = () => {
-    const companies_recon = [38, 56, 57, 68, 69, 81, 78, 98, 231, 241, 269, 96, 2];
-    const comp_id = parseInt(JSON.parse(sessionStorage.getItem("isme-company-data")).id) ?
-      parseInt(JSON.parse(sessionStorage.getItem("isme-company-data")).id) : 0;
-    if (!companies_recon.includes(comp_id)) {
-      topics = topics_norecon;
-    }
-  }
+  // test = () => {
+  //   const companies_recon = [38, 56, 57, 68, 69, 81, 78, 98, 231, 241, 269, 96, 2];
+  //   const comp_id = parseInt(JSON.parse(sessionStorage.getItem("isme-company-data")).id) ?
+  //     parseInt(JSON.parse(sessionStorage.getItem("isme-company-data")).id) : 0;
+  //   if (!companies_recon.includes(comp_id)) {
+  //     topics = topics_norecon;
+  //   }
+  // }
 
   state = {
     user: JSON.parse(sessionStorage.getItem("isme-user-data")) || null,
