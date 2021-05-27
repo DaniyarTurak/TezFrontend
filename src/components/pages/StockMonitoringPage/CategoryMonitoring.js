@@ -150,25 +150,25 @@ export default function CategoryMonitoring() {
         };
         console.log(reqdata);
 
-        // Axios.post("/api/stock/stockm/add", reqdata)
-        //   .then((result) => {
-        //     Alert.success("Минимальный остаток успешно установлен", {
-        //       position: "top-right",
-        //       effect: "bouncyflip",
-        //       timeout: 2000,
-        //     });
-        //     getMinimalStock();
-        //     setSending(false);
-        //   })
-        //   .catch((err) => {
-        //     Alert.error(err, {
-        //       position: "top-right",
-        //       effect: "bouncyflip",
-        //       timeout: 2000,
-        //     }
-        //     );
-        //     setSending(false);
-        //   });
+        Axios.post("/api/stock/stockm/add", reqdata)
+          .then((result) => {
+            Alert.success("Минимальный остаток успешно установлен", {
+              position: "top-right",
+              effect: "bouncyflip",
+              timeout: 2000,
+            });
+            getMinimalStock();
+            setSending(false);
+          })
+          .catch((err) => {
+            Alert.error(err, {
+              position: "top-right",
+              effect: "bouncyflip",
+              timeout: 2000,
+            }
+            );
+            setSending(false);
+          });
       }
     }
   };

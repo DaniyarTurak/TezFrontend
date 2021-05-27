@@ -178,6 +178,9 @@ export default function NonTable({ products }) {
                             <StyledTableCell align="center">
                                 Наименование
                             </StyledTableCell>
+                            <StyledTableCell align="center">
+                                Остаток на складе
+                            </StyledTableCell>
                         </TableRow>
                     </TableHead>
                     <TableBody>
@@ -193,6 +196,9 @@ export default function NonTable({ products }) {
                                     </StyledTableCell>
                                     <StyledTableCell align="center">
                                         {prod.name}
+                                    </StyledTableCell>
+                                    <StyledTableCell align="center">
+                                        {prod.stock_units}
                                     </StyledTableCell>
                                 </TableRow>
                             ))}

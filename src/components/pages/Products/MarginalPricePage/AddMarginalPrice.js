@@ -39,7 +39,11 @@ const StyledInput = withStyles((theme) => ({
     },
 }))(InputBase);
 
-export default function AddMarginalPrice({ isLoading }) {
+export default function AddMarginalPrice({
+    isLoading,
+    added,
+    setAdded,
+}) {
     const useStyles = makeStyles(theme =>
         createStyles({
             root: {
@@ -77,6 +81,10 @@ export default function AddMarginalPrice({ isLoading }) {
     }, []);
 
     useEffect(() => {
+        refresh();
+    }, [added]);
+
+    useEffect(() => {
         prods.forEach(product => {
             if (product.name === prodName) {
                 if (product.code) {
@@ -104,6 +112,7 @@ export default function AddMarginalPrice({ isLoading }) {
                         .then((res) => res.data)
                         .then((list) => {
                             setProds(list);
+                            setProdName("")
                         })
                         .catch((err) => {
                             ErrorAlert(err);
@@ -209,11 +218,18 @@ export default function AddMarginalPrice({ isLoading }) {
         }
     };
 
+    const refresh = () => {
+        setProdName("");
+        setMarginalPrice("");
+        setBarcode("");
+        getProducts();
+    }
+
     const changePrice = () => {
         Axios.post("/api/invoice/changeprice", {
             isstaticprice: true,
             product: prodId,
-            price: marginalPrice,
+            price: marginalPrice.toString().includes(",") ? marginalPrice.toString().replace(",", ".") : marginalPrice,
         })
             .then((result) => result.data)
             .then((result) => {
@@ -222,10 +238,8 @@ export default function AddMarginalPrice({ isLoading }) {
                     effect: "bouncyflip",
                     timeout: 2000,
                 });
-                setProdName("");
-                setMarginalPrice("");
-                setBarcode("");
-                getProducts();
+                //refresh();
+                setAdded(!added);
             })
             .catch((err) => {
                 if (
@@ -249,6 +263,14 @@ export default function AddMarginalPrice({ isLoading }) {
             });
     };
 
+    const nameChange = (value) => {
+        if (value === null) {
+            setProdName(" ")
+        }
+        else {
+            setProdName(value)
+        }
+    }
     return (
         <Fragment>
             <Grid item xs={12}>
@@ -275,7 +297,9 @@ export default function AddMarginalPrice({ isLoading }) {
                         id="outlined-basic"
                         value={prodName}
                         noOptionsText="Товар не найден"
-                        onInputChange={(event, value) => { setProdName(value) }}
+                        
+                        onInputChange={(event, value) => { nameChange(value) }}
+                        onChange={(event, value) => { nameChange(value) }}
                         options={prods.map((option) => option.name)}
                         renderInput={(params) => (
                             <TextField

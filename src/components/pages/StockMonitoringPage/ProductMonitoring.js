@@ -204,6 +204,7 @@ export default function ProductMonitoring() {
         const reqdata = {
           product: prodid,
           units: minimalStock,
+          type: 1
         };
         Axios.post("/api/stock/stockm/add", reqdata)
           .then((result) => {

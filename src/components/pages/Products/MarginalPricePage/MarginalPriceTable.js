@@ -119,9 +119,18 @@ TablePaginationActions.propTypes = {
 };
 //конец пагинации
 
-export default function MarginalPriceTable({ products, save, getProducts, makeDisabled, makeEnabled, selectState }) {
+export default function MarginalPriceTable({
+    products,
+    save,
+    getProducts,
+    makeDisabled,
+    makeEnabled,
+    selectState,
+    added,
+    setAdded,
+}) {
 
-    const [productsWithPrice, setProductsWithPrice] = useState(products);
+    const [productsWithPrice, setProductsWithPrice] = useState([]);
     const [page, setPage] = useState(0);
     const [rowsPerPage, setRowsPerPage] = useState(10);
     const [isChanged, setChanged] = useState(false);
@@ -156,9 +165,11 @@ export default function MarginalPriceTable({ products, save, getProducts, makeDi
                         effect: "bouncyflip",
                         timeout: 2000,
                     });
+                    setAdded(!added);
                     getProducts();
                     setSending(false);
                     makeEnabled();
+                    selectState(false);
                 })
                 .catch((err) => {
                     ErrorAlert(err);
@@ -194,7 +205,7 @@ export default function MarginalPriceTable({ products, save, getProducts, makeDi
     const editStaticPrice = (idx) => {
         setProductsWithPrice(prevState => {
             let obj = prevState[idx];
-            obj.ischangedprice = !obj.ischangedprice;
+            obj.changing = !obj.changing;
             return [...prevState];
 
         })
@@ -207,6 +218,7 @@ export default function MarginalPriceTable({ products, save, getProducts, makeDi
         setProductsWithPrice(prevState => {
             let obj = prevState[idx - 1];
             obj.staticprice = value;
+            obj.ischangedprice = true;
             return [...prevState];
         });
     };
@@ -214,7 +226,7 @@ export default function MarginalPriceTable({ products, save, getProducts, makeDi
     const checkState = () => {
         let state = false;
         productsWithPrice.forEach(element => {
-            if (element.ischangedprice) {
+            if (element.changing) {
                 state = true;
             }
         });
@@ -233,6 +245,7 @@ export default function MarginalPriceTable({ products, save, getProducts, makeDi
                     effect: "bouncyflip",
                     timeout: 2000,
                 });
+                setAdded(!added);
                 getProducts();
                 setSending(false);
                 makeEnabled();
@@ -295,7 +308,7 @@ export default function MarginalPriceTable({ products, save, getProducts, makeDi
                                         <StyledTableCell>{product.code}</StyledTableCell>
                                         <StyledTableCell align="center">{product.price} тг.</StyledTableCell>
                                         <StyledTableCell align="center">
-                                            {product.ischangedprice === true ?
+                                            {product.changing === true ?
                                                 <PriceInput
                                                     variant="outlined"
                                                     autoFocus={true}
@@ -310,13 +323,13 @@ export default function MarginalPriceTable({ products, save, getProducts, makeDi
                                                 onClick={() => {
                                                     editStaticPrice(product.indx - 1);
                                                 }}>
-                                                {!product.ischangedprice &&
+                                                {!product.changing &&
                                                     <EditIcon
                                                         fontSize="small"
                                                         title="Изменить цену"
                                                     />
                                                 }
-                                                {product.ischangedprice &&
+                                                {product.changing &&
                                                     <DoneIcon
                                                         fontSize="small"
                                                         title="Зафиксировать"
