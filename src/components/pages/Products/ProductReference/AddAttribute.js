@@ -45,11 +45,15 @@ export default function AddAttribute({
     let arr = [];
     if (capations.length > 0) {
       capations.forEach((element) => {
-        arr.push({
-          value: element.attribute_value,
-          name: element.attribute_name,
-          code: element.attribute_id,
-        });
+        if (element.attribute_id !== null) {
+          arr.push({
+            value: element.attribute_value,
+            name: element.attribute_name,
+            code: element.attribute_id,
+          });
+        } else {
+          [];
+        }
       });
       setAttrList(arr);
     }
@@ -196,7 +200,6 @@ export default function AddAttribute({
       name: attrName.label,
       code: attrName.value,
     });
-    console.log(attrListChanged);
     postAttributes(attrListChanged, reqbody);
     setAttributes(attrListChanged);
   };
@@ -224,6 +227,7 @@ export default function AddAttribute({
       listcode: attrListCode,
       attribcode: item.code,
     };
+    setAttributes(newList);
     setAttrList(newList);
 
     Axios.post("/api/attributes/delete", req)
@@ -294,22 +298,24 @@ export default function AddAttribute({
                 </tr>
               </thead>
               <tbody>
-                {attrList.map((attr) => (
-                  <tr key={attr.name}>
-                    <td>{attr.name}</td>
-                    <td className="text-center">
-                      {!isHidden && (
-                        <button
-                          type="button"
-                          className="btn"
-                          onClick={() => handleDelete(attr)}
-                        >
-                          &times;
-                        </button>
-                      )}
-                    </td>
-                  </tr>
-                ))}
+                {attrList.length === 0
+                  ? []
+                  : attrList.map((attr) => (
+                      <tr key={attr.name}>
+                        <td>{attr.name}</td>
+                        <td className="text-center">
+                          {!isHidden && (
+                            <button
+                              type="button"
+                              className="btn"
+                              onClick={() => handleDelete(attr)}
+                            >
+                              &times;
+                            </button>
+                          )}
+                        </td>
+                      </tr>
+                    ))}
               </tbody>
             </table>
           </div>

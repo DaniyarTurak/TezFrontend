@@ -11,6 +11,7 @@ export default function ProductDetails({
   transaction,
 }) {
   const [details, setDetails] = useState("");
+  const [attribute, setAttribute] = useState([]);
   const company = companyProps ? companyProps : "";
   const pleaseWait = "Пожалуйста подождите...";
 
@@ -72,6 +73,7 @@ export default function ProductDetails({
         det.purchaseprice = det.purchaseprice ? det.purchaseprice : "0";
         det.newprice = det.price;
         setDetails(det);
+        setAttribute(det.attributescaption);
       })
       .catch((err) => {
         console.log(err);
@@ -171,7 +173,9 @@ export default function ProductDetails({
         <div className="row">
           <div className="col-md-12">
             <label>Дополнительная информация</label>
-            <p>{details.attributescaption}</p>
+            {attribute.map((e) => {
+              <p>{e.attribute_name}</p>;
+            })}
           </div>
         </div>
       )}
