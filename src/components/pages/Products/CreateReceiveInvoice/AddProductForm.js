@@ -926,7 +926,6 @@ let AddProductForm = ({
       }
     }
   };
-  console.log(attributeCode);
 
   const addProduct = (data) => {
     setLimitAlert(false);
