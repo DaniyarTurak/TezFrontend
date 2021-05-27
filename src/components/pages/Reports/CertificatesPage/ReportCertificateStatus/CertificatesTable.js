@@ -160,7 +160,7 @@ export default function CertificatesTable({
                     key={certificate.id}
                     onClick={() => setSelectedID(certificate.id)}
                   >
-                    <StyledTableCell>{idx + 1 + page * 10}</StyledTableCell>
+                    <StyledTableCell>{idx + 1 + page * rowsPerPage}</StyledTableCell>
 
                     <StyledTableCell>{certificate.code}</StyledTableCell>
                     <StyledTableCell align="center">
@@ -184,17 +184,17 @@ export default function CertificatesTable({
                           certificate.status === "Доступен для продажи"
                             ? "green"
                             : certificate.status === "Использован"
-                            ? "black"
-                            : certificate.status === "Продан (Активен)"
-                            ? "blue"
-                            : "red",
+                              ? "black"
+                              : certificate.status === "Продан (Активен)"
+                                ? "blue"
+                                : "red",
                       }}
                     >
                       {certificate.status}
                     </StyledTableCell>
                     <StyledTableCell>
                       {certificate.status === "Доступен для продажи" ||
-                      certificate.status === "Использован" ? (
+                        certificate.status === "Использован" ? (
                         <Button
                           fullWidth
                           className={classes.button}
@@ -212,7 +212,6 @@ export default function CertificatesTable({
             </TableBody>
           </Table>
         </TableContainer>
-
         {certificates.length > rowsPerPage && (
           <TablePagination
             rowsPerPageOptions={[10, 20, 50]}
