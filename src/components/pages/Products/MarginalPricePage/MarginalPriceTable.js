@@ -216,7 +216,7 @@ export default function MarginalPriceTable({
         setChanged(true);
         makeDisabled();
         setProductsWithPrice(prevState => {
-            let obj = prevState[idx - 1];
+            let obj = prevState[idx];
             obj.staticprice = value;
             obj.ischangedprice = true;
             return [...prevState];
@@ -313,7 +313,7 @@ export default function MarginalPriceTable({
                                                     variant="outlined"
                                                     autoFocus={true}
                                                     value={product.staticprice}
-                                                    onChange={(e) => staticPriceChange(e.target.value, product.indx)}
+                                                    onChange={(e) => staticPriceChange(e.target.value, idx)}
                                                 /> : product.staticprice + " тг."
                                             }
                                         </StyledTableCell>
@@ -321,7 +321,7 @@ export default function MarginalPriceTable({
                                             <IconButton
                                                 disabled={isSending}
                                                 onClick={() => {
-                                                    editStaticPrice(product.indx - 1);
+                                                    editStaticPrice(idx);
                                                 }}>
                                                 {!product.changing &&
                                                     <EditIcon
