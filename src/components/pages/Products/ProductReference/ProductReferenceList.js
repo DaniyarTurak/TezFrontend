@@ -377,119 +377,121 @@ export default function ProductReferenceList({
     </Dialog>
   ) : (
     <Fragment>
-      <Paper className={classes.paper}>
-        <Grid container spacing={2}>
-          <Grid item xs={4}>
-            <FormControl fullWidth>
-              <TextField
-                variant="outlined"
-                type="text"
-                name="barcode"
-                value={productBarcode}
-                className="form-control"
-                label="Введите или отсканируйте штрихкод"
-                onChange={onBarcodeChange}
-                onKeyDown={onBarcodeKeyDown}
-              />
-            </FormControl>
-          </Grid>
-          <Grid item xs={4}>
-            <Autocomplete
-              id="outlined-basic"
-              options={[reference, ...productOptions]}
-              value={productSelectValue}
-              onChange={productListChange}
-              noOptionsText="Товар не найден"
-              onInputChange={onProductListChange}
-              filterOptions={(options) =>
-                options.filter((option) => option !== "")
-              }
-              getOptionLabel={(option) => (option ? option.label : "")}
-              getOptionSelected={(option, value) =>
-                option.label === value.value
-              }
-              renderInput={(params) => (
-                <TextField
-                  {...params}
-                  label="Наименование товара"
-                  variant="outlined"
-                />
-              )}
-            />
-          </Grid>
-          <Grid item xs={3}>
-            <Button
-              style={{ minHeight: "3.5rem" }}
+      <Grid container spacing={2}>
+        <Grid item xs={4}>
+          <FormControl fullWidth>
+            <TextField
+              style={{ marginTop: "5px", marginLeft: "10px" }}
               variant="outlined"
-              color="primary"
-              fullWidth
-              size="large"
-              onClick={handleSearch}
-            >
-              Поиск
-            </Button>
-          </Grid>
+              type="text"
+              name="barcode"
+              value={productBarcode}
+              className="form-control"
+              label="Введите или отсканируйте штрихкод"
+              onChange={onBarcodeChange}
+              onKeyDown={onBarcodeKeyDown}
+            />
+          </FormControl>
         </Grid>
-        {Object.keys(reference).length > 0 && (
-          <TableContainer className="mt-4" component={Paper}>
-            <Table className={classes.table} aria-label="customized table">
-              <TableHead>
-                <TableRow>
-                  <TableCell className={classes.head} align="left">
-                    Наименование
-                  </TableCell>
-                  <TableCell className={classes.head} align="center">
-                    Штрих - код
-                  </TableCell>
-                  <TableCell className={classes.head} align="center">
-                    Категория
-                  </TableCell>
-                  <TableCell className={classes.head} align="center">
-                    Брeнд
-                  </TableCell>
-                  <TableCell className={classes.head} align="center">
-                    Код ТН ВЭД
-                  </TableCell>
-                  <TableCell className={classes.head} align="center">
-                    НДС
-                  </TableCell>
-                  <TableCell className={classes.head}></TableCell>
-                </TableRow>
-              </TableHead>
-              <TableBody>
-                <TableRow className={classes.row}>
-                  <TableCell align="left"> {reference.name} </TableCell>
-                  <TableCell align="center"> {reference.code} </TableCell>
-                  <TableCell align="center"> {reference.category} </TableCell>
-                  <TableCell align="center"> {reference.brand}</TableCell>
-                  <TableCell align="center">
-                    {" "}
-                    {!reference.cnofeacode ? "Н/Д" : reference.cnofeacode}
-                  </TableCell>
-                  <TableCell align="center">
-                    {reference.taxid === "0" ? "Без НДС" : "Стандартный НДС"}
-                  </TableCell>
-                  <TableCell>
-                    <IconButton
-                      aria-label="редактировать"
-                      onClick={() => handleEdit(reference)}
-                    >
-                      <CreateIcon />
-                    </IconButton>
-                    <IconButton
-                      aria-label="удалить"
-                      onClick={() => handleDeleteProduct(reference)}
-                    >
-                      <DeleteIcon />
-                    </IconButton>
-                  </TableCell>
-                  {sweetalert}
-                </TableRow>
-              </TableBody>
-            </Table>
-          </TableContainer>
-        )}
-      </Paper>
+        <Grid item xs={4}>
+          <Autocomplete
+            style={{ marginTop: "5px", marginLeft: "10px" }}
+            id="outlined-basic"
+            options={[reference, ...productOptions]}
+            value={productSelectValue}
+            onChange={productListChange}
+            noOptionsText="Товар не найден"
+            onInputChange={onProductListChange}
+            filterOptions={(options) =>
+              options.filter((option) => option !== "")
+            }
+            getOptionLabel={(option) => (option ? option.label : "")}
+            getOptionSelected={(option, value) => option.label === value.value}
+            renderInput={(params) => (
+              <TextField
+                {...params}
+                label="Наименование товара"
+                variant="outlined"
+              />
+            )}
+          />
+        </Grid>
+        <Grid item xs={3}>
+          <Button
+            style={{
+              minHeight: "3.5rem",
+              marginTop: "5px",
+              marginLeft: "10px",
+            }}
+            variant="outlined"
+            color="primary"
+            fullWidth
+            size="large"
+            onClick={handleSearch}
+          >
+            Поиск
+          </Button>
+        </Grid>
+      </Grid>
+      {Object.keys(reference).length > 0 && (
+        <TableContainer className="mt-4" component={Paper}>
+          <Table className={classes.table} aria-label="customized table">
+            <TableHead>
+              <TableRow>
+                <TableCell className={classes.head} align="left">
+                  Наименование
+                </TableCell>
+                <TableCell className={classes.head} align="center">
+                  Штрих - код
+                </TableCell>
+                <TableCell className={classes.head} align="center">
+                  Категория
+                </TableCell>
+                <TableCell className={classes.head} align="center">
+                  Брeнд
+                </TableCell>
+                <TableCell className={classes.head} align="center">
+                  Код ТН ВЭД
+                </TableCell>
+                <TableCell className={classes.head} align="center">
+                  НДС
+                </TableCell>
+                <TableCell className={classes.head}></TableCell>
+              </TableRow>
+            </TableHead>
+            <TableBody>
+              <TableRow className={classes.row}>
+                <TableCell align="left"> {reference.name} </TableCell>
+                <TableCell align="center"> {reference.code} </TableCell>
+                <TableCell align="center"> {reference.category} </TableCell>
+                <TableCell align="center"> {reference.brand}</TableCell>
+                <TableCell align="center">
+                  {" "}
+                  {!reference.cnofeacode ? "Н/Д" : reference.cnofeacode}
+                </TableCell>
+                <TableCell align="center">
+                  {reference.taxid === "0" ? "Без НДС" : "Стандартный НДС"}
+                </TableCell>
+                <TableCell>
+                  <IconButton
+                    aria-label="редактировать"
+                    onClick={() => handleEdit(reference)}
+                  >
+                    <CreateIcon />
+                  </IconButton>
+                  <IconButton
+                    aria-label="удалить"
+                    onClick={() => handleDeleteProduct(reference)}
+                  >
+                    <DeleteIcon />
+                  </IconButton>
+                </TableCell>
+                {sweetalert}
+              </TableRow>
+            </TableBody>
+          </Table>
+        </TableContainer>
+      )}
     </Fragment>
   );
 }

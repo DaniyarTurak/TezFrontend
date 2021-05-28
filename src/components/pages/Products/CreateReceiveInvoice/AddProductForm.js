@@ -836,7 +836,6 @@ let AddProductForm = ({
         }
 
         //Изменения единиц измерения ****************END*************
-
         const taxWithout = { label: "Без НДС", value: "0" };
         const taxWith = { label: "Стандартный НДС", value: "1" };
         if (!product.taxid) {
@@ -926,79 +925,102 @@ let AddProductForm = ({
       }
     }
   };
-
   const addProduct = (data) => {
-    setLimitAlert(false);
-    //всё что ниже переписывалось 100500 раз, трогать осторожно.
-    const newData = {
-      amount: unitsprid === "3" ? 0 : data.amount,
-      attributes: !isEditing
-        ? attributeCode || 0
-        : editProduct.attributes !== "0" &&
-          parseInt(editProduct.attributes, 0) >= 0
-        ? 0
-        : 0,
-      brand: data.brand ? data.brand.value : 0,
-      category: data.category ? data.category.value : null,
-      cnofea: data.cnofea,
-      code: !isEditing ? data.code : editProduct.code,
-      id: !isEditing ? productID : editProduct.is_new ? null : editProduct.idc,
-      isstaticprice: data.isstaticprice,
-      lastpurchaseprice: oldprice,
-      name: !isEditing ? data.name.label || data.name : editProduct.name,
-      newprice: data.newprice,
-      piece: sellByPieces ? true : false,
-      pieceinpack: sellByPieces ? data.pieceinpack : 0,
-      pieceprice: sellByPieces ? data.pieceprice : 0,
-      purchaseprice: unitsprid === "3" ? 0 : data.lastpurchaseprice,
-      staticprice: data.staticprice,
-      sku: null, // он вроде не нужен, нужно будет перепроверить.
-      taxid: companyData.certificatenum ? data.taxid.value : "0",
-      unitsprid: data.unitsprid.value,
-      updateprice,
-      attrlist: attributeCode === 0 || null ? [] : attrIdandValue,
-    };
-    // всё что выше переписывалось 100500 раз, трогать осторожно.
-
-    let reqdata = {
-      invoice: invoiceNumber,
-      type: "2",
-      stockcurrentfrom: [newData],
-    };
-
-    //remove tabs and spaces
-    newData.name = newData.name.replace(/\\t| {2}/g, "").trim();
-    newData.code = newData.code.replace(/\\t| {2}/g, "").trim();
-    Axios.post("/api/invoice/add/product", reqdata)
-      .then((res) => {
-        setEditAttrubutes(newData.attrlist);
-        const newProductChanged = {
-          invoice: reqdata.invoice,
-          attributes: attributeCode || null,
-          categoryName: newData.category,
-          brand: newData.brand,
-          code: newData.code,
-          name: newData.name,
-          newprice: newData.newprice,
-          purchaseprice: newData.lastpurchaseprice,
-          stock: res.data.text,
-          amount: newData.amount,
-        };
-        newProduct(newProductChanged);
-        setSubmitting(false);
-        setAdding(false);
-        handleEditing();
-        clearForm();
-        alert.success("Товар успешно добавлен", {
-          position: "top-right",
-          effect: "bouncyflip",
-          timeout: 2000,
-        });
-      })
-      .catch((err) => {
-        setSubmitting(false);
-        ErrorAlert(err);
+    let state = true;
+    attrIdandValue.forEach((element) => {
+      if (!element.code) {
+        state = true;
+      } else {
+        if (!element.value || element.value === "") {
+          state = false;
+        } else {
+          state = true;
+        }
+      }
+    });
+    if (!state) {
+      setSubmitting(false);
+      alert.warning("Заполните атрибуты!", {
+        position: "top-right",
+        effect: "bouncyflip",
+        timeout: 2000,
       });
+    } else {
+      //всё что ниже переписывалось 100500 раз, трогать осторожно.
+      const newData = {
+        amount: unitsprid === "3" ? 0 : data.amount,
+        attributes: !isEditing
+          ? attributeCode || 0
+          : editProduct.attributes !== "0" &&
+            parseInt(editProduct.attributes, 0) >= 0
+          ? 0
+          : 0,
+        brand: data.brand ? data.brand.value : 0,
+        category: data.category ? data.category.value : null,
+        cnofea: data.cnofea,
+        code: !isEditing ? data.code : editProduct.code,
+        id: !isEditing
+          ? productID
+          : editProduct.is_new
+          ? null
+          : editProduct.idc,
+        isstaticprice: data.isstaticprice,
+        lastpurchaseprice: oldprice,
+        name: !isEditing ? data.name.label || data.name : editProduct.name,
+        newprice: data.newprice,
+        piece: sellByPieces ? true : false,
+        pieceinpack: sellByPieces ? data.pieceinpack : 0,
+        pieceprice: sellByPieces ? data.pieceprice : 0,
+        purchaseprice: unitsprid === "3" ? 0 : data.lastpurchaseprice,
+        staticprice: data.staticprice,
+        sku: null, // он вроде не нужен, нужно будет перепроверить.
+        taxid: companyData.certificatenum ? data.taxid.value : "0",
+        unitsprid: data.unitsprid.value,
+        updateprice,
+        attrlist: attributeCode === 0 || null ? [] : attrIdandValue,
+      };
+      // всё что выше переписывалось 100500 раз, трогать осторожно.
+
+      let reqdata = {
+        invoice: invoiceNumber,
+        type: "2",
+        stockcurrentfrom: [newData],
+      };
+
+      //remove tabs and spaces
+      newData.name = newData.name.replace(/\\t| {2}/g, "").trim();
+      newData.code = newData.code.replace(/\\t| {2}/g, "").trim();
+      Axios.post("/api/invoice/add/product", reqdata)
+        .then((res) => {
+          setEditAttrubutes(newData.attrlist);
+          const newProductChanged = {
+            invoice: reqdata.invoice,
+            attributes: attributeCode || null,
+            categoryName: newData.category,
+            brand: newData.brand,
+            code: newData.code,
+            name: newData.name,
+            newprice: newData.newprice,
+            purchaseprice: newData.lastpurchaseprice,
+            stock: res.data.text,
+            amount: newData.amount,
+          };
+          newProduct(newProductChanged);
+          setSubmitting(false);
+          setAdding(false);
+          handleEditing();
+          clearForm();
+          alert.success("Товар успешно добавлен", {
+            position: "top-right",
+            effect: "bouncyflip",
+            timeout: 2000,
+          });
+        })
+        .catch((err) => {
+          setSubmitting(false);
+          ErrorAlert(err);
+        });
+    }
   };
   const changeState = (value) => {
     setAttrIdandValue(value);
@@ -1271,7 +1293,7 @@ let AddProductForm = ({
                 />
               </div>
             )}
-            <div className="col-md-3 zi-4" style={{ zIndex: 11 }}>
+            <div className="col-md-3 zi-4" style={{ zIndex: 10 }}>
               <label>Единица измерения</label>
               <Field
                 name="unitsprid"

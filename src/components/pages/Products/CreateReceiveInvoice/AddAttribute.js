@@ -142,9 +142,6 @@ export default function AddAttribute({
         className="row justify-content-center"
         style={{ marginBottom: 10 }}
       ></div>
-      {/* <div className="col-md-3">
-              <label htmlFor="">Дополнительная информация</label>
-            </div> */}
       {readyOpt.length > 0 &&
         readyOpt.map((attribute, idx) => {
           return (

@@ -581,7 +581,7 @@ export default function ManageInvoice({ location, history }) {
                       {product.attrs_json !== null &&
                         product.attrs_json.map((e, indx) => {
                           {
-                            if (e.code === null) {
+                            if (e.code === null || e.value === null) {
                               [];
                             } else {
                               return (
