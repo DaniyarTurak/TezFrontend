@@ -147,34 +147,45 @@ export default function MarginalPriceTable({
 
     const saveChanges = () => {
         let changedProducts = [];
-        if (isChanged) {
-            setSending(true);
-            productsWithPrice.forEach(element => {
-                if (element.ischangedprice) {
-                    changedProducts.push({ product: element.id, price: element.staticprice });
-                }
-            });
-            let changes = changedProducts;
-            Axios.post("/api/invoice/changestaticprice", {
-                changes,
-            })
-                .then((result) => result.data)
-                .then((result) => {
-                    Alert.success("Изменения успешно сохранены", {
-                        position: "top-right",
-                        effect: "bouncyflip",
-                        timeout: 2000,
-                    });
-                    setAdded(!added);
-                    getProducts();
-                    setSending(false);
-                    makeEnabled();
-                    selectState(false);
-                })
-                .catch((err) => {
-                    ErrorAlert(err);
-                    setSending(false);
+        let state = true;
+        productsWithPrice.forEach(element => {
+            if (parseInt(element.staticprice) < 0) {
+                state = false;
+            }
+        });
+        if (!state) {
+            Alert.warning("Предельная цена не может быть отрицательной!");
+        }
+        else {
+            if (isChanged) {
+                setSending(true);
+                productsWithPrice.forEach(element => {
+                    if (element.ischangedprice) {
+                        changedProducts.push({ product: element.id, price: element.staticprice });
+                    }
                 });
+                let changes = changedProducts;
+                Axios.post("/api/invoice/changestaticprice", {
+                    changes,
+                })
+                    .then((result) => result.data)
+                    .then((result) => {
+                        Alert.success("Изменения успешно сохранены", {
+                            position: "top-right",
+                            effect: "bouncyflip",
+                            timeout: 2000,
+                        });
+                        setAdded(!added);
+                        getProducts();
+                        setSending(false);
+                        makeEnabled();
+                        selectState(false);
+                    })
+                    .catch((err) => {
+                        ErrorAlert(err);
+                        setSending(false);
+                    });
+            };
         };
     };
 
@@ -205,9 +216,13 @@ export default function MarginalPriceTable({
     const editStaticPrice = (idx) => {
         setProductsWithPrice(prevState => {
             let obj = prevState[idx];
-            obj.changing = !obj.changing;
+            if (parseInt(obj.staticprice) < 0 &&  obj.changing) {
+                Alert.warning("Предельная цена не может быть отрицательной!");
+            }
+            else {
+                obj.changing = !obj.changing;
+            }
             return [...prevState];
-
         })
         checkState();
     };
