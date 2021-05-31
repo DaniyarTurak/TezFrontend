@@ -63,14 +63,14 @@ export default function HistoryTable({
                 </StyledTableCell>
               )}
               <StyledTableCell align="center">ФИО</StyledTableCell>
+              {["1", "2", "16", "17"].includes(invoicetype.value) && (
+                <StyledTableCell align="center">Сумма</StyledTableCell>
+              )}
               {["1", "7", "16", "17"].includes(invoicetype.value) && (
                 <StyledTableCell align="center">Со склада</StyledTableCell>
               )}
               {["1", "2", "16", "17"].includes(invoicetype.value) && (
                 <StyledTableCell align="center">На склад</StyledTableCell>
-              )}
-              {["1", "2", "16", "17"].includes(invoicetype.value) && (
-                <StyledTableCell align="center">Сумма</StyledTableCell>
               )}
               {["2", "16", "17"].includes(invoicetype.value) && (
                 <StyledTableCell align="center">Контрагент</StyledTableCell>
@@ -119,6 +119,14 @@ export default function HistoryTable({
                   </StyledTableCell>
                 )}
                 <StyledTableCell align="center">{invoice.name}</StyledTableCell>
+                {["1", "2", "16", "17"].includes(invoicetype.value) && (
+                  <StyledTableCell
+                    align="center"
+                    className={`${invoice.newprice && "tenge"}`}
+                  >
+                    {invoice.newprice}
+                  </StyledTableCell>
+                )}
                 {["1", "7", "16", "17"].includes(invoicetype.value) && (
                   <StyledTableCell align="center">
                     {invoice.stockfrom}
@@ -133,11 +141,6 @@ export default function HistoryTable({
                   <StyledTableCell align="center">
                     {invoice.counterparty &&
                       `${invoice.bin} | ${invoice.counterparty}`}
-                  </StyledTableCell>
-                )}
-                {["1", "2", "16", "17"].includes(invoicetype.value) && (
-                  <StyledTableCell align="center">
-                    {invoice.newprice}
                   </StyledTableCell>
                 )}
               </TableRow>
