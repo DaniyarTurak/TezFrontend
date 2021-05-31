@@ -171,8 +171,6 @@ export default function getBody({
             return <PricingMasterPage history={history} location={location} />;
           case "createprefix":
             return <CreatePrefix history={history} location={location} />;
-          case "stockmonitoring":
-            return <StockMonitoringPage history={history} location={location} />;
           default:
             return <ReferencesListPage history={history} location={location} />;
         }
@@ -227,12 +225,10 @@ export default function getBody({
             return <PromotionsPage history={history} location={location} />;
           case "marginalpricepage":
             return <MarginalPricePage history={history} location={location} />;
-          case "reconciliationpage": {
-            // if (companies_recon.includes(comp_id)) {
-              return <ReconciliationPage history={history} location={location} />;
-            // }
-            // else { return "" }
-          }
+          case "reconciliationpage":
+            return <ReconciliationPage history={history} location={location} />;
+          case "stockmonitoring":
+            return <StockMonitoringPage history={history} location={location} />;
           default:
             return <Products history={history} location={location} />;
           case "productreference":
