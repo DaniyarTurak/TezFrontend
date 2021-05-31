@@ -212,6 +212,7 @@ let AddProductForm = ({
       dispatch(change("AddProductForm", "unitsprid", unit));
       dispatch(change("AddProductFrom", "attribute", editProduct.attributes));
     }
+    console.log(editProduct.attributes);
   }, [isEditing, editProduct]);
 
   //после нажатия на кнопку "редактировать товар" сначала срабатывает его удаление из предыдущего списка,
@@ -940,6 +941,7 @@ let AddProductForm = ({
         timeout: 2000,
       });
     } else {
+      console.log(editProduct.attributes);
       //всё что ниже переписывалось 100500 раз, трогать осторожно.
       const newData = {
         amount: unitsprid === "3" ? 0 : data.amount,
@@ -948,7 +950,7 @@ let AddProductForm = ({
           : editProduct.attributes !== "0" &&
             parseInt(editProduct.attributes, 0) >= 0
           ? editProduct.attributes
-          : 0,
+          : editProduct.attributes,
         brand: data.brand ? data.brand.value : 0,
         category: data.category ? data.category.value : null,
         cnofea: data.cnofea,
@@ -971,8 +973,13 @@ let AddProductForm = ({
         taxid: companyData.certificatenum ? data.taxid.value : "0",
         unitsprid: data.unitsprid.value,
         updateprice,
-        attrlist: attributeCode === "0" || !attributeCode ? [] : attrIdandValue,
+        attrlist: editProduct.attributes
+          ? attrIdandValue
+          : attributeCode === "0" || !attributeCode
+          ? []
+          : attrIdandValue,
       };
+
       // всё что выше переписывалось 100500 раз, трогать осторожно.
 
       let reqdata = {
