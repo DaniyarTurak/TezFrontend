@@ -73,32 +73,37 @@ export default function ReportCertificateUsed({ companyProps, classes }) {
   };
 
   const getCertificates = () => {
-    setSearched(true);
-    setLoading(true);
-    Axios.get("/api/report/certificates/used", { params: { dateFrom: moment(dateFrom).format("L"), dateTo: moment(dateTo).format("L") } })
-      .then((res) => res.data)
-      .then((certs) => {
-        console.log(certs);
-        let noms = [];
-        certs.forEach(element => {
-          noms.push(element.nominal)
+    if (moment(dateFrom).format("L") === "Invalid date" || moment(dateTo).format("L") === "Invalid date") {
+      ErrorAlert("Введите корректную дату");
+    }
+    else {
+      setSearched(true);
+      setLoading(true);
+      Axios.get("/api/report/certificates/used", { params: { dateFrom: moment(dateFrom).format("L"), dateTo: moment(dateTo).format("L") } })
+        .then((res) => res.data)
+        .then((certs) => {
+          console.log(certs);
+          let noms = [];
+          certs.forEach(element => {
+            noms.push(element.nominal)
+          });
+          let newarr = [];
+          certs.forEach(el => {
+            newarr.push(el);
+          });
+          setCertExcell(newarr);
+          certs.forEach(element => {
+            noms.push(element.nominal)
+          });
+          setNominals(Array.from(new Set(noms)));
+          setCertificates(certs);
+          setLoading(false);
+        })
+        .catch((err) => {
+          setLoading(false);
+          ErrorAlert(err);
         });
-        let newarr = [];
-        certs.forEach(el => {
-          newarr.push(el);
-        });
-        setCertExcell(newarr);
-        certs.forEach(element => {
-          noms.push(element.nominal)
-        });
-        setNominals(Array.from(new Set(noms)));
-        setCertificates(certs);
-        setLoading(false);
-      })
-      .catch((err) => {
-        setLoading(false);
-        ErrorAlert(err);
-      });
+    }
   };
 
   const showCertificates = (nom) => {
