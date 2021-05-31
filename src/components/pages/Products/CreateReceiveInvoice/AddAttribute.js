@@ -1,6 +1,7 @@
 import React, { useState, useEffect, Fragment } from "react";
 import Select from "react-select";
 import Axios from "axios";
+import TextField from "@material-ui/core/TextField";
 
 export default function AddAttribute({
   clearBoard,
@@ -70,7 +71,14 @@ export default function AddAttribute({
     product.forEach((prod, i) => {
       sprToProd.forEach((element) => {
         if (prod.attribute_id.toString() === element.id) {
-          product[i] = { ...product[i], options: element.options };
+          product[i] = {
+            ...product[i],
+            options: element.options,
+            attribute_value2:
+              element.attribute_format === "DATE"
+                ? ""
+                : element.attribute_value,
+          };
         }
       });
     });
@@ -142,9 +150,6 @@ export default function AddAttribute({
         className="row justify-content-center"
         style={{ marginBottom: 10 }}
       ></div>
-      {/* <div className="col-md-3">
-              <label htmlFor="">Дополнительная информация</label>
-            </div> */}
       {readyOpt.length > 0 &&
         readyOpt.map((attribute, idx) => {
           return (
@@ -170,7 +175,7 @@ export default function AddAttribute({
                     {attribute.attribute_format === "DATE" && (
                       <input
                         name="date"
-                        value={attribute.attribute_value}
+                        value={attribute.attribute_value2}
                         type="date"
                         className="form-control"
                         placeholder="Введите значение"

@@ -155,7 +155,6 @@ export default function ProductDetails({
           <p className="tenge">{details.newprice}</p>
         </div>
       </div>
-
       <div className="row">
         <div className="col-md-12">
           <label>Налоговая категория</label>
