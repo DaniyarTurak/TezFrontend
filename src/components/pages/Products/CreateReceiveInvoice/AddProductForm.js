@@ -977,7 +977,9 @@ let AddProductForm = ({
         taxid: companyData.certificatenum ? data.taxid.value : "0",
         unitsprid: data.unitsprid.value,
         updateprice,
-        attrlist: attributeCode === 0 || null ? [] : attrIdandValue,
+        attrlist:
+          (attributeCode === "0" || null ? [] : attrIdandValue) ||
+          (attributeCode === 0 || null ? [] : attrIdandValue),
       };
       // всё что выше переписывалось 100500 раз, трогать осторожно.
 
@@ -1322,7 +1324,6 @@ let AddProductForm = ({
                   editProduct={editProduct}
                   selected={selectedAttribute}
                   clearBoard={clearBoard}
-                  attributeCode={getAttributeCode}
                 />
                 <Alert severity="info" style={{ marginTop: 10 }}>
                   <AlertTitle>
