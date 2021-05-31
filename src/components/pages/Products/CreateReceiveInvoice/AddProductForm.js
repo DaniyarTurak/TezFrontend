@@ -210,9 +210,7 @@ let AddProductForm = ({
       dispatch(change("AddProductForm", "amount", editProduct.amount));
       dispatch(change("AddProductForm", "taxid", tax));
       dispatch(change("AddProductForm", "unitsprid", unit));
-      dispatch(
-        change("AddProductFrom", "attribute", editProduct.attributescaption)
-      );
+      dispatch(change("AddProductFrom", "attribute", editProduct.attributes));
     }
   }, [isEditing, editProduct]);
 
@@ -874,10 +872,6 @@ let AddProductForm = ({
       });
   };
 
-  const getAttributeCode = (attributeCodeChanged) => {
-    setAttributeCode(attributeCodeChanged);
-  };
-
   const handleFormKeyPress = (e) => {
     if (e.key === "Enter") e.preventDefault();
   };
@@ -953,7 +947,7 @@ let AddProductForm = ({
           ? attributeCode || 0
           : editProduct.attributes !== "0" &&
             parseInt(editProduct.attributes, 0) >= 0
-          ? 0
+          ? editProduct.attributes
           : 0,
         brand: data.brand ? data.brand.value : 0,
         category: data.category ? data.category.value : null,
@@ -977,9 +971,7 @@ let AddProductForm = ({
         taxid: companyData.certificatenum ? data.taxid.value : "0",
         unitsprid: data.unitsprid.value,
         updateprice,
-        attrlist:
-          (attributeCode === "0" || null ? [] : attrIdandValue) ||
-          (attributeCode === 0 || null ? [] : attrIdandValue),
+        attrlist: attributeCode === "0" || !attributeCode ? [] : attrIdandValue,
       };
       // всё что выше переписывалось 100500 раз, трогать осторожно.
 
