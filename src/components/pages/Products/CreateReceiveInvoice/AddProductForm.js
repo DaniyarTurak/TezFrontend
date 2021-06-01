@@ -65,6 +65,7 @@ let AddProductForm = ({
   isEditing,
   handleEditing,
   editProduct,
+  setAttributeVal,
 }) => {
   const [addProductData, setAddProductData] = useState("");
   const [attributeCode, setAttributeCode] = useState("");
@@ -110,6 +111,10 @@ let AddProductForm = ({
   useEffect(() => {
     setEditAttrubutes(editProduct.attributescaption);
   }, [editProduct]);
+
+  useEffect(() => {
+    changeState(attrIdandValue);
+  }, []);
 
   const companyData =
     JSON.parse(sessionStorage.getItem("isme-company-data")) || {};
@@ -906,17 +911,18 @@ let AddProductForm = ({
       setModalOpenAlert(true);
     } else {
       setSubmitting(true);
-      if (isEditing) {
-        const item = {
-          invoice: invoiceNumber,
-          stock: editProduct.stock,
-          attributes: editProduct.attributes,
-        };
-        deleteOldRecord(item);
-        setAdding(true);
-      } else {
-        addProduct(data);
-      }
+      addProduct(data);
+      // if (isEditing) {
+      //   const item = {
+      //     invoice: invoiceNumber,
+      //     stock: editProduct.stock,
+      //     attributes: editProduct.attributes,
+      //   };
+      //   deleteOldRecord(item);
+      //   setAdding(true);
+      // } else {
+      //   addProduct(data);
+      // }
     }
   };
   const addProduct = (data) => {
@@ -938,6 +944,15 @@ let AddProductForm = ({
         timeout: 2000,
       });
     } else {
+      if (isEditing) {
+        const item = {
+          invoice: invoiceNumber,
+          stock: editProduct.stock,
+          attributes: editProduct.attributes,
+        };
+
+        deleteOldRecord(item);
+      }
       //всё что ниже переписывалось 100500 раз, трогать осторожно.
       const newData = {
         amount: unitsprid === "3" ? 0 : data.amount,
@@ -975,7 +990,6 @@ let AddProductForm = ({
           ? []
           : attrIdandValue,
       };
-
       // всё что выше переписывалось 100500 раз, трогать осторожно.
 
       let reqdata = {
