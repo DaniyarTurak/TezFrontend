@@ -212,7 +212,6 @@ let AddProductForm = ({
       dispatch(change("AddProductForm", "unitsprid", unit));
       dispatch(change("AddProductFrom", "attribute", editProduct.attributes));
     }
-    console.log(editProduct.attributes);
   }, [isEditing, editProduct]);
 
   //после нажатия на кнопку "редактировать товар" сначала срабатывает его удаление из предыдущего списка,
@@ -922,17 +921,17 @@ let AddProductForm = ({
   };
   const addProduct = (data) => {
     let state = true;
+    console.log(attrIdandValue);
     attrIdandValue.forEach((element) => {
       if (!element.code) {
         state = true;
       } else {
         if (!element.value || element.value === "") {
           state = false;
-        } else {
-          state = true;
         }
       }
     });
+    console.log(state);
     if (!state) {
       setSubmitting(false);
       alert.warning("Заполните атрибуты!", {
@@ -941,7 +940,6 @@ let AddProductForm = ({
         timeout: 2000,
       });
     } else {
-      console.log(editProduct.attributes);
       //всё что ниже переписывалось 100500 раз, трогать осторожно.
       const newData = {
         amount: unitsprid === "3" ? 0 : data.amount,
