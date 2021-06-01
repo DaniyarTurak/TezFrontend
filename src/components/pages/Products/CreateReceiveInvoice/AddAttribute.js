@@ -1,7 +1,6 @@
 import React, { useState, useEffect, Fragment } from "react";
 import Select from "react-select";
 import Axios from "axios";
-import TextField from "@material-ui/core/TextField";
 
 export default function AddAttribute({
   clearBoard,
@@ -38,8 +37,8 @@ export default function AddAttribute({
   }, [clearBoard]);
 
   useEffect(() => {
-    getAttrListId(changedAttr);
-  }, [changedAttr]);
+    getAttrListId(readyOpt);
+  }, [readyOpt]);
 
   const filterSpr = (attributes) => {
     let product =
@@ -74,13 +73,17 @@ export default function AddAttribute({
           product[i] = {
             ...product[i],
             options: element.options,
-            attribute_value2:
-              element.attribute_format === "DATE"
-                ? ""
-                : element.attribute_value,
           };
         }
       });
+    });
+    product.forEach((element, i) => {
+      if (element.attribute_format === "DATE") {
+        product[i] = {
+          ...product[i],
+          attribute_value: "",
+        };
+      }
     });
     setReadyOpt(product);
   };
@@ -102,33 +105,35 @@ export default function AddAttribute({
   };
 
   const nonSprChange = (event, attribute) => {
+    let value = event.target.value;
     let index;
-    changedAttr.forEach((attr, i) => {
+    readyOpt.forEach((attr, i) => {
       if (attr.attribute_id === attribute.attribute_id) {
         index = i;
       }
     });
-    const temp = event.target.value;
-    setChangedAttr((prevState) => {
+    setReadyOpt((prevState) => {
       let obj = prevState[index];
-      obj.attribute_value = temp;
+      obj.attribute_value = value;
       return [...prevState];
     });
+    setChangedAttr(readyOpt);
   };
 
   const onAttrValueChange = (event, attribute) => {
     let index;
-    changedAttr.forEach((attr, i) => {
+    readyOpt.forEach((attr, i) => {
       if (attr.attribute_id === attribute.attribute_id) {
         index = i;
       }
     });
-    setChangedAttr((prevState) => {
+    setReadyOpt((prevState) => {
       let obj = prevState[index];
       obj.attribute_value = event.label;
       obj.value_select = event;
       return [...prevState];
     });
+    setChangedAttr(readyOpt);
   };
 
   const getAttrListId = () => {
@@ -175,7 +180,7 @@ export default function AddAttribute({
                     {attribute.attribute_format === "DATE" && (
                       <input
                         name="date"
-                        value={attribute.attribute_value2}
+                        value={attribute.attribute_value}
                         type="date"
                         className="form-control"
                         placeholder="Введите значение"

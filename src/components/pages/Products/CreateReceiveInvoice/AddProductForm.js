@@ -212,7 +212,6 @@ let AddProductForm = ({
       dispatch(change("AddProductForm", "unitsprid", unit));
       dispatch(change("AddProductFrom", "attribute", editProduct.attributes));
     }
-    console.log(editProduct.attributes);
   }, [isEditing, editProduct]);
 
   //после нажатия на кнопку "редактировать товар" сначала срабатывает его удаление из предыдущего списка,
@@ -928,8 +927,6 @@ let AddProductForm = ({
       } else {
         if (!element.value || element.value === "") {
           state = false;
-        } else {
-          state = true;
         }
       }
     });
@@ -941,7 +938,6 @@ let AddProductForm = ({
         timeout: 2000,
       });
     } else {
-      console.log(editProduct.attributes);
       //всё что ниже переписывалось 100500 раз, трогать осторожно.
       const newData = {
         amount: unitsprid === "3" ? 0 : data.amount,
