@@ -25,15 +25,15 @@ import ReconciliationPage from "./ReconciliationPage";
 export default function ReportPage({ type, history, location }) {
   // const counter = useSelector((state) => state.counter);
   // console.log(counter);
-  const companies_recon = [38, 56, 57, 68, 69, 81, 78, 98, 231, 241, 269, 96, 2];
-  const comp_id = parseInt(JSON.parse(sessionStorage.getItem("isme-company-data")).id);
-  let reports;
-  if (companies_recon.includes(comp_id)) {
-    reports = reports_recon;
-  }
-  else {
-    reports = reports_norecon;
-  };
+  // const companies_recon = [38, 56, 57, 68, 69, 81, 78, 98, 231, 241, 269, 96, 2];
+  // const comp_id = parseInt(JSON.parse(sessionStorage.getItem("isme-company-data")).id);
+  // let reports;
+  // if (companies_recon.includes(comp_id)) {
+  //   reports = reports_recon;
+  // }
+  // else {
+  //   reports = reports_norecon;
+  // };
   const [parameters, setParameters] = useState("");
   const [reportMode, setReportMode] = useState(
     type === "report"
@@ -78,7 +78,7 @@ export default function ReportPage({ type, history, location }) {
   return (
     <div className="report">
       <div className={`row ${reportMode ? "pb-10" : ""}`}>
-        {reports.map(
+        {reports_recon.map(
           (report) =>
             typeMode === report.type && (
               <div className="col-md-3 report-btn-block" key={report.id}>
