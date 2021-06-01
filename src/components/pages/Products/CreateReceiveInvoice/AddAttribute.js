@@ -13,31 +13,17 @@ export default function AddAttribute({
 
   useEffect(() => {
     if (attributescaption && attributescaption.length > 0) {
-      let attrDate = [];
       attributescaption.forEach((element) => {
-        if (element.attribute_format === "DATE") {
-          attrDate.push({ ...element, value_select: "", attribute_date: "" });
-        } else {
-          attrDate.push({ ...element, value_select: "" });
-        }
+        element = { ...element, value_select: "" };
       });
-      setChangedAttr(attrDate);
+      setChangedAttr(attributescaption);
       getAttributes();
     } else {
       if (editAttrubutes && editAttrubutes.length > 0) {
-        let attrOldDate = [];
         editAttrubutes.forEach((element) => {
-          if (element.attribute_format === "DATE") {
-            attrOldDate.push({
-              ...element,
-              value_select: "",
-              attribute_value: "",
-            });
-          } else {
-            attrOldDate.push({ ...element, value_select: "" });
-          }
+          element = { ...element, value_select: "" };
         });
-        setChangedAttr(attrOldDate);
+        setChangedAttr(editAttrubutes);
         getAttributes();
       }
     }
@@ -51,8 +37,8 @@ export default function AddAttribute({
   }, [clearBoard]);
 
   useEffect(() => {
-    getAttrListId(changedAttr);
-  }, [changedAttr]);
+    getAttrListId(readyOpt);
+  }, [readyOpt]);
 
   const filterSpr = (attributes) => {
     let product =
