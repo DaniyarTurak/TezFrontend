@@ -87,10 +87,6 @@ export default function AddAttribute({
           product[i] = {
             ...product[i],
             options: element.options,
-            // attribute_value2:
-            //   element.attribute_format === "DATE"
-            //     ? ""
-            //     : element.attribute_value,
           };
         }
       });

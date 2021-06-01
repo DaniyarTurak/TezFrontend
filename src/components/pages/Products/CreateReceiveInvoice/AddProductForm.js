@@ -921,7 +921,6 @@ let AddProductForm = ({
   };
   const addProduct = (data) => {
     let state = true;
-    console.log(attrIdandValue);
     attrIdandValue.forEach((element) => {
       if (!element.code) {
         state = true;
@@ -931,7 +930,6 @@ let AddProductForm = ({
         }
       }
     });
-    console.log(state);
     if (!state) {
       setSubmitting(false);
       alert.warning("Заполните атрибуты!", {
