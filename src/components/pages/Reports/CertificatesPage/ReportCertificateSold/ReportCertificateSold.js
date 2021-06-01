@@ -69,10 +69,6 @@ export default function ReportCertificateSold({ companyProps, classes }) {
 
 
   const getCertificates = () => {
-    if (moment(dateFrom).format("L") === "Invalid date" || moment(dateTo).format("L") === "Invalid date") {
-      ErrorAlert("Введите корректную дату");
-    }
-    else {
       setSearched(true);
       setLoading(true);
       Axios.get("/api/report/certificates/sold", { params: { dateFrom: moment(dateFrom).format("L"), dateTo: moment(dateTo).format("L") } })
@@ -96,7 +92,6 @@ export default function ReportCertificateSold({ companyProps, classes }) {
           setLoading(false);
           ErrorAlert(err);
         });
-    }
   };
 
   const showCertificates = (nom) => {

@@ -9,6 +9,8 @@ import {
   MuiPickersUtilsProvider,
   KeyboardDatePicker,
 } from "@material-ui/pickers";
+import moment from 'moment';
+import ErrorAlert from "./ErrorAlert";
 
 const useStyles = makeStyles((theme) => ({
   labelRoot: {
@@ -42,6 +44,16 @@ export default function MaterialDateDefault({
   disableButton,
 }) {
   const classes = useStyles();
+
+  const checkDates = () => {
+    if (moment(dateFrom).format("L") === "Invalid date" || moment(dateTo).format("L") === "Invalid date") {
+      ErrorAlert("Введите корректную дату");
+    }
+    else {
+      searchInvoices();
+    }
+  };
+
   return (
     <Paper className={classes.paper}>
       <Grid container spacing={3}>
@@ -125,7 +137,9 @@ export default function MaterialDateDefault({
             variant="outlined"
             color="primary"
             disabled={disableButton}
-            onClick={searchInvoices}
+            // onClick={searchInvoices}
+            onClick={checkDates}
+
           >
             Поиск
           </Button>
