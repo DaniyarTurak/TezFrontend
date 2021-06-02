@@ -65,7 +65,6 @@ let AddProductForm = ({
   isEditing,
   handleEditing,
   editProduct,
-  setAttributeVal,
 }) => {
   const [addProductData, setAddProductData] = useState("");
   const [attributeCode, setAttributeCode] = useState("");
@@ -950,7 +949,6 @@ let AddProductForm = ({
           stock: editProduct.stock,
           attributes: editProduct.attributes,
         };
-
         deleteOldRecord(item);
       }
       //всё что ниже переписывалось 100500 раз, трогать осторожно.
