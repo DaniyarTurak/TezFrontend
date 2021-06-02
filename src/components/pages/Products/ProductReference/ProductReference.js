@@ -74,7 +74,7 @@ export default function ProductReference() {
   };
 
   const getProductReference = () => {
-    Axios.get("/api/products/barcode", {
+    Axios.get("/api/nomenclature", {
       params: { barcode: productSelectValue.code },
     })
       .then((res) => res.data)

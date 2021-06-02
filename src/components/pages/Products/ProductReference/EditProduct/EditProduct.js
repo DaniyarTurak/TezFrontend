@@ -99,6 +99,20 @@ export default function EditProduct({
   const [clearBoard, setClearBoard] = useState(false);
   const [attributes, setAttributes] = useState([]);
 
+  useEffect(() => {
+    if (capations.length > 0) {
+      let attrOld = [];
+      capations.forEach((element) => {
+        attrOld.push({
+          code: element.attribute_id,
+          name: element.attribute_name,
+          value: element.attribute_value,
+        });
+      });
+      setAttributes(attrOld);
+    }
+  }, [capations]);
+
   const getAttributeCharCode = (attributeCodeChanged) => {
     setAttributeGlobCode(attributeCodeChanged);
   };
