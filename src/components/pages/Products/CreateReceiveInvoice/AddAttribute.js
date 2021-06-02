@@ -73,6 +73,7 @@ export default function AddAttribute({
           product[i] = {
             ...product[i],
             options: element.options,
+            attribute_value: "",
           };
         }
       });
