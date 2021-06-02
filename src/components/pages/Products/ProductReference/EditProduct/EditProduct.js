@@ -25,7 +25,6 @@ import AlertMaterial from "@material-ui/lab/Alert";
 import Alert from "react-s-alert";
 import AddAttributeChar from "../AddAttributeChar";
 import AddAttribute from "../AddAttribute";
-// import Moment from "moment";
 
 const useStyles = makeStyles((theme) => ({
   table: {},
