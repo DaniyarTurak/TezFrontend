@@ -214,6 +214,10 @@ export default function ProductMonitoring() {
                 effect: "bouncyflip",
                 timeout: 2000,
               });
+              setBarcode("");
+              setName("");
+              setMinimalStock("");
+              getProducts();
               getMinimalStock();
               setSending(false);
             }

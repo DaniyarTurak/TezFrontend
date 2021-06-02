@@ -61,7 +61,7 @@ export default function CategoryMonitoring() {
 
   useEffect(() => {
     getCategories();
-    // getMinimalStock();
+    getMinimalStock();
   }, []);
 
   useEffect(() => {
@@ -144,7 +144,7 @@ export default function CategoryMonitoring() {
           }
         });
         const reqdata = {
-          category: categoryid,
+          product: categoryid,
           units: minimalStock,
           type: 2
         };
@@ -158,16 +158,19 @@ export default function CategoryMonitoring() {
                 effect: "bouncyflip",
                 timeout: 2000,
               });
+              setCategory("");
+              setMinimalStock("");
+              getCategories("");
               getMinimalStock();
               setSending(false);
             }
             else {
-                Alert.error(result.data.text, {
-                  position: "top-right",
-                  effect: "bouncyflip",
-                  timeout: 2000,
-                })
-                setSending(false);
+              Alert.error(result.data.text, {
+                position: "top-right",
+                effect: "bouncyflip",
+                timeout: 2000,
+              })
+              setSending(false);
             }
           })
           .catch((err) => {
@@ -287,6 +290,7 @@ export default function CategoryMonitoring() {
               <CategoryTable
                 categories={categoriesWithMS}
                 getMinimalStock={getMinimalStock}
+                getCategories={getCategories}
                 enabled={enabled}
                 setEnabled={setEnabled}
               />

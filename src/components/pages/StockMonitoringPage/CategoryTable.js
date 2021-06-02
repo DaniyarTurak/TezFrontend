@@ -195,7 +195,7 @@ export default function CategoryTable({ categories, getMinimalStock, enabled, se
             let obj = prevState[idx];
             obj.units = obj.temp_units;
             obj.editing = false;
-            category = { id: obj.id, units: obj.units };
+            category = { id: obj.stockm_id, units: obj.units };
             return [...prevState];
         });
         sendChanges(category);
@@ -213,6 +213,7 @@ export default function CategoryTable({ categories, getMinimalStock, enabled, se
                     timeout: 2000,
                 });
                 setSending(false);
+                getMinimalStock();
             })
             .catch((err) => {
                 if (
@@ -250,7 +251,7 @@ export default function CategoryTable({ categories, getMinimalStock, enabled, se
 
     const deleteCategory = (id) => {
         setSending(true);
-        Axios.post("/api/stock/stockm/delete", { id: id })
+        Axios.post("/api/stock/stockm/delete", { id: id, type: 2 })
             .then((result) => result.data)
             .then((result) => {
                 Alert.success("Минимальный остаток успешно удалён", {
@@ -313,7 +314,7 @@ export default function CategoryTable({ categories, getMinimalStock, enabled, se
                                         .map((catgr, idx) => (
                                             <TableRow key={idx}>
                                                 <StyledTableCell>{catgr.indx}</StyledTableCell>
-                                                <StyledTableCell>{catgr.name}</StyledTableCell>
+                                                <StyledTableCell align="center">{catgr.name}</StyledTableCell>
                                                 <StyledTableCell align="center">
                                                     {catgr.editing === true ?
                                                         <UnitsInput
@@ -341,7 +342,7 @@ export default function CategoryTable({ categories, getMinimalStock, enabled, se
                                                     &nbsp;
                                                     {!catgr.editing &&
                                                         <IconButton
-                                                            onClick={() => deleteCategory(catgr.id)}
+                                                            onClick={() => deleteCategory(catgr.stockm_id)}
                                                         >
                                                             <DeleteIcon fontSize="small" title="Удалить" />
                                                         </IconButton>

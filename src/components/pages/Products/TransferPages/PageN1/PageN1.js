@@ -245,7 +245,7 @@ export default function PageN1({
       return setamountExceeds(true);
     }
     const alreadyExist = productList.filter(
-      (product) => product.code === productSelectValue.code
+      (product) => product.id === productSelectValue.id
     );
     if (alreadyExist.length > 0) {
       return Alert.info("Данный товар уже в списке", {
