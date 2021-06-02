@@ -99,6 +99,8 @@ export default function EditProduct({
   const [clearBoard, setClearBoard] = useState(false);
   const [attributes, setAttributes] = useState([]);
 
+  console.log(category);
+
   useEffect(() => {
     if (capations.length > 0) {
       let attrOld = [];
