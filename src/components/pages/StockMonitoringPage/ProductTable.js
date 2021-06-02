@@ -196,7 +196,7 @@ export default function ProductTable({ products, getMinimalStock, enabled, setEn
             let obj = prevState[idx];
             obj.units = obj.temp_units;
             obj.editing = false;
-            product = { id: obj.id, units: obj.units };
+            product = { id: obj.stockm_id, units: obj.units };
             return [...prevState];
         });
         sendChanges(product);
@@ -214,6 +214,7 @@ export default function ProductTable({ products, getMinimalStock, enabled, setEn
                     timeout: 2000,
                 });
                 setSending(false);
+                getMinimalStock();
             })
             .catch((err) => {
                 if (
@@ -251,7 +252,7 @@ export default function ProductTable({ products, getMinimalStock, enabled, setEn
 
     const deleteProduct = (id) => {
         setSending(true);
-        Axios.post("/api/stock/stockm/delete", { id: id })
+        Axios.post("/api/stock/stockm/delete", { id: id, type: 1 })
             .then((result) => result.data)
             .then((result) => {
                 Alert.success("Минимальный остаток успешно удалён", {
@@ -346,7 +347,7 @@ export default function ProductTable({ products, getMinimalStock, enabled, setEn
                                                     &nbsp;
                                                     {!product.editing &&
                                                         <IconButton
-                                                            onClick={() => deleteProduct(product.id)}
+                                                            onClick={() => deleteProduct(product.stockm_id)}
                                                         >
                                                             <DeleteIcon fontSize="small" title="Удалить" />
                                                         </IconButton>

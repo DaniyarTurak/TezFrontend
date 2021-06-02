@@ -61,7 +61,7 @@ export default function BrandMonitoring() {
 
   useEffect(() => {
     getBrands();
-    // getMinimalStock();
+    getMinimalStock();
   }, []);
 
   useEffect(() => {
@@ -69,7 +69,7 @@ export default function BrandMonitoring() {
     brandsTemp.forEach(element => {
       arr.push(element)
     });
-    arr.unshift({ id: 0, brand: "Все товары" });
+    arr.unshift({ brand_id: 0, name: "Все бренды" });
     setbrandsSelect(arr);
   }, [brandsTemp]);
 
@@ -77,7 +77,11 @@ export default function BrandMonitoring() {
     Axios.get("/api/brand/search")
       .then((res) => res.data)
       .then((list) => {
-        setBrands(list);
+        let temp = [];
+        list.forEach(element => {
+          temp.push({ name: element.brand, brand_id: element.id })
+        });
+        setBrands(temp);
       })
       .catch((err) => {
         ErrorAlert(err);
@@ -104,7 +108,11 @@ export default function BrandMonitoring() {
           Axios.get("/api/brand/search", { params: { brand: "" } })
             .then((res) => res.data)
             .then((list) => {
-              setBrands(list);
+              let temp = [];
+              list.forEach(element => {
+                temp.push({ name: element.brand, brand_id: element.id })
+              });
+              setBrands(temp);
             })
             .catch((err) => {
               ErrorAlert(err);
@@ -115,7 +123,11 @@ export default function BrandMonitoring() {
             Axios.get("/api/brand/search", { params: { brand: brand } })
               .then((res) => res.data)
               .then((list) => {
-                setBrands(list);
+                let temp = [];
+                list.forEach(element => {
+                  temp.push({ name: element.brand, brand_id: element.id })
+                });
+                setBrands(temp);
               })
               .catch((err) => {
                 ErrorAlert(err);
@@ -139,12 +151,12 @@ export default function BrandMonitoring() {
       }
       else {
         brands.forEach(brnd => {
-          if (brnd.brand === brand) {
-            brandid = brnd.id;
+          if (brnd.name === brand) {
+            brandid = brnd.brand_id;
           }
         });
         const reqdata = {
-          brand: brandid,
+          product: brandid,
           units: minimalStock,
           type: 3
         };
@@ -157,16 +169,19 @@ export default function BrandMonitoring() {
                 effect: "bouncyflip",
                 timeout: 2000,
               });
+              setBrand("");
+              setMinimalStock("");
+              getBrands();
               getMinimalStock();
               setSending(false);
             }
             else {
-                Alert.error(result.data.text, {
-                  position: "top-right",
-                  effect: "bouncyflip",
-                  timeout: 2000,
-                })
-                setSending(false);
+              Alert.error(result.data.text, {
+                position: "top-right",
+                effect: "bouncyflip",
+                timeout: 2000,
+              })
+              setSending(false);
             }
           })
           .catch((err) => {
@@ -190,7 +205,7 @@ export default function BrandMonitoring() {
     let arr = [];
     if (value !== "Все бренды" && value !== null) {
       brandsTemp.forEach(prod => {
-        if (prod.brand === value) {
+        if (prod.name === value) {
           arr.push(prod);
         }
         setBrandsWithMS(arr);
@@ -210,7 +225,7 @@ export default function BrandMonitoring() {
             noOptionsText="Бренд не найден"
             onChange={(e, value) => { setBrand(value) }}
             onInputChange={(event, value) => { setBrand(value) }}
-            options={brands.map((option) => option.brand)}
+            options={brands.map((option) => option.name)}
             renderInput={(params) => (
               <TextField
                 classes={{
@@ -255,25 +270,24 @@ export default function BrandMonitoring() {
           <br />
           <Grid container spacing={3}>
             <Grid item xs={12} style={{ paddingTop: "10px" }}>
-              Товары с установленным минимальным остатком
+              Бренды с установленным минимальным остатком
         </Grid>
             <Grid item xs={12} style={{ paddingBottom: "0px" }} >
               Быстрый поиск по перечню:
         </Grid>
             <Grid item xs={6} style={{ paddingTop: "0px" }}>
               <Autocomplete
-                id="prods"
                 disabled={!enabled}
-                options={brandsSelect.map((option) => option.brand)}
+                options={brandsSelect.map((option) => option.name)}
                 onChange={(e, value) => { searchBrand(value) }}
-                noOptionsText="Товар не найден"
+                noOptionsText="Брнед не найден"
                 renderInput={(params) => (
                   <TextField
                     classes={{
                       root: classes.root,
                     }}
                     {...params}
-                    placeholder="Выберите товар"
+                    placeholder="Выберите бренд"
                     variant="outlined"
                     size="small"
                   />
@@ -286,6 +300,7 @@ export default function BrandMonitoring() {
               <BrandTable
                 brands={brandsWithMS}
                 getMinimalStock={getMinimalStock}
+                getBrands={getBrands}
                 enabled={enabled}
                 setEnabled={setEnabled}
               />

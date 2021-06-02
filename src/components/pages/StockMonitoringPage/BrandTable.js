@@ -195,7 +195,7 @@ export default function BrandTable({ brands, getMinimalStock, enabled, setEnable
             let obj = prevState[idx];
             obj.units = obj.temp_units;
             obj.editing = false;
-            product = { id: obj.id, units: obj.units };
+            product = { id: obj.stockm_id, units: obj.units };
             return [...prevState];
         });
         sendChanges(product);
@@ -213,6 +213,7 @@ export default function BrandTable({ brands, getMinimalStock, enabled, setEnable
                     timeout: 2000,
                 });
                 setSending(false);
+                getMinimalStock();
             })
             .catch((err) => {
                 if (
@@ -250,7 +251,7 @@ export default function BrandTable({ brands, getMinimalStock, enabled, setEnable
 
     const deleteBrand = (id) => {
         setSending(true);
-        Axios.post("/api/stock/stockm/delete", { id: id })
+        Axios.post("/api/stock/stockm/delete", { id: id, type: 3 })
             .then((result) => result.data)
             .then((result) => {
                 Alert.success("Минимальный остаток успешно удалён", {
@@ -313,7 +314,7 @@ export default function BrandTable({ brands, getMinimalStock, enabled, setEnable
                                         .map((brnd, idx) => (
                                             <TableRow key={idx}>
                                                 <StyledTableCell>{brnd.indx}</StyledTableCell>
-                                                <StyledTableCell>{brnd.brand}</StyledTableCell>
+                                                <StyledTableCell align="center">{brnd.name}</StyledTableCell>
                                                 <StyledTableCell align="center">
                                                     {brnd.editing === true ?
                                                         <UnitsInput
@@ -341,7 +342,7 @@ export default function BrandTable({ brands, getMinimalStock, enabled, setEnable
                                                     &nbsp;
                                                     {!brnd.editing &&
                                                         <IconButton
-                                                            onClick={() => deleteBrand(brnd.id)}
+                                                            onClick={() => deleteBrand(brnd.stockm_id)}
                                                         >
                                                             <DeleteIcon fontSize="small" title="Удалить" />
                                                         </IconButton>
