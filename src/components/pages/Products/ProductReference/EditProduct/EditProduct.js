@@ -99,8 +99,10 @@ export default function EditProduct({
   const [clearBoard, setClearBoard] = useState(false);
   const [attributes, setAttributes] = useState([]);
 
+  console.log(productDetails);
+
   useEffect(() => {
-    if (capations.length > 0) {
+    if (capations.length > 0 && !capations) {
       let attrOld = [];
       capations.forEach((element) => {
         attrOld.push({
@@ -147,6 +149,7 @@ export default function EditProduct({
       delete: "",
       attributesValue: attributes,
     };
+
     Axios.post("/api/products/update", {
       product,
     })

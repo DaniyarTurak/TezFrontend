@@ -43,7 +43,7 @@ export default function ProductReference() {
 
   const getProductByBarcode = (pb) => {
     const barcode = pb || productBarcode;
-    Axios.get("/api/products/barcode", { params: { barcode } })
+    Axios.get("/api/nomenclature", { params: { barcode } })
       .then((res) => res.data)
       .then((product) => {
         let productSelectValue = {
@@ -166,6 +166,7 @@ export default function ProductReference() {
                 )}
                 {productList === "ProductList" && (
                   <ProductReferenceList
+                    setProductSelectValue={setProductSelectValue}
                     reference={reference}
                     getProductReference={getProductReference}
                     productBarcode={productBarcode}

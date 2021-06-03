@@ -37,6 +37,7 @@ export default function ProductReferenceList({
   setProductBarcode,
   getProductReference,
   capations,
+  setProductSelectValue,
 }) {
   const [isAddingAmount, setAddingAmount] = useState(false);
   const [editProduct, setEditProduct] = useState([]);
@@ -253,11 +254,12 @@ export default function ProductReferenceList({
     })
       .then((res) => res.data)
       .then((res) => {
-        getProductReference();
+        // getProductReference();
         setReference([]);
+        setProductSelectValue("");
         setProductBarcode("");
-        getBarcodeProps(productBarcode);
-        getProducts();
+        // getBarcodeProps(productBarcode);
+        // getProducts();
         if (res.code === "success") {
           Alert.success("Товар удален успешно.", {
             position: "top-right",
@@ -287,7 +289,7 @@ export default function ProductReferenceList({
         confirmBtnBsStyle="success"
         cancelBtnBsStyle="default"
         title="Вы уверены?"
-        allowEscape={false}
+        allowEscape={true}
         closeOnClickOutside={false}
         onConfirm={() => handleDelete(item)}
         onCancel={() => setSweetAlert(null)}
