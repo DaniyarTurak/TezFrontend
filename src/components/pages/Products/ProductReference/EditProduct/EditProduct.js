@@ -132,7 +132,8 @@ export default function EditProduct({
       brand: brand.id,
       taxid: companyData.certificatenum ? tax.value : "0",
       unitsprid: unitspr.id,
-      piece: sellByPieces,
+      piece:
+        productDetails.piece === true ? productDetails.piece : sellByPieces,
       pieceinpack: piecesUnint,
       cnofeacode: cnofeacode,
       details: !isEditing
