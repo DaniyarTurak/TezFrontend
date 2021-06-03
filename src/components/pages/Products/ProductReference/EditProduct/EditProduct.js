@@ -99,20 +99,21 @@ export default function EditProduct({
   const [clearBoard, setClearBoard] = useState(false);
   const [attributes, setAttributes] = useState([]);
 
-  console.log(productDetails);
-
   useEffect(() => {
-    if (capations.length > 0 && !capations) {
-      let attrOld = [];
+    let attrOld = [];
+    if (capations.length > 0) {
       capations.forEach((element) => {
-        attrOld.push({
-          code: element.attribute_id,
-          name: element.attribute_name,
-          value: element.attribute_value,
-        });
+        if (element.attribute_id === null) {
+        } else {
+          attrOld.push({
+            code: element.attribute_id,
+            name: element.attribute_name,
+            value: element.attribute_value,
+          });
+        }
       });
-      setAttributes(attrOld);
     }
+    setAttributes(attrOld);
   }, [capations]);
 
   const getAttributeCharCode = (attributeCodeChanged) => {
