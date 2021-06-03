@@ -265,6 +265,7 @@ export default function PageN1({
           attributes: productSelectValue.attributes,
           SKU: null,
           newprice: newPriceCheck ? detail.priceto : detail.price,
+          pieceprice: detail.pieceprice
         },
       ],
     };
