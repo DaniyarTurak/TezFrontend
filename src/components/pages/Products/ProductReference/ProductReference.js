@@ -86,7 +86,6 @@ export default function ProductReference() {
         console.log(err);
       });
   };
-  console.log(reference);
 
   const getProducts = (inp) => {
     Axios.get("/api/products", {
