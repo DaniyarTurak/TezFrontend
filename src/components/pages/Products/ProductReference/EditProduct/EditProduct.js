@@ -496,16 +496,17 @@ export default function EditProduct({
             <TableCell>Партийные характеристики:</TableCell>
             <TableCell>
               {editingAttr &&
-                productDetails.attributescaption.map((element) => {
+                productDetails.attributescaption.map((element, idx) => {
                   if (productDetails.attributes !== "0") {
                     return (
-                      <Typography variant="h7" alingItem="left" key={element}>
+                      <Typography variant="h7" alingItem="left" key={idx}>
                         {element.attribute_name},
                       </Typography>
                     );
-                  } else {
-                    [];
                   }
+                  // else {
+                  //   [];
+                  // }
                 })}
               {!editingAttr && (
                 <AddAttribute
