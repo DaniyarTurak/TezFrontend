@@ -1,4 +1,4 @@
-import React, { useState, Fragment, useEffect } from "react";
+import React, { useState, useEffect } from "react";
 import Axios from "axios";
 import { makeStyles } from "@material-ui/core/styles";
 import Paper from "@material-ui/core/Paper";
@@ -20,7 +20,6 @@ import ListAltSharpIcon from "@material-ui/icons/ListAltSharp";
 import TableCell from "@material-ui/core/TableCell";
 import TableRow from "@material-ui/core/TableRow";
 import IconButton from "@material-ui/core/IconButton";
-import TableFooter from "@material-ui/core/TableFooter";
 import AlertMaterial from "@material-ui/lab/Alert";
 import Alert from "react-s-alert";
 import AddAttributeChar from "../AddAttributeChar";
@@ -123,9 +122,6 @@ export default function EditProduct({
   const getAttributeCode = (attributeCodeChanged) => {
     setAttributeCode(attributeCodeChanged);
   };
-
-  console.log(brand);
-  console.log(category);
 
   const editProdRes = () => {
     let product = {
