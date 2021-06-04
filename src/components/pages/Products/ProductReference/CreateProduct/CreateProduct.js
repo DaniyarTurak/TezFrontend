@@ -594,7 +594,7 @@ export default function CreateProduct({ isEditing }) {
             </div>
             <Grid container spacing={3} justify="center">
               <Grid item xs={3} sm={3}>
-                <Typography variant="h7" align="left">
+                <Typography variant="h6" align="left">
                   <FormControlLabel
                     control={
                       <Checkbox
