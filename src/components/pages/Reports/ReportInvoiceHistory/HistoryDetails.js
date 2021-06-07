@@ -162,7 +162,7 @@ export default function HistoryDetails({
                   ) && (
                     <StyledTableCell align="center">
                       {parseFloat(
-                        detail.newprice * detail.units
+                        detail.price * detail.units
                       ).toLocaleString("ru", {
                         maximumFractionDigits: 2,
                       })}
@@ -260,7 +260,7 @@ export default function HistoryDetails({
                   <StyledTableCell align="center">
                     {details
                       .reduce((prev, cur) => {
-                        return prev + parseFloat(cur.newprice * cur.units);
+                        return prev + parseFloat(cur.price * cur.units);
                       }, 0)
                       .toLocaleString("ru", { minimumFractionDigits: 2 })}
                   </StyledTableCell>
