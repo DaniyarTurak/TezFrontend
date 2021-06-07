@@ -88,7 +88,7 @@ export default function ProductListTable({ productList, removeProduct }) {
                   return prev + parseFloat(cur.amount);
                 }, 0)}
               </StyledTableCell>
-              <StyledTableCell align="center">
+              <StyledTableCell align="center" className={"tenge"}>
                 {productList.reduce((prev, cur) => {
                   return prev + parseFloat(cur.amount * cur.price);
                 }, 0)}
