@@ -1,5 +1,8 @@
 import React, { useState, useEffect } from "react";
 import Axios from "axios";
+import Moment from "moment";
+import "moment/locale/ru";
+Moment.locale("ru");
 
 export default function ProductDetails({
   companyProps,
@@ -172,8 +175,10 @@ export default function ProductDetails({
         <div className="row">
           <div className="col-md-12">
             <label>Дополнительная информация</label>
-            {attribute.map((e) => {
-              <p>{e.attribute_name}</p>;
+            {attribute.map(e => {
+              return (
+                <p>{e.attribute_name}: {e.attribute_format === "DATE" ? Moment(e.attribute_value).format('L') : e.attribute_value} </p>
+              )
             })}
           </div>
         </div>
