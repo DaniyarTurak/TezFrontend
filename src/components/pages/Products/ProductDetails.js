@@ -102,7 +102,16 @@ export default function ProductDetails({
           </p>
         </div>
       </div>
-
+      {product.attributescaption &&
+        < div className="row">
+          <div className="col-md-12">
+            <label>Атрибуты</label>
+            <p className={`${!product.attributescaption ? "hint" : ""} `}>
+              {product.attributescaption || pleaseWait}
+            </p>
+          </div>
+        </div>
+      }
       <div className="row">
         <div className="col-md-12">
           <label>Категория</label>
@@ -111,35 +120,38 @@ export default function ProductDetails({
           </p>
         </div>
       </div>
-
-      {details.brand && (
-        <div className="row">
-          <div className="col-md-12">
-            <label>Бренд</label>
-            <p>{details.brand}</p>
+      {
+        details.brand && (
+          <div className="row">
+            <div className="col-md-12">
+              <label>Бренд</label>
+              <p>{details.brand}</p>
+            </div>
           </div>
-        </div>
-      )}
-      {details.counterparty && details.counterparty !== "" && (
-        <div className="row">
-          <div className="col-md-12">
-            <label>Контрагент</label>
-            <p>{details.counterparty}</p>
+        )
+      }
+      {
+        details.counterparty && details.counterparty !== "" && (
+          <div className="row">
+            <div className="col-md-12">
+              <label>Контрагент</label>
+              <p>{details.counterparty}</p>
+            </div>
           </div>
-        </div>
-      )}
-
-      {details.cnofeacode && (
-        <div className="row">
-          <div className="col-md-12">
-            <label>Код ТН ВЭД</label>
-            <p className={`${!details.cnofeacode ? "hint" : ""} `}>
-              {details.cnofeacode || pleaseWait}
-            </p>
+        )
+      }
+      {
+        details.cnofeacode && (
+          <div className="row">
+            <div className="col-md-12">
+              <label>Код ТН ВЭД</label>
+              <p className={`${!details.cnofeacode ? "hint" : ""} `}>
+                {details.cnofeacode || pleaseWait}
+              </p>
+            </div>
           </div>
-        </div>
-      )}
-
+        )
+      }
       <div className="row">
         <div className="col-md-6">
           <label>Текущая себестоимость по FIFO</label>
@@ -170,20 +182,6 @@ export default function ProductDetails({
           </p>
         </div>
       </div>
-
-      {details.attributes && details.attributes !== "0" && (
-        <div className="row">
-          <div className="col-md-12">
-            <label>Дополнительная информация</label>
-            {attribute.map(e => {
-              return (
-                <p>{e.attribute_name}: {e.attribute_format === "DATE" ? Moment(e.attribute_value).format('L') : e.attribute_value} </p>
-              )
-            })}
-          </div>
-        </div>
-      )}
-
       <div className="row">
         <div className="col-md-12">
           <button
@@ -194,6 +192,6 @@ export default function ProductDetails({
           </button>
         </div>
       </div>
-    </div>
+    </div >
   );
 }
