@@ -18,6 +18,7 @@ export default function InvoiceOptions({
   handleStockFromChange,
   handleStockToChange,
   handleCounterpartyChange,
+  handleCounterpartyInputChange,
   handleConsignatorChange,
   handleSearch,
   invoicetype,
@@ -95,6 +96,7 @@ export default function InvoiceOptions({
           <AutocompleteSelect
             value={counterparty}
             onChange={handleCounterpartyChange}
+            onInputChange={handleCounterpartyInputChange}
             options={counterparties}
             noOptions="Контрагент не найден"
             label="Контрагент"

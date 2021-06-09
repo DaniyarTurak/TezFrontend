@@ -9,6 +9,7 @@ import InvoiceOptions from "./InvoiceOptions";
 import SkeletonTable from "../../../Skeletons/TableSkeleton";
 import { makeStyles } from "@material-ui/core/styles";
 import ErrorAlert from "../../../ReusableComponents/ErrorAlert";
+import useDebounce from "../../../ReusableComponents/useDebounce";
 
 const useStyles = makeStyles((theme) => ({
   notFound: {
@@ -56,15 +57,15 @@ export default function ReportInvoiceHistory({ companyProps, parameters }) {
   const [invoicetype, setInvoicetype] = useState(
     parameters && parameters.type === 1
       ? {
-          value: "17",
-          label: "Возврат с консигнации",
-        }
+        value: "17",
+        label: "Возврат с консигнации",
+      }
       : parameters
-      ? {
+        ? {
           value: "16",
           label: "Передача на консигнацию",
         }
-      : ""
+        : ""
   );
   const [invoicetypes, setInvoicetypes] = useState([]);
   const [invoices, setInvoices] = useState([]);
@@ -85,6 +86,8 @@ export default function ReportInvoiceHistory({ companyProps, parameters }) {
   const [stockFrom, setStockFrom] = useState({ label: "Все", value: 0 });
   const [stockList, setStockList] = useState([]);
   const [stockTo, setStockTo] = useState({ label: "Все", value: 0 });
+  const [inputCounterparty, setInputCounterparty] = useState("");
+  const debouncedCounterparty = useDebounce(inputCounterparty, 500);
 
   const company = companyProps ? companyProps.value : "";
 
@@ -135,6 +138,54 @@ export default function ReportInvoiceHistory({ companyProps, parameters }) {
       setDateChanging(false);
     };
   }, [invoicetype, dateFrom, dateTo, productSelectValue]);
+
+  useEffect(
+    () => {
+      if (debouncedCounterparty) {
+        if (debouncedCounterparty.trim().length === 0 || debouncedCounterparty.trim() === "Все") {
+          Axios.get("/api/counterparties/search", {
+            params: { counterparty: "" },
+          })
+            .then((res) => res.data)
+            .then((list) => {
+              const all = [{ label: "Все", value: "0" }];
+              const counterpartiesList = list.map((result) => {
+                return {
+                  label: result.name,
+                  value: result.id,
+                };
+              });
+              setCounterparties([...all, ...counterpartiesList]);
+            })
+            .catch((err) => {
+              ErrorAlert(err);
+            });
+        }
+        else {
+          if (debouncedCounterparty.trim().length >= 2 &&  debouncedCounterparty.trim() !== "Все") {
+            Axios.get("/api/counterparties/search", {
+              params: { counterparty: inputCounterparty },
+            })
+              .then((res) => res.data)
+              .then((list) => {
+                const all = [{ label: "Все", value: "0" }];
+                const counterpartiesList = list.map((result) => {
+                  return {
+                    label: result.name,
+                    value: result.id,
+                  };
+                });
+                setCounterparties([...all, ...counterpartiesList]);
+              })
+              .catch((err) => {
+                ErrorAlert(err);
+              });
+          };
+        }
+      }
+    },
+    [debouncedCounterparty]
+  );
 
   const getInvoiceTypes = () => {
     Axios.get("/api/invoice/types", {
@@ -228,6 +279,10 @@ export default function ReportInvoiceHistory({ companyProps, parameters }) {
 
   const handleCounterpartyChange = (event, p) => {
     setCounterparty(p);
+  };
+
+  const handleCounterpartyInputChange = (event, p) => {
+    setInputCounterparty(p);
   };
 
   const handleConsignatorChange = (event, c) => {
@@ -342,7 +397,7 @@ export default function ReportInvoiceHistory({ companyProps, parameters }) {
 
   const getCounterparties = () => {
     Axios.get("/api/counterparties/search", {
-      params: { company },
+      params: { counterparty: inputCounterparty },
     })
       .then((res) => res.data)
       .then((list) => {
@@ -443,6 +498,7 @@ export default function ReportInvoiceHistory({ companyProps, parameters }) {
         handleStockFromChange={handleStockFromChange}
         handleStockToChange={handleStockToChange}
         handleCounterpartyChange={handleCounterpartyChange}
+        handleCounterpartyInputChange={handleCounterpartyInputChange}
         handleConsignatorChange={handleConsignatorChange}
         handleSearch={handleSearch}
         invoicetype={invoicetype}
@@ -459,6 +515,7 @@ export default function ReportInvoiceHistory({ companyProps, parameters }) {
         products={products}
         isLoadingProducts={isLoadingProducts}
       />
+      
       {isLoading && (
         <Grid item xs={12}>
           <SkeletonTable />

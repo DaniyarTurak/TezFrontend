@@ -222,7 +222,7 @@ class PointList extends Component {
                       ) : (
                         ""
                       )}
-                      {point.point_type !== 0 ? (
+                      {/* {point.point_type !== 0 ? (
                         <button
                           className="btn btn-w-icon delete-item"
                           title={label.title.delete}
@@ -232,7 +232,7 @@ class PointList extends Component {
                         />
                       ) : (
                         ""
-                      )}
+                      )} */}
                     </td>
                   </tr>
                 ))}
