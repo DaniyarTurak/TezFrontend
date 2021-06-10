@@ -100,11 +100,9 @@ export default function BrandMonitoring() {
       });
   };
 
-
   useEffect(
     () => {
-      if (debouncedBrand) {
-        if (debouncedBrand.trim().length === 0) {
+        if (!debouncedBrand || debouncedBrand === "") {
           Axios.get("/api/brand/search", { params: { brand: "" } })
             .then((res) => res.data)
             .then((list) => {
@@ -119,7 +117,7 @@ export default function BrandMonitoring() {
             });
         }
         else {
-          if (debouncedBrand.trim().length >= 2) {
+          if (debouncedBrand.trim().length > 0) {
             Axios.get("/api/brand/search", { params: { brand: brand } })
               .then((res) => res.data)
               .then((list) => {
@@ -134,7 +132,7 @@ export default function BrandMonitoring() {
               });
           };
         }
-      }
+
     },
     [debouncedBrand]
   );
@@ -286,6 +284,7 @@ export default function BrandMonitoring() {
                     classes={{
                       root: classes.root,
                     }}
+                    onChange={(e, value) => { searchBrand(e.target.value) }}
                     {...params}
                     placeholder="Выберите бренд"
                     variant="outlined"

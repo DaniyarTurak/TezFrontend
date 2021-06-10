@@ -23,6 +23,7 @@ import InputBase from '@material-ui/core/InputBase';
 import Axios from "axios";
 import Alert from "react-s-alert";
 import TableSkeleton from '../../Skeletons/TableSkeleton';
+import ErrorAlert from "../../ReusableComponents/ErrorAlert";
 
 const useStyles1 = makeStyles((theme) => ({
     root: {
@@ -193,12 +194,20 @@ export default function CategoryTable({ categories, getMinimalStock, enabled, se
         let category = {};
         setCategors(prevState => {
             let obj = prevState[idx];
-            obj.units = obj.temp_units;
-            obj.editing = false;
-            category = { id: obj.stockm_id, units: obj.units };
-            return [...prevState];
+            if (Number(obj.temp_units).toString() !== "NaN") {
+                obj.units = obj.temp_units;
+                obj.editing = false;
+                category = { id: obj.stockm_id, units: obj.units };
+                return [...prevState];
+            }
+            else {
+                ErrorAlert("Введите корректное значение")
+                return [...prevState];
+            }
         });
-        sendChanges(category);
+        if (JSON.stringify(category) !== "{}") {
+            sendChanges(category);
+        }
         checkState();
     };
 

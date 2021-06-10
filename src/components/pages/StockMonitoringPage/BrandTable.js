@@ -23,6 +23,7 @@ import InputBase from '@material-ui/core/InputBase';
 import Axios from "axios";
 import Alert from "react-s-alert";
 import TableSkeleton from '../../Skeletons/TableSkeleton';
+import ErrorAlert from "../../ReusableComponents/ErrorAlert";
 
 const useStyles1 = makeStyles((theme) => ({
     root: {
@@ -190,21 +191,29 @@ export default function BrandTable({ brands, getMinimalStock, enabled, setEnable
     };
 
     const saveUnits = (idx) => {
-        let product = {};
+        let brand = {};
         setBrnds(prevState => {
             let obj = prevState[idx];
-            obj.units = obj.temp_units;
-            obj.editing = false;
-            product = { id: obj.stockm_id, units: obj.units };
-            return [...prevState];
+            if (Number(obj.temp_units).toString() !== "NaN") {
+                obj.units = obj.temp_units;
+                obj.editing = false;
+                brand = { id: obj.stockm_id, units: obj.units };
+                return [...prevState];
+            }
+            else {
+                ErrorAlert("Введите корректное значение")
+                return [...prevState];
+            }
         });
-        sendChanges(product);
+        if (JSON.stringify(brand) !== "{}") {
+            sendChanges(brand);
+        }
         checkState();
     };
 
-    const sendChanges = (product) => {
+    const sendChanges = (brand) => {
         setSending(true);
-        Axios.post("/api/stock/stockm/update", product)
+        Axios.post("/api/stock/stockm/update", brand)
             .then((result) => result.data)
             .then((result) => {
                 Alert.success("Минимальный остаток успешно установлен", {

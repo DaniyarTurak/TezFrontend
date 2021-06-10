@@ -101,9 +101,19 @@ export default function ProductMonitoring() {
 
   useEffect(
     () => {
-      if (debouncedName) {
-        if (debouncedName.trim().length === 0) {
-          Axios.get("/api/products/stockmonitoring", { params: { productName: "" } })
+      if (!debouncedName || debouncedName === "") {
+        Axios.get("/api/products/stockmonitoring", { params: { productName: "" } })
+          .then((res) => res.data)
+          .then((list) => {
+            setProducts(list);
+          })
+          .catch((err) => {
+            ErrorAlert(err);
+          });
+      }
+      else {
+        if (debouncedName.trim().length >= 3) {
+          Axios.get("/api/products/stockmonitoring", { params: { productName: name } })
             .then((res) => res.data)
             .then((list) => {
               setProducts(list);
@@ -111,19 +121,7 @@ export default function ProductMonitoring() {
             .catch((err) => {
               ErrorAlert(err);
             });
-        }
-        else {
-          if (debouncedName.trim().length >= 3) {
-            Axios.get("/api/products/stockmonitoring", { params: { productName: name } })
-              .then((res) => res.data)
-              .then((list) => {
-                setProducts(list);
-              })
-              .catch((err) => {
-                ErrorAlert(err);
-              });
-          };
-        }
+        };
       }
     },
     [debouncedName]
@@ -222,12 +220,12 @@ export default function ProductMonitoring() {
               setSending(false);
             }
             else {
-                Alert.error(result.data.text, {
-                  position: "top-right",
-                  effect: "bouncyflip",
-                  timeout: 2000,
-                })
-                setSending(false);
+              Alert.error(result.data.text, {
+                position: "top-right",
+                effect: "bouncyflip",
+                timeout: 2000,
+              })
+              setSending(false);
             }
           })
           .catch((err) => {

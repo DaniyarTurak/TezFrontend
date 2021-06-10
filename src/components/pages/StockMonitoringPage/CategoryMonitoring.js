@@ -99,8 +99,7 @@ export default function CategoryMonitoring() {
 
   useEffect(
     () => {
-      if (debouncedCategory) {
-        if (debouncedCategory.trim().length === 0) {
+      if (!debouncedCategory || debouncedCategory === "") {
           Axios.get("/api/categories/search", { params: { category: "" } })
             .then((res) => res.data)
             .then((list) => {
@@ -111,7 +110,7 @@ export default function CategoryMonitoring() {
             });
         }
         else {
-          if (debouncedCategory.trim().length >= 2) {
+          if (debouncedCategory.trim().length > 0) {
             Axios.get("/api/categories/search", { params: { category: category } })
               .then((res) => res.data)
               .then((list) => {
@@ -122,7 +121,6 @@ export default function CategoryMonitoring() {
               });
           };
         }
-      }
     },
     [debouncedCategory]
   );
