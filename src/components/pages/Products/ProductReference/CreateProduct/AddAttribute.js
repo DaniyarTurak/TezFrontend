@@ -132,6 +132,7 @@ export default function AddAttribute({
   };
 
   const onAttrNameChange = (attrNameChanged) => {
+    if (attrNameChanged) {
     const selectedAttrTypeChanged =
       attrNameChanged.length === 0 ? "TEXT" : attrNameChanged.type;
     const optionsToRenderSprChanged = attrNameChanged.sprvalues;
@@ -140,6 +141,10 @@ export default function AddAttribute({
     setAttrValue("");
     // setAttrValueSpr("");
     // setOptionsToRenderSpr(optionsToRenderSprChanged);
+    }
+    else {
+      setAttrName("");
+    }
   };
 
   // const onAttrValueChange = (e) => {
@@ -242,20 +247,19 @@ export default function AddAttribute({
 
   return (
     <Fragment>
-      <Grid container direction="row" justify="center" alignItems="center">
-        <Grid item xs={4}>
+      <Grid container direction="row" spacing={3}>
+        <Grid item xs={12}>
           <label htmlFor="">Партийные характеристики</label>
         </Grid>
       </Grid>
       <Grid
         container
         direction="row"
-        justify="center"
-        alignItems="center"
         spacing={3}
       >
-        <Grid item xs={4}>
+        <Grid item xs={6}>
           <Select
+          isClearable={true}
             value={attrName}
             onChange={onAttrNameChange}
             options={optionsToRender}
@@ -265,7 +269,7 @@ export default function AddAttribute({
         </Grid>
         <Grid
           item
-          xs={4}
+          xs={6}
           container
           direction="row"
           justify="flex-start"
@@ -281,8 +285,8 @@ export default function AddAttribute({
         </Grid>
       </Grid>
       {attrList.length > 0 && (
-        <div className="row justify-content-center mt-8">
-          <div className="col-md-8">
+        <Grid container>
+          <Grid item xs={8}>
             <table className="table">
               <thead>
                 <tr>
@@ -310,8 +314,8 @@ export default function AddAttribute({
                 ))}
               </tbody>
             </table>
-          </div>
-        </div>
+          </Grid>
+        </Grid>
       )}
     </Fragment>
   );

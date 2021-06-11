@@ -130,6 +130,8 @@ export default function AddAttribute({
   };
 
   const onAttrNameChange = (attrNameChanged) => {
+    console.log(attrNameChanged);
+    if (attrNameChanged) {
     const selectedAttrTypeChanged =
       attrNameChanged.length === 0 ? "TEXT" : attrNameChanged.type;
     const optionsToRenderSprChanged = attrNameChanged.sprvalues;
@@ -138,6 +140,10 @@ export default function AddAttribute({
     setAttrValue("");
     setAttrValueSpr("");
     setOptionsToRenderSpr(optionsToRenderSprChanged);
+    }
+    else {
+      setAttrName("");
+    }
   };
 
   const onAttrValueChange = (e) => {
@@ -238,23 +244,22 @@ export default function AddAttribute({
 
       {!isHidden && (
         <Fragment>
-          <Grid container direction="row" justify="center" alignItems="center">
-            <Grid item xs={4}>
-              <label htmlFor="">Характеристика товара</label>
+          <Grid container direction="row" spacing={3}>
+            <Grid item xs={6}>
+              <label>Характеристика товара</label>
             </Grid>
-            <Grid item xs={4}>
-              <label htmlFor="">Укажите значение</label>
+            <Grid item xs={6}>
+              <label>Укажите значение</label>
             </Grid>
           </Grid>
           <Grid
             container
             direction="row"
-            justify="center"
-            alignItems="center"
             spacing={3}
           >
-            <Grid item xs={4}>
+            <Grid item xs={6}>
               <Select
+                isClearable={true}
                 value={attrName}
                 onChange={onAttrNameChange}
                 options={optionsToRender}
@@ -262,7 +267,7 @@ export default function AddAttribute({
                 noOptionsMessage={() => "Характеристики не найдены"}
               />
             </Grid>
-            <Grid item xs={4}>
+            <Grid item xs={6}>
               <div className="input-group">
                 {selectedAttrType === "TEXT" && (
                   <input
@@ -284,6 +289,7 @@ export default function AddAttribute({
                 )}
                 {selectedAttrType === "SPR" && (
                   <Select
+                    isClearable={true}
                     value={attrValueSpr}
                     onChange={onAttrValueChange}
                     options={optionsToRenderSpr}
@@ -309,8 +315,8 @@ export default function AddAttribute({
       )}
 
       {attrList.length > 0 && (
-        <div className="row justify-content-center mt-20">
-          <div className="col-md-8">
+        <Grid container>
+          <Grid item xs={8}>
             <table className="table">
               <thead>
                 <tr>
@@ -340,8 +346,8 @@ export default function AddAttribute({
                 ))}
               </tbody>
             </table>
-          </div>
-        </div>
+          </Grid>
+        </Grid>
       )}
     </Fragment>
   );

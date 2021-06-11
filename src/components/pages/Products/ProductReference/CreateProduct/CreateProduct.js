@@ -404,14 +404,14 @@ export default function CreateProduct({ isEditing }) {
         ? attributeCode || null
         : editProduct.attributes !== "0" &&
           parseInt(editProduct.attributes, 0) >= attributeCode
-        ? editProduct.attributes
-        : attributeCode,
+          ? editProduct.attributes
+          : attributeCode,
       details: !isEditing
         ? attributeGlobCode || null
         : editProduct.attributes !== "0" &&
           parseInt(editProduct.attributes, 0) >= attributeGlobCode
-        ? editProduct.attributes
-        : attributeGlobCode,
+          ? editProduct.attributes
+          : attributeGlobCode,
       cnofeacode: cnofeacode,
       attrList,
     };
@@ -450,216 +450,92 @@ export default function CreateProduct({ isEditing }) {
 
   return (
     <Fragment>
-      <div className="add-product-form">
-        <form onKeyPress={handleFormKeyPress}>
-          <div className="row justify-content-center">
-            <div className="col-md-8">
-              <label>Штрих код</label>
-              <div className={classes.topDiv}>
-                <TextField
-                  size="small"
-                  disabled={isEditing}
-                  onChange={onBarcodeChange}
-                  onKeyDown={onBarcodeKeyDown}
-                  value={barcode}
-                  error={isValidate}
-                  className={classes.input}
-                  InputProps={{
-                    classes: classes2,
-                    endAdornment: (
-                      <React.Fragment>
-                        {isLoading ? (
-                          <CircularProgress color="inherit" size={20} />
-                        ) : null}
-                      </React.Fragment>
-                    ),
-                  }}
-                  type="text"
-                  placeholder="Внесите вручную, или с помощью сканера"
-                />
-                <IconButton
-                  type="submit"
-                  disabled={isEditing}
-                  className={classes.iconButton}
-                  aria-label="search"
-                  onClick={handleSearch}
-                >
-                  <SearchIcon />
-                </IconButton>
-                <Divider className={classes.divider} orientation="vertical" />
-                <Button
-                  color="primary"
-                  className={classes.iconButton}
-                  disabled={isEditing}
-                  onClick={generateBarcode}
-                >
-                  Сгенерировать
-                </Button>
-              </div>
-              {isValidate && (
-                <span className={classes.errorText}>
-                  Поле обязательно для заполнения
-                </span>
-              )}
-            </div>
-            <div style={{ marginLeft: "1 rem" }} className="col-md-8 zi-7">
-              <label>Наименование</label>
-              <TextField
-                placeholder="Введите название товара"
-                fullWidth
-                id="outlined-full-width"
-                size="small"
-                required
-                variant="outlined"
-                type="text"
-                value={productName}
-                onChange={onProductNameChange}
-                error={isValidateName}
-                helperText={
-                  isValidateName ? "Поле обязательно для заполнения" : ""
-                }
-              />
-            </div>
-          </div>
-          <div className="row justify-content-center">
-            <div style={{ marginLeft: "1 rem" }} className="col-md-8 zi-6">
-              <label htmlFor="category">Категория</label>
-              <Autocomplete
-                align="left"
-                fullWidth
-                size="small"
-                options={categoryOptions}
-                value={category}
-                defaultValue={category}
-                onChange={categoryChange}
-                noOptionsText="Категория не найдена"
-                onInputChange={onCategoryListInput.bind(this)}
-                filterOptions={(options) =>
-                  options.filter((option) => option.category !== "")
-                }
-                getOptionLabel={(option) => (option ? option.name : "")}
-                getOptionSelected={(option, value) =>
-                  option.label === value.label
-                }
-                renderInput={(params) => (
+      <form onKeyPress={handleFormKeyPress}>
+        <Grid container spacing={1}>
+          <Grid item xs={3} />
+          <Grid item xs={6}>
+            <Grid container spacing={1}>
+              <Grid item xs={12}>
+                <label>Штрих код</label>
+                <div className={classes.topDiv}>
                   <TextField
-                    label="Выберите категорию"
-                    {...params}
-                    variant="outlined"
-                  />
-                )}
-              />
-            </div>
-          </div>
-          <div className="row justify-content-center">
-            <div style={{ marginLeft: "1 rem" }} className="col-md-8 zi-5">
-              <label>Бренд</label>
-              <Autocomplete
-                fullWidth
-                size="small"
-                options={brandOptions}
-                value={brand}
-                onChange={brandListChange}
-                noOptionsText="Брэнд не найден"
-                onInputChange={onBrandListInput.bind(this)}
-                filterOptions={(options) =>
-                  options.filter((option) => option.brand !== "")
-                }
-                getOptionLabel={(option) => (option ? option.name : "")}
-                getOptionSelected={(option, value) =>
-                  option.label === value.label
-                }
-                renderInput={(params) => (
-                  <TextField
-                    label="Внесите наименование производителя"
-                    {...params}
-                    variant="outlined"
-                  />
-                )}
-              />
-            </div>
-            <div style={{ marginLeft: "1 rem" }} className="col-md-8 zi-7">
-              <label> Код ТН ВЭД</label>
-              <TextField
-                placeholder="Введите код ТН ВЭД "
-                fullWidth
-                id="outlined-full-width"
-                size="small"
-                required
-                variant="outlined"
-                type="number"
-                value={cnofeacode}
-                onChange={onCnofeacodeEdit}
-              />
-            </div>
-            <Grid container spacing={3} justify="center">
-              <Grid item xs={3} sm={3}>
-                <Typography variant="h6" align="left">
-                  <FormControlLabel
-                    control={
-                      <Checkbox
-                        size="small"
-                        onChange={onSellByPiecesChange}
-                        name="checkedB"
-                        color="primary"
-                      />
-                    }
                     size="small"
-                    label="Продажа поштучно"
+                    disabled={isEditing}
+                    onChange={onBarcodeChange}
+                    onKeyDown={onBarcodeKeyDown}
+                    value={barcode}
+                    error={isValidate}
+                    className={classes.input}
+                    InputProps={{
+                      classes: classes2,
+                      endAdornment: (
+                        <React.Fragment>
+                          {isLoading ? (
+                            <CircularProgress color="inherit" size={20} />
+                          ) : null}
+                        </React.Fragment>
+                      ),
+                    }}
+                    type="text"
+                    placeholder="Внесите вручную, или с помощью сканера"
                   />
-                </Typography>
-                <span
-                  className="input-group-text border-0"
-                  style={{ backgroundColor: "transparent", padding: "0px" }}
-                >
-                  <TextField
-                    type="number"
-                    fullWidth
-                    placeholder="Количество в упаковке/пачке(мин. 2)"
-                    size="small"
-                    name="pieceinpack"
-                    id="outlined-error"
-                    variant="outlined"
-                    disabled={!sellByPieces}
-                    onWheel={(event) => event.currentTarget.blur()}
-                    onChange={onPieceAmountChange}
-                    error={isValidateUnit}
-                    helperText={
-                      isValidateUnit ? "Значение не может быть меньше 2" : ""
-                    }
-                  />
-                  <Tooltip
-                    title={
-                      <h6>
-                        Укажите цену за штуку товара при приеме на склад. Или в
-                        разделе "Изменение цен"
-                      </h6>
-                    }
+                  <IconButton
+                    type="submit"
+                    disabled={isEditing}
+                    className={classes.iconButton}
+                    aria-label="search"
+                    onClick={handleSearch}
                   >
-                    <span>
-                      <Button disabled>
-                        <InfoIcon color="primary" fontSize="large" />
-                      </Button>
-                    </span>
-                  </Tooltip>
-                </span>
+                    <SearchIcon />
+                  </IconButton>
+                  <Divider className={classes.divider} orientation="vertical" />
+                  <Button
+                    color="primary"
+                    className={classes.iconButton}
+                    disabled={isEditing}
+                    onClick={generateBarcode}
+                  >
+                    Сгенерировать
+                </Button>
+                </div>
+                {isValidate && (
+                  <span className={classes.errorText}>
+                    Поле обязательно для заполнения
+                  </span>
+                )}
               </Grid>
-              <Grid item xs={2} sm={2}>
-                <Typography
-                  style={{ paddingBottom: "10px", paddingTop: "8px" }}
-                >
-                  Единица измерения
-                </Typography>
+              <Grid item xs={12}>
+                <label>Наименование</label>
+                <TextField
+                  placeholder="Введите название товара"
+                  fullWidth
+                  id="outlined-full-width"
+                  size="small"
+                  required
+                  variant="outlined"
+                  type="text"
+                  value={productName}
+                  onChange={onProductNameChange}
+                  error={isValidateName}
+                  helperText={
+                    isValidateName ? "Поле обязательно для заполнения" : ""
+                  }
+                />
+              </Grid>
+              <Grid item xs={12}>
+                <label htmlFor="category">Категория</label>
                 <Autocomplete
+                  align="left"
                   fullWidth
                   size="small"
-                  options={unitOptions}
-                  value={unitspr}
-                  onChange={unitListChange}
-                  noOptionsText="Единица измерения не найдена"
-                  onInputChange={onUnitListInput.bind(this)}
+                  options={categoryOptions}
+                  value={category}
+                  defaultValue={category}
+                  onChange={categoryChange}
+                  noOptionsText="Категория не найдена"
+                  onInputChange={onCategoryListInput.bind(this)}
                   filterOptions={(options) =>
-                    options.filter((option) => option.unitOptions !== "")
+                    options.filter((option) => option.category !== "")
                   }
                   getOptionLabel={(option) => (option ? option.name : "")}
                   getOptionSelected={(option, value) =>
@@ -667,18 +543,142 @@ export default function CreateProduct({ isEditing }) {
                   }
                   renderInput={(params) => (
                     <TextField
+                      label="Выберите категорию"
                       {...params}
                       variant="outlined"
-                      placeholder="Штука"
                     />
                   )}
                 />
               </Grid>
+              <Grid item xs={12}>
+                <label>Бренд</label>
+                <Autocomplete
+                  fullWidth
+                  size="small"
+                  options={brandOptions}
+                  value={brand}
+                  onChange={brandListChange}
+                  noOptionsText="Брэнд не найден"
+                  onInputChange={onBrandListInput.bind(this)}
+                  filterOptions={(options) =>
+                    options.filter((option) => option.brand !== "")
+                  }
+                  getOptionLabel={(option) => (option ? option.name : "")}
+                  getOptionSelected={(option, value) =>
+                    option.label === value.label
+                  }
+                  renderInput={(params) => (
+                    <TextField
+                      label="Внесите наименование производителя"
+                      {...params}
+                      variant="outlined"
+                    />
+                  )}
+                />
+              </Grid>
+              <Grid item xs={12}>
+                <label> Код ТН ВЭД</label>
+                <TextField
+                  placeholder="Введите код ТН ВЭД "
+                  fullWidth
+                  id="outlined-full-width"
+                  size="small"
+                  required
+                  variant="outlined"
+                  type="number"
+                  value={cnofeacode}
+                  onChange={onCnofeacodeEdit}
+                />
+              </Grid>
+              <Grid item xs={12}>
+                <Grid container>
+                  <Grid item xs={6}>
+                    <Typography variant="h6" align="left">
+                      <FormControlLabel
+                        control={
+                          <Checkbox
+                            size="small"
+                            onChange={onSellByPiecesChange}
+                            name="checkedB"
+                            color="primary"
+                          />
+                        }
+                        size="small"
+                        label="Продажа поштучно"
+                      />
+                    </Typography>
+                    <span
+                      className="input-group-text border-0"
+                      style={{ backgroundColor: "transparent", padding: "0px" }}
+                    >
+                      <TextField
+                        type="number"
+                        fullWidth
+                        placeholder="Количество в упаковке/пачке(мин. 2)"
+                        size="small"
+                        name="pieceinpack"
+                        id="outlined-error"
+                        variant="outlined"
+                        disabled={!sellByPieces}
+                        onWheel={(event) => event.currentTarget.blur()}
+                        onChange={onPieceAmountChange}
+                        error={isValidateUnit}
+                        helperText={
+                          isValidateUnit ? "Значение не может быть меньше 2" : ""
+                        }
+                      />
+                      <Tooltip
+                        title={
+                          <h6>
+                            Укажите цену за штуку товара при приеме на склад. Или в
+                            разделе "Изменение цен"
+                      </h6>
+                        }
+                      >
+                        <span>
+                          <Button disabled>
+                            <InfoIcon color="primary" fontSize="large" />
+                          </Button>
+                        </span>
+                      </Tooltip>
+                    </span>
+                  </Grid>
+                  <Grid item xs={6}>
+                    <Typography
+                      style={{ paddingBottom: "10px", paddingTop: "8px" }}
+                    >
+                      Единица измерения
+                </Typography>
+                    <Autocomplete
+                      fullWidth
+                      size="small"
+                      options={unitOptions}
+                      value={unitspr}
+                      onChange={unitListChange}
+                      noOptionsText="Единица измерения не найдена"
+                      onInputChange={onUnitListInput.bind(this)}
+                      filterOptions={(options) =>
+                        options.filter((option) => option.unitOptions !== "")
+                      }
+                      getOptionLabel={(option) => (option ? option.name : "")}
+                      getOptionSelected={(option, value) =>
+                        option.label === value.label
+                      }
+                      renderInput={(params) => (
+                        <TextField
+                          {...params}
+                          variant="outlined"
+                          placeholder="Штука"
+                        />
+                      )}
+                    />
+                  </Grid>
+                </Grid>
+              </Grid>
               {companyData.certificatenum && (
                 <Grid
                   item
-                  xs={3}
-                  sm={3}
+                  xs={12}
                   style={{ paddingBottom: "20px", paddingTop: "20px" }}
                 >
                   <label> Налоговая категория</label>
@@ -706,35 +706,40 @@ export default function CreateProduct({ isEditing }) {
                   </FormControl>
                 </Grid>
               )}
-            </Grid>
-            <div className="row justify-content-center">
-              <label style={{ marginTop: 10 }}>
-                Дополнительная характиристика
+              <Grid item xs={12}>
+                <label style={{ marginTop: 10 }}>
+                  <strong>Дополнительные характиристики</strong>
               </label>
-              <Grid container spacing={3} justify="center">
-                <Grid item xs={12}>
-                  <AddAttributeChar
-                    isEditing={isEditing}
-                    selected={selectedAttribute}
-                    clearBoard={clearBoard}
-                    attributeCode={getAttributeCharCode}
+                <Grid container spacing={1} >
+                  <Grid item xs={12}>
+                    <AddAttributeChar
+                      isEditing={isEditing}
+                      selected={selectedAttribute}
+                      clearBoard={clearBoard}
+                      attributeCode={getAttributeCharCode}
                     // attrListProps={getAttrListGlob}
-                  />
-                </Grid>
-                <Grid item xs={12}>
-                  <AddAttribute
-                    isEditing={isEditing}
-                    selected={selectedAttribute}
-                    clearBoard={clearBoard}
-                    attributeCode={getAttributeCode}
-                    attrListProps={getAttrList}
-                  />
+                    />
+                  </Grid>
+                  <Grid item xs={12}>
+                    <AddAttribute
+                      isEditing={isEditing}
+                      selected={selectedAttribute}
+                      clearBoard={clearBoard}
+                      attributeCode={getAttributeCode}
+                      attrListProps={getAttrList}
+                    />
+                  </Grid>
                 </Grid>
               </Grid>
-            </div>
-          </div>
-          <div className="row justify-content-center text-right mt-20">
-            <div className="col-md-8">
+            </Grid>
+          </Grid>
+          <Grid item xs={3} />
+            <Grid
+              container
+              style={{paddingTop:"20px", paddingBottom: "20px"}}
+              spacing={1}
+              justify="center"
+              alignItems="center">
               <Button
                 style={{ marginRight: "20px" }}
                 variant="contained"
@@ -749,10 +754,9 @@ export default function CreateProduct({ isEditing }) {
               >
                 Сохранить
               </Button>
-            </div>
-          </div>
-        </form>
-      </div>
-    </Fragment>
+          </Grid>
+        </Grid>
+      </form>
+    </Fragment >
   );
-}
+};

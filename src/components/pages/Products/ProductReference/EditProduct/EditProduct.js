@@ -24,6 +24,7 @@ import AlertMaterial from "@material-ui/lab/Alert";
 import Alert from "react-s-alert";
 import AddAttributeChar from "../AddAttributeChar";
 import AddAttribute from "../AddAttribute";
+import CancelIcon from '@material-ui/icons/Cancel';
 
 const useStyles = makeStyles((theme) => ({
   table: {},
@@ -139,14 +140,14 @@ export default function EditProduct({
         ? attributeGlobCode || null
         : editProductAttr.attributes !== "0" &&
           parseInt(editProductAttr.attributes, 0) >= attributeGlobCode
-        ? editProductAttr.attributes
-        : attributeGlobCode,
+          ? editProductAttr.attributes
+          : attributeGlobCode,
       attributes: !isEditing
         ? attributeCode || null
         : editProductAttr.attributes !== "0" &&
           parseInt(editProductAttr.attributes, 0) >= attributeCode
-        ? editProductAttr.attributes
-        : attributeCode,
+          ? editProductAttr.attributes
+          : attributeCode,
       delete: "",
       attributesValue: attributes,
     };
@@ -230,10 +231,12 @@ export default function EditProduct({
                 aria-label="редактировать"
                 component="span"
                 onClick={() => {
-                  setEditingName(false);
+                  setEditingName(!editingName);
                 }}
               >
-                <EditIcon aria-label="edit" />
+                {editingName ?
+                  <EditRoundedIcon /> : <CancelIcon />
+                }
               </IconButton>
             </TableCell>
           </TableRow>
@@ -275,13 +278,15 @@ export default function EditProduct({
             </TableCell>
             <TableCell alingItem="left">
               <IconButton
-                aria-label="редактировать"
+                aria-label="Редактировать"
                 component="span"
                 onClick={() => {
-                  setCategoryName(false);
+                  setCategoryName(!categoryName);
                 }}
               >
-                <EditRoundedIcon aria-label="edit" />
+                {categoryName ?
+                  <EditRoundedIcon /> : <CancelIcon />
+                }
               </IconButton>
             </TableCell>
           </TableRow>
@@ -324,14 +329,15 @@ export default function EditProduct({
                 aria-label="редактировать"
                 component="span"
                 onClick={() => {
-                  setEditingBrandName(false);
+                  setEditingBrandName(!editingBrandName);
                 }}
               >
-                <EditRoundedIcon aria-label="edit" />
+                {editingBrandName ?
+                  <EditRoundedIcon /> : <CancelIcon />
+                }
               </IconButton>
             </TableCell>
           </TableRow>
-
           <TableRow>
             <TableCell>Код ТН ВЭД:</TableCell>
             <TableCell className={classes.textField}>
@@ -363,10 +369,12 @@ export default function EditProduct({
                 aria-label="редактировать"
                 component="span"
                 onClick={() => {
-                  setEditCnofeacode(false);
+                  setEditCnofeacode(!editCnofeacode);
                 }}
               >
-                <EditIcon aria-label="edit" />
+                {editCnofeacode ?
+                  <EditRoundedIcon /> : <CancelIcon />
+                }
               </IconButton>
             </TableCell>
           </TableRow>
@@ -408,10 +416,12 @@ export default function EditProduct({
                 aria-label="редактировать"
                 component="span"
                 onClick={() => {
-                  setEditingUnit(false);
+                  setEditingUnit(!editingUnit);
                 }}
               >
-                <EditRoundedIcon aria-label="edit" />
+                {editingUnit ?
+                  <EditRoundedIcon /> : <CancelIcon />
+                }
               </IconButton>
             </TableCell>
           </TableRow>
@@ -455,10 +465,12 @@ export default function EditProduct({
                   aria-label="редактировать"
                   component="span"
                   onClick={() => {
-                    setEditingTax(false);
+                    setEditingTax(!editingTax);
                   }}
                 >
-                  <EditRoundedIcon aria-label="edit" />
+                  {editingTax ?
+                    <EditRoundedIcon /> : <CancelIcon />
+                  }
                 </IconButton>
               </TableCell>
             </TableRow>
@@ -485,10 +497,12 @@ export default function EditProduct({
                 aria-label="редактировать"
                 component="span"
                 onClick={() => {
-                  setEditingAttrGlob(false);
+                  setEditingAttrGlob(!editingAttrGlob);
                 }}
               >
-                <EditRoundedIcon aria-label="edit" />
+                {editingAttrGlob ?
+                  <EditRoundedIcon /> : <CancelIcon />
+                }
               </IconButton>
             </TableCell>
           </TableRow>
@@ -525,10 +539,12 @@ export default function EditProduct({
                 aria-label="редактировать"
                 component="span"
                 onClick={() => {
-                  setEditingAttr(false);
+                  setEditingAttr(!editingAttr);
                 }}
               >
-                <EditRoundedIcon aria-label="edit" />
+                {editingAttr ?
+                  <EditRoundedIcon /> : <CancelIcon />
+                }
               </IconButton>
             </TableCell>
           </TableRow>
