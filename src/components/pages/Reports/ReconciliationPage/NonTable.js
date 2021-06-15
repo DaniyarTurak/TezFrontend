@@ -222,6 +222,7 @@ export default function NonTable({ products }) {
                     <button
                         className="btn btn-sm btn-outline-success"
                         onClick={getNoneExcel}
+                        disabled={isLoading}
                     >
                         Выгрузить в Excel
                     </button>

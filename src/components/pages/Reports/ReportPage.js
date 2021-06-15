@@ -1,5 +1,4 @@
 import React, { useState, useEffect, Fragment } from "react";
-import reports_norecon from "../../../data/reports";
 import reports_recon from "../../../data/reports_recon";
 import CertificatesPage from "./CertificatesPage";
 import ConsignmentReports from "./ConsignmentReports";
@@ -23,17 +22,6 @@ import ShelfLifePage from "./ShelfLifePage";
 import ReconciliationPage from "./ReconciliationPage";
 
 export default function ReportPage({ type, history, location }) {
-  // const counter = useSelector((state) => state.counter);
-  // console.log(counter);
-  // const companies_recon = [38, 56, 57, 68, 69, 81, 78, 98, 231, 241, 269, 96, 2];
-  // const comp_id = parseInt(JSON.parse(sessionStorage.getItem("isme-company-data")).id);
-  // let reports;
-  // if (companies_recon.includes(comp_id)) {
-  //   reports = reports_recon;
-  // }
-  // else {
-  //   reports = reports_norecon;
-  // };
   const [parameters, setParameters] = useState("");
   const [reportMode, setReportMode] = useState(
     type === "report"

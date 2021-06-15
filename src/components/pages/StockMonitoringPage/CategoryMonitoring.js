@@ -245,6 +245,7 @@ export default function CategoryMonitoring() {
           <br />
           <AddButton
             onClick={addMinimalStock}
+            disabled={isSending}
           >
             Добавить
               </AddButton>

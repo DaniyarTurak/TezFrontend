@@ -20,7 +20,6 @@ import PropTypes from "prop-types";
 import NonAlert from "../../Reports/ReconciliationPage/NonAlert";
 import Checkbox from '@material-ui/core/Checkbox';
 import FormControlLabel from '@material-ui/core/FormControlLabel';
-import TableSkeleton from "../../../Skeletons/TableSkeleton";
 Moment.locale("ru");
 
 const useStyles1 = makeStyles((theme) => ({

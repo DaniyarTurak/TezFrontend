@@ -256,6 +256,7 @@ export default function BrandMonitoring() {
           <br />
           <AddButton
             onClick={addMinimalStock}
+            disabled={isSending}
           >
             Добавить
               </AddButton>

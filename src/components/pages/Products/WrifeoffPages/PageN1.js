@@ -140,7 +140,7 @@ export default function PageN1({ stockFrom, invoicenumber, productListProps }) {
             setProdName(res[0].name);
             let arr = [];
             res.forEach((element) => {
-              if (parseInt(element.units) > 0) {
+              if (Number(element.units) > 0) {
                 arr.push(element);
               }
             });

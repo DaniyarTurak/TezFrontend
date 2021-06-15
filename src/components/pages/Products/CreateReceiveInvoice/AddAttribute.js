@@ -139,15 +139,16 @@ export default function AddAttribute({
 
   const getAttrListId = () => {
     let a = [];
-    changedAttr.length > 0 &&
-      changedAttr.map((el, i) => {
+    if (changedAttr.length > 0) {
+      changedAttr.forEach(el => {
         a.push({
           code: el.attribute_id,
           value: el.attribute_value,
           name: el.attribute_name,
         });
       });
-    changeState(a);
+      changeState(a);
+    }
   };
 
   return (
@@ -194,7 +195,6 @@ export default function AddAttribute({
                       <Fragment>
                         <Select
                           id="select"
-                          placeholder={attribute.attribute_value}
                           value={attribute.value_select}
                           onChange={(event) => {
                             onAttrValueChange(event, attribute);

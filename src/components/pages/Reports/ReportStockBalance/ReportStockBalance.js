@@ -11,6 +11,7 @@ import { makeStyles } from "@material-ui/core/styles";
 import SkeletonTable from "../../../Skeletons/TableSkeleton";
 import StockbalanceTable from "./StockbalanceTable";
 import ErrorAlert from "../../../ReusableComponents/ErrorAlert";
+import useDebounce from "../../../ReusableComponents/useDebounce";
 
 const customStyles = {
   content: {
@@ -58,10 +59,11 @@ export default function ReportStockBalance({ companyProps }) {
   const [category, setCategory] = useState({ value: "@", label: "Все" });
   const [categories, setCategories] = useState([]);
   const [consignment, setConsignment] = useState(false);
-  const [counterparty, setCounterParty] = useState({
+  const [counterparty, setCounterparty] = useState({
     value: "0",
     label: "Все",
   });
+  
   const [counterparties, setCounterparties] = useState([]);
   const [date, setDate] = useState(Moment().format("YYYY-MM-DD"));
   const [flag, setFlag] = useState(true);
@@ -91,6 +93,9 @@ export default function ReportStockBalance({ companyProps }) {
   const [totalunits, setTotalunits] = useState(0);
   const [itemsPerPage, setItemsPerPage] = useState(50);
 
+  const [inputCounterparty, setInputCounterparty] = useState("");
+  const debouncedCounterparty = useDebounce(inputCounterparty, 500);
+
   const company = companyProps ? companyProps.value : "";
 
   const ndses = [
@@ -99,6 +104,54 @@ export default function ReportStockBalance({ companyProps }) {
     { value: "1", label: "С НДС" },
   ];
   const pageRangeDisplayed = 5;
+
+  useEffect(
+    () => {
+      if (debouncedCounterparty) {
+        if (debouncedCounterparty.trim().length === 0 || debouncedCounterparty.trim() === "Все") {
+          Axios.get("/api/counterparties/search", {
+            params: { counterparty: "" },
+          })
+            .then((res) => res.data)
+            .then((list) => {
+              const all = [{ label: "Все", value: "0" }];
+              const counterpartiesList = list.map((result) => {
+                return {
+                  label: result.name,
+                  value: result.id,
+                };
+              });
+              setCounterparties([...all, ...counterpartiesList]);
+            })
+            .catch((err) => {
+              ErrorAlert(err);
+            });
+        }
+        else {
+          if (debouncedCounterparty.trim().length >= 2 &&  debouncedCounterparty.trim() !== "Все") {
+            Axios.get("/api/counterparties/search", {
+              params: { counterparty: inputCounterparty },
+            })
+              .then((res) => res.data)
+              .then((list) => {
+                const all = [{ label: "Все", value: "0" }];
+                const counterpartiesList = list.map((result) => {
+                  return {
+                    label: result.name,
+                    value: result.id,
+                  };
+                });
+                setCounterparties([...all, ...counterpartiesList]);
+              })
+              .catch((err) => {
+                ErrorAlert(err);
+              });
+          };
+        }
+      }
+    },
+    [debouncedCounterparty]
+  );
 
   useEffect(() => {
     if (!company) {
@@ -136,7 +189,7 @@ export default function ReportStockBalance({ companyProps }) {
   }, [
     productSelectValue,
     selectedStock,
-    counterparty,
+    // counterparty,
     category,
     brand,
     attribute,
@@ -163,7 +216,7 @@ export default function ReportStockBalance({ companyProps }) {
     setBrands([]);
     setCategory({ value: "@", label: "Все" });
     setCategories([]);
-    setCounterParty({ value: "0", label: "Все" });
+    setCounterparty({ value: "0", label: "Все" });
     setCounterparties([]);
     setDate(Moment().format("YYYY-MM-DD"));
     setStockbalance([]);
@@ -206,7 +259,7 @@ export default function ReportStockBalance({ companyProps }) {
   };
 
   const onCounterpartieChange = (event, c) => {
-    setCounterParty(c);
+    setCounterparty(c);
   };
 
   const onBrandChange = (event, b) => {
@@ -337,9 +390,17 @@ export default function ReportStockBalance({ companyProps }) {
       });
   };
 
-  const getCounterparties = (сounterpartie) => {
+  const handleCounterpartyChange = (event, p) => {
+    setCounterparty(p);
+  };
+
+  const handleCounterpartyInputChange = (event, p) => {
+    setInputCounterparty(p);
+  };
+
+  const getCounterparties = () => {
     Axios.get("/api/counterparties/search", {
-      params: { сounterpartie, company },
+      params: { counterparty: inputCounterparty },
     })
       .then((res) => res.data)
       .then((list) => {
@@ -625,6 +686,8 @@ export default function ReportStockBalance({ companyProps }) {
         products={products}
         selectedStock={selectedStock}
         stockList={stockList}
+        handleCounterpartyChange={handleCounterpartyChange}
+        handleCounterpartyInputChange={handleCounterpartyInputChange}
       />
 
       {!isLoading && stockbalance.length === 0 && (

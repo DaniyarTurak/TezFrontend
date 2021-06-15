@@ -3,7 +3,6 @@ import Axios from "axios";
 import { makeStyles } from "@material-ui/core/styles";
 import Paper from "@material-ui/core/Paper";
 import TextField from "@material-ui/core/TextField";
-import EditIcon from "@material-ui/icons/Edit";
 import TableBody from "@material-ui/core/TableBody";
 import Autocomplete from "@material-ui/lab/Autocomplete";
 import Button from "@material-ui/core/Button";
@@ -518,9 +517,6 @@ export default function EditProduct({
                       </Typography>
                     );
                   }
-                  // else {
-                  //   [];
-                  // }
                 })}
               {!editingAttr && (
                 <AddAttribute

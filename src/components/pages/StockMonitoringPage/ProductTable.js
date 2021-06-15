@@ -126,7 +126,6 @@ export default function ProductTable({ products, getMinimalStock, enabled, setEn
     const [page, setPage] = useState(0);
     const [rowsPerPage, setRowsPerPage] = useState(10);
     const [prods, setProds] = useState([]);
-    const [pagEnabled, setPagEnabled] = useState(true);
     const [isSending, setSending] = useState(false);
 
     useEffect(() => {

@@ -1,9 +1,5 @@
 import React from "react";
 import { withStyles } from "@material-ui/core/styles";
-import MuiDialogTitle from "@material-ui/core/DialogTitle";
-import IconButton from "@material-ui/core/IconButton";
-import CloseIcon from "@material-ui/icons/Close";
-import Typography from "@material-ui/core/Typography";
 import Table from "@material-ui/core/Table";
 import TableBody from "@material-ui/core/TableBody";
 import TableCell from "@material-ui/core/TableCell";
@@ -14,19 +10,6 @@ import Grid from "@material-ui/core/Grid";
 import TableHead from "@material-ui/core/TableHead";
 import TableContainer from "@material-ui/core/TableContainer";
 import ReactModal from "react-modal";
-
-const styles = (theme) => ({
-  root: {
-    margin: 0,
-    padding: theme.spacing(2),
-  },
-  closeButton: {
-    position: "absolute",
-    right: theme.spacing(1),
-    top: theme.spacing(1),
-    color: theme.palette.grey[500],
-  },
-});
 
 const customStyles = {
   content: {
@@ -67,24 +50,6 @@ const StyledTableCell = withStyles((theme) => ({
     fontSize: ".875rem",
   },
 }))(TableCell);
-
-const DialogTitle = withStyles(styles)((props) => {
-  const { children, classes, onClose, ...other } = props;
-  return (
-    <MuiDialogTitle disableTypography className={classes.root} {...other}>
-      <Typography style={{ marginTop: "2rem" }}>{children}</Typography>
-      {onClose ? (
-        <IconButton
-          aria-label="close"
-          className={classes.closeButton}
-          onClick={onClose}
-        >
-          <CloseIcon />
-        </IconButton>
-      ) : null}
-    </MuiDialogTitle>
-  );
-});
 
 export default function AttributeDetails({
   modalIsOpen,

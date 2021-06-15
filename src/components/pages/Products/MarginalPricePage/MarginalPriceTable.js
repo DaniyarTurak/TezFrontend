@@ -149,7 +149,7 @@ export default function MarginalPriceTable({
         let changedProducts = [];
         let state = true;
         productsWithPrice.forEach(element => {
-            if (parseInt(element.staticprice) < 0) {
+            if (Number(element.staticprice) < 0) {
                 state = false;
             }
         });
@@ -216,7 +216,7 @@ export default function MarginalPriceTable({
     const editStaticPrice = (idx) => {
         setProductsWithPrice(prevState => {
             let obj = prevState[idx];
-            if (parseInt(obj.staticprice) < 0 &&  obj.changing) {
+            if (Number(obj.staticprice) < 0 &&  obj.changing) {
                 Alert.warning("Предельная цена не может быть отрицательной!");
             }
             else {

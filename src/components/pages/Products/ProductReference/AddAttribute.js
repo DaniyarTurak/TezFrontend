@@ -22,13 +22,9 @@ export default function AddAttribute({
   const [attrList, setAttrList] = useState([]);
   const [attrListCode, setAttrListCode] = useState(null);
   const [attrName, setAttrName] = useState("");
-  const [attrNameError, setAttrNameError] = useState("");
   const [attrValue, setAttrValue] = useState("");
-  const [attrValueSpr, setAttrValueSpr] = useState("");
   const [optionsToRender, setOptionsToRender] = useState([]);
-  const [optionsToRenderSpr, setOptionsToRenderSpr] = useState([]);
   const [isHidden, setHidden] = useState(false);
-  const [selectedAttrType, setSelectedAttrType] = useState("TEXT");
   const [oldAttributes, setOldAttributes] = useState([]);
   const [isClear, setClear] = useState(false);
   const [date] = useState(Moment().format("YYYY-MM-DD"));
@@ -52,7 +48,7 @@ export default function AddAttribute({
             code: element.attribute_id,
           });
         } else {
-          [];
+         arr = [];
         }
       });
       setAttrList(arr);
@@ -117,7 +113,6 @@ export default function AddAttribute({
     setHidden(false);
     setAttrValue([]);
     setAttrName([]);
-    setAttrValueSpr([]);
     if (isEditing) {
       setClear(true);
     }
@@ -155,25 +150,15 @@ export default function AddAttribute({
   };
 
   const onAttrNameChange = (attrNameChanged) => {
-    const selectedAttrTypeChanged =
-      attrNameChanged.length === 0 ? "TEXT" : attrNameChanged.type;
-    const optionsToRenderSprChanged = attrNameChanged.sprvalues;
-    setAttrName(attrNameChanged);
-    setSelectedAttrType(selectedAttrTypeChanged);
     setAttrValue("");
-    setAttrValueSpr("");
-    setOptionsToRenderSpr(optionsToRenderSprChanged);
   };
   const handleAdd = () => {
     if (Object.keys(attrName).length === 0) {
-      {
         Alert.warning("Выберите значение!", {
           position: "top-right",
           effect: "bouncyflip",
           timeout: 3000,
         });
-        return;
-      }
     }
 
     let attrListChanged = attrList;
@@ -212,8 +197,6 @@ export default function AddAttribute({
         attributeCode(result.text);
         setAttrValue("");
         setAttrName("");
-        setAttrValueSpr("");
-        setAttrNameError("");
       })
       .catch((err) => {
         ErrorAlert(err);
@@ -223,10 +206,6 @@ export default function AddAttribute({
     const newList = attrList.filter((atr) => {
       return atr !== item;
     });
-    const req = {
-      listcode: attrListCode,
-      attribcode: item.code,
-    };
     setAttributes(newList);
     setAttrList(newList);
   };

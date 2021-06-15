@@ -17,13 +17,9 @@ export default function AddAttribute({
   const [attrList, setAttrList] = useState([]);
   const [attrListCode, setAttrListCode] = useState(null);
   const [attrName, setAttrName] = useState("");
-  // const [attrNameError, setAttrNameError] = useState("");
   const [attrValue, setAttrValue] = useState("");
-  // const [attrValueSpr, setAttrValueSpr] = useState("");
   const [optionsToRender, setOptionsToRender] = useState([]);
-  // const [optionsToRenderSpr, setOptionsToRenderSpr] = useState([]);
   const [isHidden, setHidden] = useState(false);
-  // const [selectedAttrType, setSelectedAttrType] = useState("TEXT");
   const [oldAttributes, setOldAttributes] = useState([]);
   const [isClear, setClear] = useState(false);
   const [date] = useState(Moment().format("YYYY-MM-DD"));
@@ -94,7 +90,6 @@ export default function AddAttribute({
     setHidden(false);
     setAttrValue([]);
     setAttrName([]);
-    // setAttrValueSpr([]);
     if (isEditing) {
       setClear(true);
     }
@@ -133,31 +128,13 @@ export default function AddAttribute({
 
   const onAttrNameChange = (attrNameChanged) => {
     if (attrNameChanged) {
-    const selectedAttrTypeChanged =
-      attrNameChanged.length === 0 ? "TEXT" : attrNameChanged.type;
-    const optionsToRenderSprChanged = attrNameChanged.sprvalues;
     setAttrName(attrNameChanged);
-    // setSelectedAttrType(selectedAttrTypeChanged);
     setAttrValue("");
-    // setAttrValueSpr("");
-    // setOptionsToRenderSpr(optionsToRenderSprChanged);
     }
     else {
       setAttrName("");
     }
   };
-
-  // const onAttrValueChange = (e) => {
-  //   const attrValueChanged =
-  //     optionsToRenderSpr.length > 0 ? e.value : e.target.value;
-  //   const attrValueSprChanged = optionsToRenderSpr.length > 0 ? e : "";
-
-  //   if (selectedAttrType === "DATE" && attrValueChanged.indexOf("-") === 5)
-  //     return;
-
-  //   setAttrValue(attrValueChanged);
-  //   setAttrValueSpr(attrValueSprChanged);
-  // };
 
   const handleAdd = () => {
     if (Object.keys(attrName).length === 0) {
@@ -208,8 +185,6 @@ export default function AddAttribute({
         setAttrList(attrListChanged);
         setAttrValue("");
         setAttrName("");
-        // setAttrValueSpr("");
-        // setAttrNameError("");
       })
       .catch((err) => {
         ErrorAlert(err);

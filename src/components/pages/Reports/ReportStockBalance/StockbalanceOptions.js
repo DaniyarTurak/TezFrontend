@@ -50,6 +50,8 @@ export default function StockbalanceOptions({
   products,
   selectedStock,
   stockList,
+  handleCounterpartyChange,
+  handleCounterpartyInputChange,
 }) {
   return (
     <Fragment>
@@ -79,9 +81,9 @@ export default function StockbalanceOptions({
       <Grid item xs={3}>
         <AutocompleteSelect
           value={counterparty}
-          onChange={onCounterpartieChange}
           options={counterparties}
-          onInputChange={onCounterpartieListInput}
+          onChange={handleCounterpartyChange}
+          onInputChange={handleCounterpartyInputChange}
           noOptions="Контрагент не найден"
           label="Контрагенты"
         />

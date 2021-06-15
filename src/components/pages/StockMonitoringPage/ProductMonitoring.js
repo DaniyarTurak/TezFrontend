@@ -323,6 +323,7 @@ export default function ProductMonitoring() {
         <Grid item xs={9}>
           <AddButton
             onClick={addMinimalStock}
+            disabled={isSending}
           >
             Добавить
               </AddButton>

@@ -10,7 +10,6 @@ import Moment from "moment";
 import LinearProgress from '@material-ui/core/LinearProgress';
 import Alert from "react-s-alert";
 import ReconciliationTable from './ReconciliationTable';
-import PublishIcon from '@material-ui/icons/Publish';
 import { Progress } from "reactstrap";
 import CompareTable from "./CompareTable";
 import ReactModal from "react-modal";
@@ -564,7 +563,7 @@ export default function ReconciliationPage() {
           </Grid>
         </Fragment>
       }
-      {summDataResult.length !== 0 || summDataNone.length !== 0 &&
+      {(summDataResult.length !== 0 || summDataNone.length !== 0) ?
         <Fragment>
           <Grid item xs={4}>
             Дата начала: {summData.begin_date}
@@ -587,7 +586,7 @@ export default function ReconciliationPage() {
                 Выгрузить в Excel
             </button>
             </Grid>}
-        </Fragment>
+        </Fragment> : ""
       }
     </Fragment >
   );
