@@ -117,6 +117,7 @@ export default function ReportTable({
   getStockbalanceExcel,
   isExcelLoading,
   profitAmount,
+  getDetailsExcel
 }) {
   const [page, setPage] = React.useState(
     JSON.parse(sessionStorage.getItem("abc_xyz_pagination"))
@@ -209,8 +210,8 @@ export default function ReportTable({
                     <StyledTableCell align="center">
                       {row.coeff
                         ? parseFloat(row.coeff).toLocaleString("ru", {
-                            minimumFractionDigits: 2,
-                          }) + "%"
+                          minimumFractionDigits: 2,
+                        }) + "%"
                         : "Н/Д"}
                     </StyledTableCell>
                     <StyledTableCell
@@ -220,10 +221,10 @@ export default function ReportTable({
                           row.abc === "A"
                             ? "#81c784"
                             : row.abc === "B"
-                            ? "#ffb74d"
-                            : row.abc === "C"
-                            ? "#e57373"
-                            : "white",
+                              ? "#ffb74d"
+                              : row.abc === "C"
+                                ? "#e57373"
+                                : "white",
                       }}
                     >
                       {row.abc}
@@ -235,10 +236,10 @@ export default function ReportTable({
                           row.xyz === "X"
                             ? "#81c784"
                             : row.xyz === "Y"
-                            ? "#ffb74d"
-                            : row.xyz === "Z"
-                            ? "#e57373"
-                            : "white",
+                              ? "#ffb74d"
+                              : row.xyz === "Z"
+                                ? "#e57373"
+                                : "white",
                       }}
                     >
                       {row.xyz ? row.xyz : "Н/Д"}
@@ -296,6 +297,14 @@ export default function ReportTable({
           onClick={getStockbalanceExcel}
         >
           Выгрузить в excel
+        </button>
+        &emsp;
+        <button
+          className="btn btn-sm btn-outline-success"
+          disabled={isExcelLoading}
+          onClick={getDetailsExcel}
+        >
+          Выгрузить детали
         </button>
       </Grid>
     </Grid>

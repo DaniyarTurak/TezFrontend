@@ -1,15 +1,20 @@
 import React, { useState, useEffect, Fragment } from "react";
 import Select from "react-select";
 import Axios from "axios";
+import HighlightOffIcon from '@material-ui/icons/HighlightOff';
+import IconButton from '@material-ui/core/IconButton';
+import SweetAlert from "react-bootstrap-sweetalert";
 
 export default function AddAttribute({
   clearBoard,
   changeState,
   attributescaption,
   editAttrubutes,
+  setDeleted
 }) {
   const [changedAttr, setChangedAttr] = useState([]);
   const [readyOpt, setReadyOpt] = useState([]);
+  const [sweetalert, setSweetAlert] = useState(null);
 
   useEffect(() => {
     if (attributescaption && attributescaption.length > 0) {
@@ -137,22 +142,66 @@ export default function AddAttribute({
     setChangedAttr(readyOpt);
   };
 
-  const getAttrListId = () => {
+  const getAttrListId = (id) => {
     let a = [];
     if (changedAttr.length > 0) {
-      changedAttr.forEach(el => {
-        a.push({
-          code: el.attribute_id,
-          value: el.attribute_value,
-          name: el.attribute_name,
-        });
+      changedAttr.forEach((el, i) => {
+        if (id) {
+          if (el.attribute_id !== id) {
+            a.push({
+              code: el.attribute_id,
+              value: el.attribute_value,
+              name: el.attribute_name,
+            });
+          }
+        }
+        else {
+          a.push({
+            code: el.attribute_id,
+            value: el.attribute_value,
+            name: el.attribute_name,
+          });
+        }
       });
-      changeState(a);
     }
+    changeState(a);
   };
+
+  const showConfiramtion = (attribute) => {
+    setSweetAlert(
+      <SweetAlert
+        warning
+        showCancel
+        confirmBtnText="Да, я уверен"
+        cancelBtnText="Нет, отменить"
+        confirmBtnBsStyle="success"
+        cancelBtnBsStyle="default"
+        title="Вы уверены?"
+        onConfirm={() => deleteAttribute(attribute)}
+        onCancel={() => setSweetAlert(null)}
+      >
+        Вы действительно хотите удалить атрибут?
+      </SweetAlert>
+    );
+  }
+
+  const deleteAttribute = (attribute) => {
+    setDeleted(true);
+    let arr = [];
+    readyOpt.forEach((element, i) => {
+      if (element.attribute_id !== attribute.attribute_id) {
+        arr.push(element);
+      }
+    });
+    getAttrListId(attribute.attribute_id);
+    setReadyOpt(arr);
+    setSweetAlert(null);
+    setChangedAttr(arr);
+  }
 
   return (
     <Fragment>
+      {sweetalert}
       <div
         className="row justify-content-center"
         style={{ marginBottom: 10 }}
@@ -164,37 +213,47 @@ export default function AddAttribute({
               <div className="row justify-content-center">
                 <div className="col-md-12 zi-3"></div>
               </div>
-
               <div className="row justify-content-center">
                 <div className="col-md-9">
                   <label htmlFor="">{attribute.attribute_name}</label>
                   <div className="input-group">
                     {attribute.attribute_format === "TEXT" && (
-                      <input
-                        name="text"
-                        value={attribute.attribute_value}
-                        type="text"
-                        className="form-control"
-                        placeholder="Введите значение"
-                        onChange={(event) => nonSprChange(event, attribute)}
-                      />
+                      <Fragment>
+                        <input
+                          name="text"
+                          value={attribute.attribute_value}
+                          type="text"
+                          className="form-control"
+                          placeholder="Введите значение"
+                          onChange={(event) => nonSprChange(event, attribute)}
+                        />
+                        <IconButton onClick={() => showConfiramtion(attribute)} style={{ padding: "6px" }}>
+                          <HighlightOffIcon />
+                        </IconButton>
+                      </Fragment>
                     )}
                     {attribute.attribute_format === "DATE" && (
-                      <input
-                        name="date"
-                        value={attribute.attribute_value}
-                        type="date"
-                        className="form-control"
-                        placeholder="Введите значение"
-                        onChange={(event) => {
-                          nonSprChange(event, attribute);
-                        }}
-                      />
+                      <Fragment>
+                        <input
+                          name="date"
+                          value={attribute.attribute_value}
+                          type="date"
+                          className="form-control"
+                          placeholder="Введите значение"
+                          onChange={(event) => {
+                            nonSprChange(event, attribute);
+                          }}
+                        />
+                        <IconButton onClick={() => showConfiramtion(attribute)} style={{ padding: "6px" }}>
+                          <HighlightOffIcon />
+                        </IconButton>
+                      </Fragment>
                     )}
                     {attribute.attribute_format === "SPR" && (
                       <Fragment>
                         <Select
                           id="select"
+                          placeholder={attribute.attribute_value}
                           value={attribute.value_select}
                           onChange={(event) => {
                             onAttrValueChange(event, attribute);
@@ -204,14 +263,17 @@ export default function AddAttribute({
                           placeholder={"Введите значение"}
                           noOptionsMessage={() => "Характеристики не найдены"}
                         />
+                        <IconButton onClick={() => showConfiramtion(attribute)} style={{ padding: "6px" }}>
+                          <HighlightOffIcon />
+                        </IconButton>
                       </Fragment>
                     )}
                   </div>
                 </div>
               </div>
-            </Fragment>
+            </Fragment >
           );
         })}
-    </Fragment>
+    </Fragment >
   );
 }

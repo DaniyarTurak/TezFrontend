@@ -49,16 +49,16 @@ let AddCashBoxForm = ({
       .then(() => {
         cashboxData
           ? history.push({
-              pathname: "/usercabinet/cashbox",
-              state: {
-                fromEdit: true,
-              },
-            })
+            pathname: "/usercabinet/cashbox",
+            state: {
+              fromEdit: true,
+            },
+          })
           : Alert.success("Касса успешно создана", {
-              position: "top-right",
-              effect: "bouncyflip",
-              timeout: 2000,
-            });
+            position: "top-right",
+            effect: "bouncyflip",
+            timeout: 2000,
+          });
         setSubmitting(false);
         dispatch(reset("addCashBoxForm"));
       })
@@ -160,8 +160,8 @@ let AddCashBoxForm = ({
               {isSubmiting
                 ? "Пожалуйста подождите..."
                 : !cashboxData
-                ? "Добавить"
-                : "Сохранить изменения"}
+                  ? "Добавить"
+                  : "Сохранить изменения"}
             </button>
 
             {!cashboxData && (

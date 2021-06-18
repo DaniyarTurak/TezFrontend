@@ -97,6 +97,7 @@ export default function CreateProduct({ isEditing }) {
   const [attributeCode, setAttributeCode] = useState("");
   const [attributeGlobCode, setAttributeGlobCode] = useState("");
   const [attrList, setAttrList] = useState([]);
+  // const [attrListGlob, setAttrListGlob] = useState([]);
   const [editProduct, setEditProduct] = useState("");
   const [clearBoard, setClearBoard] = useState(false);
   const companyData =

@@ -66,6 +66,7 @@ let AddProductForm = ({
   handleEditing,
   editProduct,
 }) => {
+  const [isDeleted, setDeleted] = useState(false);
   const [addProductData, setAddProductData] = useState("");
   const [attributeCode, setAttributeCode] = useState("");
   const [barcode, setBarcode] = useState("");
@@ -375,13 +376,11 @@ let AddProductForm = ({
     setSelectedAttribute([]);
     setLastPurchasePrice(0);
     setNewPrice(0);
-    // setClearBoard(true);
     setNewProductGenerating(false);
     setBarcodeExists(false);
     setStaticPrice("");
     setAttributeCapation([]);
     setAttrIdandValue([]);
-    // setEditAttrubutes([]);
     reset();
     const tx = taxOptions.find((tax) => {
       return tax.id === "1";
@@ -471,7 +470,6 @@ let AddProductForm = ({
       tax = {};
 
     for (let i = 0; i < cnofeaIn.length; i++) {
-      // eslint-disable-next-line no-loop-func
       cnofeaList.forEach((iter) => {
         if (iter.code === cnofeaCode) {
           cnofeaIterator = iter;
@@ -698,7 +696,7 @@ let AddProductForm = ({
           "newprice",
           product.lastpurchaseprice
             ? product.lastpurchaseprice +
-                (product.lastpurchaseprice * rate) / 100
+            (product.lastpurchaseprice * rate) / 100
             : 0
         )
       );
@@ -708,9 +706,9 @@ let AddProductForm = ({
 
       const surchargeRounded = product.lastpurchaseprice
         ? Math.round(
-            ((product.price - product.lastpurchaseprice) * 100) /
-              product.lastpurchaseprice
-          )
+          ((product.price - product.lastpurchaseprice) * 100) /
+          product.lastpurchaseprice
+        )
         : 0;
       dispatch(change("AddProductForm", "surcharge", surchargeRounded));
       dispatch(change("AddProductForm", "newprice", product.price + sum));
@@ -729,7 +727,7 @@ let AddProductForm = ({
       setMarginSum(0);
       const surchargeRounded = Math.round(
         ((product.price - product.lastpurchaseprice) * 100) /
-          product.lastpurchaseprice
+        product.lastpurchaseprice
       );
       dispatch(change("AddProductForm", "surcharge", surchargeRounded));
       dispatch(change("AddProductForm", "newprice", product.price));
@@ -911,17 +909,6 @@ let AddProductForm = ({
     } else {
       setSubmitting(true);
       addProduct(data);
-      // if (isEditing) {
-      //   const item = {
-      //     invoice: invoiceNumber,
-      //     stock: editProduct.stock,
-      //     attributes: editProduct.attributes,
-      //   };
-      //   deleteOldRecord(item);
-      //   setAdding(true);
-      // } else {
-      //   addProduct(data);
-      // }
     }
   };
   const addProduct = (data) => {
@@ -958,8 +945,8 @@ let AddProductForm = ({
           ? attributeCode || 0
           : editProduct.attributes !== "0" &&
             parseInt(editProduct.attributes, 0) >= 0
-          ? editProduct.attributes
-          : editProduct.attributes,
+            ? editProduct.attributes
+            : editProduct.attributes,
         brand: data.brand ? data.brand.value : 0,
         category: data.category ? data.category.value : null,
         cnofea: data.cnofea,
@@ -967,8 +954,8 @@ let AddProductForm = ({
         id: !isEditing
           ? productID
           : editProduct.is_new
-          ? null
-          : editProduct.idc,
+            ? null
+            : editProduct.idc,
         isstaticprice: data.isstaticprice,
         lastpurchaseprice: oldprice,
         name: !isEditing ? data.name.label || data.name : editProduct.name,
@@ -985,8 +972,8 @@ let AddProductForm = ({
         attrlist: editProduct.attributes
           ? attrIdandValue
           : attributeCode === "0" || !attributeCode
-          ? []
-          : attrIdandValue,
+            ? []
+            : attrIdandValue,
       };
       // всё что выше переписывалось 100500 раз, трогать осторожно.
 
@@ -1321,9 +1308,10 @@ let AddProductForm = ({
             </div>
           </div>
           <div className="row justify-content-center">
-            <div style={{ marginLeft: "2.2rem" }} className="col-md-8 zi-6">
+            <div style={{ marginLeft: "2.2rem" }} className="col-md-8">
               <div className="col-md-12">
                 <AddAttribute
+                  setDeleted={setDeleted}
                   attributescaption={attributescaption}
                   editAttrubutes={editAttrubutes}
                   changeState={changeState}
@@ -1367,8 +1355,8 @@ let AddProductForm = ({
                 {isSubmitting
                   ? "Пожалуйста дождитесь"
                   : isEditing
-                  ? "Редактировать товар"
-                  : "Сохранить товар"}
+                    ? "Редактировать товар"
+                    : "Сохранить товар"}
               </button>
             </div>
           </div>

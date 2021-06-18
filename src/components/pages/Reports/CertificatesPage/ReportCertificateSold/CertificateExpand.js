@@ -46,8 +46,6 @@ export default function CertificateExpand({ certificate, closeExpand, closeExpan
   const getExpandCertificate = () => {
     setLoading(true);
     setSent(true);
-    console.log(expiredate);
-    console.log(certificate);
     let code = certificate;
     Axios({
       method: "POST",
@@ -56,7 +54,6 @@ export default function CertificateExpand({ certificate, closeExpand, closeExpan
     })
       .then((res) => res.data)
       .then((res) => {
-        console.log(res);
         setCode(res.code);
         setLoading(false);
       })

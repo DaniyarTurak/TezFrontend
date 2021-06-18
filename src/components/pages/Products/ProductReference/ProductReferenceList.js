@@ -86,10 +86,10 @@ export default function ProductReferenceList({
 
   const handleEdit = (id, oldProduct) => {
     setEditingProduct(oldProduct);
-    setEditing(true);
+    setEditProduct(id);
     setAddingAmount(false);
     setModalOpen(true);
-    setEditProduct(id);
+    setEditing(true);
   };
 
   const classes = useStyles(reference);
@@ -309,6 +309,7 @@ export default function ProductReferenceList({
   };
 
   const handleSearch = () => {
+    setEditing(false);
     let barcode = productSelectValue;
     if (!barcode) {
       return Alert.info("Введите штрих код или выберите товар", {
@@ -332,52 +333,7 @@ export default function ProductReferenceList({
     setAddingAmount(true);
   };
 
-  return isEditing && !isAddingAmount ? (
-    <Dialog
-      style={{ marginLeft: "100px" }}
-      maxWidth={maxWidth}
-      onClose={handleClose}
-      open={modalIsOpen}
-    >
-      <EditProduct
-        productDetails={editProduct}
-        editProduct={editProduct}
-        brand={brand}
-        onBrandListInput={onBrandListInput}
-        brandListChange={brandListChange}
-        brandOptions={brandOptions}
-        unitspr={unitspr}
-        setUnitOptions={unitOptions}
-        unitOptions={unitOptions}
-        unitListChange={unitListChange}
-        onUnitListInput={onUnitListInput}
-        category={category}
-        onCategoryListInput={onCategoryListInput}
-        categoryOptions={categoryOptions}
-        categoryChange={categoryChange}
-        sellByPieces={sellByPieces}
-        onSellByPiecesChange={onSellByPiecesChange}
-        piecesUnint={piecesUnint}
-        productName={productName}
-        cnofeacode={cnofeacode}
-        onCnofeacodeEdit={onCnofeacodeEdit}
-        onProductNameChange={onProductNameChange}
-        closeModal={closeModal}
-        taxes={taxes}
-        tax={tax}
-        onTaxChange={onTaxChange}
-        onPieceAmountChange={onPieceAmountChange}
-        errorAlert={errorAlert}
-        errorMessage={errorMessage}
-        companyData={companyData}
-        setErrorAlert={setErrorAlert}
-        setReference={setReference}
-        getBarcodeProps={getBarcodeProps}
-        setErrorMessage={setErrorMessage}
-        capations={capations}
-      />
-    </Dialog>
-  ) : (
+  return (
     <Fragment>
       <Grid container spacing={2}>
         <Grid item xs={4}>
@@ -494,6 +450,47 @@ export default function ProductReferenceList({
           </Table>
         </TableContainer>
       )}
+      {isEditing && !isAddingAmount &&
+          <Grid item xs={12} style={{paddingTop: "20px"}}>
+            <EditProduct
+              productDetails={editProduct}
+              editProduct={editProduct}
+              brand={brand}
+              onBrandListInput={onBrandListInput}
+              brandListChange={brandListChange}
+              brandOptions={brandOptions}
+              unitspr={unitspr}
+              setUnitOptions={unitOptions}
+              unitOptions={unitOptions}
+              unitListChange={unitListChange}
+              onUnitListInput={onUnitListInput}
+              category={category}
+              onCategoryListInput={onCategoryListInput}
+              categoryOptions={categoryOptions}
+              categoryChange={categoryChange}
+              sellByPieces={sellByPieces}
+              onSellByPiecesChange={onSellByPiecesChange}
+              piecesUnint={piecesUnint}
+              productName={productName}
+              cnofeacode={cnofeacode}
+              onCnofeacodeEdit={onCnofeacodeEdit}
+              onProductNameChange={onProductNameChange}
+              closeModal={closeModal}
+              taxes={taxes}
+              tax={tax}
+              onTaxChange={onTaxChange}
+              onPieceAmountChange={onPieceAmountChange}
+              errorAlert={errorAlert}
+              errorMessage={errorMessage}
+              companyData={companyData}
+              setErrorAlert={setErrorAlert}
+              setReference={setReference}
+              getBarcodeProps={getBarcodeProps}
+              setErrorMessage={setErrorMessage}
+              capations={capations}
+            />
+          </Grid>
+      }
     </Fragment>
   );
 }

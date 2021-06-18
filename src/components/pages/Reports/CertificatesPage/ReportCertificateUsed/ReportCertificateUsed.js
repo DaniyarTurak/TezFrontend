@@ -78,7 +78,6 @@ export default function ReportCertificateUsed({ companyProps, classes }) {
       Axios.get("/api/report/certificates/used", { params: { dateFrom: moment(dateFrom).format("L"), dateTo: moment(dateTo).format("L") } })
         .then((res) => res.data)
         .then((certs) => {
-          console.log(certs);
           let noms = [];
           certs.forEach(element => {
             noms.push(element.nominal)
@@ -147,7 +146,6 @@ export default function ReportCertificateUsed({ companyProps, classes }) {
     let trans = { id: tr }
     setTransaction(trans);
     setModalOpen(true);
-    console.log(trans);
   };
 
   const closeDetails = () => {
@@ -196,7 +194,6 @@ export default function ReportCertificateUsed({ companyProps, classes }) {
         }
         {!isLoading && certificates.length > 0 &&
           <Grid item xs={12}>
-            {console.log(certificates)}
             {nominals.map((nom, n) => (
               <Accordion key={n} style={{ margin: "0px" }} defaultExpanded>
                 <AccordionSummary

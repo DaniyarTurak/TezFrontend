@@ -24,6 +24,7 @@ import Alert from "react-s-alert";
 import AddAttributeChar from "../AddAttributeChar";
 import AddAttribute from "../AddAttribute";
 import CancelIcon from '@material-ui/icons/Cancel';
+import DeleteIcon from '@material-ui/icons/Delete';
 
 const useStyles = makeStyles((theme) => ({
   table: {},
@@ -100,7 +101,7 @@ export default function EditProduct({
 
   useEffect(() => {
     let attrOld = [];
-    if (capations.length > 0) {
+    if (capations && capations.length > 0) {
       capations.forEach((element) => {
         if (element.attribute_id === null) {
         } else {
@@ -508,7 +509,7 @@ export default function EditProduct({
           <TableRow>
             <TableCell>Партийные характеристики:</TableCell>
             <TableCell>
-              {editingAttr &&
+              {editingAttr && productDetails.attributescaption &&
                 productDetails.attributescaption.map((element, idx) => {
                   if (productDetails.attributes !== "0") {
                     return (
@@ -542,6 +543,7 @@ export default function EditProduct({
                   <EditRoundedIcon /> : <CancelIcon />
                 }
               </IconButton>
+
             </TableCell>
           </TableRow>
         </TableBody>

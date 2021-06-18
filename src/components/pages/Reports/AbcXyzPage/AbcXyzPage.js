@@ -214,6 +214,43 @@ export default function AbcXyzPage() {
       });
   };
 
+  const getDetailsExcel = () => {
+    setExcelLoading(true);
+    const httpClient = Axios.create();
+
+    httpClient.defaults.timeout = 0;
+
+    httpClient
+      .get("/api/report/analytics/details_excel", {
+        responseType: "blob",
+        params: {
+          type: parseInt(type, 0),
+          period: parseInt(period, 0),
+          profit_amount: profitAmount,
+          a: abc_a,
+          b: abc_b,
+          x: xyz_x,
+          y: xyz_y,
+        },
+      })
+      .then((res) => res.data)
+      .then((stockbalance) => {
+        const url = window.URL.createObjectURL(new Blob([stockbalance]));
+        const link = document.createElement("a");
+        link.href = url;
+        link.setAttribute("download", `ABC_XYZ_details.xlsx`); //or any other extension
+        document.body.appendChild(link);
+        link.click();
+        setLoading(false);
+        setExcelLoading(false);
+      })
+      .catch((err) => {
+        setLoading(false);
+        setExcelLoading(false);
+        ErrorAlert(err);
+      });
+  };
+
   const onAbc_AChange = (e) => {
     const value = isNaN(e.target.value) ? 0 : e.target.value;
     if (value > 100) {
@@ -375,6 +412,7 @@ export default function AbcXyzPage() {
           isClicked={isClicked}
           reports={reports}
           getStockbalanceExcel={getStockbalanceExcel}
+          getDetailsExcel={getDetailsExcel}
           isExcelLoading={isExcelLoading}
           profitAmount={profitAmount}
         />
