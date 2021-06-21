@@ -43,7 +43,7 @@ export default function AddAttribute({
 
   const getOldAttributes = () => {
     let arr = [];
-    if (capations.length > 0) {
+    if (capations && capations.length > 0) {
       capations.forEach((element) => {
         if (element.attribute_id !== null) {
           arr.push({
