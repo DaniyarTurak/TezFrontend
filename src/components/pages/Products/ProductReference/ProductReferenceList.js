@@ -1,15 +1,6 @@
 import React, { useState, useEffect, Fragment } from "react";
 import Axios from "axios";
 import { makeStyles } from "@material-ui/core/styles";
-import Table from "@material-ui/core/Table";
-import TableBody from "@material-ui/core/TableBody";
-import TableCell from "@material-ui/core/TableCell";
-import TableContainer from "@material-ui/core/TableContainer";
-import TableHead from "@material-ui/core/TableHead";
-import TableRow from "@material-ui/core/TableRow";
-import Paper from "@material-ui/core/Paper";
-import DeleteIcon from "@material-ui/icons/Delete";
-import IconButton from "@material-ui/core/IconButton";
 import EditProduct from "./EditProduct";
 import Alert from "react-s-alert";
 import TextField from "@material-ui/core/TextField";
@@ -18,13 +9,13 @@ import Autocomplete from "@material-ui/lab/Autocomplete";
 import Grid from "@material-ui/core/Grid";
 import SweetAlert from "react-bootstrap-sweetalert";
 import Button from "@material-ui/core/Button";
-import CreateIcon from "@material-ui/icons/Create";
-import Dialog from "@material-ui/core/Dialog";
 
 export default function ProductReferenceList({
+  productsList,
+
+
   company,
   reference,
-  productBarcode,
   onBarcodeChange,
   onBarcodeKeyDown,
   productSelectValue,
@@ -38,25 +29,22 @@ export default function ProductReferenceList({
   getProductReference,
   capations,
   setProductSelectValue,
+  productBarcode
 }) {
-  const [isAddingAmount, setAddingAmount] = useState(false);
   const [editProduct, setEditProduct] = useState([]);
   const [brand, setBrand] = useState("");
   const [brandOptions, setBrandOptions] = useState([]);
   const [category, setCategory] = useState("");
   const [categoryOptions, setCategoryOptions] = useState([]);
   const [unitspr, setUnitspr] = useState("");
-  const [unitOptions, setUnitOptions] = useState([]);
-  const [modalIsOpen, setModalOpen] = useState(false);
+  const [unitOptions, setUnitOptions] = useState([])
   const [editingProduct, setEditingProduct] = useState("");
   const [isEditing, setEditing] = useState(false);
   const [sellByPieces, setSellByPieces] = useState(false);
   const [piecesUnint, setPiecesUnint] = useState("");
   const [productName, setProductName] = useState("");
   const [cnofeacode, setCnofeacode] = useState("");
-  const [sweetalert, setSweetAlert] = useState(null);
   const [tax, setTax] = useState(1);
-  const [maxWidth] = useState("md");
   const [errorMessage, setErrorMessage] = useState({});
   const [errorAlert, setErrorAlert] = useState(false);
 
@@ -87,8 +75,6 @@ export default function ProductReferenceList({
   const handleEdit = (id, oldProduct) => {
     setEditingProduct(oldProduct);
     setEditProduct(id);
-    setAddingAmount(false);
-    setModalOpen(true);
     setEditing(true);
   };
 
@@ -128,6 +114,7 @@ export default function ProductReferenceList({
         console.log(err);
       });
   };
+
   const getCategories = (inputValue) => {
     Axios.get("/api/categories/search", {
       params: { deleted: false, company, category: inputValue },
@@ -140,6 +127,7 @@ export default function ProductReferenceList({
         console.log(err);
       });
   };
+
   const getMeasures = () => {
     Axios.get("/api/products/unitspr")
       .then((res) => res.data)
@@ -230,9 +218,7 @@ export default function ProductReferenceList({
   };
 
   const cleanAlerts = () => {
-    setAddingAmount(false);
     setEditing(false);
-    setModalOpen(false);
   };
 
   const clear = () => {
@@ -254,12 +240,9 @@ export default function ProductReferenceList({
     })
       .then((res) => res.data)
       .then((res) => {
-        // getProductReference();
         setReference([]);
         setProductSelectValue("");
         setProductBarcode("");
-        // getBarcodeProps(productBarcode);
-        // getProducts();
         if (res.code === "success") {
           Alert.success("Товар удален успешно.", {
             position: "top-right",
@@ -279,47 +262,36 @@ export default function ProductReferenceList({
     closeModal(false);
   };
 
-  const handleDeleteProduct = (item) => {
-    setSweetAlert(
-      <SweetAlert
-        warning
-        showCancel
-        confirmBtnText="Да, я уверен"
-        cancelBtnText="Нет, отменить"
-        confirmBtnBsStyle="success"
-        cancelBtnBsStyle="default"
-        title="Вы уверены?"
-        allowEscape={true}
-        closeOnClickOutside={false}
-        onConfirm={() => handleDelete(item)}
-        onCancel={() => setSweetAlert(null)}
-      >
-        Вы действительно хотите удалить товар?
-      </SweetAlert>
-    );
-  };
-
   const closeModal = (e, idx) => {
     cleanAlerts();
     setEditingProduct(idx);
-    setModalOpen(false);
     clear();
     setErrorMessage({});
     setErrorAlert(false);
   };
 
-  const handleSearch = () => {
-    setEditing(false);
-    let barcode = productSelectValue;
-    if (!barcode) {
+  const [productDetails, setProductDetails] = useState({});
+
+  const getProductDetails = () => {
+    if (barcode === "") {
       return Alert.info("Введите штрих код или выберите товар", {
         position: "top-right",
         effect: "bouncyflip",
         timeout: 2000,
       });
     }
-    getProductReference();
-    setSweetAlert(null);
+    else {
+      Axios.get("/api/nomenclature", {
+        params: { barcode: barcode },
+      })
+        .then((res) => res.data)
+        .then((res) => {
+          setProductDetails(res);
+        })
+        .catch((err) => {
+          console.log(err);
+        });
+    };
   };
 
   const onPieceAmountChange = (e) => {
@@ -327,11 +299,31 @@ export default function ProductReferenceList({
     setPiecesUnint(num);
   };
 
-  const handleClose = () => {
-    setModalOpen(false);
-    setEditing(false);
-    setAddingAmount(true);
+  const [prodName, setProdName] = useState("");
+  const [barcode, setBarcode] = useState("");
+
+  const prodNameChange = (value) => {
+    setProdName(value);
+    if (value !== null) {
+      productsList.forEach(prod => {
+        if (prod.name === value) {
+          setBarcode(prod.code);
+        }
+      });
+    }
   };
+
+  const barcodeChange = (value) => {
+    setBarcode(value);
+    setProdName("");
+    if (value !== null) {
+      productsList.forEach(prod => {
+        if (prod.code === value) {
+          setProdName(prod.name);
+        }
+      });
+    }
+  }
 
   return (
     <Fragment>
@@ -343,10 +335,10 @@ export default function ProductReferenceList({
               variant="outlined"
               type="text"
               name="barcode"
-              value={productBarcode}
+              value={barcode}
               className="form-control"
-              label="Введите или отсканируйте штрихкод"
-              onChange={onBarcodeChange}
+              placeholder="Введите или отсканируйте штрихкод"
+              onChange={(e) => barcodeChange(e.target.value)}
               onKeyDown={onBarcodeKeyDown}
             />
           </FormControl>
@@ -354,17 +346,11 @@ export default function ProductReferenceList({
         <Grid item xs={4}>
           <Autocomplete
             style={{ marginTop: "5px", marginLeft: "10px" }}
-            id="outlined-basic"
-            options={[reference, ...productOptions]}
-            value={productSelectValue}
-            onChange={productListChange}
+            options={productsList.map((option) => option.name)}
+            value={prodName}
+            onChange={(e, value) => prodNameChange(value)}
             noOptionsText="Товар не найден"
-            onInputChange={onProductListChange}
-            filterOptions={(options) =>
-              options.filter((option) => option !== "")
-            }
-            getOptionLabel={(option) => (option ? option.label : "")}
-            getOptionSelected={(option, value) => option.label === value.value}
+            onInputChange={(e, value) => prodNameChange(value)}
             renderInput={(params) => (
               <TextField
                 {...params}
@@ -385,111 +371,53 @@ export default function ProductReferenceList({
             color="primary"
             fullWidth
             size="large"
-            onClick={handleSearch}
+            onClick={getProductDetails}
           >
             Поиск
           </Button>
         </Grid>
       </Grid>
-      {Object.keys(reference).length > 0 && (
-        <TableContainer className="mt-4" component={Paper}>
-          <Table className={classes.table} aria-label="customized table">
-            <TableHead>
-              <TableRow>
-                <TableCell className={classes.head} align="left">
-                  Наименование
-                </TableCell>
-                <TableCell className={classes.head} align="center">
-                  Штрих - код
-                </TableCell>
-                <TableCell className={classes.head} align="center">
-                  Категория
-                </TableCell>
-                <TableCell className={classes.head} align="center">
-                  Брeнд
-                </TableCell>
-                <TableCell className={classes.head} align="center">
-                  Код ТН ВЭД
-                </TableCell>
-                <TableCell className={classes.head} align="center">
-                  НДС
-                </TableCell>
-                <TableCell className={classes.head}></TableCell>
-              </TableRow>
-            </TableHead>
-            <TableBody>
-              <TableRow className={classes.row}>
-                <TableCell align="left"> {reference.name} </TableCell>
-                <TableCell align="center"> {reference.code} </TableCell>
-                <TableCell align="center"> {reference.category} </TableCell>
-                <TableCell align="center"> {reference.brand}</TableCell>
-                <TableCell align="center">
-                  {" "}
-                  {!reference.cnofeacode ? "Н/Д" : reference.cnofeacode}
-                </TableCell>
-                <TableCell align="center">
-                  {reference.taxid === "0" ? "Без НДС" : "Стандартный НДС"}
-                </TableCell>
-                <TableCell>
-                  <IconButton
-                    aria-label="редактировать"
-                    onClick={() => handleEdit(reference)}
-                  >
-                    <CreateIcon />
-                  </IconButton>
-                  <IconButton
-                    aria-label="удалить"
-                    onClick={() => handleDeleteProduct(reference)}
-                  >
-                    <DeleteIcon />
-                  </IconButton>
-                </TableCell>
-                {sweetalert}
-              </TableRow>
-            </TableBody>
-          </Table>
-        </TableContainer>
-      )}
-      {isEditing && !isAddingAmount &&
-          <Grid item xs={12} style={{paddingTop: "20px"}}>
-            <EditProduct
-              productDetails={editProduct}
-              editProduct={editProduct}
-              brand={brand}
-              onBrandListInput={onBrandListInput}
-              brandListChange={brandListChange}
-              brandOptions={brandOptions}
-              unitspr={unitspr}
-              setUnitOptions={unitOptions}
-              unitOptions={unitOptions}
-              unitListChange={unitListChange}
-              onUnitListInput={onUnitListInput}
-              category={category}
-              onCategoryListInput={onCategoryListInput}
-              categoryOptions={categoryOptions}
-              categoryChange={categoryChange}
-              sellByPieces={sellByPieces}
-              onSellByPiecesChange={onSellByPiecesChange}
-              piecesUnint={piecesUnint}
-              productName={productName}
-              cnofeacode={cnofeacode}
-              onCnofeacodeEdit={onCnofeacodeEdit}
-              onProductNameChange={onProductNameChange}
-              closeModal={closeModal}
-              taxes={taxes}
-              tax={tax}
-              onTaxChange={onTaxChange}
-              onPieceAmountChange={onPieceAmountChange}
-              errorAlert={errorAlert}
-              errorMessage={errorMessage}
-              companyData={companyData}
-              setErrorAlert={setErrorAlert}
-              setReference={setReference}
-              getBarcodeProps={getBarcodeProps}
-              setErrorMessage={setErrorMessage}
-              capations={capations}
-            />
-          </Grid>
+      {Object.keys(productDetails).length > 0 &&
+        <Grid item xs={12} style={{ paddingTop: "20px" }}>
+          <EditProduct
+            productDetails={productDetails}
+            editProduct={editProduct}
+            brand={brand}
+            onBrandListInput={onBrandListInput}
+            brandListChange={brandListChange}
+            brandOptions={brandOptions}
+            unitspr={unitspr}
+            setUnitOptions={unitOptions}
+            unitOptions={unitOptions}
+            unitListChange={unitListChange}
+            onUnitListInput={onUnitListInput}
+            category={category}
+            onCategoryListInput={onCategoryListInput}
+            categoryOptions={categoryOptions}
+            categoryChange={categoryChange}
+            sellByPieces={sellByPieces}
+            onSellByPiecesChange={onSellByPiecesChange}
+            piecesUnint={piecesUnint}
+            productName={productName}
+            cnofeacode={cnofeacode}
+            onCnofeacodeEdit={onCnofeacodeEdit}
+            onProductNameChange={onProductNameChange}
+            closeModal={closeModal}
+            taxes={taxes}
+            tax={tax}
+            onTaxChange={onTaxChange}
+            onPieceAmountChange={onPieceAmountChange}
+            errorAlert={errorAlert}
+            errorMessage={errorMessage}
+            companyData={companyData}
+            setErrorAlert={setErrorAlert}
+            setReference={setReference}
+            getBarcodeProps={getBarcodeProps}
+            setErrorMessage={setErrorMessage}
+            capations={capations}
+            reference={reference}
+          />
+        </Grid>
       }
     </Fragment>
   );

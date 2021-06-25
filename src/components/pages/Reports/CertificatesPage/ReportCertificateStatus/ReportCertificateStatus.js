@@ -18,6 +18,9 @@ export default function ReportCertificateStatus({ companyProps, classes }) {
   const [point, setPoint] = useState("");
   const [points, setPoints] = useState([]);
   const [status, setStatus] = useState({ value: "0", label: "Все" });
+  const [isExcelLoading, setExcelLoading] = useState(false);
+  const [code, setCode] = useState("");
+  const [isSearchable, setSearchable] = useState(false);
 
   const company = companyProps ? companyProps.value : "";
   const statuses = [
@@ -43,6 +46,15 @@ export default function ReportCertificateStatus({ companyProps, classes }) {
     }
   }, [company]);
 
+  useEffect(() => {
+    if (code === "") {
+      setSearchable(false);
+    }
+    else {
+      setSearchable(true);
+    }
+  }, [code]);
+
   const clean = () => {
     setPoint("");
     setPoints([]);
@@ -60,12 +72,12 @@ export default function ReportCertificateStatus({ companyProps, classes }) {
     stat.value === "0"
       ? setCertificates(certificatesAll)
       : stat.value === "1"
-      ? setCertificates(certificatesAvailable)
-      : stat.value === "2"
-      ? setCertificates(certificatesActive)
-      : stat.value === "3"
-      ? setCertificates(certificatesExpired)
-      : setCertificates(certificatesUsed);
+        ? setCertificates(certificatesAvailable)
+        : stat.value === "2"
+          ? setCertificates(certificatesActive)
+          : stat.value === "3"
+            ? setCertificates(certificatesExpired)
+            : setCertificates(certificatesUsed);
   };
 
   const onPointChange = (e, p) => {
@@ -77,7 +89,9 @@ export default function ReportCertificateStatus({ companyProps, classes }) {
     Axios.get("/api/giftcertificates", { params: { company } })
       .then((res) => res.data)
       .then((res) => {
+
         const certAll = res;
+
         const certAvailable = res.filter(
           (cert) => cert.status === "Доступен для продажи"
         );
@@ -148,15 +162,73 @@ export default function ReportCertificateStatus({ companyProps, classes }) {
       });
   };
 
+  const getStatusCertificatesExcel = () => {
+    setExcelLoading(true);
+    let arr = certificates;
+    Axios({
+      method: "POST",
+      url: "/api/report/certificates/statustoexcel",
+      data: { arr },
+      responseType: "blob",
+    })
+      .then((res) => res.data)
+      .then((res) => {
+        const url = window.URL.createObjectURL(new Blob([res]));
+        const link = document.createElement("a");
+        link.href = url;
+        link.setAttribute("download", `Статус сертификатов.xlsx`);
+        document.body.appendChild(link);
+        link.click();
+        setExcelLoading(false);
+      })
+      .catch((err) => {
+        ErrorAlert(err);
+        setExcelLoading(false);
+      });
+  };
+
+  const onCodeChange = (e) => {
+    if (e.target.value.trim() === "") {
+      setCertificates(certificatesAll);
+    };
+    setCode(e.target.value.trim());
+  }
+
+  const searchCertificates = () => {
+    let temp = [];
+
+    if (code !== "") {
+      setStatus({ value: "0", label: "Все" });
+      setCertificates(certificatesAll);
+      certificatesAll.forEach(cert => {
+        if (cert.code === code) {
+          temp.push(cert);
+        }
+      });
+      setCertificates(temp);
+    }
+    else {
+      Alert.warning(`Введите номер сертификата`, {
+        position: "top-right",
+        effect: "bouncyflip",
+        timeout: 3000,
+      });
+    }
+  }
+
   return (
     <Grid container spacing={3}>
       <CertificateOptionsStatus
         onStatusChange={onStatusChange}
+        onCodeChange={onCodeChange}
+        searchCertificates={searchCertificates}
         onPointChange={onPointChange}
         point={point}
         points={points}
         status={status}
         statuses={statuses}
+        code={code}
+        isSearchable={isSearchable}
       />
 
       {isLoading && (
@@ -181,6 +253,17 @@ export default function ReportCertificateStatus({ companyProps, classes }) {
           status={status}
         />
       )}
+      {!isLoading && certificates.length > 0 &&
+        <Grid item xs={12}>
+          <button
+            className="btn btn-sm btn-outline-success"
+            disabled={isExcelLoading}
+            onClick={getStatusCertificatesExcel}
+          >
+            Выгрузить в Excel
+        </button>
+        </Grid>
+      }
     </Grid>
   );
 }

@@ -20,11 +20,12 @@ const useStyles = makeStyles((theme) => ({
 export default function ProductReference() {
   const classes = useStyles();
   const [reference, setReference] = useState([]);
-  const [productList, setProductList] = useState("CreateProduct");
+  const [currentTab, setCurrentTab] = useState("CreateProduct");
   const [productBarcode, setProductBarcode] = useState("");
   const [productSelectValue, setProductSelectValue] = useState("");
   const [productOptions, setProductOptions] = useState([]);
   const [capations, setCapations] = useState([]);
+  const [productsList, setProductsList] = useState([]);
 
   useEffect(() => {
     if (productSelectValue.label) {
@@ -35,7 +36,7 @@ export default function ProductReference() {
 
   const changeProductList = (e) => {
     getProducts();
-    setProductList(e.target.name);
+    setCurrentTab(e.target.name);
     setReference({});
     setProductBarcode("");
     setProductSelectValue("");
@@ -93,6 +94,7 @@ export default function ProductReference() {
     })
       .then((res) => res.data)
       .then((list) => {
+        setProductsList(list);
         const productOptionsChanged = list.map((product) => {
           return {
             label: product.name,
@@ -109,6 +111,7 @@ export default function ProductReference() {
         console.log(err);
       });
   };
+
   const productListChange = (e, productSelectValueChanged) => {
     setProductSelectValue(productSelectValueChanged);
     if (productSelectValueChanged === null) {
@@ -129,13 +132,12 @@ export default function ProductReference() {
   return (
     <div className={classes.root}>
       <div>
-        <div className={`row ${productList ? "pb-10" : ""}`}>
+        <div className={`row ${currentTab ? "pb-10" : ""}`}>
           {productreference.map((create) => (
             <div className="col-md-3 create-btn-block" key={create.id}>
               <button
-                className={`btn btn-sm btn-block btn-create ${
-                  productList === create.route ? "btn-info" : "btn-outline-info"
-                }`}
+                className={`btn btn-sm btn-block btn-create ${currentTab === create.route ? "btn-info" : "btn-outline-info"
+                  }`}
                 name={create.route}
                 onClick={changeProductList}
               >
@@ -144,12 +146,12 @@ export default function ProductReference() {
             </div>
           ))}
         </div>
-        {productList && (
+        {currentTab && (
           <Fragment>
             <div className="empty-space" />
             <div className="row mt-10">
               <div className="col-md-12">
-                {productList === "CreateProduct" && (
+                {currentTab === "CreateProduct" && (
                   <CreateProduct
                     reference={reference}
                     getProductReference={getProductReference}
@@ -164,28 +166,27 @@ export default function ProductReference() {
                     setReference={setReference}
                   />
                 )}
-                {productList === "ProductList" && (
+                {currentTab === "ProductList" && (
                   <ProductReferenceList
+                    productsList={productsList}
+                    productBarcode={productBarcode}
                     setProductSelectValue={setProductSelectValue}
                     reference={reference}
                     getProductReference={getProductReference}
-                    productBarcode={productBarcode}
                     onBarcodeChange={onBarcodeChange}
                     onBarcodeKeyDown={onBarcodeKeyDown}
                     productSelectValue={productSelectValue}
-                    setProductBarcode={setProductBarcode}
                     productOptions={productOptions}
                     productListChange={productListChange}
                     onProductListChange={onProductListChange}
                     getProducts={getProducts}
                     getBarcodeProps={getProductByBarcode}
-                    setReference={setReference}
                     getProductByBarcode={getProductByBarcode}
                     capations={capations}
                   />
                 )}
-                {productList === "UpdateCategoryPage" && <UpdateCategoryPage />}
-                {productList === "AttrSprPage" && <AttrSprPage />}
+                {currentTab === "UpdateCategoryPage" && <UpdateCategoryPage />}
+                {currentTab === "AttrSprPage" && <AttrSprPage />}
               </div>
             </div>
           </Fragment>

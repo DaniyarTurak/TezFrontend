@@ -708,7 +708,7 @@ export default function CreateProduct({ isEditing }) {
               )}
               <Grid item xs={12}>
                 <label style={{ marginTop: 10 }}>
-                  <strong>Дополнительные характиристики</strong>
+                  <strong>Постоянные характиристики</strong>
               </label>
                 <Grid container spacing={1} >
                   <Grid item xs={12}>

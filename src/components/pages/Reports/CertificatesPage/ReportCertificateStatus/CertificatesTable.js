@@ -142,7 +142,7 @@ export default function CertificatesTable({
             <TableHead>
               <TableRow>
                 <StyledTableCell />
-                <StyledTableCell>Код</StyledTableCell>
+                <StyledTableCell>Номер</StyledTableCell>
                 <StyledTableCell align="center">Номинал</StyledTableCell>
                 <StyledTableCell align="center">Дата истечения</StyledTableCell>
                 <StyledTableCell align="center">Тип</StyledTableCell>
@@ -227,16 +227,6 @@ export default function CertificatesTable({
             ActionsComponent={TablePaginationActions}
           />
         )}
-      </Grid>
-
-      <Grid item xs={12}>
-        <ReactHTMLTableToExcel
-          className="btn btn-sm btn-outline-success"
-          table="table-to-xls"
-          filename={`Сертификаты(${status.label})`}
-          sheet="tablexls"
-          buttonText="Выгрузить в excel"
-        />
       </Grid>
     </Fragment>
   );

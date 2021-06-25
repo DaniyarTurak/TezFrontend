@@ -2,8 +2,12 @@ import React, { useState, useEffect, Fragment } from "react";
 import Select from "react-select";
 import Axios from "axios";
 import Alert from "react-s-alert";
-import ErrorAlert from "../../../ReusableComponents/ErrorAlert";
+import ErrorAlert from "../../../../ReusableComponents/ErrorAlert";
+import Moment from "moment";
 import Grid from "@material-ui/core/Grid";
+import Button from "@material-ui/core/Button";
+import InfoIcon from "@material-ui/icons/Info";
+import Tooltip from "@material-ui/core/Tooltip";
 
 export default function AddAttribute({
   clearBoard,
@@ -11,6 +15,9 @@ export default function AddAttribute({
   attributeCode,
   isEditing,
   editProduct,
+  capations,
+  setAttributes,
+  attributes,
 }) {
   const [attrList, setAttrList] = useState([]);
   const [attrListCode, setAttrListCode] = useState(null);
@@ -24,6 +31,7 @@ export default function AddAttribute({
   const [selectedAttrType, setSelectedAttrType] = useState("TEXT");
   const [oldAttributes, setOldAttributes] = useState([]);
   const [isClear, setClear] = useState(false);
+  const [date] = useState(Moment().format("YYYY-MM-DD"));
 
   useEffect(() => {
     getAttributes();
@@ -32,6 +40,24 @@ export default function AddAttribute({
   useEffect(() => {
     clear();
   }, [clearBoard]);
+
+  const getOldAttributes = () => {
+    let arr = [];
+    if (capations && capations.length > 0) {
+      capations.forEach((element) => {
+        if (element.attribute_id !== null) {
+          arr.push({
+            value: element.attribute_value,
+            name: element.attribute_name,
+            code: element.attribute_id,
+          });
+        } else {
+          [];
+        }
+      });
+      setAttrList(arr);
+    }
+  };
 
   useEffect(() => {
     if (selected.length > 0) {
@@ -48,6 +74,7 @@ export default function AddAttribute({
       setAttrList([]);
       setAttrListCode(null);
       setHidden(false);
+      getOldAttributes();
     }
   }, [selected]);
 
@@ -137,24 +164,16 @@ export default function AddAttribute({
     setAttrValueSpr("");
     setOptionsToRenderSpr(optionsToRenderSprChanged);
   };
-
-  const onAttrValueChange = (e) => {
-    const attrValueChanged =
-      optionsToRenderSpr.length > 0 ? e.value : e.target.value;
-    const attrValueSprChanged = optionsToRenderSpr.length > 0 ? e : "";
-
-    if (selectedAttrType === "DATE" && attrValueChanged.indexOf("-") === 5)
-      return;
-
-    setAttrValue(attrValueChanged);
-    setAttrValueSpr(attrValueSprChanged);
-  };
-
   const handleAdd = () => {
-    if (Object.keys(attrName).length === 0 || !attrValue) {
-      return setAttrNameError("Поле обязательно для заполнения");
-    } else {
-      setAttrNameError("");
+    if (Object.keys(attrName).length === 0) {
+      {
+        Alert.warning("Выберите значение!", {
+          position: "top-right",
+          effect: "bouncyflip",
+          timeout: 3000,
+        });
+        return;
+      }
     }
 
     let attrListChanged = attrList;
@@ -166,17 +185,23 @@ export default function AddAttribute({
         timeout: 2000,
       });
     }
-    const reqbody = {
+    let reqbody = {
       listcode: attrListCode,
       value: attrValue,
       attribcode: attrName.value,
     };
+    if (reqbody.attribcode === "2") {
+      reqbody.value = Moment(date).format("YYYY-MM-DD");
+    }
+
     attrListChanged.push({
-      value: attrValue,
+      value:
+        attrName.value === "2" ? Moment(date).format("YYYY-MM-DD") : attrValue,
       name: attrName.label,
       code: attrName.value,
     });
     postAttributes(attrListChanged, reqbody);
+    setAttributes(attrListChanged);
   };
 
   const postAttributes = (attrListChanged, reqbody) => {
@@ -185,8 +210,6 @@ export default function AddAttribute({
       .then((result) => {
         setAttrListCode(result.text);
         attributeCode(result.text);
-        // attrListProps(attrListChanged);
-        setAttrList(attrListChanged);
         setAttrValue("");
         setAttrName("");
         setAttrValueSpr("");
@@ -204,138 +227,76 @@ export default function AddAttribute({
       listcode: attrListCode,
       attribcode: item.code,
     };
+    setAttributes(newList);
     setAttrList(newList);
-
-    Axios.post("/api/attributes/delete", req)
-      .then(() => {
-        // attrListProps(newList);
-        if (attrList.length === 0) {
-          attributeCode("0");
-        }
-      })
-      .catch((err) => {
-        Alert.error(
-          err.response.data.code === "internal_error"
-            ? "Возникла ошибка при обработке вашего запроса. Мы уже работает над решением. Попробуйте позже"
-            : err.response.data.text,
-          {
-            position: "top-right",
-            effect: "bouncyflip",
-            timeout: 2000,
-          }
-        );
-      });
   };
 
   return (
     <Fragment>
-      <div
-        className="row justify-content-center"
-        style={{ marginBottom: 5 }}
-      ></div>
-
-      {!isHidden && (
-        <Fragment>
-          <Grid container direction="row" spacing={2} alignItems="center">
-            <Grid item xs={5}>
-              <label htmlFor="">Характеристика товара</label>
-            </Grid>
-            <Grid item xs={5}>
-              <label htmlFor="">Укажите значение</label>
-            </Grid>
-          </Grid>
-          <Grid
-            container
-            direction="row"
-            justify="flex-start"
-            alignItems="center"
-            spacing={3}
+      <Grid
+        container
+        direction="row"
+        justify="flex-start"
+        alignItems="center"
+        spacing={2}
+      >
+        <Grid item xs={5}>
+          <Select
+            value={attrName}
+            onChange={onAttrNameChange}
+            options={optionsToRender}
+            placeholder="Выберите"
+            noOptionsMessage={() => "Характеристики не найдены"}
+          />
+        </Grid>
+        <Grid item xs={5}>
+          <button
+            type="button"
+            className="btn btn-outline-info"
+            onClick={handleAdd}
           >
-            <Grid item xs={5}>
-              <Select
-                value={attrName}
-                onChange={onAttrNameChange}
-                options={optionsToRender}
-                placeholder="Выберите"
-                noOptionsMessage={() => "Характеристики не найдены"}
-              />
-            </Grid>
-            <Grid item xs={7}>
-              <div className="input-group">
-                {selectedAttrType === "TEXT" && (
-                  <input
-                    value={attrValue}
-                    type="text"
-                    className="form-control"
-                    placeholder="Введите значение"
-                    onChange={onAttrValueChange}
-                  />
-                )}
-                {selectedAttrType === "DATE" && (
-                  <input
-                    value={attrValue}
-                    type="date"
-                    className="form-control"
-                    placeholder="Введите значение"
-                    onChange={onAttrValueChange}
-                  />
-                )}
-                {selectedAttrType === "SPR" && (
-                  <Select
-                    value={attrValueSpr}
-                    onChange={onAttrValueChange}
-                    options={optionsToRenderSpr}
-                    className="form-control attr-spr"
-                    placeholder={"Введите значение"}
-                    noOptionsMessage={() => "Характеристики не найдены"}
-                  />
-                )}
-                <div className="input-group-append">
-                  <button
-                    type="button"
-                    className="btn btn-outline-info"
-                    onClick={handleAdd}
-                  >
-                    Добавить
-                  </button>
-                </div>
-              </div>
-            </Grid>
-          </Grid>
-          <span className="message text-danger">{attrNameError}</span>
-        </Fragment>
-      )}
-
+            Добавить атрибут
+          </button>
+        </Grid>
+        <Grid>
+          <Tooltip title={<h6>Добавьте все нужные атрибуты</h6>}>
+            <span>
+              <Button disabled>
+                <InfoIcon color="primary" fontSize="large" />
+              </Button>
+            </span>
+          </Tooltip>
+        </Grid>
+      </Grid>
       {attrList.length > 0 && (
-        <div className="row justify-content-center mt-20">
-          <div className="col-md-8">
+        <div className="row justify-content-left mt-8">
+          <div className="col-md-2">
             <table className="table">
               <thead>
                 <tr>
                   <th>Наименование</th>
-                  <th>Значение</th>
                   <th />
                 </tr>
               </thead>
-
               <tbody>
-                {attrList.map((attr) => (
-                  <tr key={attr.name}>
-                    <td>{attr.name}</td>
-                    <td>{attr.value}</td>
-                    <td className="text-right">
-                      {!isHidden && (
-                        <button
-                          type="button"
-                          className="btn"
-                          onClick={() => handleDelete(attr)}
-                        >
-                          &times;
-                        </button>
-                      )}
-                    </td>
-                  </tr>
-                ))}
+                {attrList.length === 0
+                  ? []
+                  : attrList.map((attr) => (
+                      <tr key={attr.name}>
+                        <td>{attr.name}</td>
+                        <td className="text-center">
+                          {!isHidden && (
+                            <button
+                              type="button"
+                              className="btn"
+                              onClick={() => handleDelete(attr)}
+                            >
+                              &times;
+                            </button>
+                          )}
+                        </td>
+                      </tr>
+                    ))}
               </tbody>
             </table>
           </div>

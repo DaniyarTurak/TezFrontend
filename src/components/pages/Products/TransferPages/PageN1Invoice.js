@@ -297,12 +297,12 @@ class PageN1Invoice extends Component {
                           />
                           <div className="input-group-append">
                             <span className="input-group-text">
-                              в накладной {product.units}
+                              в накладной {product.totalunits}
                             </span>
                           </div>
                           <div className="input-group-append">
                             <span className="input-group-text">
-                              на складе {product.totalunits}
+                              на складе {product.units}
                             </span>
                           </div>
                         </div>

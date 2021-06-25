@@ -70,21 +70,21 @@ const types = [
 ];
 
 const periodsDaily = [
-  { label: "90 дней", value: "1" },
-  { label: "180 дней", value: "2" },
-  { label: "360 дней", value: "3" },
+  { label: "90 дней", value: "90" },
+  { label: "180 дней", value: "180" },
+  { label: "360 дней", value: "360" },
 ];
 
 const periodsWeekly = [
-  { label: "13 недель", value: "1" },
-  { label: "26 недель", value: "2" },
-  { label: "52 недели", value: "3" },
+  { label: "13 недель", value: "13" },
+  { label: "26 недель", value: "26" },
+  { label: "52 недели", value: "52" },
 ];
 
 const periodsMonthly = [
-  { label: "6 месяцев", value: "1" },
-  { label: "9 месяцев", value: "2" },
-  { label: "12 месяцев", value: "3" },
+  { label: "6 месяцев", value: "6" },
+  { label: "9 месяцев", value: "9" },
+  { label: "12 месяцев", value: "12" },
 ];
 
 const profitAmounts = [
@@ -102,7 +102,7 @@ export default function AbcXyzPage() {
     false,
     false,
   ]);
-  const [period, setPeriod] = useState(`3`);
+  const [period, setPeriod] = useState(`12`);
   const [profitAmount, setProfitAmount] = useState(`units`);
   const [reports, setReports] = useState([]);
   const [type, setType] = useState(`3`);

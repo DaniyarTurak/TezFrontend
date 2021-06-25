@@ -133,14 +133,14 @@ export default function AddAttribute({
 
   const onAttrNameChange = (attrNameChanged) => {
     if (attrNameChanged) {
-    const selectedAttrTypeChanged =
-      attrNameChanged.length === 0 ? "TEXT" : attrNameChanged.type;
-    const optionsToRenderSprChanged = attrNameChanged.sprvalues;
-    setAttrName(attrNameChanged);
-    // setSelectedAttrType(selectedAttrTypeChanged);
-    setAttrValue("");
-    // setAttrValueSpr("");
-    // setOptionsToRenderSpr(optionsToRenderSprChanged);
+      const selectedAttrTypeChanged =
+        attrNameChanged.length === 0 ? "TEXT" : attrNameChanged.type;
+      const optionsToRenderSprChanged = attrNameChanged.sprvalues;
+      setAttrName(attrNameChanged);
+      // setSelectedAttrType(selectedAttrTypeChanged);
+      setAttrValue("");
+      // setAttrValueSpr("");
+      // setOptionsToRenderSpr(optionsToRenderSprChanged);
     }
     else {
       setAttrName("");
@@ -249,7 +249,7 @@ export default function AddAttribute({
     <Fragment>
       <Grid container direction="row" spacing={3}>
         <Grid item xs={12}>
-          <label htmlFor="">Партийные характеристики</label>
+          <label htmlFor=""><strong>Партийные характеристики</strong></label>
         </Grid>
       </Grid>
       <Grid
@@ -259,7 +259,7 @@ export default function AddAttribute({
       >
         <Grid item xs={6}>
           <Select
-          isClearable={true}
+            isClearable={true}
             value={attrName}
             onChange={onAttrNameChange}
             options={optionsToRender}
