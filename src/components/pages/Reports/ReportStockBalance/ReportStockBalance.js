@@ -63,7 +63,7 @@ export default function ReportStockBalance({ companyProps }) {
     value: "0",
     label: "Все",
   });
-  
+
   const [counterparties, setCounterparties] = useState([]);
   const [date, setDate] = useState(Moment().format("YYYY-MM-DD"));
   const [flag, setFlag] = useState(true);
@@ -128,7 +128,7 @@ export default function ReportStockBalance({ companyProps }) {
             });
         }
         else {
-          if (debouncedCounterparty.trim().length >= 2 &&  debouncedCounterparty.trim() !== "Все") {
+          if (debouncedCounterparty.trim().length >= 2 && debouncedCounterparty.trim() !== "Все") {
             Axios.get("/api/counterparties/search", {
               params: { counterparty: inputCounterparty },
             })

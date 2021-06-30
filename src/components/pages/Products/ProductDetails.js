@@ -100,10 +100,25 @@ export default function ProductDetails({
           </p>
         </div>
       </div>
+      {details.detailscaption &&
+        < div className="row">
+          <div className="col-md-12">
+            <label>Постоянные характеристики</label>
+
+            <p className={`${!details.detailscaption ? "hint" : ""} `}>
+              {details.detailscaption.map((attr, id) => (
+                <span key={id}>{attr.attribute_name}: {attr.attribute_value}{id === details.detailscaption.length - 1 ? "" : ","}&nbsp;</span>
+              ))}
+
+            </p>
+
+          </div>
+        </div>
+      }
       {product.attributescaption &&
         < div className="row">
           <div className="col-md-12">
-            <label>Атрибуты</label>
+            <label>Партийные характеристики</label>
             <p className={`${!product.attributescaption ? "hint" : ""} `}>
               {product.attributescaption || pleaseWait}
             </p>
