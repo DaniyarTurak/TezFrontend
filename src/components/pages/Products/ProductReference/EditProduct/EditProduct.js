@@ -1,13 +1,10 @@
 import React, { useState, useEffect, Fragment } from "react";
 import Axios from "axios";
-import { makeStyles } from "@material-ui/core/styles";
 import Paper from "@material-ui/core/Paper";
 import TextField from "@material-ui/core/TextField";
 import Autocomplete from "@material-ui/lab/Autocomplete";
-import Button from "@material-ui/core/Button";
 import Select from "@material-ui/core/Select";
 import MenuItem from "@material-ui/core/MenuItem";
-import FormControl from "@material-ui/core/FormControl";
 import ListAltSharpIcon from "@material-ui/icons/ListAltSharp";
 import AlertMaterial from "@material-ui/lab/Alert";
 import Alert from "react-s-alert";
@@ -17,30 +14,10 @@ import Grid from "@material-ui/core/Grid";
 import DeleteIcon from "@material-ui/icons/Delete";
 import IconButton from "@material-ui/core/IconButton";
 import SweetAlert from "react-bootstrap-sweetalert";
-
-const useStyles = makeStyles((theme) => ({
-  table: {},
-  head: {
-    backgroundColor: "#17a2b8",
-    color: theme.palette.common.white,
-    fontSize: 14,
-  },
-  row: {
-    "&:nth-of-type(odd)": {
-      backgroundColor: "#ffEf",
-    },
-  },
-  rowEdited: {
-    color: theme.palette.warning.main,
-  },
-  textField: {
-    maxWidth: 900,
-    minWidth: 500,
-  },
-}));
+import ErrorAlert from "../../../../ReusableComponents/ErrorAlert";
+import Moment from "moment";
 
 export default function EditProduct({
-  isEditing,
   productDetails,
   brandOptions,
   onBrandListInput,
@@ -49,56 +26,68 @@ export default function EditProduct({
   setUnitOptions,
   onUnitListInput,
   sellByPieces,
-  closeModal,
-  onTaxChange,
-  taxes,
   companyData,
   errorAlert,
   errorMessage,
-  tax,
   piecesUnint,
-  capations,
-  reference
+  setClear,
+  isClear,
+  setProductDetails
 }) {
-  const classes = useStyles();
+
   const [editingProduct, setEditingProduct] = useState({});
-  const [attributeCode, setAttributeCode] = useState("");
-  const [attributeGlobCode, setAttributeGlobCode] = useState("");
-  const [editProductAttr] = useState("");
-  const [clearBoard, setClearBoard] = useState(false);
-  const [attributes, setAttributes] = useState([]);
-  const [sweetAlert, setSweetAlert] = useState(null);
+  const [listAllAttributes, setListAllAttributes] = useState([]);
+
+  const [constAttribCode, setConstAttribCode] = useState(0);
+  const [partAttribCode, setPartAttribCode] = useState(0);
+  const [attributesValues, setAttributesValues] = useState([]);
+  const [detailsValues, setDetailsValues] = useState([]);
+  const [isDeleteListCode, setDeleteListCode] = useState(false);
+  const [sweetalert, setSweetAlert] = useState(null);
+  const [tax, setTax] = useState("0");
+
+  const getAttributes = () => {
+    Axios.get("/api/attributes")
+      .then((res) => res.data)
+      .then((attributes) => {
+        setListAllAttributes(attributes);
+      })
+      .catch((err) => {
+        console.log(err);
+      });
+  };
 
   useEffect(() => {
     setEditingProduct(productDetails);
+    setTax(productDetails.taxid)
   }, [productDetails]);
 
   useEffect(() => {
-    let attrOld = [];
-    if (capations && capations.length > 0) {
-      capations.forEach((element) => {
-        if (element.attribute_id === null) {
-        } else {
-          attrOld.push({
-            code: element.attribute_id,
-            name: element.attribute_name,
-            value: element.attribute_value,
-          });
-        }
-      });
-    }
-    setAttributes(attrOld);
-  }, [capations]);
-
-  const getAttributeCharCode = (attributeCodeChanged) => {
-    setAttributeGlobCode(attributeCodeChanged);
-  };
-
-  const getAttributeCode = (attributeCodeChanged) => {
-    setAttributeCode(attributeCodeChanged);
-  };
+    getAttributes();
+  }, []);
 
   const editProdRes = () => {
+    let tempAttributes = [];
+    let tempDetails = [];
+    if (detailsValues.length > 0) {
+      detailsValues.forEach(element => {
+        tempDetails.push({
+          code: element.attribute_id,
+          name: element.attribute_name,
+          value: element.attribute_value
+        })
+      });
+    }
+
+    if (attributesValues.length > 0) {
+      attributesValues.forEach(element => {
+        tempAttributes.push({
+          code: element.attribute_id,
+          name: element.attribute_name,
+          value: element.attribute_format === "DATE" ? Moment().format("YYYY-MM-DD") : ""
+        })
+      });
+    }
     let product = {
       id: editingProduct.id,
       name: editingProduct.name,
@@ -110,44 +99,61 @@ export default function EditProduct({
         editingProduct.piece === true ? editingProduct.piece : sellByPieces,
       pieceinpack: piecesUnint,
       cnofeacode: editingProduct.cnofeacode,
-      details: !isEditing
-        ? attributeGlobCode || null
-        : editProductAttr.attributes !== "0" &&
-          parseInt(editProductAttr.attributes, 0) >= attributeGlobCode
-          ? editProductAttr.attributes
-          : attributeGlobCode,
-      attributes: !isEditing
-        ? attributeCode || null
-        : editProductAttr.attributes !== "0" &&
-          parseInt(editProductAttr.attributes, 0) >= attributeCode
-          ? editProductAttr.attributes
-          : attributeCode,
+      details: constAttribCode,
+      attributes: partAttribCode,
       delete: "",
-      attributesValue: attributes,
+      attributesValue: tempAttributes,
+      detailsValue: tempDetails
     };
-    console.log(product);
-    //   Axios.post("/api/products/update", {
-    //     product,
-    //   })
-    //     .then((res) => {
-    //       setErrorAlert(false);
-    //       setReference([]);
-    //       getBarcodeProps(productDetails.code);
-    //       closeModal(false);
-    //       setClearBoard(res.code);
-    //       Alert.success("Товар успешно сохранен", {
-    //         position: "top-right",
-    //         effect: "bouncyflip",
-    //         timeout: 2000,
-    //       });
-    //     })
-    //     .catch((err) => {
-    //       setErrorAlert(true);
-    //       setErrorMessage(err);
-    //     });
+    Axios.post("/api/products/update", {
+      product,
+    })
+      .then((res) => {
+        Alert.success("Товар успешно сохранен", {
+          position: "top-right",
+          effect: "bouncyflip",
+          timeout: 2000,
+        });
+        setDeleteListCode(!isDeleteListCode);
+      })
+      .catch((err) => {
+        ErrorAlert(err);
+      });
   };
 
-  const handleDeleteProduct = (item) => {
+  const handleDelete = () => {
+    const product = {
+      id: editingProduct.id,
+      delete: "true",
+    };
+    Axios.post("/api/products/update", {
+      product,
+    })
+      .then((res) => res.data)
+      .then((res) => {
+        if (res.code === "success") {
+          Alert.success("Товар успешно удален.", {
+            position: "top-right",
+            effect: "bouncyflip",
+            timeout: 2000,
+          });
+          setClear(!isClear);
+          setEditingProduct({});
+          setSweetAlert(null);
+          setProductDetails({})
+        } else
+          return Alert.warning(res.text, {
+            position: "top-right",
+            effect: "bouncyflip",
+            timeout: 2000,
+          });
+      })
+      .catch((err) => {
+        console.log(err);
+      });
+  };
+
+  const handleDeleteProduct = () => {
     setSweetAlert(
       <SweetAlert
         warning
@@ -159,7 +165,7 @@ export default function EditProduct({
         title="Вы уверены?"
         allowEscape={true}
         closeOnClickOutside={false}
-        onConfirm={() => handleDeleteProduct(item)}
+        onConfirm={handleDelete}
         onCancel={() => setSweetAlert(null)}
       >
         Вы действительно хотите удалить товар?
@@ -169,27 +175,42 @@ export default function EditProduct({
 
   const categoryChange = (value) => {
     if (value) {
-      console.log(value);
       setEditingProduct({ ...editingProduct, category: value.name, categoryid: value.id })
     };
   };
 
   const brandChange = (value) => {
     if (value) {
-      console.log(value);
       setEditingProduct({ ...editingProduct, brand: value.name, brandid: value.id })
     };
   };
 
   const unitSprChange = (value) => {
     if (value) {
-      console.log(value);
       setEditingProduct({ ...editingProduct, unitspr_name: value.name, unitsprid: value.id })
     };
   };
 
+  const taxChange = (e) => {
+    setTax(e.target.value);
+    setEditingProduct({ ...editingProduct, taxid: e.target.value })
+  };
+
+  const deleteListCode = (listcode) => {
+    Axios.post("/api/attributes/delete/listcode", {
+      listcode,
+    })
+      .then((res) => {
+        console.log(res);
+      })
+      .catch((err) => {
+        ErrorAlert(err);
+      });
+  }
+
   return (
     <Fragment>
+      {sweetalert}
       {errorAlert && (
         <AlertMaterial severity="error">
           {errorMessage.response && errorMessage.response.data.text}
@@ -197,16 +218,16 @@ export default function EditProduct({
       )}
       <Paper style={{ backgroundColor: "#17a2b8" }}>
         <Grid container>
-          <Grid item xs={1}>
-            <ListAltSharpIcon fontSize="large" />
+          <Grid item xs={1} >
+            <div style={{ paddingTop: "5px", paddingLeft: "5px", color: "white" }}><ListAltSharpIcon fontSize="large" /></div>
           </Grid>
-          <Grid item xs={5}>
-            Карточка товара
-        </Grid>
-          <Grid item xs={6}>
+          <Grid item xs={10}>
+            <div style={{ paddingTop: "12px", color: "white" }}>Карточка товара</div>
+          </Grid>
+          <Grid item xs={1}>
             <IconButton
               fontSize="large"
-              onClick={() => handleDeleteProduct(reference)}>
+              onClick={() => handleDeleteProduct()}>
               <DeleteIcon style={{ color: 'white' }} />
             </IconButton>
           </Grid>
@@ -328,66 +349,63 @@ export default function EditProduct({
             {companyData.certificatenum && (
               <Grid item xs={12}>
                 <label>Налоговая категория:</label>
-                <FormControl
-                  fullWidth
+                <Select
                   variant="outlined"
-                  className={classes.formControl}
                   size="small"
+                  fullWidth
+                  value={tax}
+                  onChange={taxChange}
                 >
-                  <Select
-                    fullWidth
-                    labelId="demo-simple-select-filled-label"
-                    id="demo-simple-select-filled"
-                    size="small"
-                    value="0"
-                    onChange={onTaxChange}
-                  >
-                    {taxes.map((option) => (
-                      <MenuItem key={option.value} value={option.value}>
-                        {option.label}
-                      </MenuItem>
-                    ))}
-                  </Select>
-                </FormControl>
+                  <MenuItem value={"0"}>Без НДС</MenuItem>
+                  <MenuItem value={"1"}>Стандартный НДС</MenuItem>
+                </Select>
               </Grid>
             )}
-            {editingProduct.detailscaption && editingProduct.detailscaption.length > 0 &&
-              <Grid item xs={12}>
-                <label>Постоянные характеристики:</label>
-                <AddConstAttribute
-                  clearBoard={clearBoard}
-                  attributes={editingProduct.detailscaption}
-                  attributeCode={getAttributeCharCode}
-                  isEditing={isEditing}
-                />
-              </Grid>
-            }
             <Grid item xs={12}>
-              <label>Партийные характеристики:</label>
-              {/* <AddPartAttribute
-                isEditing={isEditing}
-                clearBoard={clearBoard}
-                attributeCode={getAttributeCode}
-                capations={capations}
-                setAttributes={setAttributes}
-                attributes={attributes}
-              /> */}
+              <label><strong>Постоянные характеристики:</strong></label>
+              <AddConstAttribute
+                productAttributes={editingProduct.detailscaption}
+                listAllAttributes={listAllAttributes}
+                setConstAttribCode={setConstAttribCode}
+                setDetailsValues={setDetailsValues}
+                deleteListCode={deleteListCode}
+                isDeleteListCode={isDeleteListCode}
+              />
             </Grid>
             <Grid item xs={12}>
-              <Button
-                variant="contained"
-                color="primary"
+              <label><strong>Партийные характеристики:</strong></label>
+              <AddPartAttribute
+                productAttributes={editingProduct.attributescaption}
+                listAllAttributes={listAllAttributes}
+                setPartAttribCode={setPartAttribCode}
+                setAttributesValues={setAttributesValues}
+                deleteListCode={deleteListCode}
+                isDeleteListCode={isDeleteListCode}
+              />
+            </Grid>
+            <Grid item xs={3} />
+            <Grid
+              container
+              style={{ paddingTop: "20px", paddingBottom: "20px" }}
+              spacing={1}
+              justify="center"
+              alignItems="center">
+              <button
+                type="button"
+                className="btn mr-10"
+                onClick={() => {
+                  setClear(!isClear);
+                  setProductDetails({});
+                }}
+              >
+                Отмена
+              </button>
+              &emsp;
+              <button className="btn btn-success"
                 onClick={() => editProdRes()}
               >
                 Сохранить
-              </Button>
-              <Button
-                onClick={closeModal}
-                variant="contained"
-                style={{ marginLeft: "20px" }}
-              >
-                Отмена
-              </Button>
+              </button>
             </Grid>
           </Grid>
         </Grid>

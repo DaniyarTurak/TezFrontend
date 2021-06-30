@@ -43,7 +43,7 @@ export default function ProductReference() {
   };
 
   const getProductByBarcode = (pb) => {
-    const barcode = pb || productBarcode;
+    const barcode = pb.trim() || productBarcode.trim();
     Axios.get("/api/nomenclature", { params: { barcode } })
       .then((res) => res.data)
       .then((product) => {
@@ -70,8 +70,10 @@ export default function ProductReference() {
       return;
     }
   };
-  const onBarcodeKeyDown = (e) => {
-    if (e.keyCode === 13) getProductByBarcode(productBarcode);
+  const onBarcodeKeyDown = (e, barcode) => {
+    if (e.keyCode === 13) {
+      getProductByBarcode(barcode);
+    }
   };
 
   const getProductReference = () => {

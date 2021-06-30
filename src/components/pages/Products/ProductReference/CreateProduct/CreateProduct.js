@@ -709,7 +709,7 @@ export default function CreateProduct({ isEditing }) {
               <Grid item xs={12}>
                 <label style={{ marginTop: 10 }}>
                   <strong>Постоянные характиристики</strong>
-              </label>
+                </label>
                 <Grid container spacing={1} >
                   <Grid item xs={12}>
                     <AddAttributeChar
@@ -734,26 +734,25 @@ export default function CreateProduct({ isEditing }) {
             </Grid>
           </Grid>
           <Grid item xs={3} />
-            <Grid
-              container
-              style={{paddingTop:"20px", paddingBottom: "20px"}}
-              spacing={1}
-              justify="center"
-              alignItems="center">
-              <Button
-                style={{ marginRight: "20px" }}
-                variant="contained"
-                onClick={clearForm}
-              >
-                Очистить
-              </Button>
-              <Button
-                variant="contained"
-                color="primary"
-                onClick={() => createProduct()}
-              >
-                Сохранить
-              </Button>
+          <Grid
+            container
+            style={{ paddingTop: "20px", paddingBottom: "20px" }}
+            spacing={1}
+            justify="center"
+            alignItems="center">
+            <button
+              type="button"
+              className="btn mr-10"
+              onClick={clearForm}
+            >
+              Очистить
+              </button>
+              &emsp;
+              <button className="btn btn-success"
+              onClick={() => createProduct()}
+            >
+              Сохранить
+              </button>
           </Grid>
         </Grid>
       </form>

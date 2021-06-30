@@ -260,7 +260,6 @@ export default function AddAttribute({
                           }}
                           options={attribute.options}
                           className="form-control attr-spr"
-                          placeholder={"Введите значение"}
                           noOptionsMessage={() => "Характеристики не найдены"}
                         />
                         <IconButton onClick={() => showConfiramtion(attribute)} style={{ padding: "6px" }}>
