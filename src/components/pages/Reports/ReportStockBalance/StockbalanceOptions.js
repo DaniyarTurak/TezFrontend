@@ -167,7 +167,7 @@ export default function StockbalanceOptions({
           }
           label={
             <span style={{ fontSize: ".875rem" }}>
-              Разбить по Атрибутам (Например: по цвету, размеру и т.д.)
+              Разбить по партийным характеристиками (Например: по цвету, размеру и т.д.)
             </span>
           }
         />
