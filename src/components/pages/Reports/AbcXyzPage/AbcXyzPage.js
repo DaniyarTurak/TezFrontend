@@ -102,12 +102,12 @@ export default function AbcXyzPage() {
     false,
     false,
   ]);
-  const [period, setPeriod] = useState(`12`);
+  const [period, setPeriod] = useState(`90`);
   const [profitAmount, setProfitAmount] = useState(`units`);
   const [reports, setReports] = useState([]);
-  const [type, setType] = useState(`3`);
-  const [abc_a, setAbc_a] = useState(80);
-  const [abc_b, setAbc_b] = useState(95);
+  const [type, setType] = useState(`1`);
+  const [abc_a, setAbc_a] = useState(25);
+  const [abc_b, setAbc_b] = useState(50);
   const [xyz_x, setXyz_x] = useState(10);
   const [xyz_y, setXyz_y] = useState(25);
   const classes = useStyles();
@@ -333,7 +333,7 @@ export default function AbcXyzPage() {
     }
     setXyz_y(value);
   };
-
+ 
   return (
     <Box>
       <ReportOptions
