@@ -46,7 +46,8 @@ export default function SalesOptions({
   name,
   setName,
   nameChange,
-  products
+  products,
+  setBarcode
 }) {
 
   return (
@@ -63,19 +64,28 @@ export default function SalesOptions({
         />
       </Grid>
       <Grid item xs={6}>
-        <TextField
-          fullWidth
-          variant="outlined"
+        <Autocomplete
+          freeSolo
           value={barcode}
-          onChange={barcodeChange}
-          label="Штрих-код"
-        /></Grid>
+          noOptionsText="Товар не найден"
+          onChange={(e, value) => barcodeChange(value)}
+          onInputChange={(event, value) => setBarcode(value)}
+          options={products.map((option) => option.code)}
+          renderInput={(params) => (
+            <TextField
+              {...params}
+              placeholder="Штрих-код"
+              variant="outlined"
+            />
+          )}
+        />
+      </Grid>
       <Grid item xs={6}>
         <Autocomplete
           value={name}
           noOptionsText="Товар не найден"
           onChange={(e, value) => nameChange(value)}
-          onInputChange={(event, value) => { setName(value) }}
+          onInputChange={(event, value) => setName(value)}
           options={products.map((option) => option.name)}
           renderInput={(params) => (
             <TextField

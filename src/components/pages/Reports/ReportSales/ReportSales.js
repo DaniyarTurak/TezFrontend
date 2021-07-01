@@ -73,6 +73,7 @@ export default function ReportSales({ companyProps }) {
   const [barcode, setBarcode] = useState("");
   const [products, setProducts] = useState([]);
   const debouncedName = useDebounce(name, 500);
+  const debouncedBarcode = useDebounce(barcode, 500);
 
   const company = companyProps ? companyProps.value : "";
   const companyData =
@@ -84,33 +85,6 @@ export default function ReportSales({ companyProps }) {
     { value: "1", label: "Возвраты" },
   ];
 
-  useEffect(
-    () => {
-      if (!debouncedName || debouncedName === "") {
-        Axios.get("/api/products", { params: { productName: "" } })
-          .then((res) => res.data)
-          .then((list) => {
-            setProducts(list);
-          })
-          .catch((err) => {
-            ErrorAlert(err);
-          });
-      }
-      else {
-        if (debouncedName.trim().length >= 2) {
-          Axios.get("/api/products", { params: { productName: name } })
-            .then((res) => res.data)
-            .then((list) => {
-              setProducts(list);
-            })
-            .catch((err) => {
-              ErrorAlert(err);
-            });
-        };
-      }
-    },
-    [debouncedName]
-  );
 
   useEffect(() => {
     if (company) {
@@ -154,6 +128,64 @@ export default function ReportSales({ companyProps }) {
     point,
     type,
   ]);
+
+  useEffect(
+    () => {
+      if (!debouncedName || debouncedName === "") {
+        Axios.get("/api/products", { params: { productName: "" } })
+          .then((res) => res.data)
+          .then((list) => {
+            setProducts(list);
+          })
+          .catch((err) => {
+            ErrorAlert(err);
+          });
+      }
+      else {
+        if (debouncedName.trim().length >= 3) {
+          Axios.get("/api/products", { params: { productName: name } })
+            .then((res) => res.data)
+            .then((list) => {
+              setProducts(list);
+            })
+            .catch((err) => {
+              ErrorAlert(err);
+            });
+        };
+      }
+    },
+    [debouncedName]
+  );
+
+  useEffect(
+    () => {
+      if (debouncedBarcode) {
+        if (debouncedBarcode.trim().length === 0) {
+          Axios.get("/api/products/stockmonitoring", { params: { barcode: "" } })
+            .then((res) => res.data)
+            .then((list) => {
+              setProducts(list);
+            })
+            .catch((err) => {
+              ErrorAlert(err);
+            });
+        }
+        else {
+          if (debouncedBarcode.trim().length >= 3) {
+            Axios.get("/api/products/stockmonitoring", { params: { barcode: barcode } })
+              .then((res) => res.data)
+              .then((list) => {
+                setProducts(list);
+              })
+              .catch((err) => {
+                ErrorAlert(err);
+              });
+          };
+        }
+      }
+    },
+    [debouncedBarcode]
+  );
 
   const getProductsList = () => {
     Axios.get("/api/products", { productName: name })
@@ -202,7 +234,6 @@ export default function ReportSales({ companyProps }) {
     salesChanged.sort((a, b) => {
       let textA = parseFloat(a[order]) || a[order];
       let textB = parseFloat(b[order]) || b[order];
-
       let res = ascending
         ? textA < textB
           ? -1
@@ -221,10 +252,6 @@ export default function ReportSales({ companyProps }) {
     setAscending(ascendingChanged);
   };
 
-  const barcodeChange = (e) => {
-    setBarcode(e.target.value.trim());
-  }
-
   const nameChange = (value) => {
     setName(value);
     setBarcode("");
@@ -235,6 +262,15 @@ export default function ReportSales({ companyProps }) {
     });
   };
 
+  const barcodeChange = (value) => {
+    setBarcode(value);
+    setName("");
+    products.forEach(element => {
+      if (element.code === value) {
+        setName(element.name);
+      }
+    });
+  };
 
   const dateFromChange = (e) => {
     setDateChanging(true);
@@ -505,7 +541,9 @@ export default function ReportSales({ companyProps }) {
         types={types}
         barcode={barcode}
         barcodeChange={barcodeChange}
+        name={name}
         setName={setName}
+        setBarcode={setBarcode}
         nameChange={nameChange}
         products={products}
       />
