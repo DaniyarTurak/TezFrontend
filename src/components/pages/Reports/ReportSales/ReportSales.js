@@ -8,6 +8,7 @@ import ErrorAlert from "../../../ReusableComponents/ErrorAlert";
 import SalesOptions from "./SalesOptions";
 import SalesTable from "./SalesTable";
 import { makeStyles } from "@material-ui/core/styles";
+import useDebounce from "../../../ReusableComponents/useDebounce";
 
 const useStyles = makeStyles((theme) => ({
   notFound: {
@@ -68,6 +69,10 @@ export default function ReportSales({ companyProps }) {
   const [points, setPoints] = useState([]);
   const [sales, setSales] = useState([]);
   const [type, setType] = useState({ value: "@", label: "Все" });
+  const [name, setName] = useState("");
+  const [barcode, setBarcode] = useState("");
+  const [products, setProducts] = useState([]);
+  const debouncedName = useDebounce(name, 500);
 
   const company = companyProps ? companyProps.value : "";
   const companyData =
@@ -78,6 +83,34 @@ export default function ReportSales({ companyProps }) {
     { value: "0", label: "Продажи" },
     { value: "1", label: "Возвраты" },
   ];
+
+  useEffect(
+    () => {
+      if (!debouncedName || debouncedName === "") {
+        Axios.get("/api/products", { params: { productName: "" } })
+          .then((res) => res.data)
+          .then((list) => {
+            setProducts(list);
+          })
+          .catch((err) => {
+            ErrorAlert(err);
+          });
+      }
+      else {
+        if (debouncedName.trim().length >= 2) {
+          Axios.get("/api/products", { params: { productName: name } })
+            .then((res) => res.data)
+            .then((list) => {
+              setProducts(list);
+            })
+            .catch((err) => {
+              ErrorAlert(err);
+            });
+        };
+      }
+    },
+    [debouncedName]
+  );
 
   useEffect(() => {
     if (company) {
@@ -92,6 +125,7 @@ export default function ReportSales({ companyProps }) {
 
   useEffect(() => {
     if (!company) {
+      getProductsList();
       getBrands();
       getPoints();
       getCounterparties();
@@ -120,6 +154,18 @@ export default function ReportSales({ companyProps }) {
     point,
     type,
   ]);
+
+  const getProductsList = () => {
+    Axios.get("/api/products", { productName: name })
+      .then((res) => res.data)
+      .then((list) => {
+        setProducts(list);
+      })
+      .catch((err) => {
+        ErrorAlert(err);
+      });
+  };
+
 
   const clean = () => {
     setSales([]);
@@ -161,19 +207,34 @@ export default function ReportSales({ companyProps }) {
         ? textA < textB
           ? -1
           : textA > textB
-          ? 1
-          : 0
+            ? 1
+            : 0
         : textB < textA
-        ? -1
-        : textB > textA
-        ? 1
-        : 0;
+          ? -1
+          : textB > textA
+            ? 1
+            : 0;
       return res;
     });
     setSales(salesChanged);
     setOrderBy(order);
     setAscending(ascendingChanged);
   };
+
+  const barcodeChange = (e) => {
+    setBarcode(e.target.value.trim());
+  }
+
+  const nameChange = (value) => {
+    setName(value);
+    setBarcode("");
+    products.forEach(element => {
+      if (element.name === value) {
+        setBarcode(element.code);
+      }
+    });
+  };
+
 
   const dateFromChange = (e) => {
     setDateChanging(true);
@@ -379,6 +440,7 @@ export default function ReportSales({ companyProps }) {
       params: {
         dateFrom,
         dateTo,
+        code: barcode,
         counterparty: counterparty.value,
         point: point.value,
         category: category.value,
@@ -441,6 +503,11 @@ export default function ReportSales({ companyProps }) {
         points={points}
         type={type}
         types={types}
+        barcode={barcode}
+        barcodeChange={barcodeChange}
+        setName={setName}
+        nameChange={nameChange}
+        products={products}
       />
 
       {isLoading && (
@@ -476,6 +543,8 @@ export default function ReportSales({ companyProps }) {
           orderByFunction={orderByFunction}
           point={point}
           sales={sales}
+          name={name}
+
         />
       )}
     </Grid>

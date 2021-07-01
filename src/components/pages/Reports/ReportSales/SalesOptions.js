@@ -5,6 +5,7 @@ import Grid from "@material-ui/core/Grid";
 import TextField from "@material-ui/core/TextField";
 import MaterialDateDefault from "../../../ReusableComponents/MaterialDateDefault";
 import AutocompleteSelect from "../../../ReusableComponents/AutocompleteSelect";
+import Autocomplete from "@material-ui/lab/Autocomplete";
 
 export default function SalesOptions({
   attrval,
@@ -40,7 +41,14 @@ export default function SalesOptions({
   points,
   type,
   types,
+  barcode,
+  barcodeChange,
+  name,
+  setName,
+  nameChange,
+  products
 }) {
+
   return (
     <Fragment>
       <Grid item xs={12}>
@@ -54,7 +62,30 @@ export default function SalesOptions({
           disableButton={isSubmitting}
         />
       </Grid>
-
+      <Grid item xs={6}>
+        <TextField
+          fullWidth
+          variant="outlined"
+          value={barcode}
+          onChange={barcodeChange}
+          label="Штрих-код"
+        /></Grid>
+      <Grid item xs={6}>
+        <Autocomplete
+          value={name}
+          noOptionsText="Товар не найден"
+          onChange={(e, value) => nameChange(value)}
+          onInputChange={(event, value) => { setName(value) }}
+          options={products.map((option) => option.name)}
+          renderInput={(params) => (
+            <TextField
+              {...params}
+              placeholder="Наименование товара"
+              variant="outlined"
+            />
+          )}
+        />
+      </Grid>
       <Grid item xs={3}>
         <AutocompleteSelect
           value={point}
