@@ -19,11 +19,32 @@ export default function ReportOptions({
   periodsDaily,
   periodsWeekly,
   periodsMonthly,
+  point,
+  points,
+  pointChange
 }) {
   return (
     <Paper className={classes.paper}>
       <Grid container spacing={3}>
-        <Grid item xs={4}>
+        <Grid item xs={3}>
+          <FormControl fullWidth>
+            <InputLabel id="point">Торговая точка</InputLabel>
+            <Select
+              labelId="point"
+              id="point"
+              value={point}
+              style={{ fontSize: ".875rem" }}
+              onChange={pointChange}
+            >
+              {points.map((option) => (
+                <MenuItem key={option.value} value={option.value}>
+                  {option.label}
+                </MenuItem>
+              ))}
+            </Select>
+          </FormControl>
+        </Grid>
+        <Grid item xs={3}>
           <FormControl fullWidth>
             <InputLabel id="profitAmount">Критерий</InputLabel>
             <Select
@@ -41,7 +62,7 @@ export default function ReportOptions({
             </Select>
           </FormControl>
         </Grid>
-        <Grid item xs={4}>
+        <Grid item xs={3}>
           <FormControl fullWidth>
             <InputLabel id="type">На основе...</InputLabel>
             <Select
@@ -59,7 +80,7 @@ export default function ReportOptions({
             </Select>
           </FormControl>
         </Grid>
-        <Grid item xs={4}>
+        <Grid item xs={3}>
           <FormControl fullWidth>
             <InputLabel id="period">За последние...</InputLabel>
             <Select
@@ -73,8 +94,8 @@ export default function ReportOptions({
               {(type === "1"
                 ? periodsDaily
                 : type === "2"
-                ? periodsWeekly
-                : periodsMonthly
+                  ? periodsWeekly
+                  : periodsMonthly
               ).map((option) => (
                 <MenuItem key={option.value} value={option.value}>
                   {option.label}

@@ -1,15 +1,15 @@
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect, Fragment } from "react";
 import Axios from "axios";
 import { makeStyles } from "@material-ui/core/styles";
 import alert from "react-s-alert";
-import TableSkeleton from "../../../Skeletons/TableSkeleton";
 import ReportTable from "./ReportTable";
 import ReportOptions from "./ReportOptions";
 import ReportOptionsABCXYZ from "./ReportOptionsABCXYZ";
 import Box from "@material-ui/core/Box";
 import AccordionAlert from "../../../ReusableComponents/AccordionAlert";
-import Button from "@material-ui/core/Button";
 import ErrorAlert from "../../../ReusableComponents/ErrorAlert";
+import Grid from "@material-ui/core/Grid";
+import LinearProgress from '@material-ui/core/LinearProgress';
 
 const useStyles = makeStyles((theme) => ({
   notFound: {
@@ -71,8 +71,8 @@ const types = [
 
 const periodsDaily = [
   { label: "90 дней", value: "90" },
-  { label: "180 дней", value: "180" },
-  { label: "360 дней", value: "360" },
+  // { label: "180 дней", value: "180" },
+  // { label: "360 дней", value: "360" },
 ];
 
 const periodsWeekly = [
@@ -104,6 +104,8 @@ export default function AbcXyzPage() {
   ]);
   const [period, setPeriod] = useState(`90`);
   const [profitAmount, setProfitAmount] = useState(`units`);
+  const [point, setPoint] = useState("all");
+  const [points, setPoints] = useState([])
   const [reports, setReports] = useState([]);
   const [type, setType] = useState(`1`);
   const [abc_a, setAbc_a] = useState(25);
@@ -114,6 +116,7 @@ export default function AbcXyzPage() {
 
   useEffect(() => {
     getAbcXyzReport();
+    getPointsByCompany();
   }, []);
 
   const alertWarning = (name) => {
@@ -146,6 +149,7 @@ export default function AbcXyzPage() {
     httpClient
       .get("/api/report/analytics/abc_yxz", {
         params: {
+          point: point,
           type: parseInt(type, 0),
           period: parseInt(period, 0),
           profit_amount: profitAmount,
@@ -161,14 +165,20 @@ export default function AbcXyzPage() {
         setLoading(false);
       })
       .catch((err) => {
-        ErrorAlert(err);
+        ErrorAlert(JSON.stringify(err));
         setLoading(false);
       });
   };
 
   let onTypeChange = (event) => {
     setType(event.target.value);
+    switch (event.target.value) {
+      case "1": { setPeriod("90"); break; }
+      case "2": { setPeriod("13"); break; }
+      case "3": { setPeriod("6"); break; }
+    }
   };
+
   let onPeriodChange = (event) => {
     setPeriod(event.target.value);
   };
@@ -333,7 +343,31 @@ export default function AbcXyzPage() {
     }
     setXyz_y(value);
   };
- 
+
+  const getPointsByCompany = () => {
+    Axios.get("/api/point")
+      .then((res) => res.data)
+      .then((res) => {
+        console.log(res);
+        let temp = [{ label: "Все", value: "all" }]
+        res.forEach(point => {
+          if (point.name !== "Центральный склад") {
+            temp.push({ value: point.id, label: point.name })
+          }
+        });
+        console.log(temp);
+        setPoints(temp);
+      })
+      .catch((err) => {
+        ErrorAlert(JSON.stringify(err));
+      });
+  };
+
+  const pointChange = (e) => {
+    console.log(e.target);
+    setPoint(e.target.value);
+  }
+
   return (
     <Box>
       <ReportOptions
@@ -350,6 +384,9 @@ export default function AbcXyzPage() {
         profitAmount={profitAmount}
         profitAmounts={profitAmounts}
         onProfitAmountChange={onProfitAmountChange}
+        point={point}
+        points={points}
+        pointChange={pointChange}
       />
       <ReportOptionsABCXYZ
         isValidationError={isValidationError}
@@ -363,23 +400,15 @@ export default function AbcXyzPage() {
         onXyz_YChange={onXyz_YChange}
         getAbcXyzReport={getAbcXyzReport}
       />
-      <Button
-        style={{
-          marginTop: "1rem",
-          minHeight: "3.5rem",
-          fontSize: ".875rem",
-          textTransform: "none",
-        }}
-        variant="outlined"
-        fullWidth
-        disabled={isValidationError.some((isError) => isError)}
-        color="primary"
-        size="large"
-        onClick={getAbcXyzReport}
-      >
-        Применить
-      </Button>
-
+      <Grid container spacing={3} justify="center" alignItems="center" style={{ paddingTop: "20px" }}>
+        <button
+          className="btn btn-success"
+          disabled={isValidationError.some((isError) => isError)}
+          onClick={getAbcXyzReport}
+        >
+          Применить
+              </button>
+      </Grid>
       <AccordionAlert
         classes={classes}
         text={`Разбивка по категориям АВС зависит от доли товара нарастающим итогом в соответствующем критерии, в продажах в штуках или валовой прибыли.
@@ -419,7 +448,19 @@ export default function AbcXyzPage() {
       ) : reports.length === 0 && !isLoading ? (
         <div className={classes.notFound}>Данные не найдены</div>
       ) : (
-        <TableSkeleton />
+        <Fragment>
+          <Grid
+          style={{paddingTop: "10px"}}
+            container
+            direction="column"
+            justify="center"
+            alignItems="center"
+          >
+            <span>Формирование отчёта, пожалуйста подождите..</span>
+
+          </Grid>
+          <LinearProgress />
+        </Fragment>
       )}
     </Box>
   );
