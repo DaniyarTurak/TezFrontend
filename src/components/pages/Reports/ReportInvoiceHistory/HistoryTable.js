@@ -103,7 +103,7 @@ export default function HistoryTable({
                       ? parseFloat(invoice.purchaseprice).toLocaleString("ru", {
                           minimumFractionDigits: 2,
                         })
-                      : "Н/Д"}
+                      : "n/a"}
                   </StyledTableCell>
                 )}
                 {["2", "16", "17"].includes(invoicetype.value) && (
@@ -115,7 +115,7 @@ export default function HistoryTable({
                       ? parseFloat(invoice.newprice).toLocaleString("ru", {
                           minimumFractionDigits: 2,
                         })
-                      : "Н/Д"}
+                      : "n/a"}
                   </StyledTableCell>
                 )}
                 <StyledTableCell align="center">{invoice.name}</StyledTableCell>

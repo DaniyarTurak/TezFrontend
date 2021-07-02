@@ -237,6 +237,7 @@ export default function Zreports({
                     <StyledCell>Наличные в кассе на начало смены</StyledCell>
                     <StyledCell>Продажи наличными</StyledCell>
                     <StyledCell>Возвраты наличными</StyledCell>
+                    <StyledCell>Возвраты на карту</StyledCell>
                     <StyledCell>Приходные кассовые ордера</StyledCell>
                     <StyledCell>Расходные кассовые ордера</StyledCell>
                     <StyledCell>Закрытие смены</StyledCell>
@@ -277,6 +278,11 @@ export default function Zreports({
                           })}
                         </StyledCell>
                         <StyledCell className="tenge">
+                          {rep.CardRefund ? parseFloat(rep.CardRefund).toLocaleString("ru", {
+                            minimumFractionDigits: 2,
+                          }) : "n/a"}
+                        </StyledCell>
+                        <StyledCell className="tenge">
                           {parseFloat(rep.PKO).toLocaleString("ru", {
                             minimumFractionDigits: 2,
                           })}
@@ -311,8 +317,8 @@ export default function Zreports({
                           {!rep.Debt
                             ? "0.00"
                             : rep.Debt.toLocaleString("ru", {
-                                minimumFractionDigits: 2,
-                              })}
+                              minimumFractionDigits: 2,
+                            })}
                         </StyledCell>
                         <StyledCell className="tenge">
                           {(

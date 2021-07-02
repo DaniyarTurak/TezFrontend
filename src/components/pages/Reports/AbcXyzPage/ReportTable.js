@@ -212,7 +212,7 @@ export default function ReportTable({
                         ? parseFloat(row.coeff).toLocaleString("ru", {
                           minimumFractionDigits: 2,
                         }) + "%"
-                        : "Н/Д"}
+                        : "n/a"}
                     </StyledTableCell>
                     <StyledTableCell
                       align="center"
@@ -242,7 +242,7 @@ export default function ReportTable({
                                 : "white",
                       }}
                     >
-                      {row.xyz ? row.xyz : "Н/Д"}
+                      {row.xyz ? row.xyz : "n/a"}
                     </StyledTableCell>
                   </TableRow>
                 ))}
