@@ -58,6 +58,7 @@ export default function MarginalPricePage() {
   const [save, setSave] = useState(false);
   const [isDisabled, setDisabled] = useState(false);
   const [added, setAdded] = useState(false);
+  const [selectDisabled, setSelectDisable] = useState(false);
 
   useEffect(() => {
     getProducts();
@@ -89,21 +90,22 @@ export default function MarginalPricePage() {
       .then((res) => res.data)
       .then((list) => {
         let stat = [];
+        let listTemp = [];
         list.map((product) => {
           if (product.staticprice !== null) {
             stat.push(product);
+            listTemp.push({ id: product.id, name: product.name, code: product.code })
           }
         });
+
         let newStat = [];
         stat.forEach((element, i) => {
-          element = { ...element, indx: i + 1, ischangedprice: false, changing: false };
-          newStat.push(element);
+          newStat.push({ ...element, indx: i + 1, ischangedprice: false, changing: false });
         });
         setProducts(newStat);
         setFilteredProds(newStat);
-        let listProds = stat;
-        listProds.unshift({ name: "Все товары" })
-        setListProducts(listProds);
+        listTemp.unshift({ name: "Все товары" })
+        setListProducts(Array.from(new Set(listTemp.map(JSON.stringify))).map(JSON.parse));
         setLoading(false);
       })
       .catch((err) => {
@@ -111,7 +113,6 @@ export default function MarginalPricePage() {
         setLoading(false);
       });
   };
-
 
   const saveChanges = () => {
     setSave(!save);
@@ -128,8 +129,6 @@ export default function MarginalPricePage() {
   const makeEnabled = () => {
     setDisabled(false);
   };
-
-  const [selectDisabled, setSelectDisable] = useState(false);
 
   const selectState = (state) => {
     setSelectDisable(state);

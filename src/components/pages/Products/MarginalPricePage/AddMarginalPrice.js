@@ -135,12 +135,16 @@ export default function AddMarginalPrice({
         [debouncedSearchTerm]
     );
 
-
     const getProducts = (productName) => {
         Axios.get("/api/products/withprice", { params: { productName, type: "add" } })
             .then((res) => res.data)
             .then((list) => {
-                setProds(list);
+                let temp = [];
+                list.forEach(element => {
+                    temp.push({ id: element.id, name: element.name, code: element.code, staticprice: element.staticprice })
+                });
+                let unique = Array.from(new Set(temp.map(JSON.stringify))).map(JSON.parse);
+                setProds(unique);
             })
             .catch((err) => {
                 ErrorAlert(err);
@@ -223,7 +227,7 @@ export default function AddMarginalPrice({
         setMarginalPrice("");
         setBarcode("");
         getProducts();
-    }
+    };
 
     const changePrice = () => {
         Axios.post("/api/invoice/changeprice", {
@@ -297,7 +301,7 @@ export default function AddMarginalPrice({
                         id="outlined-basic"
                         value={prodName}
                         noOptionsText="Товар не найден"
-                        
+
                         onInputChange={(event, value) => { nameChange(value) }}
                         onChange={(event, value) => { nameChange(value) }}
                         options={prods.map((option) => option.name)}
