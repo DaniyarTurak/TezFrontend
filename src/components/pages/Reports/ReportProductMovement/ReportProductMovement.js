@@ -193,7 +193,7 @@ export default function ReportProductMovement({ company, parameters }) {
   };
 
   const onProductListInput = (productName) => {
-    if (productName.length > 0) getProducts(productName);
+    if (productName && productName.length > 0) getProducts(productName);
   };
 
   const handleSearch = () => {
