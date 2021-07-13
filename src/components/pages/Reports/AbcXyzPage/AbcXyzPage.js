@@ -102,12 +102,13 @@ export default function AbcXyzPage() {
     false,
     false,
   ]);
-  const [period, setPeriod] = useState(`90`);
+  const [period, setPeriod] = useState(`12`);
   const [profitAmount, setProfitAmount] = useState(`units`);
   const [point, setPoint] = useState("all");
+  const [pointName, setPointName] = useState("Все")
   const [points, setPoints] = useState([])
   const [reports, setReports] = useState([]);
-  const [type, setType] = useState(`1`);
+  const [type, setType] = useState(`3`);
   const [abc_a, setAbc_a] = useState(25);
   const [abc_b, setAbc_b] = useState(50);
   const [xyz_x, setXyz_x] = useState(10);
@@ -175,7 +176,7 @@ export default function AbcXyzPage() {
     switch (event.target.value) {
       case "1": { setPeriod("90"); break; }
       case "2": { setPeriod("13"); break; }
-      case "3": { setPeriod("6"); break; }
+      case "3": { setPeriod("12"); break; }
     }
   };
 
@@ -211,7 +212,7 @@ export default function AbcXyzPage() {
         const url = window.URL.createObjectURL(new Blob([stockbalance]));
         const link = document.createElement("a");
         link.href = url;
-        link.setAttribute("download", `ABC_XYZ.xlsx`); //or any other extension
+        link.setAttribute("download", `ABC_XYZ_${pointName}.xlsx`); //or any other extension
         document.body.appendChild(link);
         link.click();
         setLoading(false);
@@ -234,6 +235,7 @@ export default function AbcXyzPage() {
       .get("/api/report/analytics/details_excel", {
         responseType: "blob",
         params: {
+          pointname: pointName,
           type: parseInt(type, 0),
           period: parseInt(period, 0),
           profit_amount: profitAmount,
@@ -248,7 +250,7 @@ export default function AbcXyzPage() {
         const url = window.URL.createObjectURL(new Blob([stockbalance]));
         const link = document.createElement("a");
         link.href = url;
-        link.setAttribute("download", `ABC_XYZ_details.xlsx`); //or any other extension
+        link.setAttribute("download", `ABC_XYZ_${pointName}.xlsx`); //or any other extension
         document.body.appendChild(link);
         link.click();
         setLoading(false);
@@ -348,14 +350,12 @@ export default function AbcXyzPage() {
     Axios.get("/api/point")
       .then((res) => res.data)
       .then((res) => {
-        console.log(res);
         let temp = [{ label: "Все", value: "all" }]
         res.forEach(point => {
           if (point.name !== "Центральный склад") {
             temp.push({ value: point.id, label: point.name })
           }
         });
-        console.log(temp);
         setPoints(temp);
       })
       .catch((err) => {
@@ -363,8 +363,8 @@ export default function AbcXyzPage() {
       });
   };
 
-  const pointChange = (e) => {
-    console.log(e.target);
+  const pointChange = (e, value) => {
+    setPointName(value.props.children);
     setPoint(e.target.value);
   }
 
@@ -403,7 +403,7 @@ export default function AbcXyzPage() {
       <Grid container spacing={3} justify="center" alignItems="center" style={{ paddingTop: "20px" }}>
         <button
           className="btn btn-success"
-          disabled={isValidationError.some((isError) => isError)}
+          disabled={isValidationError.some((isError) => isError) || isLoading}
           onClick={getAbcXyzReport}
         >
           Применить
@@ -450,7 +450,7 @@ export default function AbcXyzPage() {
       ) : (
         <Fragment>
           <Grid
-          style={{paddingTop: "10px"}}
+            style={{ paddingTop: "10px" }}
             container
             direction="column"
             justify="center"

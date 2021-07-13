@@ -219,9 +219,11 @@ export default function ManageInvoice({ location, history }) {
         { raw: true },
         { skipUndfendVale: false, defaultValue: null }
       );
-
+      console.log(prods);
       prods.forEach((product, i) => {
+        console.log(product.Code);
         if (
+
           product.Code.toString()
             .toLowerCase()
             .search(/[а-яё]/i) >= 0

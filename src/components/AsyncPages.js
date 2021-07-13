@@ -31,25 +31,25 @@ const AdminPage = Loadable({
   loading: Loading,
 });
 
-const Revision = Loadable({
-  loader: () => import("./pages/Revision"),
-  loading: Loading,
-});
+// const Revision = Loadable({
+//   loader: () => import("./pages/Revision"),
+//   loading: Loading,
+// });
 
-const RevisionParams = Loadable({
-  loader: () => import("./pages/revision/RevisionParams"),
-  loading: Loading,
-});
+// const RevisionParams = Loadable({
+//   loader: () => import("./pages/revision/RevisionParams"),
+//   loading: Loading,
+// });
 
-const RevisionSignIn = Loadable({
-  loader: () => import("./pages/revision/RevisionSignIn"),
-  loading: Loading,
-});
+// const RevisionSignIn = Loadable({
+//   loader: () => import("./pages/revision/RevisionSignIn"),
+//   loading: Loading,
+// });
 
-const RevisionEdit = Loadable({
-  loader: () => import("./pages/revision/RevisionEdit"),
-  loading: Loading,
-});
+// const RevisionEdit = Loadable({
+//   loader: () => import("./pages/revision/RevisionEdit"),
+//   loading: Loading,
+// });
 
 export {
   UserCabinetPage,
@@ -58,8 +58,8 @@ export {
   SignUpPage,
   SignInPage,
   AdminPage,
-  Revision,
-  RevisionParams,
-  RevisionSignIn,
-  RevisionEdit,
+  // Revision,
+  // RevisionParams,
+  // RevisionSignIn,
+  // RevisionEdit,
 };

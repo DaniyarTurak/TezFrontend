@@ -17,9 +17,10 @@ export default function Navigation({
       key={subgroup.name + subgroup.id}
       activeClassName="nav-active"
       to={
-        subgroup.route === "product/revision"
-          ? `/revision/params`
-          : `/usercabinet/${subgroup.route}`
+        // subgroup.route === "product/revision"
+        //   ? `/revision/params`
+        //   : 
+          `/usercabinet/${subgroup.route}`
       }
     >
       <li

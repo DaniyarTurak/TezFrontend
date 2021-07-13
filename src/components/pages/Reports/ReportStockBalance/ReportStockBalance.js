@@ -271,13 +271,14 @@ export default function ReportStockBalance({ companyProps }) {
   };
 
   const onAttributeChange = (event, a) => {
+    console.log(a);
     setAttribute(a);
     setAttrVal("");
     getAttributeTypes(a.value);
   };
 
   const onAttributeTypeChange = (event, a) => {
-    setAttrVal(a);
+    setAttrVal(event.target.value);
   };
 
   const onGroupingChange = (event) => {
@@ -519,7 +520,7 @@ export default function ReportStockBalance({ companyProps }) {
       Axios.get("/api/report/stockbalance", {
         params: {
           attribute: attribute.value,
-          attrval: attrval.label === "Все" ? "" : attrval.label,
+          attrval: attrval === "Все" ? "" : attrval,
           barcode,
           brand: brand.value,
           category: category.value,

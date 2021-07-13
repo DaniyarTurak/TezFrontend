@@ -171,7 +171,7 @@ let AddProductForm = ({
       const unit = {
         label: editProduct.units_name_new
           ? editProduct.units_name_new
-          : unitLabel[0].name,
+          : "",
         value: editProduct.units_id_new
           ? editProduct.units_id_new
           : editProduct.unitsprid,

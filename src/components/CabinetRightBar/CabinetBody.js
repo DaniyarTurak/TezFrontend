@@ -56,6 +56,8 @@ import MarginalPricePage from "../pages/Products/MarginalPricePage";
 import ProductReference from "../pages/Products/ProductReference";
 import ReconciliationPage from "../pages/Products/ReconciliationPage";
 import StockMonitoringPage from '../pages/StockMonitoringPage';
+import Revision from '../pages/Revision';
+
 
 import ReportPage from "../pages/Reports/ReportPage";
 import NotAllowed from "../NotAllowed";
@@ -233,6 +235,8 @@ export default function getBody({
             return <Products history={history} location={location} />;
           case "productreference":
             return <ProductReference history={history} location={location} />;
+          case "revision":
+            return <Revision history={history} location={location} />;
         }
 
       case "changepass":

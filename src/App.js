@@ -7,14 +7,14 @@ import requireRevisionAuth from "./hoc/requireRevisionAuth";
 import Content from "./components/Content";
 //import SignInPage from './components/pages/SignInPage';
 import NotFoundPage from "./components/pages/NotFoundPage";
-import RevisionSignOut from "./components/pages/revision/RevisionSignOut";
+// import RevisionSignOut from "./components/pages/revision/RevisionSignOut";
 
 import {
   UserCabinetPage,
-  RevisionParams,
-  RevisionSignIn,
-  RevisionEdit,
-  Revision,
+  // RevisionParams,
+  // RevisionSignIn,
+  // RevisionEdit,
+  // Revision,
   EsfInvoiceDetails,
   SignOut,
   SignUpPage,
@@ -31,7 +31,7 @@ export default function App() {
           <Route exact path="/demo" component={SignInPage} />
           <Route path="/register" component={requireAdminAuth(SignUpPage)} />
           <Route path="/signout" component={SignOut} />
-          <Route path="/enterrevision" component={RevisionSignIn} />
+          {/* <Route path="/enterrevision" component={RevisionSignIn} />
           <Route
             path="/revision/params"
             component={requireRevisionAuth(RevisionParams)}
@@ -41,7 +41,7 @@ export default function App() {
             component={requireRevisionAuth(RevisionEdit)}
           />
           <Route path="/revision/signout" component={RevisionSignOut} />
-          <Route path="/revision" component={requireRevisionAuth(Revision)} />
+          <Route path="/revision" component={requireRevisionAuth(Revision)} /> */}
           <Route path="/esf/invoiceDetails" component={EsfInvoiceDetails} />
           <Route
             exact

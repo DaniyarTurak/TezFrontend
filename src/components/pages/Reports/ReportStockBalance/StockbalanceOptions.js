@@ -144,7 +144,6 @@ export default function StockbalanceOptions({
           />
         </Grid>
       )}
-
       <Grid item xs={3}>
         <AutocompleteSelect
           value={nds}
@@ -208,6 +207,6 @@ export default function StockbalanceOptions({
           Поиск
         </Button>
       </Grid>
-    </Fragment>
+    </Fragment >
   );
 }
