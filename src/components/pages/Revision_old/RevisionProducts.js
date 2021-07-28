@@ -395,185 +395,185 @@ export default function RevisionSettings(
         });
     }, []);
 
- const   getProductUnits = (_barcode) => {
-        let barcodeTemp = _barcode;
-        let {
-            selectedProduct,
-            barcodeEntered,
-            coldRevProductsCheck,
-            windowIsSmall,
-        } = this.state;
-        if (typeof barcode === "object") {
-            barcode = barcodeEntered;
-        }
-        if (!barcode) {
-            this.focusBarcodeInput();
-            return;
-        }
-        const params = {
-            barcode,
-            point: this.state.pointId,
-        };
-        this.setState({
-            isDataSearching: true,
-            barcode: "",
-            factUnits: "",
-            stockUnits: "",
-            name: "",
-            attributes: "",
-        });
-        if (this.state.revType !== 4) {
-            Axios.get("/api/revision/unitsbybarcode", {
-                params,
-            })
-                .then((data) => {
-                    return data.data;
-                })
-                .then((products) => {
-                    this.setState({
-                        isDataSearching: false,
-                        barcodeEntered: "",
-                        productSelectValue: "",
-                    });
-                    if (products.length === 0) {
-                        this.setState({
-                            name: "Товар не найден на складе",
-                            attributes: "",
-                            barcode,
-                        });
-                        this.continueToScan(true);
-                    } else if (products.length > 1) this.openDetails(products);
-                    else {
-                        const currSelectedProduct = products[0];
+//  const   getProductUnits = (_barcode) => {
+//         let barcodeTemp = _barcode;
+//         let {
+//             selectedProduct,
+//             barcodeEntered,
+//             coldRevProductsCheck,
+//             windowIsSmall,
+//         } = this.state;
+//         if (typeof barcode === "object") {
+//             barcode = barcodeEntered;
+//         }
+//         if (!barcode) {
+//             this.focusBarcodeInput();
+//             return;
+//         }
+//         const params = {
+//             barcode,
+//             point: this.state.pointId,
+//         };
+//         this.setState({
+//             isDataSearching: true,
+//             barcode: "",
+//             factUnits: "",
+//             stockUnits: "",
+//             name: "",
+//             attributes: "",
+//         });
+//         if (this.state.revType !== 4) {
+//             Axios.get("/api/revision/unitsbybarcode", {
+//                 params,
+//             })
+//                 .then((data) => {
+//                     return data.data;
+//                 })
+//                 .then((products) => {
+//                     this.setState({
+//                         isDataSearching: false,
+//                         barcodeEntered: "",
+//                         productSelectValue: "",
+//                     });
+//                     if (products.length === 0) {
+//                         this.setState({
+//                             name: "Товар не найден на складе",
+//                             attributes: "",
+//                             barcode,
+//                         });
+//                         this.continueToScan(true);
+//                     } else if (products.length > 1) this.openDetails(products);
+//                     else {
+//                         const currSelectedProduct = products[0];
 
-                        if (currSelectedProduct.code === selectedProduct.code) {
-                            selectedProduct.factUnits = selectedProduct.factUnits
-                                ? selectedProduct.factUnits + 1
-                                : 1;
-                            this.setState({
-                                selectedProduct,
-                                name: selectedProduct.name,
-                                barcode: selectedProduct.code,
-                                factUnits: selectedProduct.factUnits,
-                                stockUnits: selectedProduct.units,
-                                attributes: selectedProduct.attrvalue,
-                                barcodeEntered: "",
-                                productSelectValue: "",
-                            });
-                            this.continueToScan(true);
-                            this.focusBarcodeInput();
-                            return;
-                        }
+//                         if (currSelectedProduct.code === selectedProduct.code) {
+//                             selectedProduct.factUnits = selectedProduct.factUnits
+//                                 ? selectedProduct.factUnits + 1
+//                                 : 1;
+//                             this.setState({
+//                                 selectedProduct,
+//                                 name: selectedProduct.name,
+//                                 barcode: selectedProduct.code,
+//                                 factUnits: selectedProduct.factUnits,
+//                                 stockUnits: selectedProduct.units,
+//                                 attributes: selectedProduct.attrvalue,
+//                                 barcodeEntered: "",
+//                                 productSelectValue: "",
+//                             });
+//                             this.continueToScan(true);
+//                             this.focusBarcodeInput();
+//                             return;
+//                         }
 
-                        if (
-                            coldRevProductsCheck[
-                            products[0].product + " " + products[0].attributes
-                            ]
-                        )
-                            currSelectedProduct.factUnits =
-                                coldRevProductsCheck[
-                                    products[0].product + " " + products[0].attributes
-                                ].factUnits + 1;
-                        else currSelectedProduct.factUnits = 1;
-                        this.setState({
-                            selectedProduct: currSelectedProduct,
-                            revisionDate: new Date(),
-                            name: currSelectedProduct.name,
-                            barcode: currSelectedProduct.code,
-                            factUnits: currSelectedProduct.factUnits,
-                            stockUnits: currSelectedProduct.units,
-                            attributes: currSelectedProduct.attrvalue,
-                        });
-                        this.continueToScan(true);
-                    }
-                })
-                .catch((err) => {
-                    console.log(err);
-                    this.setState({
-                        isDataSearching: false,
-                        attributes: "",
-                        name: "Товар не найден на складе",
-                        barcode,
-                        barcodeEntered: "",
-                        productSelectValue: "",
-                    });
-                    this.continueToScan(true);
-                })
-                .finally(() => {
-                    this.focusBarcodeInput();
-                });
-        } else {
-            this.setState({ isTempDataSaving: true });
-            Axios.get("/api/revision/temprevision", {
-                params,
-            })
-                .then((data) => {
-                    return data.data;
-                })
-                .then((products) => {
-                    console.log(products);
-                    this.setState({
-                        isDataSearching: false,
-                        barcodeEntered: "",
-                        productSelectValue: "",
-                        barcode,
-                    });
-                    if (products.result.length > 1) this.openDetails(products.result);
-                    else {
-                        if (products.revProducts.length === 0) {
-                            // this.setState({selectedProduct:{}})
-                            // this.setState({selectedProduct:products.revProducts[0]})
-                            Alert.warning(
-                                `Товар по штрих-коду ${barcode} не найден на складе`,
-                                {
-                                    position: windowIsSmall ? "top" : "top-right",
-                                    effect: "bouncyflip",
-                                    timeout: 3000,
-                                }
-                            );
-                        } else {
-                            this.setState({
-                                coldTempRevProducts: products.revProducts,
-                                selectedProduct: products.revProducts[0],
-                                coloredRow: true,
-                            });
-                            this.startRowCOlorTimer();
-                        }
-                    }
-                })
-                .catch((err) => {
-                    console.log(err.response);
-                    if (err.response.data.inserted === "success")
-                        Alert.error(
-                            "Товар добавлен, но произошла ошибка при отображении изменений. Обновите страницу",
-                            {
-                                position: windowIsSmall ? "top" : "top-right",
-                                effect: "bouncyflip",
-                                timeout: 10000,
-                            }
-                        );
-                    else
-                        Alert.error("Произошла ошибка при добавлении товара", {
-                            position: windowIsSmall ? "top" : "top-right",
-                            effect: "bouncyflip",
-                            timeout: 3000,
-                        });
-                    this.setState({
-                        isDataSearching: false,
-                        attributes: "",
-                        name: "Товар не найден на складе",
-                        barcode,
-                        barcodeEntered: "",
-                        productSelectValue: "",
-                    });
-                })
-                .finally(() => {
-                    this.continueToScan(true);
-                    this.setState({ isTempDataSaving: false });
-                    this.focusBarcodeInput();
-                });
-        }
-    };
+//                         if (
+//                             coldRevProductsCheck[
+//                             products[0].product + " " + products[0].attributes
+//                             ]
+//                         )
+//                             currSelectedProduct.factUnits =
+//                                 coldRevProductsCheck[
+//                                     products[0].product + " " + products[0].attributes
+//                                 ].factUnits + 1;
+//                         else currSelectedProduct.factUnits = 1;
+//                         this.setState({
+//                             selectedProduct: currSelectedProduct,
+//                             revisionDate: new Date(),
+//                             name: currSelectedProduct.name,
+//                             barcode: currSelectedProduct.code,
+//                             factUnits: currSelectedProduct.factUnits,
+//                             stockUnits: currSelectedProduct.units,
+//                             attributes: currSelectedProduct.attrvalue,
+//                         });
+//                         this.continueToScan(true);
+//                     }
+//                 })
+//                 .catch((err) => {
+//                     console.log(err);
+//                     this.setState({
+//                         isDataSearching: false,
+//                         attributes: "",
+//                         name: "Товар не найден на складе",
+//                         barcode,
+//                         barcodeEntered: "",
+//                         productSelectValue: "",
+//                     });
+//                     this.continueToScan(true);
+//                 })
+//                 .finally(() => {
+//                     this.focusBarcodeInput();
+//                 });
+//         } else {
+//             this.setState({ isTempDataSaving: true });
+//             Axios.get("/api/revision/temprevision", {
+//                 params,
+//             })
+//                 .then((data) => {
+//                     return data.data;
+//                 })
+//                 .then((products) => {
+//                     console.log(products);
+//                     this.setState({
+//                         isDataSearching: false,
+//                         barcodeEntered: "",
+//                         productSelectValue: "",
+//                         barcode,
+//                     });
+//                     if (products.result.length > 1) this.openDetails(products.result);
+//                     else {
+//                         if (products.revProducts.length === 0) {
+//                             // this.setState({selectedProduct:{}})
+//                             // this.setState({selectedProduct:products.revProducts[0]})
+//                             Alert.warning(
+//                                 `Товар по штрих-коду ${barcode} не найден на складе`,
+//                                 {
+//                                     position: windowIsSmall ? "top" : "top-right",
+//                                     effect: "bouncyflip",
+//                                     timeout: 3000,
+//                                 }
+//                             );
+//                         } else {
+//                             this.setState({
+//                                 coldTempRevProducts: products.revProducts,
+//                                 selectedProduct: products.revProducts[0],
+//                                 coloredRow: true,
+//                             });
+//                             this.startRowCOlorTimer();
+//                         }
+//                     }
+//                 })
+//                 .catch((err) => {
+//                     console.log(err.response);
+//                     if (err.response.data.inserted === "success")
+//                         Alert.error(
+//                             "Товар добавлен, но произошла ошибка при отображении изменений. Обновите страницу",
+//                             {
+//                                 position: windowIsSmall ? "top" : "top-right",
+//                                 effect: "bouncyflip",
+//                                 timeout: 10000,
+//                             }
+//                         );
+//                     else
+//                         Alert.error("Произошла ошибка при добавлении товара", {
+//                             position: windowIsSmall ? "top" : "top-right",
+//                             effect: "bouncyflip",
+//                             timeout: 3000,
+//                         });
+//                     this.setState({
+//                         isDataSearching: false,
+//                         attributes: "",
+//                         name: "Товар не найден на складе",
+//                         barcode,
+//                         barcodeEntered: "",
+//                         productSelectValue: "",
+//                     });
+//                 })
+//                 .finally(() => {
+//                     this.continueToScan(true);
+//                     this.setState({ isTempDataSaving: false });
+//                     this.focusBarcodeInput();
+//                 });
+//         }
+//     };
 
     return (
         <Fragment>
