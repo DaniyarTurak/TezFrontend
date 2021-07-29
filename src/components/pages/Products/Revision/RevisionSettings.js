@@ -7,6 +7,7 @@ import FormControl from '@material-ui/core/FormControl';
 import Grid from '@material-ui/core/Grid';
 import Alert from "react-s-alert";
 import SweetAlert from "react-bootstrap-sweetalert";
+import InputLabel from '@material-ui/core/InputLabel';
 
 export default function RevisionSettings({
     setRevNumber,
@@ -26,11 +27,11 @@ export default function RevisionSettings({
         getPoints();
     }, []);
 
+    //список торговых точек
     const getPoints = () => {
         Axios.get("/api/point")
             .then((res) => res.data)
             .then((list) => {
-                console.log(list);
                 setPoints(list);
             })
             .catch((err) => {
@@ -38,13 +39,13 @@ export default function RevisionSettings({
             });
     };
 
+    //при выборе точки проверить наличие открытой на ней ревизии 
     const pointChange = (e) => {
         let point = e.target.value;
         setPoint(point);
         Axios.get("/api/revision/checkactive", { params: { point: point } })
             .then((res) => res.data)
             .then((revision) => {
-                console.log(revision);
                 if (revision.length > 0) {
                     setHaveActive(true);
                     setSweetAlert(
@@ -77,6 +78,7 @@ export default function RevisionSettings({
         setHardware(e.target.value);
     }
 
+    //запуск ревизии
     const startRevision = () => {
         if (point === "") {
             Alert.warning(`Выберите торговую точку`, {
@@ -122,6 +124,7 @@ export default function RevisionSettings({
         }
     };
 
+    //удаление активной ревизии на точке
     const deleteRevision = (revisionnumber) => {
         Axios.post("/api/revision/revisionlist/delete", { revisionnumber })
             .then((res) => res.data)
@@ -149,6 +152,7 @@ export default function RevisionSettings({
             });
     };
 
+    //продолжение активной ревизии на точке
     const continueRevision = (revisionnumber) => {
         setRevNumber(revisionnumber);
         setActiveStep(1);
@@ -162,15 +166,17 @@ export default function RevisionSettings({
                 direction="column"
                 justify="center"
                 alignItems="center"
-                spacing={2}
+                spacing={3}
             >
-                <Grid item xs={6}>
-                    <FormControl variant="outlined" size="small" fullWidth={true}>
+                <Grid item xs={12}>
+                    <FormControl variant="outlined" size="small" style={{ width: "200px" }}>
+                        <InputLabel>Торговая точка</InputLabel>
                         <Select
                             value={point}
                             onChange={pointChange}
                             label="Торговая точка"
                             placeholder="Торговая точка"
+                            fullWidth
                         >
                             {points.map((pnt) => (
                                 <MenuItem key={pnt.id} value={pnt.id}>{pnt.name}</MenuItem>
@@ -178,9 +184,11 @@ export default function RevisionSettings({
                         </Select>
                     </FormControl>
                 </Grid>
-                <Grid item xs={6}>
-                    <FormControl variant="outlined" size="small" fullWidth={true}>
+                <Grid item xs={12}>
+                    <FormControl variant="outlined" size="small" style={{ width: "200px" }}>
+                        <InputLabel>Оборудование для ввода</InputLabel>
                         <Select
+                            fullWidth
                             value={hardware}
                             onChange={hardwareChange}
                             label="Оборудование для ввода"
@@ -191,8 +199,9 @@ export default function RevisionSettings({
                         </Select>
                     </FormControl>
                 </Grid>
-                <Grid item xs={6}>
+                <Grid item xs={12}>
                     <button
+                        className="btn btn-success"
                         onClick={startRevision}
                         disabled={haveActive}
                     >

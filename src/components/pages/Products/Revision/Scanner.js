@@ -3,48 +3,65 @@ import Grid from '@material-ui/core/Grid';
 import Axios from "axios";
 import ErrorAlert from "../../../ReusableComponents/ErrorAlert";
 import Quagga from 'quagga';
-
+import "../../../../sass/revision.sass";
 export default function Scanner({
     barcode,
-    setBarcode
+    setBarcode,
+    debouncedRestartScanner,
+    hardware
 }) {
 
+    const [activated, setActivated] = useState(false);
+
     useEffect(() => {
-        initQuagga();
-        Quagga.onDetected((data) => {
-            Quagga.pause();
-            setBarcode(data.codeResult.code);
-            restartScan();
-        });
+        if (hardware !== "camera" && activated) {
+            Quagga.stop();
+            setActivated(false);
+        }
+    }, [hardware]);
 
-        Quagga.onProcessed(function (result) {
-            let drawingCtx = Quagga.canvas.ctx.overlay,
-                drawingCanvas = Quagga.canvas.dom.overlay;
+    useEffect(() => {
+        if (hardware === "camera") {
+            initQuagga();
+        }
+    }, [debouncedRestartScanner]);
 
-            if (result) {
-                if (result.codeResult && result.codeResult.code) {
-                    drawingCtx.clearRect(
-                        0,
-                        0,
-                        parseInt(drawingCanvas.getAttribute("width"), 10),
-                        parseInt(drawingCanvas.getAttribute("height"), 10)
-                    );
-                    Quagga.ImageDebug.drawPath(
-                        result.line,
-                        { x: "x", y: "y" },
-                        drawingCtx,
-                        { color: "red", lineWidth: 3 }
-                    );
+    useEffect(() => {
+        if (hardware === "camera") {
+            initQuagga();
+            Quagga.onDetected((data) => {
+                Quagga.pause();
+                setBarcode(data.codeResult.code);
+            });
+            Quagga.onProcessed(function (result) {
+                let drawingCtx = Quagga.canvas.ctx.overlay,
+                    drawingCanvas = Quagga.canvas.dom.overlay;
+
+                if (result) {
+                    if (result.codeResult && result.codeResult.code) {
+                        drawingCtx.clearRect(
+                            0,
+                            0,
+                            parseInt(drawingCanvas.getAttribute("width"), 10),
+                            parseInt(drawingCanvas.getAttribute("height"), 10)
+                        );
+                        Quagga.ImageDebug.drawPath(
+                            result.line,
+                            { x: "x", y: "y" },
+                            drawingCtx,
+                            { color: "red", lineWidth: 3 }
+                        );
+                    }
+                    if (result.box) {
+                        Quagga.ImageDebug.drawPath(result.box, { x: 0, y: 1 }, drawingCtx, {
+                            color: "#00F",
+                            lineWidth: 2,
+                        });
+                    }
                 }
-                if (result.box) {
-                    Quagga.ImageDebug.drawPath(result.box, { x: 0, y: 1 }, drawingCtx, {
-                        color: "#00F",
-                        lineWidth: 2,
-                    });
-                }
-            }
-        });
-    }, []);
+            });
+        };
+    }, [hardware]);
 
     const restartScan = () => {
         Quagga.start();
@@ -111,20 +128,22 @@ export default function Scanner({
                     return
                 }
                 Quagga.start();
+                setActivated(true);
             }
         );
     }
 
     return (
         <Fragment>
-            <Grid
-                container
-                direction="row"
-                justifyContent="center"
-                alignItems="center"
-            >
-                <Grid item xs={12}>
-                    <div className="revision-block">
+            {hardware === "camera" &&
+                <Grid
+                    container
+                    direction="row"
+                    justify="center"
+                    alignItems="center"
+                >
+                    <Grid item xs={12}>
+                        {/* <div className="revision-block"> */}
                         <div
                             className="flex video-width video-height"
                             style={{
@@ -138,10 +157,10 @@ export default function Scanner({
                             ></div>
 
                         </div>
-                    </div>
+                        {/* </div> */}
+                    </Grid>
                 </Grid>
-            </Grid>
-            {barcode}
+            }
         </Fragment>
     );
 };
