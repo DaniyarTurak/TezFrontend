@@ -18,12 +18,13 @@ export default function RevisionSettings({
     setActiveStep
 }) {
 
-
     const [points, setPoints] = useState([]);
     const [haveActive, setHaveActive] = useState(false);
     const [sweetAlert, setSweetAlert] = useState(null);
+    const [isLoading, setLoading] = useState(false);
 
     useEffect(() => {
+        setPoint("");
         getPoints();
     }, []);
 
@@ -43,6 +44,7 @@ export default function RevisionSettings({
     const pointChange = (e) => {
         let point = e.target.value;
         setPoint(point);
+        setLoading(true);
         Axios.get("/api/revision/checkactive", { params: { point: point } })
             .then((res) => res.data)
             .then((revision) => {
@@ -67,9 +69,12 @@ export default function RevisionSettings({
                 }
                 else {
                     setHaveActive(false);
+                    setLoading(false);
+
                 }
             })
             .catch((err) => {
+                setLoading(false);
                 ErrorAlert(err);
             });
     }
@@ -100,25 +105,35 @@ export default function RevisionSettings({
                 Axios.post("/api/revision/revisionlist/add", { point })
                     .then((res) => res.data)
                     .then((res) => {
-                        let response = JSON.parse(res[0].revisionlist_add);
+                        let response = res[0].revisionlist_add;
                         if (response.code === "success") {
+                            setRevNumber(response.revisionnumber);
                             setActiveStep(1);
-                            return Alert.success("Ревизия успешно начата", {
+                            setSweetAlert(null);
+                            Alert.success("Ревизия успешно начата", {
                                 position: "top-right",
                                 effect: "bouncyflip",
                                 timeout: 2000,
                             });
+                            setLoading(false);
 
                         } else {
-                            return Alert.error("Возникла непредвиденная ошибка", {
+                            Alert.error("Возникла непредвиденная ошибка", {
                                 position: "top-right",
                                 effect: "bouncyflip",
                                 timeout: 2000,
                             });
+                            setLoading(false);
                         }
                     })
                     .catch((err) => {
                         console.log(err);
+                        Alert.error(err, {
+                            position: "top-right",
+                            effect: "bouncyflip",
+                            timeout: 2000,
+                        });
+                        setLoading(false);
                     });
             }
         }
@@ -129,26 +144,31 @@ export default function RevisionSettings({
         Axios.post("/api/revision/revisionlist/delete", { revisionnumber })
             .then((res) => res.data)
             .then((res) => {
-                let response = JSON.parse(res);
-                if (response.result === "success") {
+                if (res.revlist_delete.code === "success") {
                     setHaveActive(false);
                     setSweetAlert(null);
-                    return Alert.success("Ревизия успешно удалена", {
+                    Alert.success("Ревизия успешно удалена", {
                         position: "top-right",
                         effect: "bouncyflip",
                         timeout: 2000,
                     });
-
+                    startRevision();
                 } else {
-                    return Alert.error("Возникла непредвиденная ошибка", {
+                    Alert.error("Возникла непредвиденная ошибка", {
                         position: "top-right",
                         effect: "bouncyflip",
                         timeout: 2000,
                     });
+                    setLoading(false);
                 }
             })
             .catch((err) => {
                 console.log(err);
+                Alert.error(err, {
+                    position: "top-right",
+                    effect: "bouncyflip",
+                    timeout: 2000,
+                });
             });
     };
 
@@ -156,6 +176,7 @@ export default function RevisionSettings({
     const continueRevision = (revisionnumber) => {
         setRevNumber(revisionnumber);
         setActiveStep(1);
+        setLoading(false);
     };
 
     return (
@@ -196,6 +217,7 @@ export default function RevisionSettings({
                         >
                             <MenuItem value={"camera"}>Камера</MenuItem>
                             <MenuItem value={"scanner"}>Сканер</MenuItem>
+                            <MenuItem value={"manual"}>Ручной ввод</MenuItem>
                         </Select>
                     </FormControl>
                 </Grid>
@@ -203,7 +225,7 @@ export default function RevisionSettings({
                     <button
                         className="btn btn-success"
                         onClick={startRevision}
-                        disabled={haveActive}
+                        disabled={isLoading || haveActive}
                     >
                         Начать ревизию
                     </button>

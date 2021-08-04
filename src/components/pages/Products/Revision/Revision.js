@@ -1,8 +1,7 @@
 import React, { Fragment, useState, useEffect } from "react";
-import Axios from "axios";
-import ErrorAlert from "../../../ReusableComponents/ErrorAlert";
 import RevisionSettings from "./RevisionSettings";
 import RevisionProducts from "./RevisionProducts";
+import RevisonFinish from "./RevisionFinish";
 import Stepper from '@material-ui/core/Stepper';
 import Step from '@material-ui/core/Step';
 import StepLabel from '@material-ui/core/StepLabel';
@@ -14,7 +13,7 @@ export default function Revison() {
     const [point, setPoint] = useState("");
     const [hardware, setHardware] = useState("scanner");
     const [barcode, setBarcode] = useState("");
-
+    const [revisionProducts, setRevisionProducts] = useState([]);
     const [activeStep, setActiveStep] = useState(0);
     const steps = getSteps();
 
@@ -25,22 +24,11 @@ export default function Revison() {
     useEffect(() => {
     }, []);
 
-    const handleNext = () => {
-        setActiveStep((prevActiveStep) => prevActiveStep + 1);
-    };
-
-    const handleBack = () => {
-        setActiveStep((prevActiveStep) => prevActiveStep - 1);
-    };
-
-    const handleReset = () => {
-        setActiveStep(0);
-    };
     return (
         <Fragment>
             <Grid container>
                 <Grid item xs={12}>
-                    <Stepper alternativeLabel activeStep={activeStep} style={{padding:"20px 0px 40px 0px"}}>
+                    <Stepper alternativeLabel activeStep={activeStep} style={{ padding: "20px 0px 40px 0px" }}>
                         {steps.map((label) => (
                             <Step key={label}>
                                 <StepLabel>{label}</StepLabel>
@@ -69,6 +57,21 @@ export default function Revison() {
                             hardware={hardware}
                             setHardware={setHardware}
                             point={point}
+                            setActiveStep={setActiveStep}
+                            revisionProducts={revisionProducts}
+                            setRevisionProducts={setRevisionProducts}
+                        />
+                    }
+                </Grid>
+                <Grid item xs={12}>
+                    {activeStep === 2 &&
+                        <RevisonFinish
+                            revNumber={revNumber}
+                            point={point}
+                            activeStep={activeStep}
+                            setActiveStep={setActiveStep}
+                            revisionProducts={revisionProducts}
+
                         />
                     }
                 </Grid>

@@ -10,7 +10,6 @@ import Paper from "@material-ui/core/Paper";
 import DeleteIcon from '@material-ui/icons/DeleteForever';
 import EditIcon from '@material-ui/icons/Edit';
 import IconButton from "@material-ui/core/IconButton";
-import InputBase from '@material-ui/core/InputBase';
 import SaveIcon from '@material-ui/icons/Save';
 import TablePagination from "@material-ui/core/TablePagination";
 import FirstPageIcon from "@material-ui/icons/FirstPage";
@@ -18,6 +17,29 @@ import KeyboardArrowLeft from "@material-ui/icons/KeyboardArrowLeft";
 import KeyboardArrowRight from "@material-ui/icons/KeyboardArrowRight";
 import LastPageIcon from "@material-ui/icons/LastPage";
 import PropTypes from "prop-types";
+import Alert from "react-s-alert";
+import EditUnits from "./EditUnits"
+import ReactModal from "react-modal";
+import Axios from "axios";
+
+const customStyles = {
+    content: {
+        top: "50%",
+        left: "50%",
+        right: "auto",
+        bottom: "auto",
+        marginRight: "-50%",
+        marginLeft: "40px",
+        transform: "translate(-50%, -50%)",
+        maxWidth: "400px",
+        maxHeight: "80vh",
+        overlfow: "scroll",
+        zIndex: 11,
+    },
+    overlay: { zIndex: 10 },
+};
+
+ReactModal.setAppElement("#root");
 const useStyles1 = makeStyles((theme) => ({
     root: {
         flexShrink: 0,
@@ -114,11 +136,19 @@ const StyledTableCell = withStyles((theme) => ({
 
 
 export default function RevisonProducts({
-    revisionProducts
+    revisionProducts,
+    setRevisionProducts,
+    point,
+    revNumber,
+    getRevisionProducts,
+    activeStep
 }) {
 
     const [page, setPage] = useState(0);
     const [rowsPerPage, setRowsPerPage] = useState(10);
+    const [isEditingUnits, setEditingUnits] = useState(false);
+    const [product, setProduct] = useState({});
+    const [isLoading, setLoading] = useState(false);
 
     const handleChangePage = (event, newPage) => {
         setPage(newPage);
@@ -129,6 +159,49 @@ export default function RevisonProducts({
         setPage(0);
     };
 
+    const editUnits = (product) => {
+        console.log(product);
+        setProduct(product);
+        setEditingUnits(true);
+    };
+
+    const deleteProduct = (product) => {
+        setLoading(true);
+        Axios.post("/api/revision/revisiontemp/delete", { revnumber: revNumber, product: product.product })
+            .then((res) => res.data)
+            .then((res) => {
+                console.log(res);
+                if (res.command && res.command === "DELETE") {
+                    Alert.success("Товар удалён из ревизии", {
+                        position: "top-right",
+                        effect: "bouncyflip",
+                        timeout: 2000,
+                    });
+                    setLoading(false);
+                    getRevisionProducts();
+                    setEditingUnits(false);
+
+                } else {
+                    Alert.error("Возникла непредвиденная ошибка", {
+                        position: "top-right",
+                        effect: "bouncyflip",
+                        timeout: 2000,
+                    });
+                    setLoading(false);
+
+                }
+            })
+            .catch((err) => {
+                console.log(err);
+                Alert.error(err, {
+                    position: "top-right",
+                    effect: "bouncyflip",
+                    timeout: 2000,
+                });
+                setLoading(false);
+            });
+    }
+
     return (
         <Fragment>
             <TableContainer
@@ -138,19 +211,16 @@ export default function RevisonProducts({
                 <Table id="table-to-xls">
                     <TableHead>
                         <TableRow style={{ fontWeight: "bold" }} >
-                            {/* <StyledTableCell>
-                            </StyledTableCell> */}
+                            {activeStep === 2 && <StyledTableCell align="center">
+                                Штрих-код
+                            </StyledTableCell>}
                             <StyledTableCell align="center">
                                 Наименование
                             </StyledTableCell>
-                            {/* <StyledTableCell align="center">
-                                Количество в системе
-                            </StyledTableCell> */}
                             <StyledTableCell align="center">
                                 Отсканированное количество
                             </StyledTableCell>
-                            <StyledTableCell>
-                            </StyledTableCell>
+                            {activeStep !== 2 && <StyledTableCell />}
                         </TableRow>
                     </TableHead>
                     <TableBody>
@@ -158,24 +228,31 @@ export default function RevisonProducts({
                             .slice(page * rowsPerPage, page * rowsPerPage + rowsPerPage)
                             .map((product, idx) => (
                                 <TableRow key={idx}>
-                                    {/* <StyledTableCell>{idx + 1}</StyledTableCell> */}
+                                    {activeStep === 2 && <StyledTableCell>
+                                        {product.code}
+                                    </StyledTableCell>}
                                     <StyledTableCell>
-                                        {product.name} ({product.code})
+                                        {product.name} {activeStep !== 2 ? " (" + product.code + ")" : ""}
                                     </StyledTableCell>
-                                    {/* <StyledTableCell>
-                                        {product.unitswas}
-                                    </StyledTableCell> */}
                                     <StyledTableCell align="center">
                                         {product.units}
                                     </StyledTableCell>
-                                    <StyledTableCell align="center">
-                                        <IconButton size="small">
-                                            <EditIcon fontSize="small" />
-                                        </IconButton>
-                                        <IconButton size="small">
-                                            <DeleteIcon fontSize="small" />
-                                        </IconButton>
-                                    </StyledTableCell>
+                                    {activeStep !== 2 &&
+                                        <StyledTableCell align="center">
+                                            <IconButton
+                                                size="small"
+                                                onClick={() => {
+                                                    editUnits(product);
+                                                }}>
+                                                {product.isChanging ? <SaveIcon fontSize="small" /> : <EditIcon fontSize="small" />}
+                                            </IconButton>
+                                            <IconButton size="small"
+                                                onClick={() => {
+                                                    deleteProduct(product);
+                                                }}>
+                                                <DeleteIcon fontSize="small" />
+                                            </IconButton>
+                                        </StyledTableCell>}
                                 </TableRow>
                             ))}
                     </TableBody>
@@ -194,6 +271,19 @@ export default function RevisonProducts({
                 onChangeRowsPerPage={handleChangeRowsPerPage}
                 ActionsComponent={TablePaginationActions}
             />
+            <ReactModal
+                isOpen={isEditingUnits}
+                style={customStyles}
+            >
+                <EditUnits
+                    product={product}
+                    point={point}
+                    revNumber={revNumber}
+                    isEditingUnits={isEditingUnits}
+                    setEditingUnits={setEditingUnits}
+                    getRevisionProducts={getRevisionProducts}
+                />
+            </ReactModal>
         </Fragment>
     )
 };

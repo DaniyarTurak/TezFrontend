@@ -1,6 +1,5 @@
 import React, { Fragment, useState, useEffect } from "react";
 import Axios from "axios";
-import ErrorAlert from "../../../ReusableComponents/ErrorAlert";
 import TextField from '@material-ui/core/TextField';
 import Scanner from "./Scanner";
 import useDebounce from "../../../ReusableComponents/useDebounce";
@@ -14,6 +13,7 @@ import FormControl from '@material-ui/core/FormControl';
 import FormLabel from '@material-ui/core/FormLabel';
 import RevisionTable from "./RevisionTable";
 import { makeStyles } from '@material-ui/core/styles';
+import ManualAdd from "./ManualAdd";
 
 export default function RevisonProducts({
     barcode,
@@ -21,7 +21,10 @@ export default function RevisonProducts({
     hardware,
     setHardware,
     point,
-    revNumber
+    revNumber,
+    setActiveStep,
+    revisionProducts,
+    setRevisionProducts
 }) {
 
     const useStyles = makeStyles((theme) => ({
@@ -38,7 +41,6 @@ export default function RevisonProducts({
     }));
     const classes = useStyles();
     const debouncedBarcode = useDebounce(barcode, 150);
-    const [revisionProducts, setRevisionProducts] = useState([]);
     const [restartScanner, setRestartScanner] = useState(false);
     const debouncedRestartScanner = useDebounce(restartScanner, 200);
     useEffect(() => {
@@ -63,6 +65,10 @@ export default function RevisonProducts({
                 return data.data;
             })
             .then((products) => {
+                let temp = [];
+                products.forEach((product) => {
+                    temp.push({ ...product, isChanging: false })
+                })
                 setRevisionProducts(products);
             })
             .catch((err) => {
@@ -126,7 +132,7 @@ export default function RevisonProducts({
             .then((res) => res.data)
             .then((res) => {
                 console.log(res);
-                if (res[0].update_revisiontemp.code === "success") {
+                if (res[0].revisiontemp_update.code === "success") {
                     getRevisionProducts();
                 }
                 else {
@@ -145,11 +151,11 @@ export default function RevisonProducts({
         <Fragment>
             <Paper className={classes.paper}>
                 <Grid
-                direction="column"
+                    direction="column"
                     container
                     wrap="nowrap"
                     spacing={2}
-                    justifyContent="center"
+                    justify="center"
                     alignItems="center"
                 >
                     <Grid item xs={12}>
@@ -158,7 +164,6 @@ export default function RevisonProducts({
                             <RadioGroup row name="harware"
                                 value={hardware}
                                 onChange={(e) => setHardware(e.target.value)}
-                            // defaultValue={hardware}
                             >
                                 <FormControlLabel
                                     value="camera"
@@ -172,12 +177,18 @@ export default function RevisonProducts({
                                     label="Сканер"
                                     labelPlacement="bottom"
                                 />
+                                <FormControlLabel
+                                    value="manual"
+                                    control={<Radio color="primary" />}
+                                    label="Ручной ввод"
+                                    labelPlacement="bottom"
+                                />
                             </RadioGroup>
                         </FormControl>
                     </Grid>
                 </Grid>
             </Paper>
-            <Paper className={classes.paper}>
+            <Paper className={classes.paper} elevation={hardware === 'camera' ? 3 : 0}>
                 <Grid container wrap="nowrap" spacing={2}>
                     <Grid item xs={12}>
                         <Scanner
@@ -189,33 +200,67 @@ export default function RevisonProducts({
                     </Grid>
                 </Grid>
             </Paper>
-            <Paper className={classes.paper}>
-                <Grid container wrap="nowrap" spacing={2}>
-                    <Grid item xs={12}>
-                        {hardware === "scanner" &&
+            {hardware === "scanner" &&
+                <Paper className={classes.paper}>
+                    <Grid container wrap="nowrap" spacing={2}>
+                        <Grid item xs={12}>
                             <TextField
                                 fullWidth
+                                size="small"
                                 variant="outlined"
                                 label={"Штрих-код"}
                                 value={barcode}
                                 autoFocus={true}
                                 onChange={barcodeChange}
                             />
-                        }
+                        </Grid>
                     </Grid>
-                </Grid>
-            </Paper>
+                </Paper>
+            }
+            {hardware === "manual" &&
+                <ManualAdd
+                    point={point}
+                    revNumber={revNumber}
+                    getRevisionProducts={getRevisionProducts}
+                />
+            }
             {revisionProducts.length > 0 &&
                 <Paper className={classes.paper}>
                     <Grid container wrap="nowrap" spacing={2}>
-                        < Grid item xs={12} style={{ padding: "0px" }}>
+                        <Grid item xs={12} style={{ padding: "0px" }}>
                             <RevisionTable
                                 revisionProducts={revisionProducts}
+                                setRevisionProducts={setRevisionProducts}
+                                point={point}
+                                revNumber={revNumber}
+                                getRevisionProducts={getRevisionProducts}
                             />
                         </Grid>
                     </Grid>
                 </Paper>
             }
+            <Paper className={classes.paper}>
+                <Grid container wrap="nowrap" spacing={2}>
+                    <Grid item xs={6}>
+                        <button
+                            style={{ width: "100%" }}
+                            className="btn btn-outline-secondary"
+                            onClick={() => setActiveStep(0)}
+                        >
+                            Назад
+                        </button>
+                    </Grid>
+                    <Grid item xs={6}>
+                        <button
+                            onClick={() => setActiveStep(2)}
+                            style={{ width: "100%" }}
+                            className="btn btn-success"
+                        >
+                            Далее
+                        </button>
+                    </Grid>
+                </Grid>
+            </Paper>
         </Fragment >
     );
 };
