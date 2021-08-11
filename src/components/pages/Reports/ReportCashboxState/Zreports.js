@@ -278,7 +278,7 @@ export default function Zreports({
                           })}
                         </StyledCell>
                         <StyledCell className="tenge">
-                          {rep.CardRefund ? parseFloat(rep.CardRefund).toLocaleString("ru", {
+                          {(rep.CardRefund || rep.CardRefund === 0) ? parseFloat(rep.CardRefund).toLocaleString("ru", {
                             minimumFractionDigits: 2,
                           }) : "n/a"}
                         </StyledCell>

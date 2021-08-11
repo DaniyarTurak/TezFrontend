@@ -3,7 +3,7 @@ import Axios from "axios";
 import ErrorAlert from "../../../ReusableComponents/ErrorAlert";
 import Grid from '@material-ui/core/Grid';
 import Alert from "react-s-alert";
-import { makeStyles } from '@material-ui/core/styles';
+import { makeStyles, withStyles } from '@material-ui/core/styles';
 import Paper from '@material-ui/core/Paper';
 import TextField from "@material-ui/core/TextField";
 import Autocomplete from "@material-ui/lab/Autocomplete";
@@ -28,6 +28,28 @@ export default function ManualAdd({
     }));
     const classes = useStyles();
 
+    const CustomField = withStyles({
+        root: {
+            '& label.Mui-focused': {
+                color: '#17a2b8',
+            },
+            '& .MuiInput-underline:after': {
+                borderBottomColor: '#17a2b8',
+            },
+            '& .MuiOutlinedInput-root': {
+                '& fieldset': {
+                    borderColor: '#17a2b8',
+                },
+                '&:hover fieldset': {
+                    borderColor: '#17a2b8',
+                },
+                '&.Mui-focused fieldset': {
+                    borderColor: '#17a2b8',
+                },
+            },
+        },
+    })(TextField);
+
     const [isLoading, setLoading] = useState(false);
     const [barcode, setBarcode] = useState("");
     const [name, setName] = useState("");
@@ -41,15 +63,19 @@ export default function ManualAdd({
 
     useEffect(() => {
         if (barcode === "") {
-            // setName("")
-            getProducts();
+            if (name !== "") {
+                getProducts();
+                setName("")
+            }
         }
     }, [barcode]);
 
     useEffect(() => {
         if (name === "") {
-            // setBarcode("")
-            getProducts();
+            if (barcode !== "") {
+                getProducts();
+                setBarcode("")
+            }
         }
     }, [name]);
 
@@ -137,39 +163,57 @@ export default function ManualAdd({
     };
 
     const addProduct = () => {
-        if (units !== "" && units > 0) {
-            console.log(selectedProd);
-            let params = { ...selectedProd, units: units };
-            Axios.post("/api/revision/revisiontemp/insert", params)
-                .then((res) => res.data)
-                .then((res) => {
-                    console.log(res);
-                    if (res.code === "success") {
-                        getRevisionProducts();
-                        setBarcode("");
-                        setName("");
-                        setUnits("");
-                    }
-                    else {
-                        Alert.error(res.text, {
-                            position: "top-right",
-                            effect: "bouncyflip",
-                            timeout: 2000,
-                        });
-                    }
-                })
-                .catch((err) => {
-                    console.log(err);
-                });
-        }
-        else {
-            Alert.warning("Введите корректное количество", {
+        if (barcode === "") {
+            Alert.warning("Введите штрих-код", {
                 position: "top-right",
                 effect: "bouncyflip",
                 timeout: 2000,
             });
         }
-    }
+        else {
+            if (name === "") {
+                Alert.warning("Введите имя", {
+                    position: "top-right",
+                    effect: "bouncyflip",
+                    timeout: 2000,
+                });
+            }
+            else {
+                if (units !== "" && units > 0) {
+                    console.log(selectedProd);
+                    let params = { ...selectedProd, units: units };
+                    Axios.post("/api/revision/revisiontemp/insert", params)
+                        .then((res) => res.data)
+                        .then((res) => {
+                            console.log(res);
+                            if (res.code === "success") {
+                                getRevisionProducts();
+                                setBarcode("");
+                                setName("");
+                                setUnits("");
+                            }
+                            else {
+                                Alert.error(res.text, {
+                                    position: "top-right",
+                                    effect: "bouncyflip",
+                                    timeout: 2000,
+                                });
+                            }
+                        })
+                        .catch((err) => {
+                            console.log(err);
+                        });
+                }
+                else {
+                    Alert.warning("Введите корректное количество", {
+                        position: "top-right",
+                        effect: "bouncyflip",
+                        timeout: 2000,
+                    });
+                };
+            };
+        };
+    };
 
     return (
         <Fragment>
@@ -193,7 +237,7 @@ export default function ManualAdd({
                             onInputChange={(e, value) => { setBarcode(value) }}
                             noOptionsText="Товар не найден"
                             renderInput={(params) => (
-                                <TextField
+                                <CustomField
                                     {...params}
                                     placeholder="Штрих-код"
                                     variant="outlined"
@@ -213,7 +257,7 @@ export default function ManualAdd({
                             onInputChange={(e, value) => { setName(value) }}
                             noOptionsText="Товар не найден"
                             renderInput={(params) => (
-                                <TextField
+                                <CustomField
                                     {...params}
                                     placeholder="Наименование"
                                     variant="outlined"
@@ -223,7 +267,8 @@ export default function ManualAdd({
                         />
                     </Grid>
                     <Grid item xs={6}>
-                        <TextField
+                        <CustomField
+                            autoFocus
                             value={units}
                             onChange={(e) => { setUnits(e.target.value) }}
                             placeholder="Количество"
@@ -236,7 +281,6 @@ export default function ManualAdd({
                             style={{ width: "100%" }}
                             className="btn btn-success"
                             onClick={addProduct}
-                        // disabled={isLoading || haveActive}
                         >
                             Добавить
                         </button>

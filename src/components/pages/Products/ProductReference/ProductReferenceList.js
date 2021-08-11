@@ -173,7 +173,31 @@ export default function ProductReferenceList({
       })
         .then((res) => res.data)
         .then((res) => {
-          setProductDetails(res);
+          if (res === "") {
+            Axios.get("/api/nomenclature/spr", {
+              params: { barcode: barcode },
+            })
+              .then((res) => res.data)
+              .then((res) => {
+                if (res !== "") {
+                  setProductDetails(res);
+                }
+                else {
+                  Alert.warning(`Товар со штрих-кодом ${barcode} не найден. Попробуйте сналача добавить товар.`, {
+                    position: "top-right",
+                    effect: "bouncyflip",
+                    timeout: 4000,
+                  });
+                }
+              }
+              )
+              .catch((err) => {
+                console.log(err);
+              });
+          }
+          else {
+            setProductDetails(res)
+          }
         })
         .catch((err) => {
           console.log(err);

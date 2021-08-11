@@ -937,6 +937,7 @@ let AddProductForm = ({
           attributes: editProduct.attributes,
         };
         deleteOldRecord(item);
+
       }
       //всё что ниже переписывалось 100500 раз, трогать осторожно.
       const newData = {
@@ -1001,6 +1002,7 @@ let AddProductForm = ({
             stock: res.data.text,
             amount: newData.amount,
           };
+          setLimitAlert(false);
           newProduct(newProductChanged);
           setSubmitting(false);
           setAdding(false);
@@ -1013,6 +1015,7 @@ let AddProductForm = ({
           });
         })
         .catch((err) => {
+          setLimitAlert(false);
           setSubmitting(false);
           ErrorAlert(err);
         });

@@ -1,11 +1,8 @@
 import React, { Fragment, useState, useEffect } from "react";
 import Grid from '@material-ui/core/Grid';
-import Axios from "axios";
-import ErrorAlert from "../../../ReusableComponents/ErrorAlert";
 import Quagga from 'quagga';
 import "../../../../sass/revision.sass";
 export default function Scanner({
-    barcode,
     setBarcode,
     debouncedRestartScanner,
     hardware
@@ -63,18 +60,6 @@ export default function Scanner({
         };
     }, [hardware]);
 
-    const restartScan = () => {
-        Quagga.start();
-        let drawingCtx = Quagga.canvas.ctx.overlay,
-            drawingCanvas = Quagga.canvas.dom.overlay;
-        drawingCtx.clearRect(
-            0,
-            0,
-            parseInt(drawingCanvas.getAttribute("width"), 10),
-            parseInt(drawingCanvas.getAttribute("height"), 10)
-        );
-    };
-
     const initQuagga = () => {
         Quagga.init(
             {
@@ -83,7 +68,7 @@ export default function Scanner({
                     type: "LiveStream",
                     target: document.querySelector("#scanner"),
                     constraints: {
-                        width: 480,
+                        width: 470,
                         height: 320,
                         facingMode: "environment",
                     },
@@ -143,7 +128,6 @@ export default function Scanner({
                     alignItems="center"
                 >
                     <Grid item xs={12}>
-                        {/* <div className="revision-block"> */}
                         <div
                             className="flex video-width video-height"
                             style={{
@@ -157,7 +141,6 @@ export default function Scanner({
                             ></div>
 
                         </div>
-                        {/* </div> */}
                     </Grid>
                 </Grid>
             }

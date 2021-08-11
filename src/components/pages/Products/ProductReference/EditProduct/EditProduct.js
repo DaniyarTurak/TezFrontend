@@ -16,6 +16,7 @@ import IconButton from "@material-ui/core/IconButton";
 import SweetAlert from "react-bootstrap-sweetalert";
 import ErrorAlert from "../../../../ReusableComponents/ErrorAlert";
 import Moment from "moment";
+import { ConstantLine } from "../../../../../../node_modules/devextreme-react/chart";
 
 export default function EditProduct({
   productDetails,
@@ -90,6 +91,7 @@ export default function EditProduct({
     }
     let product = {
       id: editingProduct.id,
+      code: editingProduct.code,
       name: editingProduct.name,
       category: editingProduct.categoryid,
       brand: editingProduct.brandid,
@@ -97,7 +99,7 @@ export default function EditProduct({
       unitsprid: editingProduct.unitsprid,
       piece:
         editingProduct.piece === true ? editingProduct.piece : sellByPieces,
-      pieceinpack: piecesUnint,
+      pieceinpack: piecesUnint ? piecesUnint : 0,
       cnofeacode: editingProduct.cnofeacode,
       details: constAttribCode,
       attributes: partAttribCode,
@@ -105,20 +107,44 @@ export default function EditProduct({
       attributesValue: tempAttributes,
       detailsValue: tempDetails
     };
-    Axios.post("/api/products/update", {
-      product,
-    })
-      .then((res) => {
-        Alert.success("Товар успешно сохранен", {
-          position: "top-right",
-          effect: "bouncyflip",
-          timeout: 2000,
+    if (productDetails.id === 0) {
+      Axios.post("/api/products/create", { product })
+        .then((res) => {
+          Alert.success("Товар успешно сохранен", {
+            position: "top-right",
+            effect: "bouncyflip",
+            timeout: 2000,
+          });
+          setClear(!isClear);
+          setEditingProduct({});
+          setSweetAlert(null);
+          setProductDetails({})
+        })
+        .catch((err) => {
+          ErrorAlert(err);
+          console.log(err);
         });
-        setDeleteListCode(!isDeleteListCode);
+    }
+    else {
+      Axios.post("/api/products/update", {
+        product,
       })
-      .catch((err) => {
-        ErrorAlert(err);
-      });
+        .then((res) => {
+          Alert.success("Товар успешно сохранен", {
+            position: "top-right",
+            effect: "bouncyflip",
+            timeout: 2000,
+          });
+          setClear(!isClear);
+          setEditingProduct({});
+          setSweetAlert(null);
+          setProductDetails({})
+          setDeleteListCode(!isDeleteListCode);
+        })
+        .catch((err) => {
+          ErrorAlert(err);
+        });
+    }
   };
 
   const handleDelete = () => {

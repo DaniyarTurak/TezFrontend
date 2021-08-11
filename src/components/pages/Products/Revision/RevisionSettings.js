@@ -1,13 +1,11 @@
 import React, { Fragment, useState, useEffect } from "react";
 import Axios from "axios";
 import ErrorAlert from "../../../ReusableComponents/ErrorAlert";
-import Select from '@material-ui/core/Select';
-import MenuItem from '@material-ui/core/MenuItem';
+import Select from "react-select";
 import FormControl from '@material-ui/core/FormControl';
 import Grid from '@material-ui/core/Grid';
 import Alert from "react-s-alert";
 import SweetAlert from "react-bootstrap-sweetalert";
-import InputLabel from '@material-ui/core/InputLabel';
 
 export default function RevisionSettings({
     setRevNumber,
@@ -18,10 +16,35 @@ export default function RevisionSettings({
     setActiveStep
 }) {
 
+    const customStyles = {
+        control: (base, state) => ({
+            ...base,
+            backgroundColor: "white",
+            border: '2px solid #17a2b8',
+            boxShadow: state.isFocused ? null : null,
+            "&:hover": {
+                border: '2px solid #17a2b8',
+
+            }
+        })
+    };
+
     const [points, setPoints] = useState([]);
     const [haveActive, setHaveActive] = useState(false);
     const [sweetAlert, setSweetAlert] = useState(null);
     const [isLoading, setLoading] = useState(false);
+
+    const hardwareOption = [
+        {
+            value: "camera", label: "Камера"
+        },
+        {
+            value: "scanner", label: "Сканер"
+        },
+        {
+            value: "manual", label: "Ручной ввод"
+        },
+    ];
 
     useEffect(() => {
         setPoint("");
@@ -33,7 +56,11 @@ export default function RevisionSettings({
         Axios.get("/api/point")
             .then((res) => res.data)
             .then((list) => {
-                setPoints(list);
+                let temp = [];
+                list.forEach(pnt => {
+                    temp.push({ label: pnt.name, value: pnt.id })
+                });
+                setPoints(temp);
             })
             .catch((err) => {
                 ErrorAlert(err);
@@ -42,7 +69,7 @@ export default function RevisionSettings({
 
     //при выборе точки проверить наличие открытой на ней ревизии 
     const pointChange = (e) => {
-        let point = e.target.value;
+        let point = e.value;
         setPoint(point);
         setLoading(true);
         Axios.get("/api/revision/checkactive", { params: { point: point } })
@@ -77,11 +104,7 @@ export default function RevisionSettings({
                 setLoading(false);
                 ErrorAlert(err);
             });
-    }
-
-    const hardwareChange = (e) => {
-        setHardware(e.target.value);
-    }
+    };
 
     //запуск ревизии
     const startRevision = () => {
@@ -147,12 +170,12 @@ export default function RevisionSettings({
                 if (res.revlist_delete.code === "success") {
                     setHaveActive(false);
                     setSweetAlert(null);
+                    setLoading(false);
                     Alert.success("Ревизия успешно удалена", {
                         position: "top-right",
                         effect: "bouncyflip",
                         timeout: 2000,
                     });
-                    startRevision();
                 } else {
                     Alert.error("Возникла непредвиденная ошибка", {
                         position: "top-right",
@@ -191,34 +214,23 @@ export default function RevisionSettings({
             >
                 <Grid item xs={12}>
                     <FormControl variant="outlined" size="small" style={{ width: "200px" }}>
-                        <InputLabel>Торговая точка</InputLabel>
                         <Select
-                            value={point}
+                            styles={customStyles}
+                            options={points}
                             onChange={pointChange}
-                            label="Торговая точка"
                             placeholder="Торговая точка"
-                            fullWidth
-                        >
-                            {points.map((pnt) => (
-                                <MenuItem key={pnt.id} value={pnt.id}>{pnt.name}</MenuItem>
-                            ))}
-                        </Select>
+                        />
                     </FormControl>
                 </Grid>
                 <Grid item xs={12}>
                     <FormControl variant="outlined" size="small" style={{ width: "200px" }}>
-                        <InputLabel>Оборудование для ввода</InputLabel>
                         <Select
-                            fullWidth
-                            value={hardware}
-                            onChange={hardwareChange}
-                            label="Оборудование для ввода"
-                            placeholder="Оборудование для ввода"
-                        >
-                            <MenuItem value={"camera"}>Камера</MenuItem>
-                            <MenuItem value={"scanner"}>Сканер</MenuItem>
-                            <MenuItem value={"manual"}>Ручной ввод</MenuItem>
-                        </Select>
+                            styles={customStyles}
+                            options={hardwareOption}
+                            onChange={(e) => setHardware(e.value)}
+                            placeholder="Способ ввода"
+                        />
+
                     </FormControl>
                 </Grid>
                 <Grid item xs={12}>

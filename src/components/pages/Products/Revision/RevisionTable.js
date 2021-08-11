@@ -141,7 +141,8 @@ export default function RevisonProducts({
     point,
     revNumber,
     getRevisionProducts,
-    activeStep
+    activeStep,
+    isOutOfRevision
 }) {
 
     const [page, setPage] = useState(0);
@@ -167,7 +168,7 @@ export default function RevisonProducts({
 
     const deleteProduct = (product) => {
         setLoading(true);
-        Axios.post("/api/revision/revisiontemp/delete", { revnumber: revNumber, product: product.product })
+        Axios.post("/api/revision/revisiontemp/delete", { revnumber: revNumber, product: product.product, attributes: product.attributes })
             .then((res) => res.data)
             .then((res) => {
                 console.log(res);
@@ -177,6 +178,7 @@ export default function RevisonProducts({
                         effect: "bouncyflip",
                         timeout: 2000,
                     });
+                console.log(1);
                     setLoading(false);
                     getRevisionProducts();
                     setEditingUnits(false);
@@ -218,7 +220,7 @@ export default function RevisonProducts({
                                 Наименование
                             </StyledTableCell>
                             <StyledTableCell align="center">
-                                Отсканированное количество
+                                {isOutOfRevision ? "Количество" : " Отсканированное количество"}
                             </StyledTableCell>
                             {activeStep !== 2 && <StyledTableCell />}
                         </TableRow>
@@ -232,10 +234,14 @@ export default function RevisonProducts({
                                         {product.code}
                                     </StyledTableCell>}
                                     <StyledTableCell>
-                                        {product.name} {activeStep !== 2 ? " (" + product.code + ")" : ""}
+                                        {product.name} {activeStep !== 2 ? " (" + product.code + ")" : ""} <br /> 
+                                        {product.attrname && product.attrvalue ? product.attrname + ": " + product.attrvalue : ""}
                                     </StyledTableCell>
                                     <StyledTableCell align="center">
-                                        {product.units}
+                                        {parseFloat(product.units).toLocaleString(
+                                            "ru",
+                                            { minimumFractionDigits: 1 }
+                                        )}
                                     </StyledTableCell>
                                     {activeStep !== 2 &&
                                         <StyledTableCell align="center">

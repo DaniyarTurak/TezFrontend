@@ -172,19 +172,44 @@ export default function CreateProduct({ isEditing }) {
   };
 
   const getProductByBarcode = (barcodeChanged) => {
-    Axios.get("/api/products/barcode", {
+    Axios.get("/api/nomenclature", {
       params: { barcode: barcodeChanged, all: 1 },
     })
       .then((res) => res.data)
       .then((product) => {
-        setProductBarcode(product);
-        setLoading(false);
-        if (Object.keys(product).length === productBarcode.code) {
-          Alert.warning("Товар уже есть в базе!", {
+        if (product !== "") {
+          Alert.info(`Товар со штрих-кодом ${barcode} уже существует. Вы не можете его добавить.`, {
             position: "top-right",
             effect: "bouncyflip",
-            timeout: 2000,
+            timeout: 3000,
           });
+          setLoading(false);
+          clearForm();
+        }
+        else {
+          Axios.get("/api/nomenclature/spr", {
+            params: { barcode: barcode },
+          })
+            .then((res) => res.data)
+            .then((res) => {
+              if (res !== "") {
+                setProductName(res.name);
+                setProductBarcode(res);
+                setLoading(false);
+              }
+              else {
+                Alert.warning(`Товар со штрих-кодом ${barcode} не найден. Вы можете его добавить.`, {
+                  position: "top-right",
+                  effect: "bouncyflip",
+                  timeout: 4000,
+                });
+                setLoading(false);
+              }
+            }
+            )
+            .catch((err) => {
+              console.log(err);
+            });
         }
       })
       .catch((err) => {
@@ -244,8 +269,6 @@ export default function CreateProduct({ isEditing }) {
     setUnitOptions(newUnitRes);
   };
 
-
-
   const handleSearch = (brcd) => {
     brcd.preventDefault();
     if (!barcode) {
@@ -291,7 +314,6 @@ export default function CreateProduct({ isEditing }) {
 
   const onBarcodeChange = (e) => {
     let barcodeChanged = e.target.value.toUpperCase();
-
     if (!isAllowed(barcodeChanged)) {
       Alert.warning(`Пожалуйста поменяйте раскладку на латиницу!`, {
         position: "top-right",
@@ -629,7 +651,7 @@ export default function CreateProduct({ isEditing }) {
                         <h6>
                           Укажите цену за штуку товара при приеме на склад. Или в
                           разделе "Изменение цен"
-                      </h6>
+                        </h6>
                       }
                     >
                       <span>
@@ -645,7 +667,7 @@ export default function CreateProduct({ isEditing }) {
                     style={{ paddingBottom: "10px", paddingTop: "8px" }}
                   >
                     Единица измерения
-                </Typography>
+                  </Typography>
                   <Autocomplete
                     fullWidth
                     size="small"
@@ -740,13 +762,13 @@ export default function CreateProduct({ isEditing }) {
             onClick={clearForm}
           >
             Очистить
-              </button>
-              &emsp;
-              <button className="btn btn-success"
+          </button>
+          &emsp;
+          <button className="btn btn-success"
             onClick={() => createProduct()}
           >
             Сохранить
-              </button>
+          </button>
         </Grid>
       </Grid>
     </Fragment >

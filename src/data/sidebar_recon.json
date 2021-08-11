@@ -161,11 +161,6 @@
         "id": 16,
         "route": "product/stockmonitoring",
         "name": "Мониторинг остатков"
-      },
-      {
-        "id": 17,
-        "name": "Ревизия",
-        "route": "product/revision"
       }
     ]
   }

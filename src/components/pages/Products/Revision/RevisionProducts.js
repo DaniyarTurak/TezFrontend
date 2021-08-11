@@ -12,8 +12,44 @@ import FormControlLabel from '@material-ui/core/FormControlLabel';
 import FormControl from '@material-ui/core/FormControl';
 import FormLabel from '@material-ui/core/FormLabel';
 import RevisionTable from "./RevisionTable";
-import { makeStyles } from '@material-ui/core/styles';
+import { makeStyles, withStyles } from '@material-ui/core/styles';
 import ManualAdd from "./ManualAdd";
+import ReactModal from "react-modal";
+import AddCircleIcon from '@material-ui/icons/AddCircle';
+import AddIcon from '@material-ui/icons/Add';
+import PlusOneIcon from '@material-ui/icons/PlusOne';
+
+const CustomField = withStyles({
+    root: {
+        '& label.Mui-focused': {
+            color: '#17a2b8',
+        },
+        '& .MuiInput-underline:after': {
+            borderBottomColor: '#17a2b8',
+        },
+        '& .MuiOutlinedInput-root': {
+            '& fieldset': {
+                borderColor: '#17a2b8',
+            },
+            '&:hover fieldset': {
+                borderColor: '#17a2b8',
+            },
+            '&.Mui-focused fieldset': {
+                borderColor: '#17a2b8',
+            },
+        },
+    },
+})(TextField);
+
+const CustomRadio = withStyles({
+    root: {
+        color: "#17a2b8",
+        '&$checked': {
+            color: "#28a745",
+        },
+    },
+    checked: {},
+})((props) => <Radio color="default" {...props} />);
 
 export default function RevisonProducts({
     barcode,
@@ -26,6 +62,23 @@ export default function RevisonProducts({
     revisionProducts,
     setRevisionProducts
 }) {
+
+    const customStyles = {
+        content: {
+            top: "50%",
+            left: "50%",
+            right: "auto",
+            bottom: "auto",
+            marginRight: "-50%",
+            marginLeft: "40px",
+            transform: "translate(-50%, -50%)",
+            maxWidth: "400px",
+            maxHeight: "80vh",
+            overlfow: "scroll",
+            zIndex: 11,
+        },
+        overlay: { zIndex: 10 },
+    };
 
     const useStyles = makeStyles((theme) => ({
         root: {
@@ -40,8 +93,13 @@ export default function RevisonProducts({
         },
     }));
     const classes = useStyles();
+
+
     const debouncedBarcode = useDebounce(barcode, 150);
     const [restartScanner, setRestartScanner] = useState(false);
+    const [isSelectProduct, setSelectProduct] = useState(false);
+    const [fewProducts, setFewProducts] = useState([]);
+    const [isLoading, setLoading] = useState(false);
     const debouncedRestartScanner = useDebounce(restartScanner, 200);
     useEffect(() => {
         getRevisionProducts();
@@ -58,6 +116,7 @@ export default function RevisonProducts({
             revisionnumber: revNumber,
             point: point
         }
+        setLoading(true);
         Axios.get("/api/revision/revisiontemp/list", {
             params,
         })
@@ -70,6 +129,7 @@ export default function RevisonProducts({
                     temp.push({ ...product, isChanging: false })
                 })
                 setRevisionProducts(products);
+                setLoading(false);
             })
             .catch((err) => {
                 Alert.error(err, {
@@ -77,6 +137,7 @@ export default function RevisonProducts({
                     effect: "bouncyflip",
                     timeout: 2000,
                 });
+                setLoading(false);
             });
     }
 
@@ -88,7 +149,8 @@ export default function RevisonProducts({
         const params = {
             barcode,
             point
-        }
+        };
+        setLoading(true);
         Axios.get("/api/revision/unitsbybarcode", {
             params,
         })
@@ -97,7 +159,13 @@ export default function RevisonProducts({
             })
             .then((products) => {
                 if (products.length > 0) {
-                    addToRevisionTemp(products[0]);
+                    if (products.length > 1) {
+                        setFewProducts(products);
+                        setSelectProduct(true);
+                    }
+                    else {
+                        addToRevisionTemp(products[0]);
+                    }
                 }
                 else {
                     Alert.warning(`Товар со штрих-кодом ${barcode} отсутствует на складе`, {
@@ -105,10 +173,11 @@ export default function RevisonProducts({
                         effect: "bouncyflip",
                         timeout: 2000,
                     });
+                    setLoading(false);
                 }
                 setBarcode("");
                 setRestartScanner(!restartScanner);
-
+                setLoading(false);
             })
             .catch((err) => {
                 Alert.warning(err, {
@@ -118,10 +187,12 @@ export default function RevisonProducts({
                 });
                 setBarcode("");
                 setRestartScanner(!restartScanner);
+                setLoading(false);
             });
     };
 
     const addToRevisionTemp = (product) => {
+        setLoading(true);
         Axios.post("/api/revision/revisiontemp/update", {
             revnumber: revNumber,
             point,
@@ -134,6 +205,9 @@ export default function RevisonProducts({
                 console.log(res);
                 if (res[0].revisiontemp_update.code === "success") {
                     getRevisionProducts();
+                    setSelectProduct(false);
+                    setFewProducts([]);
+                    setLoading(false);
                 }
                 else {
                     Alert.error(res[0].update_revisiontemp.text, {
@@ -141,14 +215,69 @@ export default function RevisonProducts({
                         effect: "bouncyflip",
                         timeout: 2000,
                     });
+                    setLoading(false);
                 }
             })
             .catch((err) => {
                 console.log(err);
             });
     }
+    const closeModal = () => {
+        setSelectProduct(false);
+        setFewProducts([]);
+    }
     return (
         <Fragment>
+            {fewProducts.length > 0 &&
+                < ReactModal
+                    isOpen={isSelectProduct}
+                    style={customStyles}
+                >
+                    <Grid container>
+                        <Grid item xs={12} style={{ textAlign: "center" }}><b>Выберите товар</b></Grid>
+                    </Grid>
+                    <Grid container spacing={1} style={{ paddingTop: "15px" }}>
+                        <Grid item xs={5}><b>Наименование</b></Grid>
+                        <Grid item xs={7}>{fewProducts[0].name}</Grid>
+                        <Grid item xs={5}><b>Штрих-код</b></Grid>
+                        <Grid item xs={7}>{fewProducts[0].code}</Grid>
+                    </Grid>
+                    <hr />
+                    <Grid container spacing={2}>
+                        <Grid item xs={6} style={{ textAlign: "center" }}><b>Характеристики</b></Grid>
+                        <Grid item xs={6} style={{ textAlign: "center" }}><b>Количество</b></Grid>
+                        {
+                            fewProducts.map((prod, idx) => (
+                                <Fragment key={idx}>
+                                    <Grid item xs={8}>{prod.attrvalue ? prod.attrvalue : "Без характеристик"}</Grid>
+                                    <Grid item xs={2} style={{ textAlign: "center" }}>{prod.units}</Grid>
+                                    <Grid item xs={2} style={{ textAlign: "right" }} >
+                                        <button
+                                            className="btn btn-success"
+                                            onClick={() => addToRevisionTemp(prod)}
+                                            style={{ padding: "0px" }}
+                                            disabled={isLoading}
+                                        >
+                                            <PlusOneIcon size="small" />
+                                        </button></Grid>
+                                </Fragment>
+                            ))
+                        }
+                    </Grid>
+                    <hr />
+                    <Grid container spacing={3}>
+                        <Grid item xs={12} style={{ textAlign: "center" }}>
+                            <button
+                                className="btn btn-outline-secondary"
+                                onClick={closeModal}
+                                disabled={isLoading}
+                            >
+                                Отмена
+                            </button>
+                        </Grid>
+                    </Grid>
+                </ReactModal>
+            }
             <Paper className={classes.paper}>
                 <Grid
                     direction="column"
@@ -159,28 +288,30 @@ export default function RevisonProducts({
                     alignItems="center"
                 >
                     <Grid item xs={12}>
+                        <span>Способ ввода</span>
+                    </Grid>
+                    <Grid item xs={12}>
                         <FormControl component="fieldset">
-                            <FormLabel component="legend">Оборудование для ввода</FormLabel>
                             <RadioGroup row name="harware"
                                 value={hardware}
                                 onChange={(e) => setHardware(e.target.value)}
                             >
                                 <FormControlLabel
                                     value="camera"
-                                    control={<Radio color="primary" />}
+                                    control={<CustomRadio />}
                                     label="Камера"
                                     labelPlacement="bottom"
                                 />
                                 <FormControlLabel
-                                    value="scanner"
-                                    control={<Radio color="primary" />}
-                                    label="Сканер"
+                                    value="manual"
+                                    control={<CustomRadio />}
+                                    label="Ручной ввод"
                                     labelPlacement="bottom"
                                 />
                                 <FormControlLabel
-                                    value="manual"
-                                    control={<Radio color="primary" />}
-                                    label="Ручной ввод"
+                                    value="scanner"
+                                    control={<CustomRadio />}
+                                    label="Сканер"
                                     labelPlacement="bottom"
                                 />
                             </RadioGroup>
@@ -188,9 +319,9 @@ export default function RevisonProducts({
                     </Grid>
                 </Grid>
             </Paper>
-            <Paper className={classes.paper} elevation={hardware === 'camera' ? 3 : 0}>
+            <Paper className={classes.paper} elevation={hardware === 'camera' ? 3 : 0} style={{ paddingLeft: "4px" }}>
                 <Grid container wrap="nowrap" spacing={2}>
-                    <Grid item xs={12}>
+                    <Grid item xs={12} style={{ padding: "0px" }}>
                         <Scanner
                             barcode={barcode}
                             setBarcode={setBarcode}
@@ -200,11 +331,12 @@ export default function RevisonProducts({
                     </Grid>
                 </Grid>
             </Paper>
-            {hardware === "scanner" &&
+            {
+                hardware === "scanner" &&
                 <Paper className={classes.paper}>
                     <Grid container wrap="nowrap" spacing={2}>
                         <Grid item xs={12}>
-                            <TextField
+                            <CustomField
                                 fullWidth
                                 size="small"
                                 variant="outlined"
@@ -217,14 +349,16 @@ export default function RevisonProducts({
                     </Grid>
                 </Paper>
             }
-            {hardware === "manual" &&
+            {
+                hardware === "manual" &&
                 <ManualAdd
                     point={point}
                     revNumber={revNumber}
                     getRevisionProducts={getRevisionProducts}
                 />
             }
-            {revisionProducts.length > 0 &&
+            {
+                revisionProducts.length > 0 &&
                 <Paper className={classes.paper}>
                     <Grid container wrap="nowrap" spacing={2}>
                         <Grid item xs={12} style={{ padding: "0px" }}>
@@ -255,6 +389,7 @@ export default function RevisonProducts({
                             onClick={() => setActiveStep(2)}
                             style={{ width: "100%" }}
                             className="btn btn-success"
+                            disabled={revisionProducts.length > 0 ? false : true}
                         >
                             Далее
                         </button>
