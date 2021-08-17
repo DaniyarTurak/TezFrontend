@@ -3,15 +3,16 @@ import Axios from "axios";
 import ErrorAlert from "../../../ReusableComponents/ErrorAlert";
 import Grid from '@material-ui/core/Grid';
 import Alert from "react-s-alert";
-import { makeStyles, withStyles } from '@material-ui/core/styles';
+import { makeStyles, withStyles, createStyles } from '@material-ui/core/styles';
 import Paper from '@material-ui/core/Paper';
 import TextField from "@material-ui/core/TextField";
 import Autocomplete from "@material-ui/lab/Autocomplete";
-
+import ReactModal from "react-modal";
+import AddIcon from '@material-ui/icons/Add';
 export default function ManualAdd({
     point,
     revNumber,
-    getRevisionProducts
+    getRevisionProducts,
 }) {
 
     const useStyles = makeStyles((theme) => ({
@@ -28,27 +29,47 @@ export default function ManualAdd({
     }));
     const classes = useStyles();
 
-    const CustomField = withStyles({
-        root: {
-            '& label.Mui-focused': {
-                color: '#17a2b8',
-            },
-            '& .MuiInput-underline:after': {
-                borderBottomColor: '#17a2b8',
-            },
-            '& .MuiOutlinedInput-root': {
-                '& fieldset': {
-                    borderColor: '#17a2b8',
-                },
-                '&:hover fieldset': {
-                    borderColor: '#17a2b8',
-                },
-                '&.Mui-focused fieldset': {
-                    borderColor: '#17a2b8',
-                },
-            },
+    const customStyles = {
+        content: {
+            top: "50%",
+            left: "50%",
+            right: "auto",
+            bottom: "auto",
+            marginRight: "-50%",
+            marginLeft: "40px",
+            transform: "translate(-50%, -50%)",
+            maxWidth: "400px",
+            maxHeight: "80vh",
+            overlfow: "scroll",
+            zIndex: 11,
         },
-    })(TextField);
+        overlay: { zIndex: 10 },
+    };
+
+    const useStylesAC = makeStyles(theme =>
+        createStyles({
+            root: {
+                '& label.Mui-focused': {
+                    color: '#17a2b8',
+                },
+                '& .MuiInput-underline:after': {
+                    borderBottomColor: '#17a2b8',
+                },
+                '& .MuiOutlinedInput-root': {
+                    '& fieldset': {
+                        borderColor: '#ced4da',
+                    },
+                    '&:hover fieldset': {
+                        borderColor: '#ced4da',
+                    },
+                    '&.Mui-focused fieldset': {
+                        borderColor: '#17a2b8',
+                    },
+                },
+            },
+        })
+    );
+    const classesAC = useStylesAC();
 
     const [isLoading, setLoading] = useState(false);
     const [barcode, setBarcode] = useState("");
@@ -56,31 +77,15 @@ export default function ManualAdd({
     const [units, setUnits] = useState("");
     const [listProducts, setListProducts] = useState([]);
     const [selectedProd, setSelectedProd] = useState("");
+    const [fewProducts, setFewProducts] = useState("");
+    const [isSelectProduct, setSelectProduct] = useState(false);
 
     useEffect(() => {
         getProducts();
     }, []);
 
-    useEffect(() => {
-        if (barcode === "") {
-            if (name !== "") {
-                getProducts();
-                setName("")
-            }
-        }
-    }, [barcode]);
-
-    useEffect(() => {
-        if (name === "") {
-            if (barcode !== "") {
-                getProducts();
-                setBarcode("")
-            }
-        }
-    }, [name]);
-
     const getProducts = () => {
-        Axios.get("/api/products/bypoint", { params: { point } })
+        Axios.get("/api/products/stockcurrent/stock", { params: { stockid: point } })
             .then((res) => res.data)
             .then((list) => {
                 setListProducts(list);
@@ -93,29 +98,42 @@ export default function ManualAdd({
 
     const selectProduct = ({ value, param }) => {
         if (param === "barcode") {
+            let temp = [];
             listProducts.forEach((prod) => {
                 if (prod.code === value) {
-                    setSelectedProd(
+                    temp.push(
                         {
-                            product: prod.id,
-                            unitswas: parseInt(prod.units),
+                            product: prod.prodid,
+                            unitswas: Number(prod.units),
                             attributes: prod.attributes,
+                            attrvalue: prod.attributescaption,
                             revnumber: revNumber,
-                            point: point
+                            point: point,
+                            name: prod.name,
+                            code: prod.code
                         }
                     );
-                    setName(prod.name);
+                    if (temp.length > 1) {
+                        setFewProducts(temp);
+                        setSelectProduct(true);
+                    }
+                    else {
+                        setSelectedProd(
+                            temp[0]
+                        );
+                        setName(temp[0].name);
+                    }
                 };
             })
         }
         else {
             if (param === "name") {
                 listProducts.forEach((prod) => {
-                    if (prod.name === value) {
+                    if (prod.name + " " + prod.attributescaption === value) {
                         setSelectedProd(
                             {
-                                product: prod.id,
-                                unitswas: parseInt(prod.units),
+                                product: prod.prodid,
+                                unitswas: Number(prod.units),
                                 attributes: prod.attributes,
                                 revnumber: revNumber,
                                 point: point
@@ -130,14 +148,28 @@ export default function ManualAdd({
 
     const searchProduct = ({ e, param }) => {
         if (e.keyCode === 13) {
-            console.log(param);
             if (param === "barcode") {
-                console.log({ barcode, point });
-                Axios.get("/api/products/bypoint", { params: { barcode, point } })
+                Axios.get("/api/revision/unitsbybarcode", { params: { barcode: barcode.trim(), point } })
                     .then((res) => res.data)
                     .then((list) => {
                         if (list.length > 0) {
-                            setListProducts(list);
+                            if (list.length > 1) {
+                                setFewProducts(list);
+                                setSelectProduct(true);
+                            }
+                            else {
+                                setSelectedProd(list[0]);
+                                setName(list[0].name + " " + list[0].attrvalue);
+                                setBarcode(list[0].code);
+                                setBarcode(list[0].code);
+                            }
+                        }
+                        else {
+                            Alert.warning(`Товар со штрих-кодом ${barcode} не найден`, {
+                                position: "top-right",
+                                effect: "bouncyflip",
+                                timeout: 2000,
+                            });
                         }
                     })
                     .catch((err) => {
@@ -146,12 +178,27 @@ export default function ManualAdd({
                     });
             };
             if (param === "name") {
-                console.log({ name, point });
-                Axios.get("/api/products/bypoint", { params: { name, point } })
+                Axios.get("/api/revision/unitsbybarcode", { params: { name: name.trim(), point } })
                     .then((res) => res.data)
                     .then((list) => {
                         if (list.length > 0) {
-                            setListProducts(list);
+                            if (list.length > 1) {
+                                setFewProducts(list);
+                                setSelectProduct(true);
+                            }
+                            else {
+                                setSelectedProd(list[0]);
+                                setName(list[0].name + " " + list[0].attrvalue);
+                                setBarcode(list[0].code);
+                                setBarcode(list[0].code);
+                            }
+                        }
+                        else {
+                            Alert.warning(`Товар со наименование ${name} не найден`, {
+                                position: "top-right",
+                                effect: "bouncyflip",
+                                timeout: 2000,
+                            });
                         }
                     })
                     .catch((err) => {
@@ -163,60 +210,117 @@ export default function ManualAdd({
     };
 
     const addProduct = () => {
-        if (barcode === "") {
-            Alert.warning("Введите штрих-код", {
+        if (barcode === "" || name === "") {
+            Alert.warning("Выберите товар", {
                 position: "top-right",
                 effect: "bouncyflip",
                 timeout: 2000,
             });
         }
         else {
-            if (name === "") {
-                Alert.warning("Введите имя", {
+            if (units !== "" && units > 0) {
+                let params = { ...selectedProd, unitswas: selectedProd.unitswas ? selectedProd.unitswas : Number(selectedProd.units), revnumber: revNumber, point: point, units: units };
+                Axios.post("/api/revision/revisiontemp/insert", params)
+                    .then((res) => res.data)
+                    .then((res) => {
+                        if (res.code === "success") {
+                            getRevisionProducts();
+                            setBarcode("");
+                            setName("");
+                            setUnits("");
+                        }
+                        else {
+                            Alert.error(res.text, {
+                                position: "top-right",
+                                effect: "bouncyflip",
+                                timeout: 2000,
+                            });
+                            setBarcode("");
+                            setName("");
+                            setUnits("");
+                        }
+                    })
+                    .catch((err) => {
+                        console.log(err);
+                    });
+            }
+            else {
+                Alert.warning("Введите корректное количество", {
                     position: "top-right",
                     effect: "bouncyflip",
                     timeout: 2000,
                 });
-            }
-            else {
-                if (units !== "" && units > 0) {
-                    console.log(selectedProd);
-                    let params = { ...selectedProd, units: units };
-                    Axios.post("/api/revision/revisiontemp/insert", params)
-                        .then((res) => res.data)
-                        .then((res) => {
-                            console.log(res);
-                            if (res.code === "success") {
-                                getRevisionProducts();
-                                setBarcode("");
-                                setName("");
-                                setUnits("");
-                            }
-                            else {
-                                Alert.error(res.text, {
-                                    position: "top-right",
-                                    effect: "bouncyflip",
-                                    timeout: 2000,
-                                });
-                            }
-                        })
-                        .catch((err) => {
-                            console.log(err);
-                        });
-                }
-                else {
-                    Alert.warning("Введите корректное количество", {
-                        position: "top-right",
-                        effect: "bouncyflip",
-                        timeout: 2000,
-                    });
-                };
             };
         };
     };
 
+    const closeModal = () => {
+        setName("");
+        setBarcode("");
+        setSelectProduct(false);
+        setFewProducts([]);
+    };
+
+    const selectOneProduct = (prod) => {
+        setSelectedProd(prod);
+        setName(prod.name + " " + prod.attrvalue);
+        setBarcode(prod.code);
+        setSelectProduct(false);
+        setFewProducts([]);
+    }
+
     return (
         <Fragment>
+            {fewProducts.length > 0 &&
+                < ReactModal
+                    isOpen={isSelectProduct}
+                    style={customStyles}
+                >
+                    <Grid container>
+                        <Grid item xs={12} style={{ textAlign: "center" }}><b>Выберите товар</b></Grid>
+                    </Grid>
+                    <Grid container spacing={1} style={{ paddingTop: "15px" }}>
+                        <Grid item xs={5}><b>Наименование</b></Grid>
+                        <Grid item xs={7}>{fewProducts[0].name}</Grid>
+                        <Grid item xs={5}><b>Штрих-код</b></Grid>
+                        <Grid item xs={7}>{fewProducts[0].code}</Grid>
+                    </Grid>
+                    <hr />
+                    <Grid container spacing={2}>
+                        <Grid item xs={6} style={{ textAlign: "center" }}><b>Характеристики</b></Grid>
+                        <Grid item xs={6} style={{ textAlign: "center" }}><b>Количество</b></Grid>
+                        {
+                            fewProducts.map((prod, idx) => (
+                                <Fragment key={idx}>
+                                    <Grid item xs={8}>{prod.attrvalue ? prod.attrvalue : "Без характеристик"}</Grid>
+                                    <Grid item xs={2} style={{ textAlign: "center" }}>{prod.units}</Grid>
+                                    <Grid item xs={2} style={{ textAlign: "right" }} >
+                                        <button
+                                            className="btn btn-success"
+                                            onClick={() => selectOneProduct(prod)}
+                                            style={{ padding: "0px" }}
+                                            disabled={isLoading}
+                                        >
+                                            <AddIcon size="small" />
+                                        </button></Grid>
+                                </Fragment>
+                            ))
+                        }
+                    </Grid>
+                    <hr />
+                    <Grid container spacing={3}>
+                        <Grid item xs={12} style={{ textAlign: "center" }}>
+                            <button
+                                className="btn btn-outline-secondary"
+                                onClick={closeModal}
+                                disabled={isLoading}
+                            >
+                                Отмена
+                            </button>
+                        </Grid>
+                    </Grid>
+                </ReactModal>
+            }
             <Paper className={classes.paper}>
                 <Grid
                     direction="row"
@@ -229,6 +333,7 @@ export default function ManualAdd({
                     <Grid item xs={12}>
                         <Autocomplete
                             value={barcode}
+                            defaultValue={barcode}
                             fullWidth
                             disabled={isLoading}
                             onKeyDown={(e) => searchProduct({ e, param: "barcode" })}
@@ -237,7 +342,10 @@ export default function ManualAdd({
                             onInputChange={(e, value) => { setBarcode(value) }}
                             noOptionsText="Товар не найден"
                             renderInput={(params) => (
-                                <CustomField
+                                <TextField
+                                    classes={{
+                                        root: classesAC.root,
+                                    }}
                                     {...params}
                                     placeholder="Штрих-код"
                                     variant="outlined"
@@ -252,14 +360,17 @@ export default function ManualAdd({
                             fullWidth
                             disabled={isLoading}
                             onKeyDown={(e) => searchProduct({ e, param: "name" })}
-                            options={listProducts.map((option) => option.name)}
+                            options={listProducts.map((option) => option.name + " " + option.attributescaption)}
                             onChange={(e, value) => { selectProduct({ value, param: "name" }) }}
                             onInputChange={(e, value) => { setName(value) }}
                             noOptionsText="Товар не найден"
                             renderInput={(params) => (
-                                <CustomField
+                                <TextField
+                                    classes={{
+                                        root: classesAC.root,
+                                    }}
                                     {...params}
-                                    placeholder="Наименование"
+                                    placeholder="Наименование товара"
                                     variant="outlined"
                                     size="small"
                                 />
@@ -267,9 +378,11 @@ export default function ManualAdd({
                         />
                     </Grid>
                     <Grid item xs={6}>
-                        <CustomField
-                            autoFocus
+                        <TextField
                             value={units}
+                            classes={{
+                                root: classesAC.root,
+                            }}
                             onChange={(e) => { setUnits(e.target.value) }}
                             placeholder="Количество"
                             variant="outlined"

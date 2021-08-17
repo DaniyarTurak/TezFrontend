@@ -161,7 +161,6 @@ export default function RevisonProducts({
     };
 
     const editUnits = (product) => {
-        console.log(product);
         setProduct(product);
         setEditingUnits(true);
     };
@@ -171,14 +170,12 @@ export default function RevisonProducts({
         Axios.post("/api/revision/revisiontemp/delete", { revnumber: revNumber, product: product.product, attributes: product.attributes })
             .then((res) => res.data)
             .then((res) => {
-                console.log(res);
                 if (res.command && res.command === "DELETE") {
                     Alert.success("Товар удалён из ревизии", {
                         position: "top-right",
                         effect: "bouncyflip",
                         timeout: 2000,
                     });
-                console.log(1);
                     setLoading(false);
                     getRevisionProducts();
                     setEditingUnits(false);
@@ -208,7 +205,7 @@ export default function RevisonProducts({
         <Fragment>
             <TableContainer
                 component={Paper}
-                style={{ boxShadow: "0px -1px 1px 1px white", paddingTop: "20px", paddingBottom: "20px" }}
+                style={{ boxShadow: "0px -1px 1px 1px white" }}
             >
                 <Table id="table-to-xls">
                     <TableHead>
@@ -234,8 +231,9 @@ export default function RevisonProducts({
                                         {product.code}
                                     </StyledTableCell>}
                                     <StyledTableCell>
-                                        {product.name} {activeStep !== 2 ? " (" + product.code + ")" : ""} <br /> 
-                                        {product.attrname && product.attrvalue ? product.attrname + ": " + product.attrvalue : ""}
+                                        {product.name} {activeStep !== 2 ? " (" + product.code + ")" : ""} <br />
+                                        {product.attributename && product.attributevalue ? product.attributename + ": " + product.attributevalue : ""}
+                                        {product.attrvalue ? product.attrvalue : ""}
                                     </StyledTableCell>
                                     <StyledTableCell align="center">
                                         {parseFloat(product.units).toLocaleString(

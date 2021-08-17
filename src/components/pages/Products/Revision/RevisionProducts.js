@@ -10,13 +10,10 @@ import Radio from '@material-ui/core/Radio';
 import RadioGroup from '@material-ui/core/RadioGroup';
 import FormControlLabel from '@material-ui/core/FormControlLabel';
 import FormControl from '@material-ui/core/FormControl';
-import FormLabel from '@material-ui/core/FormLabel';
 import RevisionTable from "./RevisionTable";
 import { makeStyles, withStyles } from '@material-ui/core/styles';
 import ManualAdd from "./ManualAdd";
 import ReactModal from "react-modal";
-import AddCircleIcon from '@material-ui/icons/AddCircle';
-import AddIcon from '@material-ui/icons/Add';
 import PlusOneIcon from '@material-ui/icons/PlusOne';
 
 const CustomField = withStyles({
@@ -202,7 +199,6 @@ export default function RevisonProducts({
         })
             .then((res) => res.data)
             .then((res) => {
-                console.log(res);
                 if (res[0].revisiontemp_update.code === "success") {
                     getRevisionProducts();
                     setSelectProduct(false);
@@ -319,17 +315,13 @@ export default function RevisonProducts({
                     </Grid>
                 </Grid>
             </Paper>
-            <Paper className={classes.paper} elevation={hardware === 'camera' ? 3 : 0} style={{ paddingLeft: "4px" }}>
-                <Grid container wrap="nowrap" spacing={2}>
-                    <Grid item xs={12} style={{ padding: "0px" }}>
-                        <Scanner
-                            barcode={barcode}
-                            setBarcode={setBarcode}
-                            debouncedRestartScanner={debouncedRestartScanner}
-                            hardware={hardware}
-                        />
-                    </Grid>
-                </Grid>
+            <Paper className={classes.paper} elevation={hardware === 'camera' ? 3 : 0} style={{ paddingLeft: "0px" }}>
+                <Scanner
+                    barcode={barcode}
+                    setBarcode={setBarcode}
+                    debouncedRestartScanner={debouncedRestartScanner}
+                    hardware={hardware}
+                />
             </Paper>
             {
                 hardware === "scanner" &&
@@ -352,6 +344,8 @@ export default function RevisonProducts({
             {
                 hardware === "manual" &&
                 <ManualAdd
+                    setSelectProduct={setSelectProduct}
+                    setFewProducts={setFewProducts}
                     point={point}
                     revNumber={revNumber}
                     getRevisionProducts={getRevisionProducts}

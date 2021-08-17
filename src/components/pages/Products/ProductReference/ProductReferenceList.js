@@ -160,7 +160,7 @@ export default function ProductReferenceList({
   };
 
   const getProductDetails = () => {
-    if (barcode === "") {
+    if (barcode.trim() === "" && prodName.trim() === "") {
       return Alert.info("Введите штрих код или выберите товар", {
         position: "top-right",
         effect: "bouncyflip",
@@ -169,7 +169,7 @@ export default function ProductReferenceList({
     }
     else {
       Axios.get("/api/nomenclature", {
-        params: { barcode: barcode },
+        params: { barcode: barcode ? barcode.trim() : "", name: prodName ? prodName.trim() : "" },
       })
         .then((res) => res.data)
         .then((res) => {
@@ -240,8 +240,10 @@ export default function ProductReferenceList({
   };
 
   const getProductByBarcode = () => {
-    const code = barcode.trim();
-    Axios.get("/api/nomenclature", { params: { barcode: code } })
+    Axios.get("/api/nomenclature", {
+      params: { barcode: barcode ? barcode.trim() : "", name: prodName ? prodName.trim() : "" }
+    }
+    )
       .then((res) => res.data)
       .then((product) => {
         setProductDetails(product);

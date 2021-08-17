@@ -50,7 +50,7 @@ export default function EditUnits({
                 .then((res) => res.data)
                 .then((res) => {
                     console.log(res);
-                    if (res.command && res.command === "UPDATE") {
+                    if (res.command === "UPDATE") {
                         Alert.success("Количество изменено", {
                             position: "top-right",
                             effect: "bouncyflip",

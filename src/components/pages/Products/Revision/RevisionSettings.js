@@ -12,7 +12,6 @@ export default function RevisionSettings({
     point,
     setPoint,
     hardware,
-    setHardware,
     setActiveStep
 }) {
 
@@ -34,18 +33,6 @@ export default function RevisionSettings({
     const [sweetAlert, setSweetAlert] = useState(null);
     const [isLoading, setLoading] = useState(false);
 
-    const hardwareOption = [
-        {
-            value: "camera", label: "Камера"
-        },
-        {
-            value: "scanner", label: "Сканер"
-        },
-        {
-            value: "manual", label: "Ручной ввод"
-        },
-    ];
-
     useEffect(() => {
         setPoint("");
         getPoints();
@@ -53,12 +40,12 @@ export default function RevisionSettings({
 
     //список торговых точек
     const getPoints = () => {
-        Axios.get("/api/point")
+        Axios.get("/api/revision/points")
             .then((res) => res.data)
             .then((list) => {
                 let temp = [];
                 list.forEach(pnt => {
-                    temp.push({ label: pnt.name, value: pnt.id })
+                    temp.push({ label: pnt.name, value: pnt.stockid })
                 });
                 setPoints(temp);
             })
@@ -116,49 +103,40 @@ export default function RevisionSettings({
             });
         }
         else {
-            if (hardware === "") {
-                Alert.warning(`Выберите устройство ввода`, {
-                    position: "top-right",
-                    effect: "bouncyflip",
-                    timeout: 3000,
-                });
-            }
-            else {
-                console.log({ point, hardware });
-                Axios.post("/api/revision/revisionlist/add", { point })
-                    .then((res) => res.data)
-                    .then((res) => {
-                        let response = res[0].revisionlist_add;
-                        if (response.code === "success") {
-                            setRevNumber(response.revisionnumber);
-                            setActiveStep(1);
-                            setSweetAlert(null);
-                            Alert.success("Ревизия успешно начата", {
-                                position: "top-right",
-                                effect: "bouncyflip",
-                                timeout: 2000,
-                            });
-                            setLoading(false);
-
-                        } else {
-                            Alert.error("Возникла непредвиденная ошибка", {
-                                position: "top-right",
-                                effect: "bouncyflip",
-                                timeout: 2000,
-                            });
-                            setLoading(false);
-                        }
-                    })
-                    .catch((err) => {
-                        console.log(err);
-                        Alert.error(err, {
+            console.log({ point, hardware });
+            Axios.post("/api/revision/revisionlist/add", { point })
+                .then((res) => res.data)
+                .then((res) => {
+                    let response = res[0].revisionlist_add;
+                    if (response.code === "success") {
+                        setRevNumber(response.revisionnumber);
+                        setActiveStep(1);
+                        setSweetAlert(null);
+                        Alert.success("Ревизия успешно начата", {
                             position: "top-right",
                             effect: "bouncyflip",
                             timeout: 2000,
                         });
                         setLoading(false);
+
+                    } else {
+                        Alert.error("Возникла непредвиденная ошибка", {
+                            position: "top-right",
+                            effect: "bouncyflip",
+                            timeout: 2000,
+                        });
+                        setLoading(false);
+                    }
+                })
+                .catch((err) => {
+                    console.log(err);
+                    Alert.error(err, {
+                        position: "top-right",
+                        effect: "bouncyflip",
+                        timeout: 2000,
                     });
-            }
+                    setLoading(false);
+                });
         }
     };
 
@@ -220,17 +198,6 @@ export default function RevisionSettings({
                             onChange={pointChange}
                             placeholder="Торговая точка"
                         />
-                    </FormControl>
-                </Grid>
-                <Grid item xs={12}>
-                    <FormControl variant="outlined" size="small" style={{ width: "200px" }}>
-                        <Select
-                            styles={customStyles}
-                            options={hardwareOption}
-                            onChange={(e) => setHardware(e.value)}
-                            placeholder="Способ ввода"
-                        />
-
                     </FormControl>
                 </Grid>
                 <Grid item xs={12}>

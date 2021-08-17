@@ -32,7 +32,7 @@ export default function SalesPlanOptions({
       <Grid item xs={3}>
         <AutocompleteSelect
           value={cashboxuser}
-          onChange={cashboxUsersChange}
+          onChange={(e, value) => cashboxUsersChange(value)}
           options={cashboxUsers}
           noOptions="Пользователи не найдены"
           label="Пользователь"

@@ -10,8 +10,10 @@ import MenuItem from '@material-ui/core/MenuItem';
 import FormControl from '@material-ui/core/FormControl';
 import Select from '@material-ui/core/Select';
 import InputBase from '@material-ui/core/InputBase';
-import Moment from "moment";
 import ReactAlert from "react-s-alert";
+import GetAppIcon from '@material-ui/icons/GetApp';
+import ReactModal from "react-modal";
+import SweetAlert from "react-bootstrap-sweetalert";
 
 export default function RevisonFinish({
     revNumber,
@@ -54,10 +56,29 @@ export default function RevisonFinish({
     }));
     const classes = useStyles();
 
+    const customStyles = {
+        content: {
+            top: "50%",
+            left: "50%",
+            right: "auto",
+            bottom: "auto",
+            marginRight: "-50%",
+            marginLeft: "40px",
+            transform: "translate(-50%, -50%)",
+            maxWidth: "400px",
+            maxHeight: "80vh",
+            overlfow: "scroll",
+            zIndex: 11,
+        },
+        overlay: { zIndex: 10 },
+    };
+
     const [isLoading, setLoading] = useState(false);
     const [outOfRevisionProducts, setOutOfRevisionProducts] = useState([]);
     const [isOutOfRevision, setOutOfRevision] = useState(false);
     const [condition, setCondition] = useState("");
+    const [revisionSuccess, setRevisionSuccess] = useState(false);
+    const [sweetAlert, setSweetAlert] = useState(null);
 
     useEffect(() => {
         compareProducts();
@@ -83,60 +104,125 @@ export default function RevisonFinish({
         const productsToSend = [];
         if (outOfRevisionProducts.length > 0) {
             if (condition !== "") {
-                revisionProducts.forEach((product) => {
+                outOfRevisionProducts.forEach((product) => {
                     productsToSend.push(
                         {
-                            attribute: product.attributes,
+                            attributes: product.attributes,
                             createdate: product.createdate,
-                            prodid: product.product,
-                            time: Moment(product.createdate).format("MM.DD.YYYY HH:mm:ss"),
+                            product: product.product,
                             units: product.units,
-                            unitsSelled: 0,
                             unitswas: product.unitswas
                         })
                 });
                 const params = {
-                    revisionnumber: revNumber,
+                    point,
                     outofrevision: condition,
-                    products: outOfRevisionProducts
+                    revnumber: revNumber,
+                    products: productsToSend
                 };
-                console.log(params);
-                // Axios.post("/api/revision/revisiondiary/add", {
-                //     user: JSON.parse(sessionStorage.getItem('isme-user-data')).id,
-                //     pointid: point,
-                //     revtype: '0',
-                //     // condition,
-                //     revisionnumber: revNumber,
-                //     products: productsToSend,
-                // })
-                //     .then((data) => {
-                //         return data.data;
-                //     })
-                //     .then((resp) => {
-                //         console.log(resp[0]);
-                //         if (resp[0].revisiondiary_add.text === "success") {
-                //             ReactAlert.success("Успешно", {
-                //                 position: "top-right",
-                //                 effect: "bouncyflip",
-                //                 timeout: 3000,
-                //             });
-                //         }
-                //         else {
-                //             ReactAlert.error(resp[0].revisiondiary_add.text, {
-                //                 position: "top-right",
-                //                 effect: "bouncyflip",
-                //                 timeout: 3000,
-                //             });
-                //         }
-                //     })
-                //     .catch((err) => {
-                //         console.log(err);
-                //         ReactAlert.error("Сервис временно не доступен", {
-                //             position: "top-right",
-                //             effect: "bouncyflip",
-                //             timeout: 3000,
-                //         });
-                //     });
+                Axios.post("/api/revision/revisiontemp/out", {
+                    point,
+                    outofrevision: condition,
+                    revnumber: revNumber,
+                    products: productsToSend
+                })
+                    .then((data) => {
+                        return data.data;
+                    })
+                    .then((resp) => {
+                        if (resp[0].revisiontemp_out.code === "success") {
+                            const params = {
+                                revisionnumber: revNumber,
+                                point: point
+                            }
+                            Axios.get("/api/revision/revisiontemp/list", {
+                                params,
+                            })
+                                .then((data) => {
+                                    return data.data;
+                                })
+                                .then((products) => {
+                                    if (products.length > 0) {
+                                        Axios.post("/api/revision/revisiondiary/add", {
+                                            point: point,
+                                            revnumber: revNumber,
+                                            products: products,
+                                        })
+                                            .then((data) => {
+                                                return data.data;
+                                            })
+                                            .then((resp) => {
+                                                if (resp[0].revisiondiary_add.code === "success") {
+                                                    setSweetAlert(
+                                                        <SweetAlert
+                                                            success
+                                                            showCancel
+                                                            confirmBtnText={"Новая ревизия"}
+                                                            cancelBtnText={"Посмотреть отчёт"}
+                                                            confirmBtnBsStyle="success"
+                                                            cancelBtnBsStyle="success"
+                                                            title={""}
+                                                            allowEscape={false}
+                                                            closeOnClickOutside={false}
+                                                            onConfirm={() => setActiveStep(0)}
+                                                            onCancel={toReport}
+                                                        >
+                                                            Ревизия успешно завершена
+                                                        </SweetAlert>)
+                                                    ReactAlert.success("Успешно", {
+                                                        position: "top-right",
+                                                        effect: "bouncyflip",
+                                                        timeout: 3000,
+                                                    });
+                                                }
+                                                else {
+                                                    ReactAlert.error(resp[0].revisiondiary_add.text, {
+                                                        position: "top-right",
+                                                        effect: "bouncyflip",
+                                                        timeout: 3000,
+                                                    });
+                                                }
+                                            })
+                                            .catch((err) => {
+                                                console.log(err);
+                                                ReactAlert.error("Сервис временно не доступен", {
+                                                    position: "top-right",
+                                                    effect: "bouncyflip",
+                                                    timeout: 3000,
+                                                });
+                                            });
+                                    }
+                                    else {
+                                        ReactAlert.warning("В ревизии нет товаров.", {
+                                            position: "top-right",
+                                            effect: "bouncyflip",
+                                            timeout: 3000,
+                                        });
+                                    }
+                                })
+                                .catch((err) => {
+                                    Alert.error(err, {
+                                        position: "top-right",
+                                        effect: "bouncyflip",
+                                        timeout: 2000,
+                                    });
+                                });
+                        }
+                        else {
+                            Alert.error(resp[0].revisiontemp_out.text, {
+                                position: "top-right",
+                                effect: "bouncyflip",
+                                timeout: 2000,
+                            });
+                        }
+                    })
+                    .catch((err) => {
+                        ReactAlert.error("Сервис временно не доступен", {
+                            position: "top-right",
+                            effect: "bouncyflip",
+                            timeout: 3000,
+                        });
+                    });
             }
             else {
                 ReactAlert.warning("На складе остались товары не прошедшие ревизию. Выберите что с ними сделать.", {
@@ -147,45 +233,67 @@ export default function RevisonFinish({
             }
         }
         else {
-            revisionProducts.forEach((product) => {
-                productsToSend.push(
-                    {
-                        attribute: product.attributes,
-                        createdate: product.createdate,
-                        prodid: product.product,
-                        time: Moment(product.createdate).format("MM.DD.YYYY HH:mm:ss"),
-                        units: product.units,
-                        unitsSelled: 0,
-                        unitswas: product.unitswas
-                    })
-            });
-            Axios.post("/api/revision/revisiondiary/add", {
-                user: JSON.parse(sessionStorage.getItem('isme-user-data')).id,
-                pointid: point,
-                revtype: '0',
-                // condition,
+            const params = {
                 revisionnumber: revNumber,
-                products: productsToSend,
-            })
+                point: point
+            }
+            Axios.get("/api/revision/revisiontemp/list",
+                {
+                    params
+                }
+            )
                 .then((data) => {
                     return data.data;
                 })
-                .then((resp) => {
-                    console.log(resp[0]);
-                    if (resp[0].revisiondiary_add.text === "success") {
-                        ReactAlert.success("Успешно", {
-                            position: "top-right",
-                            effect: "bouncyflip",
-                            timeout: 3000,
+                .then((products) => {
+                    Axios.post("/api/revision/revisiondiary/add", {
+                        point: point,
+                        revnumber: revNumber,
+                        products: products,
+                    })
+                        .then((data) => {
+                            return data.data;
+                        })
+                        .then((resp) => {
+                            if (resp[0].revisiondiary_add.code === "success") {
+                                setSweetAlert(
+                                    <SweetAlert
+                                        success
+                                        showCancel
+                                        confirmBtnText={"Начать новую ревизию"}
+                                        cancelBtnText={"Посмотреть отчёт"}
+                                        confirmBtnBsStyle="success"
+                                        cancelBtnBsStyle="success"
+                                        title={""}
+                                        allowEscape={false}
+                                        closeOnClickOutside={false}
+                                        onConfirm={() => setActiveStep(0)}
+                                        onCancel={toReport}
+                                    >
+                                        Ревизия успешно завершена
+                                    </SweetAlert>)
+                                ReactAlert.success("Успешно", {
+                                    position: "top-right",
+                                    effect: "bouncyflip",
+                                    timeout: 3000,
+                                });
+                            }
+                            else {
+                                ReactAlert.error(resp[0].revisiondiary_add.text, {
+                                    position: "top-right",
+                                    effect: "bouncyflip",
+                                    timeout: 3000,
+                                });
+                            }
+                        })
+                        .catch((err) => {
+                            console.log(err);
+                            ReactAlert.error("Сервис временно не доступен", {
+                                position: "top-right",
+                                effect: "bouncyflip",
+                                timeout: 3000,
+                            });
                         });
-                    }
-                    else {
-                        ReactAlert.error(resp[0].revisiondiary_add.text, {
-                            position: "top-right",
-                            effect: "bouncyflip",
-                            timeout: 3000,
-                        });
-                    }
                 })
                 .catch((err) => {
                     console.log(err);
@@ -198,30 +306,66 @@ export default function RevisonFinish({
         }
     };
 
-    // const addToRevDiary = (productsToSend) => {
-    //     Axios.post("/api/revision/revisiondiary/add", {
-    //         pointid: point,
-    //         products: productsToSend,
-    //         revisionnumber: revNumber
-    //     })
-    //         .then((data) => {
-    //             return data.data;
-    //         })
-    //         .then((resp) => {
-    //             console.log(resp);
-    //         })
-    //         .catch((err) => {
-    //             console.log(err);
-    //             Alert.error("Сервис временно не доступен", {
-    //                 position: "top-right",
-    //                 effect: "bouncyflip",
-    //                 timeout: 3000,
-    //             });
-    //         });
-    // }
+    const inRevisionToExcel = () => {
+        setLoading(true);
+        Axios({
+            method: "POST",
+            url: "/api/revision/inrevisiontoexcel",
+            data: { revisionProducts },
+            responseType: "blob",
+        })
+            .then((res) => res.data)
+            .then((res) => {
+                const url = window.URL.createObjectURL(new Blob([res]));
+                const link = document.createElement("a");
+                link.href = url;
+                link.setAttribute("download", `Товары прошедшие ревизию.xlsx`);
+                document.body.appendChild(link);
+                link.click();
+                setLoading(false);
+            })
+            .catch((err) => {
+                ErrorAlert(err);
+                setLoading(false);
+            });
+    };
+
+    const outOfRevisionToExcel = () => {
+        setLoading(true);
+        Axios({
+            method: "POST",
+            url: "/api/revision/outofrevisiontoexcel",
+            data: { outOfRevisionProducts },
+            responseType: "blob",
+        })
+            .then((res) => res.data)
+            .then((res) => {
+                const url = window.URL.createObjectURL(new Blob([res]));
+                const link = document.createElement("a");
+                link.href = url;
+                link.setAttribute("download", `Товары прошедшие ревизию.xlsx`);
+                document.body.appendChild(link);
+                link.click();
+                setLoading(false);
+            })
+            .catch((err) => {
+                ErrorAlert(err);
+                setLoading(false);
+            });
+    };
+
+
+    const toReport = () => {
+        const url = "/usercabinet/stockreport";
+        const link = document.createElement("a");
+        link.href = url;
+        document.body.appendChild(link);
+        link.click();
+    };
 
     return (
         <Fragment>
+            {sweetAlert}
             <Paper className={classes.paper}>
                 <Alert severity="info">
                     <AlertTitle>ВАЖНО!</AlertTitle>
@@ -236,6 +380,21 @@ export default function RevisonFinish({
                     2) пожалуйста, убедитесь, что после последней продажи прошло не менее 30 секунд, после чего нажмите кнопку "Завершить ревизию".</Alert>
             </Paper>
             <Paper className={classes.paper}>
+                <Grid container>
+                    <Grid item xs={8} style={{ padding: "10px" }}>
+                        Товары прошедшие ревизию
+                    </Grid>
+                    <Grid item xs={4} style={{ padding: "10px", textAlign: "right" }}>
+                        <button
+                            onClick={inRevisionToExcel}
+                            style={{ maxWidth: "120px", padding: "0px" }}
+                            className="btn btn-success"
+                        >
+                            &nbsp; Excel &nbsp;
+                            <GetAppIcon size="small" />
+                        </button>
+                    </Grid>
+                </Grid>
                 <RevisionTable
                     revisionProducts={revisionProducts}
                     activeStep={activeStep}
@@ -263,6 +422,22 @@ export default function RevisonFinish({
                         </Alert>
                     </Paper>
                     <Paper className={classes.paper}>
+                        <Grid container>
+                            <Grid item xs={8} style={{ padding: "10px" }}>
+                                Товары не прошедшие ревизию
+                            </Grid>
+                            <Grid item xs={4} style={{ padding: "10px", textAlign: "right" }}>
+                                <button
+                                    disabled={isLoading}
+                                    onClick={outOfRevisionToExcel}
+                                    style={{ maxWidth: "120px", padding: "0px" }}
+                                    className="btn btn-success"
+                                >
+                                    &nbsp; Excel &nbsp;
+                                    <GetAppIcon size="small" />
+                                </button>
+                            </Grid>
+                        </Grid>
                         <RevisionTable
                             revisionProducts={outOfRevisionProducts}
                             activeStep={activeStep}
@@ -275,6 +450,7 @@ export default function RevisonFinish({
                 <Grid container wrap="nowrap" spacing={2}>
                     <Grid item xs={6}>
                         <button
+                            disabled={isLoading}
                             style={{ width: "100%" }}
                             className="btn btn-outline-secondary"
                             onClick={() => setActiveStep(1)}
@@ -284,6 +460,7 @@ export default function RevisonFinish({
                     </Grid>
                     <Grid item xs={6}>
                         <button
+                            disabled={isLoading}
                             onClick={finishRevision}
                             style={{ width: "100%" }}
                             className="btn btn-success"

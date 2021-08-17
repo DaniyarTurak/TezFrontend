@@ -68,8 +68,8 @@ export default function Scanner({
                     type: "LiveStream",
                     target: document.querySelector("#scanner"),
                     constraints: {
-                        width: 470,
-                        height: 320,
+                        width: 460,
+                        height: 300,
                         facingMode: "environment",
                     },
                 },
@@ -121,13 +121,6 @@ export default function Scanner({
     return (
         <Fragment>
             {hardware === "camera" &&
-                <Grid
-                    container
-                    direction="row"
-                    justify="center"
-                    alignItems="center"
-                >
-                    <Grid item xs={12}>
                         <div
                             className="flex video-width video-height"
                             style={{
@@ -141,8 +134,6 @@ export default function Scanner({
                             ></div>
 
                         </div>
-                    </Grid>
-                </Grid>
             }
         </Fragment>
     );
