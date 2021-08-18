@@ -55,7 +55,9 @@ export default function RevisionTable({
                     <OrderArrowMaterial ascending={ascending} />
                   )}
                 </StyledTableCell>
-                <StyledTableCell align="center">Дата</StyledTableCell>
+                <StyledTableCell align="center">Дата начала</StyledTableCell>
+                <StyledTableCell align="center">Дата завершения</StyledTableCell>
+
               </TableRow>
             </TableHead>
             <TableBody style={{ cursor: "pointer" }}>
@@ -66,16 +68,16 @@ export default function RevisionTable({
                   key={idx}
                   onClick={() => {
                     handleDetails(
-                      revision.userid,
-                      revision.username,
-                      revision.date,
-                      revision.revcondition
+                      revision.revisionnumber
                     );
                   }}
                 >
                   <StyledTableCell>{revision.username}</StyledTableCell>
                   <StyledTableCell align="center">
-                    {Moment(revision.showDate).format("DD.MM.YYYY HH:mm:ss")}
+                    {Moment(revision.createdate).format("DD.MM.YYYY HH:mm:ss")}
+                  </StyledTableCell>
+                  <StyledTableCell align="center">
+                    {Moment(revision.submitdate).format("DD.MM.YYYY HH:mm:ss")}
                   </StyledTableCell>
                 </TableRow>
               ))}

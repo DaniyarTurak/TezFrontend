@@ -232,8 +232,8 @@ export default function RevisonProducts({
                                     </StyledTableCell>}
                                     <StyledTableCell>
                                         {product.name} {activeStep !== 2 ? " (" + product.code + ")" : ""} <br />
-                                        {product.attributename && product.attributevalue ? product.attributename + ": " + product.attributevalue : ""}
-                                        {product.attrvalue ? product.attrvalue : ""}
+                                        {product.attributescaption !== "" ? product.attributescaption : ""}
+                                        {product.attrvalue !== "" ? product.attrvalue : ""}
                                     </StyledTableCell>
                                     <StyledTableCell align="center">
                                         {parseFloat(product.units).toLocaleString(

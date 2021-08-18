@@ -37,8 +37,6 @@ export default function RevisionTableDetails({
   dateRev,
   backToList,
   revisionDetails,
-  condition,
-  getDifferenceExcel,
 }) {
   return (
     <Fragment>
@@ -65,7 +63,6 @@ export default function RevisionTableDetails({
               <TableRow>
                 <StyledTableCell />
                 <StyledTableCell>Наименование товара</StyledTableCell>
-                <StyledTableCell>Атрибут</StyledTableCell>
                 <StyledTableCell>До ревизии</StyledTableCell>
                 <StyledTableCell>После ревизии</StyledTableCell>
                 <StyledTableCell>
@@ -81,18 +78,17 @@ export default function RevisionTableDetails({
               {revisionDetails.map((detail, idx) => (
                 <TableRow key={idx}>
                   <StyledTableCell>{idx + 1}</StyledTableCell>
-                  <StyledTableCell>{detail.product}</StyledTableCell>
-                  <StyledTableCell>{detail.attrvalue}</StyledTableCell>
+                  <StyledTableCell>{detail.name + " " + detail.attributescaption}</StyledTableCell>
                   <StyledTableCell>{detail.unitswas}</StyledTableCell>
                   <StyledTableCell>{detail.units}</StyledTableCell>
                   <StyledTableCell className="tenge">
-                    {parseFloat(detail.unitprice).toLocaleString("ru", {
+                    {parseFloat(detail.price).toLocaleString("ru", {
                       minimumFractionDigits: 1,
                     })}
                   </StyledTableCell>
                   <StyledTableCell className="tenge">
                     {(
-                      parseFloat(detail.unitprice) * parseFloat(detail.units)
+                      parseFloat(detail.price) * parseFloat(detail.units)
                     ).toLocaleString("ru", {
                       minimumFractionDigits: 1,
                     })}
@@ -102,7 +98,7 @@ export default function RevisionTableDetails({
                   </StyledTableCell>
                   <StyledTableCell className="tenge">
                     {parseFloat(
-                      (detail.units - detail.unitswas) * detail.unitprice
+                      (detail.units - detail.unitswas) * detail.price
                     ).toLocaleString("ru", {
                       minimumFractionDigits: 1,
                     })}
@@ -116,7 +112,6 @@ export default function RevisionTableDetails({
             <TableFooter>
               <TableRow>
                 <StyledTableCell colSpan="2">Итого</StyledTableCell>
-                <StyledTableCell />
                 <StyledTableCell>
                   {revisionDetails
                     .reduce((prev, cur) => {
@@ -134,7 +129,7 @@ export default function RevisionTableDetails({
                 <StyledTableCell className="tenge">
                   {revisionDetails
                     .reduce((prev, cur) => {
-                      return prev + parseFloat(cur.unitprice);
+                      return prev + parseFloat(cur.price);
                     }, 0)
                     .toLocaleString("ru", { minimumFractionDigits: 2 })}
                 </StyledTableCell>
@@ -142,7 +137,7 @@ export default function RevisionTableDetails({
                   {revisionDetails
                     .reduce((prev, cur) => {
                       return (
-                        prev + parseFloat(cur.unitprice) * parseFloat(cur.units)
+                        prev + parseFloat(cur.price) * parseFloat(cur.units)
                       );
                     }, 0)
                     .toLocaleString("ru", { minimumFractionDigits: 2 })}
@@ -163,7 +158,7 @@ export default function RevisionTableDetails({
                       return (
                         prev +
                         (parseFloat(cur.units) - parseFloat(cur.unitswas)) *
-                          parseFloat(cur.unitprice)
+                        parseFloat(cur.price)
                       );
                     }, 0)
                     .toLocaleString("ru", { minimumFractionDigits: 2 })}
@@ -175,26 +170,15 @@ export default function RevisionTableDetails({
         </TableContainer>
       </Grid>
 
-      <Grid item xs={2}>
+      <Grid item xs={6}>
         <ReactHTMLTableToExcel
           className="btn btn-sm btn-outline-success"
           table="table-to-xls"
           filename={`Ревизия ${username} от ${dateRev}`}
           sheet="tablexls"
-          buttonText="Выгрузить в excel"
+          buttonText="Выгрузить в Excel"
         />
       </Grid>
-
-      {condition === 1 && (
-        <Grid item xs={4}>
-          <button
-            className="btn btn-sm btn-outline-success"
-            onClick={getDifferenceExcel}
-          >
-            Товары не прошедшие ревизию
-          </button>
-        </Grid>
-      )}
     </Fragment>
   );
 }

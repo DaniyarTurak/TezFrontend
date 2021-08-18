@@ -114,13 +114,13 @@ export default function ReportRevision({ companyProps }) {
         ? textA < textB
           ? -1
           : textA > textB
-          ? 1
-          : 0
+            ? 1
+            : 0
         : textB < textA
-        ? -1
-        : textB > textA
-        ? 1
-        : 0;
+          ? -1
+          : textB > textA
+            ? 1
+            : 0;
       return res;
     });
     setRevisions(revisionsChanged);
@@ -155,6 +155,10 @@ export default function ReportRevision({ companyProps }) {
       .then((res) => res.data)
       .then((res) => {
         setRevisions(res);
+        if (res.length > 0) {
+          setUsername(res[0].username);
+          setDateRev(Moment(res[0].submitdate).format("DD.MM.YYYY"));
+        }
         setRevisionDetails({});
         setLoading(false);
         setOrderBy("");
@@ -165,28 +169,18 @@ export default function ReportRevision({ companyProps }) {
       });
   };
 
-  const handleDetails = (id, username, date, cond) => {
-    let dateRev = Moment(date).format("YYYY-MM-DD HH:mm:ss");
-    setCondition(cond);
-    getRevisionDetails(id, username, dateRev, date);
+  const handleDetails = (revisionnumber) => {
+    getRevisionDetails(revisionnumber);
     setLoading(true);
-    setUserid(id);
   };
 
-  const getRevisionDetails = (id, u, dr, date) => {
+  const getRevisionDetails = (revisionnumber) => {
     Axios.get("/api/report/revision/details", {
-      params: {
-        userid: id,
-        dateRev: dr,
-        submitDate: Moment(date).format("YYYY-MM-DD HH:mm:ss"),
-        company,
-      },
+      params: { revisionnumber: revisionnumber }
     })
       .then((res) => res.data)
       .then((res) => {
         setRevisionDetails(res);
-        setDateRev(dr);
-        setUsername(u);
         setLoading(false);
       })
       .catch((err) => {
