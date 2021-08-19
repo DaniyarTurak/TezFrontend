@@ -12,7 +12,6 @@ import Select from '@material-ui/core/Select';
 import InputBase from '@material-ui/core/InputBase';
 import ReactAlert from "react-s-alert";
 import GetAppIcon from '@material-ui/icons/GetApp';
-import ReactModal from "react-modal";
 import SweetAlert from "react-bootstrap-sweetalert";
 
 export default function RevisonFinish({
@@ -56,28 +55,10 @@ export default function RevisonFinish({
     }));
     const classes = useStyles();
 
-    const customStyles = {
-        content: {
-            top: "50%",
-            left: "50%",
-            right: "auto",
-            bottom: "auto",
-            marginRight: "-50%",
-            marginLeft: "40px",
-            transform: "translate(-50%, -50%)",
-            maxWidth: "400px",
-            maxHeight: "80vh",
-            overlfow: "scroll",
-            zIndex: 11,
-        },
-        overlay: { zIndex: 10 },
-    };
-
     const [isLoading, setLoading] = useState(false);
     const [outOfRevisionProducts, setOutOfRevisionProducts] = useState([]);
     const [isOutOfRevision, setOutOfRevision] = useState(false);
     const [condition, setCondition] = useState("");
-    const [revisionSuccess, setRevisionSuccess] = useState(false);
     const [sweetAlert, setSweetAlert] = useState(null);
 
     useEffect(() => {
@@ -114,12 +95,6 @@ export default function RevisonFinish({
                             unitswas: product.unitswas
                         })
                 });
-                const params = {
-                    point,
-                    outofrevision: condition,
-                    revnumber: revNumber,
-                    products: productsToSend
-                };
                 Axios.post("/api/revision/revisiontemp/out", {
                     point,
                     outofrevision: condition,
@@ -144,6 +119,7 @@ export default function RevisonFinish({
                                 .then((products) => {
                                     if (products.length > 0) {
                                         Axios.post("/api/revision/revisiondiary/add", {
+                                            outofrevision: condition,
                                             point: point,
                                             revnumber: revNumber,
                                             products: products,
@@ -247,6 +223,7 @@ export default function RevisonFinish({
                 })
                 .then((products) => {
                     Axios.post("/api/revision/revisiondiary/add", {
+                        outofrevision: condition,
                         point: point,
                         revnumber: revNumber,
                         products: products,
