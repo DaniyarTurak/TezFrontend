@@ -63,7 +63,6 @@ export default function PageN1({ stockFrom, invoicenumber, productListProps }) {
     })
       .then((res) => res.data)
       .then((res) => {
-        console.log(res);
         setProductList(res);
         setLoading(false);
         productListProps(res);
@@ -220,7 +219,6 @@ export default function PageN1({ stockFrom, invoicenumber, productListProps }) {
         .then((res) => res.data)
         .then((res) => {
           setDetail(res);
-          console.log(res);
         })
         .catch((err) => {
           ErrorAlert(err);
@@ -237,10 +235,10 @@ export default function PageN1({ stockFrom, invoicenumber, productListProps }) {
         !productSelectValue.value
           ? "Выберите товар"
           : !writeoffAmount
-          ? "Внесите количество для списания"
-          : !writeoffReason
-          ? "Внесите причину для списания"
-          : "",
+            ? "Внесите количество для списания"
+            : !writeoffReason
+              ? "Внесите причину для списания"
+              : "",
         {
           position: "top-right",
           effect: "bouncyflip",
@@ -283,6 +281,7 @@ export default function PageN1({ stockFrom, invoicenumber, productListProps }) {
           reason: writeoffReason,
           attributes: productSelectValue.attributes,
           SKU: null,
+          newprice: detail.price
         },
       ],
     };
@@ -306,6 +305,7 @@ export default function PageN1({ stockFrom, invoicenumber, productListProps }) {
         setDetail("");
         setAmountExceeds(false);
         productListProps(pl);
+        getInvoiceProducts();
       })
       .catch((err) => {
         ErrorAlert(err);
@@ -413,11 +413,10 @@ export default function PageN1({ stockFrom, invoicenumber, productListProps }) {
               {Object.keys(detail).length > 0 && (
                 <Fragment>
                   <span className="input-group-text">
-                    {`${
-                      detail.units === 0
-                        ? "Товар на складе отсутствует"
-                        : "Товаров на складе: "
-                    } ${detail.units}`}
+                    {`${detail.units === 0
+                      ? "Товар на складе отсутствует"
+                      : "Товаров на складе: "
+                      } ${detail.units}`}
                   </span>
                   <span className="input-group-text">
                     {`Цена на складе: ${detail.price}`}
@@ -482,6 +481,9 @@ export default function PageN1({ stockFrom, invoicenumber, productListProps }) {
                 <th style={{ width: "20%" }} className="text-center">
                   Количество для списания
                 </th>
+                <th style={{ width: "20%" }} className="text-center">
+                  Цена реализации
+                </th>
                 <th style={{ width: "40%" }}>Причина</th>
                 <th style={{ width: "5%" }}></th>
               </tr>
@@ -493,6 +495,7 @@ export default function PageN1({ stockFrom, invoicenumber, productListProps }) {
                     <td>{product.name}</td>
                     <td>{product.code}</td>
                     <td className="text-center">{product.amount}</td>
+                    <td className="text-center">{product.total_price} тг.</td>
                     <td>{product.reason}</td>
                     <td className="text-right">
                       <button
@@ -505,6 +508,30 @@ export default function PageN1({ stockFrom, invoicenumber, productListProps }) {
                   </tr>
                 );
               })}
+              <tr>
+                <th>Итого</th>
+                <td />
+                <th className="text-center">
+                  {productList
+                    .reduce((prev, cur) => {
+                      const curAmount = parseFloat(cur.amount);
+                      return (
+                        prev + (curAmount > 0 ? curAmount : 0)
+                      );
+                    }, 0)}
+                </th>
+                <th className="text-center">
+                  {productList
+                    .reduce((prev, cur) => {
+                      const curPrice = parseFloat(cur.total_price);
+                      return (
+                        prev + (curPrice > 0 ? curPrice : 0)
+                      );
+                    }, 0)} тг.
+                </th>
+                <td />
+                <td />
+              </tr>
             </tbody>
           </table>
         </Fragment>

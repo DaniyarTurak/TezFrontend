@@ -12,7 +12,8 @@ export default function RevisionSettings({
     point,
     setPoint,
     hardware,
-    setActiveStep
+    setActiveStep,
+    setAdmin
 }) {
 
     const customStyles = {
@@ -63,6 +64,7 @@ export default function RevisionSettings({
             .then((res) => res.data)
             .then((revision) => {
                 if (revision.length > 0) {
+                    setAdmin(revision[0].admin);
                     setHaveActive(true);
                     setSweetAlert(
                         <SweetAlert
@@ -103,12 +105,12 @@ export default function RevisionSettings({
             });
         }
         else {
-            console.log({ point, hardware });
             Axios.post("/api/revision/revisionlist/add", { point })
                 .then((res) => res.data)
                 .then((res) => {
                     let response = res[0].revisionlist_add;
                     if (response.code === "success") {
+                        setAdmin(JSON.parse(sessionStorage.getItem("isme-user-data")).id);
                         setRevNumber(response.revisionnumber);
                         setActiveStep(1);
                         setSweetAlert(null);

@@ -580,20 +580,18 @@ export default function ManageInvoice({ location, history }) {
                     <td>
                       {product.name}
                       <br />
-                      {product.attrs_json !== null &&
+                      {product.attrs_json !== null ?
                         product.attrs_json.map((e, indx) => {
-                          {
-                            if (e.code === null || e.value === null) {
-                              [];
-                            } else {
-                              return (
-                                <tr className="hint" key={indx}>
-                                  {e.name}: {e.value},
-                                </tr>
-                              );
-                            }
+                          if (e.code === null || e.value === null) {
+                            return [];
+                          } else {
+                            return (
+                              <tr className="hint" key={indx}>
+                                {e.name}: {e.value},
+                              </tr>
+                            );
                           }
-                        })}
+                        }) : ""}
                     </td>
                     <td className="text-center">{product.code}</td>
                     <td className="text-center tenge">
@@ -602,9 +600,9 @@ export default function ManageInvoice({ location, history }) {
                       })}
                     </td>
                     <td className="text-center tenge">
-                      {product.newprice.toLocaleString("ru", {
+                      {product.newprice ? product.newprice.toLocaleString("ru", {
                         minimumFractionDigits: 2,
-                      })}
+                      }) : ""}
                     </td>
                     <td className="text-center">
                       {product.amount.toLocaleString("ru", {

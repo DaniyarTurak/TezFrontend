@@ -154,6 +154,8 @@ export default function Revison() {
   const [barcode, setBarcode] = useState("");
   const [revisionProducts, setRevisionProducts] = useState([]);
   const [activeStep, setActiveStep] = useState(0);
+  const [admin, setAdmin] = useState("");
+
   const steps = getSteps();
   const classes = useStyles();
   function getSteps() {
@@ -189,6 +191,7 @@ export default function Revison() {
               hardware={hardware}
               setHardware={setHardware}
               setActiveStep={setActiveStep}
+              setAdmin={setAdmin}
             />
           }
         </Grid>
@@ -215,7 +218,7 @@ export default function Revison() {
               activeStep={activeStep}
               setActiveStep={setActiveStep}
               revisionProducts={revisionProducts}
-
+              admin={admin}
             />
           }
         </Grid>

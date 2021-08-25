@@ -14,6 +14,9 @@ export default function PageN2({ productListProps }) {
                 <th style={{ width: "10%" }} className="text-center">
                   Количество
                 </th>
+                <th style={{ width: "20%" }} className="text-center">
+                  Цена реализации
+                </th>
                 <th style={{ width: "40%" }}>Причина</th>
               </tr>
             </thead>
@@ -24,10 +27,36 @@ export default function PageN2({ productListProps }) {
                     <td>{product.name}</td>
                     <td>{product.code}</td>
                     <td className="text-center">{product.amount}</td>
+                    <td className="text-center">{product.total_price} тг.</td>
+
                     <td>{product.reason}</td>
                   </tr>
                 );
               })}
+              <tr>
+                <th>Итого</th>
+                <td />
+                <th className="text-center">
+                  {productListProps
+                    .reduce((prev, cur) => {
+                      const curAmount = parseFloat(cur.amount);
+                      return (
+                        prev + (curAmount > 0 ? curAmount : 0)
+                      );
+                    }, 0)}
+                </th>
+                <th className="text-center">
+                  {productListProps
+                    .reduce((prev, cur) => {
+                      const curPrice = parseFloat(cur.total_price);
+                      return (
+                        prev + (curPrice > 0 ? curPrice : 0)
+                      );
+                    }, 0)} тг.
+                </th>
+                <td />
+                <td />
+              </tr>
             </tbody>
           </table>
         </div>

@@ -19,7 +19,8 @@ export default function RevisonFinish({
     point,
     activeStep,
     setActiveStep,
-    revisionProducts
+    revisionProducts,
+    admin
 }) {
 
     const BootstrapInput = withStyles((theme) => ({
@@ -83,203 +84,221 @@ export default function RevisonFinish({
 
     const finishRevision = () => {
         const productsToSend = [];
-        if (outOfRevisionProducts.length > 0) {
-            if (condition !== "") {
-                outOfRevisionProducts.forEach((product) => {
-                    productsToSend.push(
-                        {
-                            attributes: product.attributes,
-                            createdate: product.createdate,
-                            product: product.product,
-                            units: product.units,
-                            unitswas: product.unitswas
-                        })
-                });
-                Axios.post("/api/revision/revisiontemp/out", {
-                    point,
-                    outofrevision: condition,
-                    revnumber: revNumber,
-                    products: productsToSend
-                })
-                    .then((data) => {
-                        return data.data;
-                    })
-                    .then((resp) => {
-                        if (resp[0].revisiontemp_out.code === "success") {
-                            const params = {
-                                revisionnumber: revNumber,
-                                point: point
-                            }
-                            Axios.get("/api/revision/revisiontemp/list", {
-                                params,
-                            })
-                                .then((data) => {
-                                    return data.data;
-                                })
-                                .then((products) => {
-                                    if (products.length > 0) {
-                                        Axios.post("/api/revision/revisiondiary/add", {
-                                            outofrevision: condition,
-                                            point: point,
-                                            revnumber: revNumber,
-                                            products: products,
-                                        })
-                                            .then((data) => {
-                                                return data.data;
-                                            })
-                                            .then((resp) => {
-                                                if (resp[0].revisiondiary_add.code === "success") {
-                                                    setSweetAlert(
-                                                        <SweetAlert
-                                                            success
-                                                            showCancel
-                                                            confirmBtnText={"Новая ревизия"}
-                                                            cancelBtnText={"Посмотреть отчёт"}
-                                                            confirmBtnBsStyle="success"
-                                                            cancelBtnBsStyle="success"
-                                                            title={""}
-                                                            allowEscape={false}
-                                                            closeOnClickOutside={false}
-                                                            onConfirm={() => setActiveStep(0)}
-                                                            onCancel={toReport}
-                                                        >
-                                                            Ревизия успешно завершена
-                                                        </SweetAlert>)
-                                                    ReactAlert.success("Успешно", {
-                                                        position: "top-right",
-                                                        effect: "bouncyflip",
-                                                        timeout: 3000,
-                                                    });
-                                                }
-                                                else {
-                                                    ReactAlert.error(resp[0].revisiondiary_add.text, {
-                                                        position: "top-right",
-                                                        effect: "bouncyflip",
-                                                        timeout: 3000,
-                                                    });
-                                                }
-                                            })
-                                            .catch((err) => {
-                                                console.log(err);
-                                                ReactAlert.error("Сервис временно не доступен", {
-                                                    position: "top-right",
-                                                    effect: "bouncyflip",
-                                                    timeout: 3000,
-                                                });
-                                            });
-                                    }
-                                    else {
-                                        ReactAlert.warning("В ревизии нет товаров.", {
-                                            position: "top-right",
-                                            effect: "bouncyflip",
-                                            timeout: 3000,
-                                        });
-                                    }
-                                })
-                                .catch((err) => {
-                                    Alert.error(err, {
-                                        position: "top-right",
-                                        effect: "bouncyflip",
-                                        timeout: 2000,
-                                    });
-                                });
-                        }
-                        else {
-                            Alert.error(resp[0].revisiontemp_out.text, {
-                                position: "top-right",
-                                effect: "bouncyflip",
-                                timeout: 2000,
-                            });
-                        }
-                    })
-                    .catch((err) => {
-                        ReactAlert.error("Сервис временно не доступен", {
-                            position: "top-right",
-                            effect: "bouncyflip",
-                            timeout: 3000,
-                        });
-                    });
-            }
-            else {
-                ReactAlert.warning("На складе остались товары не прошедшие ревизию. Выберите что с ними сделать.", {
-                    position: "top-right",
-                    effect: "bouncyflip",
-                    timeout: 3000,
-                });
-            }
+        if (admin !== JSON.parse(sessionStorage.getItem("isme-user-data")).id) {
+            ReactAlert.warning("Ревизию может завершить только администратор", {
+                position: "top-right",
+                effect: "bouncyflip",
+                timeout: 3000,
+            });
         }
         else {
-            const params = {
-                revisionnumber: revNumber,
-                point: point
-            }
-            Axios.get("/api/revision/revisiontemp/list",
-                {
-                    params
-                }
-            )
-                .then((data) => {
-                    return data.data;
-                })
-                .then((products) => {
-                    Axios.post("/api/revision/revisiondiary/add", {
+            if (outOfRevisionProducts.length > 0) {
+                if (condition !== "") {
+                    setLoading(true);
+                    outOfRevisionProducts.forEach((product) => {
+                        productsToSend.push(
+                            {
+                                attributes: product.attributes,
+                                createdate: product.createdate,
+                                product: product.product,
+                                units: product.units,
+                                unitswas: product.unitswas,
+                                outofrevision: condition
+                            })
+                    });
+                    Axios.post("/api/revision/revisiontemp/out", {
+                        point,
                         outofrevision: condition,
-                        point: point,
                         revnumber: revNumber,
-                        products: products,
+                        products: productsToSend
                     })
                         .then((data) => {
                             return data.data;
                         })
                         .then((resp) => {
-                            if (resp[0].revisiondiary_add.code === "success") {
-                                setSweetAlert(
-                                    <SweetAlert
-                                        success
-                                        showCancel
-                                        confirmBtnText={"Начать новую ревизию"}
-                                        cancelBtnText={"Посмотреть отчёт"}
-                                        confirmBtnBsStyle="success"
-                                        cancelBtnBsStyle="success"
-                                        title={""}
-                                        allowEscape={false}
-                                        closeOnClickOutside={false}
-                                        onConfirm={() => setActiveStep(0)}
-                                        onCancel={toReport}
-                                    >
-                                        Ревизия успешно завершена
-                                    </SweetAlert>)
-                                ReactAlert.success("Успешно", {
-                                    position: "top-right",
-                                    effect: "bouncyflip",
-                                    timeout: 3000,
-                                });
+                            if (resp[0].revisiontemp_out.code === "success") {
+                                const params = {
+                                    revisionnumber: revNumber,
+                                    point: point
+                                }
+                                Axios.get("/api/revision/revisiontemp/list", {
+                                    params,
+                                })
+                                    .then((data) => {
+                                        return data.data;
+                                    })
+                                    .then((products) => {
+                                        if (products.length > 0) {
+                                            Axios.post("/api/revision/revisiondiary/add", {
+                                                outofrevision: condition,
+                                                point: point,
+                                                revnumber: revNumber,
+                                                products: products,
+                                            })
+                                                .then((data) => {
+                                                    return data.data;
+                                                })
+                                                .then((resp) => {
+                                                    if (resp[0].revisiondiary_add.code === "success") {
+                                                        setSweetAlert(
+                                                            <SweetAlert
+                                                                success
+                                                                showCancel
+                                                                confirmBtnText={"Новая ревизия"}
+                                                                cancelBtnText={"Посмотреть отчёт"}
+                                                                confirmBtnBsStyle="success"
+                                                                cancelBtnBsStyle="success"
+                                                                title={""}
+                                                                allowEscape={false}
+                                                                closeOnClickOutside={false}
+                                                                onConfirm={() => setActiveStep(0)}
+                                                                onCancel={toReport}
+                                                            >
+                                                                Ревизия успешно завершена
+                                                            </SweetAlert>)
+                                                        setLoading(false);
+                                                    }
+                                                    else {
+                                                        ReactAlert.error(resp[0].revisiondiary_add.text, {
+                                                            position: "top-right",
+                                                            effect: "bouncyflip",
+                                                            timeout: 3000,
+                                                        });
+                                                        setLoading(false);
+                                                    }
+                                                })
+                                                .catch((err) => {
+                                                    console.log(err);
+                                                    ReactAlert.error("Сервис временно не доступен", {
+                                                        position: "top-right",
+                                                        effect: "bouncyflip",
+                                                        timeout: 3000,
+                                                    });
+                                                    setLoading(false);
+                                                });
+                                        }
+                                        else {
+                                            ReactAlert.warning("В ревизии нет товаров.", {
+                                                position: "top-right",
+                                                effect: "bouncyflip",
+                                                timeout: 3000,
+                                            });
+                                            setLoading(false);
+                                        }
+                                    })
+                                    .catch((err) => {
+                                        ReactAlert.error(err, {
+                                            position: "top-right",
+                                            effect: "bouncyflip",
+                                            timeout: 2000,
+                                        });
+                                        setLoading(false);
+                                    });
                             }
                             else {
-                                ReactAlert.error(resp[0].revisiondiary_add.text, {
+                                ReactAlert.error(resp[0].revisiontemp_out.text, {
                                     position: "top-right",
                                     effect: "bouncyflip",
-                                    timeout: 3000,
+                                    timeout: 2000,
                                 });
                             }
                         })
                         .catch((err) => {
-                            console.log(err);
                             ReactAlert.error("Сервис временно не доступен", {
                                 position: "top-right",
                                 effect: "bouncyflip",
                                 timeout: 3000,
                             });
+                            setLoading(false);
                         });
-                })
-                .catch((err) => {
-                    console.log(err);
-                    ReactAlert.error("Сервис временно не доступен", {
+                }
+                else {
+                    ReactAlert.warning("На складе остались товары не прошедшие ревизию. Выберите что с ними сделать.", {
                         position: "top-right",
                         effect: "bouncyflip",
                         timeout: 3000,
                     });
-                });
+                    setLoading(false);
+                }
+            }
+            else {
+                setLoading(true);
+                const params = {
+                    revisionnumber: revNumber,
+                    point: point
+                }
+                Axios.get("/api/revision/revisiontemp/list",
+                    {
+                        params
+                    }
+                )
+                    .then((data) => {
+                        return data.data;
+                    })
+                    .then((products) => {
+                        Axios.post("/api/revision/revisiondiary/add", {
+                            outofrevision: condition,
+                            point: point,
+                            revnumber: revNumber,
+                            products: products,
+                        })
+                            .then((data) => {
+                                return data.data;
+                            })
+                            .then((resp) => {
+                                if (resp[0].revisiondiary_add.code === "success") {
+                                    setSweetAlert(
+                                        <SweetAlert
+                                            success
+                                            showCancel
+                                            confirmBtnText={"Начать новую ревизию"}
+                                            cancelBtnText={"Посмотреть отчёт"}
+                                            confirmBtnBsStyle="success"
+                                            cancelBtnBsStyle="success"
+                                            title={""}
+                                            allowEscape={false}
+                                            closeOnClickOutside={false}
+                                            onConfirm={() => setActiveStep(0)}
+                                            onCancel={toReport}
+                                        >
+                                            Ревизия успешно завершена
+                                        </SweetAlert>)
+                                    ReactAlert.success("Успешно", {
+                                        position: "top-right",
+                                        effect: "bouncyflip",
+                                        timeout: 3000,
+                                    });
+                                    setLoading(false);
+                                }
+                                else {
+                                    ReactAlert.error(resp[0].revisiondiary_add.text, {
+                                        position: "top-right",
+                                        effect: "bouncyflip",
+                                        timeout: 3000,
+                                    });
+                                    setLoading(false);
+                                }
+                            })
+                            .catch((err) => {
+                                console.log(err);
+                                ReactAlert.error("Сервис временно не доступен", {
+                                    position: "top-right",
+                                    effect: "bouncyflip",
+                                    timeout: 3000,
+                                });
+                                setLoading(false);
+                            });
+                    })
+                    .catch((err) => {
+                        console.log(err);
+                        ReactAlert.error("Сервис временно не доступен", {
+                            position: "top-right",
+                            effect: "bouncyflip",
+                            timeout: 3000,
+                        });
+                        setLoading(false);
+                    });
+            }
         }
     };
 
