@@ -13,6 +13,8 @@ import Axios from "axios";
 import Alert from "react-s-alert";
 import ThirdLevel from './ThirdLevel';
 import ButtonGroup from '@material-ui/core/ButtonGroup';
+import ChevronRightIcon from '@material-ui/icons/ChevronRight';
+import ExpandMoreIcon from '@material-ui/icons/ExpandMore';
 
 export default function SecondLevel({ categories, updateCategory, deleteCategory, getCategories }) {
 
@@ -46,7 +48,7 @@ export default function SecondLevel({ categories, updateCategory, deleteCategory
     useEffect(() => {
         let temp = [];
         categories.forEach(cat => {
-            temp.push({ ...cat, name_temp: cat.name, isAddingSub: false, subName: "" })
+            temp.push({ ...cat, name_temp: cat.name, isAddingSub: false, subName: "", open: false })
         });
         setSubCategories(temp);
     }, [categories]);
@@ -107,95 +109,193 @@ export default function SecondLevel({ categories, updateCategory, deleteCategory
         })
     };
 
+    const expandSubcategories = (idx) => {
+        setSubCategories(prevState => {
+            let obj = prevState[idx];
+            obj.open = !obj.open;
+            return [...prevState];
+        })
+    };
+
+
+
     return (
         <Fragment>
-            <Grid container spacing={1}>
-                {subCategories.map((subcat, id) => (
-                    <Fragment key={subcat.id}>
-                        <Grid item xs={9}>
-                            <TextField
-                                fullWidth
-                                value={subcat.name}
-                                classes={{
-                                    root: classesAC.root,
-                                }}
-                                onChange={(e) => nameChange(e.target.value, id)}
-                                placeholder="Название подкатегории"
-                                variant="outlined"
-                                size="small"
-                            />
-                        </Grid>
-                        <Grid item xs={3} style={{ textAlign: "right" }}>
-                            {subcat.name !== subcat.name_temp &&
-                                <IconButton onClick={() => updateCategory(subcat)}>
-                                    <SaveIcon />
-                                </IconButton>
-                            }
-                            <IconButton onClick={() => deleteCategory(subcat)}>
-                                <DeleteIcon />
-                            </IconButton>
-                        </Grid>
-                        {!subcat.isAddingSub &&
-                            <Grid item xs={12}>
-                                <Button
-                                    onClick={() => addSubcategory(id)}
-                                >
-                                    <AddCircleIcon />
-                                    &emsp; Добавить подкатегорию
-                                </Button>
-                            </Grid>
-                        }
-                        {subcat.isAddingSub &&
-                            <Fragment>
-                                <Grid item xs={7}>
-                                    <TextField
-                                        fullWidth
-                                        value={subcat.subName}
-                                        classes={{
-                                            root: classesAC.root,
-                                        }}
-                                        onChange={(e) => subNameChange(e.target.value, id)}
-                                        placeholder="Название подкатегории"
-                                        variant="outlined"
-                                        size="small"
-                                    />
-                                </Grid>
-                                <Grid item xs={5}>
-                                    <ButtonGroup>
-                                        <button
-                                            className="btn btn-success"
-                                            onClick={() => saveSubcategory(subcat)}
-                                        >
-                                            <AddCircleIcon />
-                                        </button>
-                                        &nbsp;
-                                        <button
-                                            className="btn btn-secondary"
-                                            onClick={() => cancelAdd(id)}
-                                        >
-                                            <CancelIcon />
 
-                                        </button>
-                                    </ButtonGroup>
-                                </Grid>
-                            </Fragment>}
-                        {subcat.child.length > 0 &&
-                            <Fragment>
-                                <Grid item xs={2} />
-                                <Grid item xs={10}>
-                                    <ThirdLevel
-                                        categories={subcat.child}
-                                        deleteCategory={deleteCategory}
-                                        updateCategory={updateCategory}
-                                        getCategories={getCategories}
-                                    />
-                                </Grid>
-                            </Fragment>
+            {subCategories.map((category, id) => (
+                <Fragment>
+                    <Grid item xs={1} />
+                    <Grid item xs={1}>
+                        <IconButton onClick={() => expandSubcategories(id)}>
+                            {category.open ? <ExpandMoreIcon /> : <ChevronRightIcon />}
+                        </IconButton>
+                    </Grid>
+                    <Grid item xs={8}>
+                        <TextField
+                            style={{ paddingTop: "5px" }}
+                            fullWidth
+                            value={category.name}
+                            classes={{
+                                root: classesAC.root,
+                            }}
+                            onChange={(e) => subNameChange(e.target.value, id)}
+                            placeholder="Название подкатегории"
+                            variant="outlined"
+                            size="small"
+                        />
+                    </Grid>
+                    <Grid item xs={2} style={{ textAlign: "right" }}>
+                        {category.name !== category.name_temp &&
+                            <IconButton onClick={() => updateCategory(category)}>
+                                <SaveIcon />
+                            </IconButton>
                         }
-                    </Fragment>
-                ))}
-            </Grid>
-            <hr />
+                        <IconButton onClick={() => deleteCategory(category)}>
+                            <DeleteIcon />
+                        </IconButton>
+                    </Grid>
+                    {category.open === true &&
+                        <Fragment>
+                            <Grid item xs={1} />
+                            <Grid item xs={1} />
+                            <Grid item xs={1} />
+                            <Grid item xs={5}>
+                                <TextField
+                                    style={{ paddingTop: "5px" }}
+                                    fullWidth
+                                    // value={category.name}
+                                    classes={{
+                                        root: classesAC.root,
+                                    }}
+                                    // onChange={(e) => subNameChange(e.target.value, id)}
+                                    placeholder="Название подкатегории"
+                                    variant="outlined"
+                                    size="small"
+                                />
+                            </Grid>
+                            <Grid item xs={1} style={{ paddingTop: "14px" }}>
+                                <button
+                                    fullWidth
+                                    className="btn btn-success"
+                                    onClick={() => saveSubcategory(category)}
+                                >
+                                    Добавить
+                                </button>
+                            </Grid>
+                            <Grid item xs={1} />
+                            <Grid item xs={1} />
+                            {
+                                category.child.lenght > 0 &&
+                                <Fragment>
+                                    {category.child.map((cat) => (
+                                        <Fragment>
+                                            <Grid item xs={1} />
+                                            <Grid item xs={1} />
+                                            <Grid item xs={1}>
+                                                <ChevronRightIcon />
+                                            </Grid>
+                                            <Grid item xs={9}>
+                                                {cat.name}
+                                            </Grid>
+                                        </Fragment>
+                                    )
+                                    )}
+                                </Fragment>
+                            }
+                        </Fragment>
+                    }
+                </Fragment>
+            ))
+            }
         </Fragment>
+        // <Fragment>
+        //     <Grid container spacing={1}>
+        //         {subCategories.map((subcat, id) => (
+        //             <Fragment key={subcat.id}>
+        //                 <Grid item xs={9}>
+        //                     <TextField
+        //                         fullWidth
+        //                         value={subcat.name}
+        //                         classes={{
+        //                             root: classesAC.root,
+        //                         }}
+        //                         onChange={(e) => nameChange(e.target.value, id)}
+        //                         placeholder="Название подкатегории"
+        //                         variant="outlined"
+        //                         size="small"
+        //                     />
+        //                 </Grid>
+        //                 <Grid item xs={3} style={{ textAlign: "right" }}>
+        //                     {subcat.name !== subcat.name_temp &&
+        //                         <IconButton onClick={() => updateCategory(subcat)}>
+        //                             <SaveIcon />
+        //                         </IconButton>
+        //                     }
+        //                     <IconButton onClick={() => deleteCategory(subcat)}>
+        //                         <DeleteIcon />
+        //                     </IconButton>
+        //                 </Grid>
+        //                 {!subcat.isAddingSub &&
+        //                     <Grid item xs={12}>
+        //                         <Button
+        //                             onClick={() => addSubcategory(id)}
+        //                         >
+        //                             <AddCircleIcon />
+        //                             &emsp; Добавить подкатегорию
+        //                         </Button>
+        //                     </Grid>
+        //                 }
+        //                 {subcat.isAddingSub &&
+        //                     <Fragment>
+        //                         <Grid item xs={7}>
+        //                             <TextField
+        //                                 fullWidth
+        //                                 value={subcat.subName}
+        //                                 classes={{
+        //                                     root: classesAC.root,
+        //                                 }}
+        //                                 onChange={(e) => subNameChange(e.target.value, id)}
+        //                                 placeholder="Название подкатегории"
+        //                                 variant="outlined"
+        //                                 size="small"
+        //                             />
+        //                         </Grid>
+        //                         <Grid item xs={5}>
+        //                             <ButtonGroup>
+        //                                 <button
+        //                                     className="btn btn-success"
+        //                                     onClick={() => saveSubcategory(subcat)}
+        //                                 >
+        //                                     <AddCircleIcon />
+        //                                 </button>
+        //                                 &nbsp;
+        //                                 <button
+        //                                     className="btn btn-secondary"
+        //                                     onClick={() => cancelAdd(id)}
+        //                                 >
+        //                                     <CancelIcon />
+
+        //                                 </button>
+        //                             </ButtonGroup>
+        //                         </Grid>
+        //                     </Fragment>}
+        //                 {subcat.child.length > 0 &&
+        //                     <Fragment>
+        //                         <Grid item xs={2} />
+        //                         <Grid item xs={10}>
+        //                             <ThirdLevel
+        //                                 categories={subcat.child}
+        //                                 deleteCategory={deleteCategory}
+        //                                 updateCategory={updateCategory}
+        //                                 getCategories={getCategories}
+        //                             />
+        //                         </Grid>
+        //                     </Fragment>
+        //                 }
+        //             </Fragment>
+        //         ))}
+        //     </Grid>
+        //     <hr />
+        // </Fragment>
     )
 }

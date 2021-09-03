@@ -12,6 +12,7 @@ export default function ProductReferenceList({
   productsList,
   company,
   getProducts,
+  setProductsList
 }) {
   const [brand, setBrand] = useState("");
   const [brandOptions, setBrandOptions] = useState([]);
@@ -210,26 +211,42 @@ export default function ProductReferenceList({
     setPiecesUnint(num);
   };
 
-  const prodNameChange = (value) => {
-    setProdName(value);
-    if (value !== null) {
+  const prodNameChange = ({ value, search, fromBarcode }) => {
+    if (!value || value.trim() === "") {
+      setProdName("");
+      if (!fromBarcode) {
+        setBarcode("");
+      }
+      if (search) {
+        getProductByName("");
+      }
+    }
+    else {
+      setProdName(value);
+      let flag = false;
       productsList.forEach(prod => {
         if (prod.name === value) {
           setBarcode(prod.code);
+          flag = true;
         }
       });
+      if (!flag && search) {
+        getProductByName(value);
+      }
     }
   };
 
   const barcodeChange = (value) => {
     setBarcode(value.trim());
-    setProdName("");
-    if (value !== null) {
-      productsList.forEach(prod => {
-        if (prod.code === value) {
-          setProdName(prod.name);
-        }
-      });
+    let flag = false;
+    productsList.forEach((prod) => {
+      if (value.trim() === prod.code) {
+        flag = true;
+        prodNameChange({ value: prod.name, search: false, fromBarcode: true });
+      }
+    })
+    if (!flag) {
+      prodNameChange({ value: "", search: false, fromBarcode: true });
     }
   }
 
@@ -241,13 +258,34 @@ export default function ProductReferenceList({
 
   const getProductByBarcode = () => {
     Axios.get("/api/nomenclature", {
-      params: { barcode: barcode ? barcode.trim() : "", name: prodName ? prodName.trim() : "" }
+      params: { barcode: "", name: prodName ? prodName.trim() : "" }
     }
     )
       .then((res) => res.data)
       .then((product) => {
         setProductDetails(product);
         setProdName(product.name);
+      })
+      .catch((err) => {
+        console.log(err);
+      });
+  };
+
+  const getProductByName = (value) => {
+    Axios.get("/api/nomenclature/products_spr", {
+      params: { name: value ? value.trim() : "" }
+    }
+    )
+      .then((res) => res.data)
+      .then((product) => {
+        if (product.length > 0) {
+          if (product.lenght === 1) {
+            setBarcode(product[0].code);
+          }
+          else {
+            setProductsList(product);
+          }
+        }
       })
       .catch((err) => {
         console.log(err);
@@ -268,6 +306,7 @@ export default function ProductReferenceList({
               className="form-control"
               placeholder="Введите или отсканируйте штрихкод"
               onChange={(e) => barcodeChange(e.target.value)}
+              onInputChange={(e) => barcodeChange(e.target.value)}
               onKeyDown={(e) => onBarcodeKeyDown(e, barcode)}
             />
           </FormControl>
@@ -277,9 +316,9 @@ export default function ProductReferenceList({
             style={{ marginTop: "5px", marginLeft: "10px" }}
             options={productsList.map((option) => option.name)}
             value={prodName}
-            onChange={(e, value) => prodNameChange(value)}
+            onChange={(e, value) => prodNameChange({ value, search: false, fromBarcode: false })}
             noOptionsText="Товар не найден"
-            onInputChange={(e, value) => prodNameChange(value)}
+            onInputChange={(e, value) => prodNameChange({ value, search: true, fromBarcode: false })}
             renderInput={(params) => (
               <TextField
                 {...params}

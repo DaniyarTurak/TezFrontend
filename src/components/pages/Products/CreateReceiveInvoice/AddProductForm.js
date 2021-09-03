@@ -5,6 +5,7 @@ import alert from "react-s-alert";
 import { Alert, AlertTitle } from "@material-ui/lab";
 import ReactModal from "react-modal";
 import AddAttribute from "./AddAttribute";
+import AddNewAttribute from "./AddNewAttribute";
 import { InputField, InputGroup, SelectField } from "../../../fields";
 import FormControlLabel from "@material-ui/core/FormControlLabel";
 import Checkbox from "@material-ui/core/Checkbox";
@@ -65,10 +66,11 @@ let AddProductForm = ({
   isEditing,
   handleEditing,
   editProduct,
+  attributeCode,
+  setAttributeCode
 }) => {
   const [isDeleted, setDeleted] = useState(false);
   const [addProductData, setAddProductData] = useState("");
-  const [attributeCode, setAttributeCode] = useState("");
   const [barcode, setBarcode] = useState("");
   const [bottomLimit, setBottomLimit] = useState(0);
   const [brand, setBrand] = useState(0);
@@ -107,9 +109,14 @@ let AddProductForm = ({
   const [attributescaption, setAttributeCapation] = useState([]);
   const [attrIdandValue, setAttrIdandValue] = useState([]);
   const [editAttrubutes, setEditAttrubutes] = useState([]);
+  const [readyOpt, setReadyOpt] = useState([]);
+  const [newAttrs, setNewAttrs] = useState([]);
 
   useEffect(() => {
-    setEditAttrubutes(editProduct.attributescaption);
+    if (editProduct !== "") {
+      setEditAttrubutes(Array.isArray(editProduct.attributescaption) ? editProduct.attributescaption : editProduct.attrs_json);
+      setAttributeCode(editProduct.attributes);
+    }
   }, [editProduct]);
 
   useEffect(() => {
@@ -128,6 +135,14 @@ let AddProductForm = ({
     getOptions("top_limit");
     getOptions("bottom_limit");
   }, []);
+
+  useEffect(() => {
+    console.log(editProduct);
+    if (editProduct !== "") {
+      setReadyOpt(Array.isArray(editProduct.attributescaption) ? editProduct.attributescaption : editProduct.attrs_json);
+    }
+  }, [editProduct]);
+
 
   useEffect(() => {
     if (completedProduct) {
@@ -165,9 +180,9 @@ let AddProductForm = ({
         value: editProduct.taxid,
       };
       //Расчёт Единиц измерения
-      const unitLabel = unitOptions.filter((e) => {
-        return e && e.id === editProduct.unitspridc;
-      });
+      // const unitLabel = unitOptions.filter((e) => {
+      //   return e && e.id === editProduct.unitspridc;
+      // });
       const unit = {
         label: editProduct.units_name_new
           ? editProduct.units_name_new
@@ -365,14 +380,15 @@ let AddProductForm = ({
   };
 
   const clearForm = () => {
+    // console.log("clear");
     setClearBoard(!clearBoard);
     setBarcode(null);
     setCnofeaName(null);
     setUpdatePrice(true);
     setSellByPieces(false);
     setProductSelectValue("");
-    setProductID(null);
-    setAttributeCode(null);
+    // setProductID(null);
+    // setAttributeCode(null);
     setSelectedAttribute([]);
     setLastPurchasePrice(0);
     setNewPrice(0);
@@ -404,6 +420,7 @@ let AddProductForm = ({
       return;
     } else if (!barcodeChanged) {
       clearForm();
+      setAttributeCode(null);
     } else {
       setBarcode(barcodeChanged);
     }
@@ -643,12 +660,14 @@ let AddProductForm = ({
 
   const productListChange = (productChanged) => {
     clearForm();
+    setAttributeCode(null);
     setProductSelectValue(productChanged);
     if (productChanged.code) {
       setBarcode(productChanged.code);
       handleSearch(productChanged.code);
     } else {
       clearForm();
+      setAttributeCode(null);
     }
   };
 
@@ -675,6 +694,7 @@ let AddProductForm = ({
 
   const generateBarcode = () => {
     clearForm();
+    setAttributeCode(null);
     Axios.get("/api/invoice/newbarcode")
       .then((res) => res.data)
       .then((barcodeseq) => {
@@ -747,6 +767,7 @@ let AddProductForm = ({
             timeout: 2000,
           });
           clearForm();
+          setAttributeCode(null);
           dispatch(change("AddProductForm", "code", barcodeChanged));
           setBarcode(barcodeChanged);
           setLoading(false);
@@ -777,7 +798,7 @@ let AddProductForm = ({
         const attributeCapat = product.attributescaption;
         setAttributeCapation(attributeCapat);
 
-        const attrCode = product.attributes;
+        const attrCode = product.attributes === "0" ? null : product.attributes;
         setAttributeCode(attrCode);
 
         const productCategory = {
@@ -874,10 +895,6 @@ let AddProductForm = ({
       });
   };
 
-  const handleFormKeyPress = (e) => {
-    if (e.key === "Enter") e.preventDefault();
-  };
-
   const handleAddProduct = (data) => {
     if (staticprice) {
       if (data.newprice > staticprice) {
@@ -913,6 +930,7 @@ let AddProductForm = ({
   };
   const addProduct = (data) => {
     let state = true;
+    // console.log(attrIdandValue);
     attrIdandValue.forEach((element) => {
       if (!element.code) {
         state = true;
@@ -942,21 +960,24 @@ let AddProductForm = ({
       //всё что ниже переписывалось 100500 раз, трогать осторожно.
       const newData = {
         amount: unitsprid === "3" ? 0 : data.amount,
-        attributes: !isEditing
-          ? attributeCode || 0
-          : editProduct.attributes !== "0" &&
-            parseInt(editProduct.attributes, 0) >= 0
-            ? editProduct.attributes
-            : editProduct.attributes,
+        attributes: attributeCode,
+        // !isEditing
+        //   ? attributeCode
+        //   : editProduct.attributes !== "0" &&
+        //     parseInt(editProduct.attributes, 0) >= 0
+        //     ? editProduct.attributes
+        //     : editProduct.attributes,
+
         brand: data.brand ? data.brand.value : 0,
         category: data.category ? data.category.value : null,
         cnofea: data.cnofea,
         code: !isEditing ? data.code : editProduct.code,
-        id: !isEditing
-          ? productID
-          : editProduct.is_new
-            ? null
-            : editProduct.idc,
+        // id: !isEditing
+        //   ? productID
+        //   : editProduct.is_new
+        //     ? null
+        //     : editProduct.id,
+        id: productID || editProduct.id,
         isstaticprice: data.isstaticprice,
         lastpurchaseprice: oldprice,
         name: !isEditing ? data.name.label || data.name : editProduct.name,
@@ -971,10 +992,10 @@ let AddProductForm = ({
         unitsprid: data.unitsprid.value,
         updateprice,
         attrlist: editProduct.attributes
-          ? attrIdandValue
+          ? attrIdandValue.length > 0 ? attrIdandValue : newAttrs
           : attributeCode === "0" || !attributeCode
             ? []
-            : attrIdandValue,
+            : attrIdandValue.length > 0 ? attrIdandValue : newAttrs,
       };
       // всё что выше переписывалось 100500 раз, трогать осторожно.
 
@@ -983,11 +1004,10 @@ let AddProductForm = ({
         type: "2",
         stockcurrentfrom: [newData],
       };
-
       //remove tabs and spaces
       newData.name = newData.name.replace(/\\t| {2}/g, "").trim();
       newData.code = newData.code.replace(/\\t| {2}/g, "").trim();
-      Axios.post("/api/invoice/add/product", reqdata)
+      Axios.post("/api/invoice/products/add", reqdata)
         .then((res) => {
           setEditAttrubutes(newData.attrlist);
           const newProductChanged = {
@@ -1008,6 +1028,7 @@ let AddProductForm = ({
           setAdding(false);
           handleEditing();
           clearForm();
+          setAttributeCode(null);
           alert.success("Товар успешно добавлен", {
             position: "top-right",
             effect: "bouncyflip",
@@ -1061,309 +1082,309 @@ let AddProductForm = ({
           </p>
         </Alert>
       )}
-
       <div className="add-product-form">
-        <form
-          onSubmit={handleSubmit(handleAddProduct)}
-          onKeyPress={handleFormKeyPress}
-        >
-          <div className="row justify-content-center">
-            <div className="col-md-8">
-              <label>Штрих код</label>
-              <Field
-                disabled={isEditing}
-                name="code"
-                component={InputGroup}
-                placeholder="Внесите вручную, или с помощью сканера"
-                type="text"
-                className={`form-control ${isLoading ? "loading-btn" : ""}`}
-                onChange={onBarcodeChange}
-                onKeyDown={onBarcodeKeyDown}
-                appendItem={
-                  <Fragment>
-                    <button
-                      disabled={isEditing}
-                      className="btn btn-outline-info"
-                      type="button"
-                      onClick={() => handleSearch()}
-                    >
-                      Поиск
-                    </button>
-                    <button
-                      disabled={isEditing}
-                      className="btn btn-outline-info"
-                      type="button"
-                      onClick={generateBarcode}
-                    >
-                      Сгенерировать
-                    </button>
-                  </Fragment>
-                }
-                validate={!isEditing ? [RequiredField, NoMoreThan20] : []}
-              />
-            </div>
-          </div>
-          <div className="row justify-content-center">
-            <div style={{ marginLeft: "2.2rem" }} className="col-md-8 zi-7">
-              <label>Наименование</label>
-              {newProductGenerating && (
+        <div className="row justify-content-center">
+          <div className="col-md-8">
+            <label>Штрих код</label>
+            <Field
+              disabled={isEditing}
+              name="code"
+              component={InputGroup}
+              placeholder="Внесите вручную, или с помощью сканера"
+              type="text"
+              className={`form-control ${isLoading ? "loading-btn" : ""}`}
+              onChange={onBarcodeChange}
+              onKeyDown={onBarcodeKeyDown}
+              appendItem={
                 <Fragment>
-                  <Field
-                    name="name"
-                    component={InputField}
-                    className="form-control"
-                    placeholder="Введите название товара"
-                  />
-                  {isBarcodeExists && (
-                    <p style={{ opacity: "60%", fontStyle: "red" }}>
-                      Вы можете редактировать название данного товара!
-                    </p>
-                  )}
+                  <button
+                    disabled={isEditing}
+                    className="btn btn-outline-info"
+                    type="button"
+                    onClick={() => handleSearch()}
+                  >
+                    Поиск
+                  </button>
+                  <button
+                    disabled={isEditing}
+                    className="btn btn-outline-info"
+                    type="button"
+                    onClick={generateBarcode}
+                  >
+                    Сгенерировать
+                  </button>
                 </Fragment>
-              )}
-
-              {!newProductGenerating && (
+              }
+              validate={!isEditing ? [RequiredField, NoMoreThan20] : []}
+            />
+          </div>
+        </div>
+        <div className="row justify-content-center">
+          <div style={{ marginLeft: "2.2rem" }} className="col-md-8 zi-7">
+            <label>Наименование</label>
+            {newProductGenerating && (
+              <Fragment>
                 <Field
                   name="name"
-                  disabled={isEditing}
-                  component={SelectField}
-                  value={productSelectValue}
-                  noOptionsMessage={() => "Товар не найден"}
-                  onChange={productListChange}
+                  component={InputField}
+                  className="form-control"
                   placeholder="Введите название товара"
-                  onInputChange={onProductListInput.bind(this)}
-                  options={productOptions || []}
                 />
-              )}
-            </div>
-            <Tooltip name="товаров" />
-          </div>
-
-          <div className="row justify-content-center">
-            <div style={{ marginLeft: "2.2rem" }} className="col-md-8 zi-6">
-              <label htmlFor="category">Категория</label>
-              <Field
-                name="category"
-                component={SelectField}
-                onChange={categoryChange}
-                value={category}
-                placeholder="Категория"
-                noOptionMessage="Категория не найдена"
-                options={categoryOptions}
-                onInputChange={onCategoryListInput.bind(this)}
-              />
-            </div>
-            <Tooltip name="категорий" />
-          </div>
-
-          <div className="row justify-content-center">
-            <div style={{ marginLeft: "2.2rem" }} className="col-md-8 zi-5">
-              <label>Бренд</label>
-              <Field
-                name="brand"
-                component={SelectField}
-                value={brand}
-                noOptionsMessage={() => "Бренд не найден"}
-                onChange={brandListChange}
-                placeholder="Внесите наименование производителя"
-                className="form-control"
-                onInputChange={onBrandListInput.bind(this)}
-                options={brandOptions || []}
-              />
-            </div>
-            <Tooltip name="брендов" />
-          </div>
-
-          <div className="row justify-content-center">
-            <div className="col-md-8">
-              <label>Код ТН ВЭД</label>
-              <Field
-                name="cnofea"
-                component={InputGroup}
-                type="text"
-                className="form-control"
-                placeholder="Внесите ТН ВЭД"
-                autocomplete="off"
-                onChange={numberValidation}
-                onBlur={onCnofeaChange}
-                validate={[NoMoreThan10]}
-              />
-            </div>
-          </div>
-          <SellByPieces
-            sellByPieces={sellByPieces}
-            onSellByPiecesChange={onSellByPiecesChange}
-            onPieceAmountChange={onPieceAmountChange}
-            onPiecePriceChange={onPiecePriceChange}
-          />
-          <div className="row justify-content-center">
-            <div className="col-md-8 cnofea-name-text">{cnofeaName}</div>
-          </div>
-          <div className="row justify-content-center">
-            <div style={{ minWidth: "8rem" }} className="col-md-2">
-              <label>Цена закупки</label>
-              <Field
-                name="lastpurchaseprice"
-                component={InputGroup}
-                type="number"
-                className="form-control"
-                onChange={onPurchasePriceChange}
-                autocomplete="off"
-                onWheel={(event) => event.currentTarget.blur()}
-                appendItem={<span className="input-group-text">&#8376;</span>}
-                validate={
-                  unitsprid !== "3" ? [RequiredField, LessThanZero] : []
-                }
-              />
-            </div>
-            <div style={{ minWidth: "8rem" }} className="col-md-2">
-              <label>Надбавка</label>
-              <Field
-                name="surcharge"
-                component={InputGroup}
-                type="number"
-                className="form-control"
-                onChange={onSurchargeChange}
-                autocomplete="off"
-                onWheel={(event) => event.currentTarget.blur()}
-                appendItem={<span className="input-group-text">%</span>}
-              />
-            </div>
-            <div style={{ minWidth: "8rem" }} className="col-md-2">
-              <label>Цена продажи</label>
-              <Field
-                name="newprice"
-                component={InputGroup}
-                type="number"
-                className="form-control"
-                onChange={onNewPriceChange}
-                autocomplete="off"
-                onWheel={(event) => event.currentTarget.blur()}
-                appendItem={<span className="input-group-text">&#8376;</span>}
-                validate={
-                  unitsprid !== "3" ? [RequiredField, LessThanZero] : []
-                }
-              />
-            </div>
-            <div className="col-md-2">
-              <FormControlLabel
-                control={
-                  <Checkbox
-                    checked={updateprice}
-                    onChange={onUpdatePriceChange}
-                    name="updateprice"
-                    id="updateprice"
-                    color="primary"
-                  />
-                }
-                label="Обновление цены на всех торговых точках"
-              />
-            </div>
-          </div>
-          <div className="row justify-content-center">
-            <div className="col-md-2">
-              <label>Количество</label>
-              <Field
-                name="amount"
-                component={InputGroup}
-                placeholder="Внесите количество"
-                type="number"
-                disabled={disableUnits}
-                className="form-control"
-                autocomplete="off"
-                onWheel={(event) => event.currentTarget.blur()}
-                onChange={numberValidation}
-                validate={
-                  unitsprid !== "3"
-                    ? [RequiredField, LessThanZero, NotEqualZero]
-                    : []
-                }
-              />
-            </div>
-            {companyData.certificatenum && (
-              <div className="col-md-3 zi-4">
-                <label>Налоговая категория</label>
-                <Field
-                  name="taxid"
-                  component={SelectField}
-                  options={taxOptions}
-                  placeholder="Выберите налоговую категорию"
-                  validate={[RequiredSelect]}
-                />
-              </div>
+                {isBarcodeExists && (
+                  <p style={{ opacity: "60%", fontStyle: "red" }}>
+                    Вы можете редактировать название данного товара!
+                  </p>
+                )}
+              </Fragment>
             )}
-            <div className="col-md-3 zi-4" style={{ zIndex: 10 }}>
-              <label>Единица измерения</label>
+            {!newProductGenerating && (
               <Field
-                name="unitsprid"
+                name="name"
+                disabled={isEditing}
                 component={SelectField}
-                value={unitsprid}
-                options={unitOptions || ""}
-                placeholder="Выберите единицу измерения"
-                onChange={onUnitSprIdChange}
+                value={productSelectValue}
+                noOptionsMessage={() => "Товар не найден"}
+                onChange={productListChange}
+                placeholder="Введите название товара"
+                onInputChange={onProductListInput.bind(this)}
+                options={productOptions || []}
+              />
+            )}
+          </div>
+          <Tooltip name="товаров" />
+        </div>
+
+        <div className="row justify-content-center">
+          <div style={{ marginLeft: "2.2rem" }} className="col-md-8 zi-6">
+            <label htmlFor="category">Категория</label>
+            <Field
+              name="category"
+              component={SelectField}
+              onChange={categoryChange}
+              value={category}
+              placeholder="Категория"
+              noOptionMessage="Категория не найдена"
+              options={categoryOptions}
+              onInputChange={onCategoryListInput.bind(this)}
+            />
+          </div>
+          <Tooltip name="категорий" />
+        </div>
+
+        <div className="row justify-content-center">
+          <div style={{ marginLeft: "2.2rem" }} className="col-md-8 zi-5">
+            <label>Бренд</label>
+            <Field
+              name="brand"
+              component={SelectField}
+              value={brand}
+              noOptionsMessage={() => "Бренд не найден"}
+              onChange={brandListChange}
+              placeholder="Внесите наименование производителя"
+              className="form-control"
+              onInputChange={onBrandListInput.bind(this)}
+              options={brandOptions || []}
+            />
+          </div>
+          <Tooltip name="брендов" />
+        </div>
+
+        <div className="row justify-content-center">
+          <div className="col-md-8">
+            <label>Код ТН ВЭД</label>
+            <Field
+              name="cnofea"
+              component={InputGroup}
+              type="text"
+              className="form-control"
+              placeholder="Внесите ТН ВЭД"
+              autocomplete="off"
+              onChange={numberValidation}
+              onBlur={onCnofeaChange}
+              validate={[NoMoreThan10]}
+            />
+          </div>
+        </div>
+        <SellByPieces
+          sellByPieces={sellByPieces}
+          onSellByPiecesChange={onSellByPiecesChange}
+          onPieceAmountChange={onPieceAmountChange}
+          onPiecePriceChange={onPiecePriceChange}
+        />
+        <div className="row justify-content-center">
+          <div className="col-md-8 cnofea-name-text">{cnofeaName}</div>
+        </div>
+        <div className="row justify-content-center">
+          <div style={{ minWidth: "8rem" }} className="col-md-2">
+            <label>Цена закупки</label>
+            <Field
+              name="lastpurchaseprice"
+              component={InputGroup}
+              type="number"
+              className="form-control"
+              onChange={onPurchasePriceChange}
+              autocomplete="off"
+              onWheel={(event) => event.currentTarget.blur()}
+              appendItem={<span className="input-group-text">&#8376;</span>}
+              validate={
+                unitsprid !== "3" ? [RequiredField, LessThanZero] : []
+              }
+            />
+          </div>
+          <div style={{ minWidth: "8rem" }} className="col-md-2">
+            <label>Надбавка</label>
+            <Field
+              name="surcharge"
+              component={InputGroup}
+              type="number"
+              className="form-control"
+              onChange={onSurchargeChange}
+              autocomplete="off"
+              onWheel={(event) => event.currentTarget.blur()}
+              appendItem={<span className="input-group-text">%</span>}
+            />
+          </div>
+          <div style={{ minWidth: "8rem" }} className="col-md-2">
+            <label>Цена продажи</label>
+            <Field
+              name="newprice"
+              component={InputGroup}
+              type="number"
+              className="form-control"
+              onChange={onNewPriceChange}
+              autocomplete="off"
+              onWheel={(event) => event.currentTarget.blur()}
+              appendItem={<span className="input-group-text">&#8376;</span>}
+              validate={
+                unitsprid !== "3" ? [RequiredField, LessThanZero] : []
+              }
+            />
+          </div>
+          <div className="col-md-2">
+            <FormControlLabel
+              control={
+                <Checkbox
+                  checked={updateprice}
+                  onChange={onUpdatePriceChange}
+                  name="updateprice"
+                  id="updateprice"
+                  color="primary"
+                />
+              }
+              label="Обновление цены на всех торговых точках"
+            />
+          </div>
+        </div>
+        <div className="row justify-content-center">
+          <div className="col-md-2">
+            <label>Количество</label>
+            <Field
+              name="amount"
+              component={InputGroup}
+              placeholder="Внесите количество"
+              type="number"
+              disabled={disableUnits}
+              className="form-control"
+              autocomplete="off"
+              onWheel={(event) => event.currentTarget.blur()}
+              onChange={numberValidation}
+              validate={
+                unitsprid !== "3"
+                  ? [RequiredField, LessThanZero, NotEqualZero]
+                  : []
+              }
+            />
+          </div>
+          {companyData.certificatenum && (
+            <div className="col-md-3 zi-4">
+              <label>Налоговая категория</label>
+              <Field
+                name="taxid"
+                component={SelectField}
+                options={taxOptions}
+                placeholder="Выберите налоговую категорию"
                 validate={[RequiredSelect]}
               />
             </div>
+          )}
+          <div className="col-md-3 zi-4" style={{ zIndex: 10 }}>
+            <label>Единица измерения</label>
+            <Field
+              name="unitsprid"
+              component={SelectField}
+              value={unitsprid}
+              options={unitOptions || ""}
+              placeholder="Выберите единицу измерения"
+              onChange={onUnitSprIdChange}
+              validate={[RequiredSelect]}
+            />
           </div>
-          <div className="row justify-content-center">
-            <div className="col-md-3">
-              <label htmlFor="">Дополнительная информация</label>
+        </div>
+        <div className="row justify-content-center">
+          <div style={{ marginLeft: "2.2rem" }} className="col-md-8">
+            <div className="col-md-12">
+              <AddAttribute
+                readyOpt={readyOpt}
+                setReadyOpt={setReadyOpt}
+                setDeleted={setDeleted}
+                attributescaption={attributescaption}
+                editAttrubutes={editAttrubutes}
+                changeState={changeState}
+                isEditing={isEditing}
+                editProduct={editProduct}
+                selected={selectedAttribute}
+                clearBoard={clearBoard}
+              />
             </div>
           </div>
+        </div>
+        {(!attributescaption || attributescaption.length === 0) &&
           <div className="row justify-content-center">
             <div style={{ marginLeft: "2.2rem" }} className="col-md-8">
               <div className="col-md-12">
-                <AddAttribute
-                  setDeleted={setDeleted}
-                  attributescaption={attributescaption}
-                  editAttrubutes={editAttrubutes}
-                  changeState={changeState}
-                  isEditing={isEditing}
-                  editProduct={editProduct}
-                  selected={selectedAttribute}
-                  clearBoard={clearBoard}
+                <label htmlFor="">Добавление партийных характеристик</label>
+                <AddNewAttribute
+                  barcode={barcode}
+                  readyOpt={readyOpt}
+                  setReadyOpt={setReadyOpt}
+                  attributeCode={attributeCode}
+                  setAttributeCode={setAttributeCode}
+                  setNewAttrs={setNewAttrs}
+                  newAttrs={newAttrs}
                 />
-                <Alert severity="info" style={{ marginTop: 10 }}>
-                  <AlertTitle>
-                    <strong>Внимание!</strong>
-                  </AlertTitle>
-                  Что бы добавить атрибут на товар перейдите в раздел
-                  "Номенклатура", выберите товар и нажмите "редактировать". В
-                  поле "Партийные характеристики" добавьте атрибуты.
-                </Alert>
               </div>
             </div>
           </div>
-          <div className="row justify-content-center text-right mt-20">
-            <div className="col-md-8">
+        }
+        <div className="row justify-content-center text-right mt-20">
+          <div className="col-md-8">
+            <button
+              type="button"
+              className="btn mr-10"
+              disabled={isSubmitting || pristine || submitting}
+              onClick={clearForm}
+            >
+              Очистить
+            </button>
+            {isEditing && (
               <button
                 type="button"
                 className="btn mr-10"
                 disabled={isSubmitting || pristine || submitting}
-                onClick={clearForm}
+                onClick={reloadPage}
               >
-                Очистить
+                Отменить редактирование
               </button>
-              {isEditing && (
-                <button
-                  type="button"
-                  className="btn mr-10"
-                  disabled={isSubmitting || pristine || submitting}
-                  onClick={reloadPage}
-                >
-                  Отменить редактирование
-                </button>
-              )}
-              <button className="btn btn-success" disabled={isSubmitting}>
-                {isSubmitting
-                  ? "Пожалуйста дождитесь"
-                  : isEditing
-                    ? "Редактировать товар"
-                    : "Сохранить товар"}
-              </button>
-            </div>
+            )}
+            <button className="btn btn-success" disabled={isSubmitting} onClick={handleSubmit(handleAddProduct)}>
+              {isSubmitting
+                ? "Пожалуйста дождитесь"
+                : isEditing
+                  ? "Редактировать товар"
+                  : "Сохранить товар"}
+            </button>
           </div>
-        </form>
+        </div>
       </div>
     </Fragment>
   );

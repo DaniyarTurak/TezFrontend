@@ -12,12 +12,11 @@ import Button from '@material-ui/core/Button';
 import SaveIcon from '@material-ui/icons/Save';
 import CancelIcon from '@material-ui/icons/Cancel';
 import DeleteIcon from '@material-ui/icons/Delete';
-import Accordion from '@material-ui/core/Accordion';
-import AccordionSummary from '@material-ui/core/AccordionSummary';
-import AccordionDetails from '@material-ui/core/AccordionDetails';
 import ExpandMoreIcon from '@material-ui/icons/ExpandMore';
 import ReplayIcon from '@material-ui/icons/Replay';
 import SecondLevel from './SecondLevel';
+import ChevronRightIcon from '@material-ui/icons/ChevronRight';
+// import TreeItem from '@material-ui/lab/TreeItem';
 
 export default function UpdateBonusPage() {
 
@@ -65,7 +64,7 @@ export default function UpdateBonusPage() {
           }
           else {
             if (category.parentid === 0) {
-              c.push({ ...category, name_temp: category.name, isAddingSub: false, subName: "" });
+              c.push({ ...category, name_temp: category.name, isAddingSub: false, subName: "", open: false });
             }
           }
         });
@@ -242,9 +241,112 @@ export default function UpdateBonusPage() {
       });
   };
 
+  const openChildren = (idx) => {
+    setCategories(prevState => {
+      let obj = prevState[idx];
+      obj.open = true;
+      return [...prevState];
+    })
+  };
+
+  const closeChildren = (idx) => {
+    setCategories(prevState => {
+      let obj = prevState[idx];
+      obj.open = false;
+      return [...prevState];
+    })
+  };
+
+  const expandSubcategories = (idx) => {
+    setCategories(prevState => {
+      let obj = prevState[idx];
+      obj.open = !obj.open;
+      return [...prevState];
+    })
+  };
+
   return (
     <Fragment>
-      <Grid container spacing={3}>
+      <Grid container spacing={2}>
+        {categories.map((category, id) => (
+          <Fragment key={category.id} >
+            <Grid item xs={1}>
+              <IconButton onClick={() => expandSubcategories(id)}>
+                {category.open ? <ExpandMoreIcon /> : <ChevronRightIcon />}
+              </IconButton>
+            </Grid>
+            <Grid item xs={9}>
+              <TextField
+                style={{ paddingTop: "5px" }}
+                fullWidth
+                value={category.name}
+                classes={{
+                  root: classesAC.root,
+                }}
+                onChange={(e) => nameChange(e.target.value, id)}
+                placeholder="Название категории"
+                variant="outlined"
+                size="small"
+              />
+            </Grid>
+            <Grid item xs={2} style={{ textAlign: "right" }}>
+              {category.name !== category.name_temp &&
+                <IconButton onClick={() => updateCategory(category)}>
+                  <SaveIcon />
+                </IconButton>
+              }
+              <IconButton onClick={() => deleteCategory(category)}>
+                <DeleteIcon />
+              </IconButton>
+            </Grid>
+            {category.open === true &&
+              <Fragment>
+                <Grid item xs={1} />
+                <Grid item xs={1} />
+                <Grid item xs={6}>
+                  <TextField
+                    style={{ paddingTop: "5px" }}
+                    fullWidth
+                    // value={category.name}
+                    classes={{
+                      root: classesAC.root,
+                    }}
+                    // onChange={(e) => subNameChange(e.target.value, id)}
+                    placeholder="Название подкатегории"
+                    variant="outlined"
+                    size="small"
+                  />
+                </Grid>
+                <Grid item xs={1} style={{ paddingTop: "14px" }}>
+                  <button
+                    fullWidth
+                    className="btn btn-success"
+                    onClick={() => saveSubcategory(category)}
+                  >
+                    Добавить
+                  </button>
+                </Grid>
+                <Grid item xs={2}>
+                </Grid>
+                {
+                  category.child.length > 0 &&
+                  <SecondLevel categories={category.child} />
+                }
+              </Fragment>
+
+            }
+          </Fragment>
+        ))}
+      </Grid>
+
+      {/* <TreeList
+        data={DATA}
+        columns={COLUMNS}
+        options={OPTIONS}
+        handlers={{}}
+        id={'id'}
+        parentId={'parentId'}></TreeList> */}
+      {/* <Grid container spacing={3}>
         <Grid item xs={12}>
           <Paper>
             <Grid container spacing={2}>
@@ -402,7 +504,7 @@ export default function UpdateBonusPage() {
             </AccordionDetails>
           </Accordion>
         </Grid>
-      </Grid>
+      </Grid> */}
     </Fragment >
   )
 }

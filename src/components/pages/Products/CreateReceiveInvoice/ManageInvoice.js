@@ -47,6 +47,7 @@ export default function ManageInvoice({ location, history }) {
   const scrollRef = useRef();
   const [open, setOpen] = React.useState(false);
   const [message, setMessage] = useState("");
+  const [attributeCode, setAttributeCode] = useState(null);
 
   const breadcrumb = [
     { caption: "Товары" },
@@ -157,8 +158,9 @@ export default function ManageInvoice({ location, history }) {
       .then((det) => {
         toggleDisabled(idx);
         setProduct({
-          ...det,
           ...product,
+          ...det,
+          attributes: product.attributes
         });
         setEditing(true);
         scrollRef.current.scrollIntoView({ behavior: "smooth" });
@@ -173,6 +175,7 @@ export default function ManageInvoice({ location, history }) {
     setDeleted(false);
   };
   const handleDetail = (product) => {
+    console.log(product);
     setProduct(product);
     setEditing(false);
     setModalOpen(true);
@@ -219,9 +222,7 @@ export default function ManageInvoice({ location, history }) {
         { raw: true },
         { skipUndfendVale: false, defaultValue: null }
       );
-      console.log(prods);
       prods.forEach((product, i) => {
-        console.log(product.Code);
         if (
 
           product.Code.toString()
@@ -359,7 +360,7 @@ export default function ManageInvoice({ location, history }) {
     const req = {
       invoice: invoiceNumber,
       stock: item.stock,
-      attributes: item.attributes,
+      attributes: attributeCode || item.attributes,
     };
 
     Axios.post("/api/invoice/delete/product", req)
@@ -586,9 +587,9 @@ export default function ManageInvoice({ location, history }) {
                             return [];
                           } else {
                             return (
-                              <tr className="hint" key={indx}>
+                              <span key={indx}>
                                 {e.name}: {e.value},
-                              </tr>
+                              </span>
                             );
                           }
                         }) : ""}
@@ -734,6 +735,8 @@ export default function ManageInvoice({ location, history }) {
             newProduct={addProduct}
             invoiceNumber={invoiceNumber}
             editProduct={product}
+            attributeCode={attributeCode}
+            setAttributeCode={setAttributeCode}
           />
           <div ref={scrollRef}></div>
         </Fragment>

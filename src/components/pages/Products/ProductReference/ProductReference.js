@@ -185,6 +185,7 @@ export default function ProductReference() {
                     getBarcodeProps={getProductByBarcode}
                     getProductByBarcode={getProductByBarcode}
                     capations={capations}
+                    setProductsList={setProductsList}
                   />
                 )}
                 {currentTab === "UpdateCategoryPage" && <UpdateCategoryPage />}

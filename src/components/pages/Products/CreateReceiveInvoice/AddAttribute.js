@@ -4,8 +4,11 @@ import Axios from "axios";
 import HighlightOffIcon from '@material-ui/icons/HighlightOff';
 import IconButton from '@material-ui/core/IconButton';
 import SweetAlert from "react-bootstrap-sweetalert";
+import ErrorAlert from "../../../ReusableComponents/ErrorAlert";
 
 export default function AddAttribute({
+  readyOpt,
+  setReadyOpt,
   clearBoard,
   changeState,
   attributescaption,
@@ -13,7 +16,6 @@ export default function AddAttribute({
   setDeleted
 }) {
   const [changedAttr, setChangedAttr] = useState([]);
-  const [readyOpt, setReadyOpt] = useState([]);
   const [sweetalert, setSweetAlert] = useState(null);
 
   useEffect(() => {
@@ -47,7 +49,7 @@ export default function AddAttribute({
 
   const filterSpr = (attributes) => {
     let product =
-      attributescaption.length > 0 ? attributescaption : editAttrubutes;
+      attributescaption && attributescaption.length > 0 ? attributescaption : editAttrubutes;
     let allSpr = [];
     attributes.forEach((attr) => {
       if (attr.format === "SPR") {
@@ -187,16 +189,35 @@ export default function AddAttribute({
 
   const deleteAttribute = (attribute) => {
     setDeleted(true);
-    let arr = [];
-    readyOpt.forEach((element, i) => {
-      if (element.attribute_id !== attribute.attribute_id) {
-        arr.push(element);
-      }
-    });
-    getAttrListId(attribute.attribute_id);
-    setReadyOpt(arr);
-    setSweetAlert(null);
-    setChangedAttr(arr);
+    const reqdata = {
+      listcode: attribute.attribute_listcode,
+      attribcode: attribute.attribute_id
+    };
+    Axios.post("/api/attributes/delete", reqdata)
+      .then((res) => {
+        if (res.data.code === "success") {
+          setSweetAlert(null);
+          let arr = [];
+          readyOpt.forEach((element, i) => {
+            if (element.attribute_id !== attribute.attribute_id) {
+              arr.push(element);
+            }
+          });
+          getAttrListId(attribute.attribute_id);
+          setReadyOpt(arr);
+
+          setChangedAttr(arr);
+        }
+        else {
+          ErrorAlert(res.text);
+
+        }
+      })
+      .catch((err) => {
+        ErrorAlert(err);
+      });
+
+
   }
 
   return (

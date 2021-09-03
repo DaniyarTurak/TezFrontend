@@ -1,24 +1,22 @@
 import React, { useState, useEffect, Fragment } from "react";
 import Select from "react-select";
 import Axios from "axios";
-import HighlightOffIcon from '@material-ui/icons/HighlightOff';
-import IconButton from '@material-ui/core/IconButton';
-import SweetAlert from "react-bootstrap-sweetalert";
 import TextField from '@material-ui/core/TextField';
-import { withStyles, makeStyles, createStyles } from '@material-ui/core/styles';
+import { makeStyles, createStyles } from '@material-ui/core/styles';
 import Grid from '@material-ui/core/Grid';
 import ErrorAlert from "../../../ReusableComponents/ErrorAlert";
 import Moment from "moment";
 import Alert from "react-s-alert";
 
 export default function AddNewAttribute({
-    productID,
-    listCode,
-    setListCode,
-    attributescaption,
-    setAttributeCapation,
-    getProductByBarcode,
-    barcode }) {
+    barcode,
+    readyOpt,
+    setReadyOpt,
+    attributeCode,
+    setAttributeCode,
+    setNewAttrs,
+    newAttrs,
+}) {
     const useStylesAC = makeStyles(theme =>
         createStyles({
             root: {
@@ -52,22 +50,17 @@ export default function AddNewAttribute({
     const [textValue, setTextValue] = useState("");
     const [dateValue, setDateValue] = useState(Moment().format("YYYY-MM-DD"));
     const [sprValue, setSprValue] = useState(null);
-    const [partAttribCode, setPartAttribCode] = useState(null);
-
-    let temp_atc = [];
 
     useEffect(() => {
         getAttributes();
     }, []);
-
     useEffect(() => {
-        console.log(attributescaption);
-        if (attributescaption && attributescaption.length > 0) {
-            attributescaption.forEach(element => {
-                temp_atc.push(element);
-            });
-        }
-    }, [attributescaption]);
+        console.log(readyOpt);
+    }, [readyOpt]);
+
+    // useEffect(() => {
+    //     console.log(attributeCode);
+    // }, [attributeCode]);
 
     const getAttributes = () => {
         Axios.get("/api/attributes")
@@ -105,29 +98,38 @@ export default function AddNewAttribute({
 
     const addAttribute = () => {
         if (barcode !== "") {
-
+            // console.log(attributeCode);
             const reqbody = {
-                attribcode: selectedAttrName.value,
-                listcode: listCode === "0" ? null : listCode,
-                // value: ""
-                // attrFormat === "DATE" ? Moment(dateValue).format("YYYY-MM-DD") :
-                //     attrFormat === "TEXT" ? textValue :
-                //         attrFormat === "SPR" ? sprValue.label : ""
+                attribcode: selectedAttrName.value ? selectedAttrName.value : 0,
+                listcode: attributeCode === "0" || attributeCode === 0 ? null : attributeCode,
+                value:
+                    attrFormat === "DATE" ? Moment(dateValue).format("YYYY-MM-DD") :
+                        attrFormat === "TEXT" ? textValue :
+                            attrFormat === "SPR" ? sprValue.label : ""
             }
             Axios.post("/api/attributes/add", reqbody)
                 .then((res) => res.data)
                 .then((result) => {
-                    setListCode(result.text);
-                    setPartAttribCode(result.text);
-                    getProductByBarcode(barcode);
-                    temp_atc.push({
+                    setAttributeCode(result.text);
+                    setNewAttrs([...newAttrs, {
+                        code: selectedAttrName.value,
+                        name: selectedAttrName.label,
+                        value: reqbody.value
+                    }]);
+
+                    setReadyOpt([...readyOpt, {
                         attribute_format: attrFormat,
                         attribute_id: selectedAttrName.value,
-                        attribute_listcode: listCode,
+                        attribute_listcode: attributeCode,
                         attribute_name: selectedAttrName.label,
-                        attribute_value: "",
-                    });
-                    setAttributeCapation(temp_atc);
+                        attribute_value: reqbody.value
+                    }]);
+                    setAttrFormat("");
+                    setSelectedAttrName(null);
+                    setTextValue("");
+                    setSprValue(null);
+                    setDateValue(Moment().format("YYYY-MM-DD"));
+
                 })
                 .catch((err) => {
                     ErrorAlert(err);
