@@ -13,39 +13,53 @@ export default function AddAttribute({
   changeState,
   attributescaption,
   editAttrubutes,
-  setDeleted
+  setDeleted,
+  attrIdandValue,
+  setAttrIdandValue,
+  newAttrs,
+  setNewAttrs,
+
+  productAttributes,
+  setProductAttributes
 }) {
-  const [changedAttr, setChangedAttr] = useState([]);
+  // const [changedAttr, setChangedAttr] = useState([]);
   const [sweetalert, setSweetAlert] = useState(null);
 
-  useEffect(() => {
-    if (attributescaption && attributescaption.length > 0) {
-      attributescaption.forEach((element) => {
-        element = { ...element, value_select: "" };
-      });
-      setChangedAttr(attributescaption);
-      getAttributes();
-    } else {
-      if (editAttrubutes && editAttrubutes.length > 0) {
-        editAttrubutes.forEach((element) => {
-          element = { ...element, value_select: "" };
-        });
-        setChangedAttr(editAttrubutes);
-        getAttributes();
-      }
-    }
-  }, [attributescaption]);
+  // useEffect(() => {
+  //   if (attributescaption && attributescaption.length > 0) {
+  //     attributescaption.forEach((element) => {
+  //       element = { ...element, value_select: "" };
+  //     });
+  //     setChangedAttr(attributescaption);
+  //     getAttributes();
+  //   } else {
+  //     if (editAttrubutes && editAttrubutes.length > 0) {
+  //       editAttrubutes.forEach((element) => {
+  //         element = { ...element, value_select: "" };
+  //       });
+  //       setChangedAttr(editAttrubutes);
+  //       getAttributes();
+  //     }
+  //   }
+  // }, [attributescaption]);
+
+  // useEffect(() => {
+  //   if (!editAttrubutes || editAttrubutes === []) {
+  //     clear();
+  //   }
+  //   setReadyOpt([]);
+  // }, [clearBoard]);
+
+  // useEffect(() => {
+  //   getAttrListId(readyOpt);
+  //   // console.log(readyOpt);
+  // }, [readyOpt]);
+
+  const [listAttributes, setListAttributes] = useState([]);
 
   useEffect(() => {
-    if (!editAttrubutes || editAttrubutes === []) {
-      clear();
-    }
-    setReadyOpt([]);
-  }, [clearBoard]);
-
-  useEffect(() => {
-    getAttrListId(readyOpt);
-  }, [readyOpt]);
+    getAttributes();
+  }, []);
 
   const filterSpr = (attributes) => {
     let product =
@@ -100,37 +114,119 @@ export default function AddAttribute({
     Axios.get("/api/attributes")
       .then((res) => res.data)
       .then((attributes) => {
-        filterSpr(attributes);
+        console.log(attributes);
+        attributes.forEach(attr => {
+          if (attr.sprvalues.length > 0) {
+            let temp = [];
+            attr.sprvalues.forEach((el, id) => {
+              temp.push({ value: id, label: el })
+            });
+            attr.options = temp;
+          }
+          console.log(attributes);
+          setListAttributes(attributes);
+          productAttributes.forEach((prod, idx) => {
+            attributes.forEach(attr => {
+              if (prod.attribute_id.toString() === attr.id.toString()) {
+                console.log("attr.options", attr.options);
+                setProductAttributes(prevState => {
+                  let obj = prevState[idx];
+                  obj.options = attr.options;
+                  return [...prevState];
+                })
+              }
+            });
+          });
+        });
       })
       .catch((err) => {
         console.log(err);
       });
   };
 
-  const clear = () => {
-    setChangedAttr(attributescaption);
-    setReadyOpt([]);
-  };
+  // const clear = () => {
+  //   setChangedAttr(attributescaption);
+  //   setReadyOpt([]);
+  // };
+
+
+
+
+
+  // const getAttrListId = (id) => {
+  //   let a = [];
+  //   if (changedAttr.length > 0) {
+  //     changedAttr.forEach((el, i) => {
+  //       if (id) {
+  //         if (el.attribute_id !== id) {
+  //           a.push({
+  //             code: el.attribute_id,
+  //             value: el.attribute_value,
+  //             name: el.attribute_name,
+  //           });
+  //         }
+  //       }
+  //       else {
+  //         a.push({
+  //           code: el.attribute_id,
+  //           value: el.attribute_value,
+  //           name: el.attribute_name,
+  //         });
+  //       }
+  //     });
+  //   }
+  //   changeState(a);
+  // };
+
+
+  const deleteAttribute = (attribute) => {
+    console.log(attribute);
+    setDeleted(true);
+    const reqdata = {
+      listcode: attribute.attribute_listcode,
+      attribcode: attribute.attribute_id
+    };
+    Axios.post("/api/attributes/delete", reqdata)
+      .then((res) => {
+        if (res.data.code === "success") {
+          setSweetAlert(null);
+          let arr = [];
+          productAttributes.forEach((element, i) => {
+            if (element.attribute_id !== attribute.attribute_id) {
+              arr.push(element);
+            }
+          });
+          setProductAttributes(arr);
+        }
+        else {
+          ErrorAlert(res.text);
+
+        }
+      })
+      .catch((err) => {
+        ErrorAlert(err);
+      });
+  }
 
   const nonSprChange = (event, attribute) => {
     let value = event.target.value;
     let index;
-    readyOpt.forEach((attr, i) => {
+    productAttributes.forEach((attr, i) => {
       if (attr.attribute_id === attribute.attribute_id) {
         index = i;
       }
     });
-    setReadyOpt((prevState) => {
+    setProductAttributes((prevState) => {
       let obj = prevState[index];
       obj.attribute_value = value;
       return [...prevState];
     });
-    setChangedAttr(readyOpt);
   };
 
-  const onAttrValueChange = (event, attribute) => {
+  const sprChange = (event, attribute) => {
+    console.log(event, attribute);
     let index;
-    readyOpt.forEach((attr, i) => {
+    productAttributes.forEach((attr, i) => {
       if (attr.attribute_id === attribute.attribute_id) {
         index = i;
       }
@@ -141,32 +237,6 @@ export default function AddAttribute({
       obj.value_select = event;
       return [...prevState];
     });
-    setChangedAttr(readyOpt);
-  };
-
-  const getAttrListId = (id) => {
-    let a = [];
-    if (changedAttr.length > 0) {
-      changedAttr.forEach((el, i) => {
-        if (id) {
-          if (el.attribute_id !== id) {
-            a.push({
-              code: el.attribute_id,
-              value: el.attribute_value,
-              name: el.attribute_name,
-            });
-          }
-        }
-        else {
-          a.push({
-            code: el.attribute_id,
-            value: el.attribute_value,
-            name: el.attribute_name,
-          });
-        }
-      });
-    }
-    changeState(a);
   };
 
   const showConfiramtion = (attribute) => {
@@ -185,39 +255,19 @@ export default function AddAttribute({
         Вы действительно хотите удалить атрибут?
       </SweetAlert>
     );
-  }
-
-  const deleteAttribute = (attribute) => {
-    setDeleted(true);
-    const reqdata = {
-      listcode: attribute.attribute_listcode,
-      attribcode: attribute.attribute_id
-    };
-    Axios.post("/api/attributes/delete", reqdata)
-      .then((res) => {
-        if (res.data.code === "success") {
-          setSweetAlert(null);
-          let arr = [];
-          readyOpt.forEach((element, i) => {
-            if (element.attribute_id !== attribute.attribute_id) {
-              arr.push(element);
-            }
-          });
-          getAttrListId(attribute.attribute_id);
-          setReadyOpt(arr);
-
-          setChangedAttr(arr);
-        }
-        else {
-          ErrorAlert(res.text);
-
-        }
-      })
-      .catch((err) => {
-        ErrorAlert(err);
-      });
+  };
 
 
+  const showOptions = (attribute_id) => {
+    let a = {};
+    listAttributes.forEach(element => {
+      if (element.id === attribute_id) {
+        a = element.options;
+
+      }
+    });
+    console.log(a);
+    return a;
   }
 
   return (
@@ -227,8 +277,8 @@ export default function AddAttribute({
         className="row justify-content-center"
         style={{ marginBottom: 10 }}
       ></div>
-      {readyOpt.length > 0 &&
-        readyOpt.map((attribute, idx) => {
+      {productAttributes.length > 0 &&
+        productAttributes.map((attribute, idx) => {
           return (
             <Fragment key={idx}>
               <div className="row justify-content-center">
@@ -275,9 +325,9 @@ export default function AddAttribute({
                         <Select
                           id="select"
                           placeholder={attribute.attribute_value}
-                          value={attribute.value_select}
+                          value={attribute.value_select ? attribute.value_select : { id: attribute.attribute_id, label: attribute.attribute_value }}
                           onChange={(event) => {
-                            onAttrValueChange(event, attribute);
+                            sprChange(event, attribute);
                           }}
                           options={attribute.options}
                           className="form-control attr-spr"

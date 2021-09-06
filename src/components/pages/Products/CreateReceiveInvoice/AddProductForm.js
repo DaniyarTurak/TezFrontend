@@ -4,8 +4,8 @@ import Axios from "axios";
 import alert from "react-s-alert";
 import { Alert, AlertTitle } from "@material-ui/lab";
 import ReactModal from "react-modal";
-import AddAttribute from "./AddAttribute";
-import AddNewAttribute from "./AddNewAttribute";
+import EditAttributes from "./EditAttributes";
+import AddAttributes from "./AddAttributes";
 import { InputField, InputGroup, SelectField } from "../../../fields";
 import FormControlLabel from "@material-ui/core/FormControlLabel";
 import Checkbox from "@material-ui/core/Checkbox";
@@ -67,7 +67,12 @@ let AddProductForm = ({
   handleEditing,
   editProduct,
   attributeCode,
-  setAttributeCode
+  setAttributeCode,
+
+  productAttributes,
+  setProductAttributes,
+  listCode,
+  setListCode
 }) => {
   const [isDeleted, setDeleted] = useState(false);
   const [addProductData, setAddProductData] = useState("");
@@ -112,16 +117,21 @@ let AddProductForm = ({
   const [readyOpt, setReadyOpt] = useState([]);
   const [newAttrs, setNewAttrs] = useState([]);
 
+
   useEffect(() => {
     if (editProduct !== "") {
       setEditAttrubutes(Array.isArray(editProduct.attributescaption) ? editProduct.attributescaption : editProduct.attrs_json);
-      setAttributeCode(editProduct.attributes);
+      // setAttributeCode(editProduct.attributes);
     }
   }, [editProduct]);
 
   useEffect(() => {
     changeState(attrIdandValue);
   }, []);
+
+  useEffect(() => {
+    console.log("productAttributes", productAttributes)
+  }, [productAttributes]);
 
   const companyData =
     JSON.parse(sessionStorage.getItem("isme-company-data")) || {};
@@ -137,10 +147,10 @@ let AddProductForm = ({
   }, []);
 
   useEffect(() => {
-    console.log(editProduct);
     if (editProduct !== "") {
       setReadyOpt(Array.isArray(editProduct.attributescaption) ? editProduct.attributescaption : editProduct.attrs_json);
     }
+    // console.log("editProduct", editProduct)
   }, [editProduct]);
 
 
@@ -420,7 +430,8 @@ let AddProductForm = ({
       return;
     } else if (!barcodeChanged) {
       clearForm();
-      setAttributeCode(null);
+      // setAttributeCode(null);
+      setListCode(null);
     } else {
       setBarcode(barcodeChanged);
     }
@@ -660,14 +671,16 @@ let AddProductForm = ({
 
   const productListChange = (productChanged) => {
     clearForm();
-    setAttributeCode(null);
+    setListCode(null);
+    // setAttributeCode(null);
     setProductSelectValue(productChanged);
     if (productChanged.code) {
       setBarcode(productChanged.code);
       handleSearch(productChanged.code);
     } else {
       clearForm();
-      setAttributeCode(null);
+      setListCode(null);
+      // setAttributeCode(null);
     }
   };
 
@@ -694,7 +707,8 @@ let AddProductForm = ({
 
   const generateBarcode = () => {
     clearForm();
-    setAttributeCode(null);
+    setListCode(null);
+    // setAttributeCode(null);
     Axios.get("/api/invoice/newbarcode")
       .then((res) => res.data)
       .then((barcodeseq) => {
@@ -767,7 +781,9 @@ let AddProductForm = ({
             timeout: 2000,
           });
           clearForm();
-          setAttributeCode(null);
+          setListCode(null);
+          setProductAttributes([]);
+          // setAttributeCode(null);
           dispatch(change("AddProductForm", "code", barcodeChanged));
           setBarcode(barcodeChanged);
           setLoading(false);
@@ -775,6 +791,9 @@ let AddProductForm = ({
 
           return;
         }
+        setListCode(product.attributes === "0" ? null : product.attributes);
+        setProductAttributes(product.attributescaption ? product.attributescaption : []);
+
         const isstaticpriceCheck = product.isstaticprice;
         let staticpriceCheck = "";
         if (isstaticpriceCheck) {
@@ -799,7 +818,7 @@ let AddProductForm = ({
         setAttributeCapation(attributeCapat);
 
         const attrCode = product.attributes === "0" ? null : product.attributes;
-        setAttributeCode(attrCode);
+        // setAttributeCode(attrCode);
 
         const productCategory = {
           label: product.category,
@@ -930,16 +949,18 @@ let AddProductForm = ({
   };
   const addProduct = (data) => {
     let state = true;
-    // console.log(attrIdandValue);
-    attrIdandValue.forEach((element) => {
-      if (!element.code) {
-        state = true;
-      } else {
-        if (!element.value || element.value === "") {
-          state = false;
-        }
+    console.log(productAttributes);
+
+    productAttributes.forEach((element) => {
+      // if (!element.attribute_id) {
+      //   state = true;
+      // } else {
+      if (!element.attribute_value || element.attribute_value === "") {
+        state = false;
       }
+      // }
     });
+
     if (!state) {
       setSubmitting(false);
       alert.warning("Заполните атрибуты!", {
@@ -955,12 +976,18 @@ let AddProductForm = ({
           attributes: editProduct.attributes,
         };
         deleteOldRecord(item);
-
+      };
+      let temp = [];
+      if (productAttributes.length > 0) {
+        productAttributes.forEach(el => {
+          temp.push({ code: el.attribute_id, name: el.ribute_name, value: el.attribute_value })
+        });
       }
       //всё что ниже переписывалось 100500 раз, трогать осторожно.
       const newData = {
         amount: unitsprid === "3" ? 0 : data.amount,
-        attributes: attributeCode,
+        attributes: listCode,
+        //  attributeCode,
         // !isEditing
         //   ? attributeCode
         //   : editProduct.attributes !== "0" &&
@@ -991,11 +1018,13 @@ let AddProductForm = ({
         taxid: companyData.certificatenum ? data.taxid.value : "0",
         unitsprid: data.unitsprid.value,
         updateprice,
-        attrlist: editProduct.attributes
-          ? attrIdandValue.length > 0 ? attrIdandValue : newAttrs
-          : attributeCode === "0" || !attributeCode
-            ? []
-            : attrIdandValue.length > 0 ? attrIdandValue : newAttrs,
+        attrlist: temp,
+        // attrIdandValue.concat(newAttrs)
+        // editProduct.attributes
+        //   ? attrIdandValue.length > 0 ? attrIdandValue : newAttrs
+        //   : attributeCode === "0" || !attributeCode
+        //     ? []
+        //     : attrIdandValue.length > 0 ? attrIdandValue : newAttrs,
       };
       // всё что выше переписывалось 100500 раз, трогать осторожно.
 
@@ -1012,7 +1041,8 @@ let AddProductForm = ({
           setEditAttrubutes(newData.attrlist);
           const newProductChanged = {
             invoice: reqdata.invoice,
-            attributes: attributeCode || null,
+            attributes: listCode,
+            // attributeCode || null,
             categoryName: newData.category,
             brand: newData.brand,
             code: newData.code,
@@ -1028,7 +1058,11 @@ let AddProductForm = ({
           setAdding(false);
           handleEditing();
           clearForm();
-          setAttributeCode(null);
+          setListCode(null);
+          setProductAttributes([]);
+          // setAttributeCode(null);
+          // setReadyOpt([]);
+          setProductAttributes([]);
           alert.success("Товар успешно добавлен", {
             position: "top-right",
             effect: "bouncyflip",
@@ -1320,42 +1354,56 @@ let AddProductForm = ({
             />
           </div>
         </div>
-        <div className="row justify-content-center">
-          <div style={{ marginLeft: "2.2rem" }} className="col-md-8">
-            <div className="col-md-12">
-              <AddAttribute
-                readyOpt={readyOpt}
-                setReadyOpt={setReadyOpt}
-                setDeleted={setDeleted}
-                attributescaption={attributescaption}
-                editAttrubutes={editAttrubutes}
-                changeState={changeState}
-                isEditing={isEditing}
-                editProduct={editProduct}
-                selected={selectedAttribute}
-                clearBoard={clearBoard}
-              />
-            </div>
-          </div>
-        </div>
-        {(!attributescaption || attributescaption.length === 0) &&
+        {productAttributes.length > 0 &&
           <div className="row justify-content-center">
             <div style={{ marginLeft: "2.2rem" }} className="col-md-8">
               <div className="col-md-12">
-                <label htmlFor="">Добавление партийных характеристик</label>
-                <AddNewAttribute
-                  barcode={barcode}
+                <EditAttributes
                   readyOpt={readyOpt}
                   setReadyOpt={setReadyOpt}
-                  attributeCode={attributeCode}
-                  setAttributeCode={setAttributeCode}
+                  setDeleted={setDeleted}
+                  attributescaption={attributescaption}
+                  editAttrubutes={editAttrubutes}
+                  changeState={changeState}
+                  isEditing={isEditing}
+                  editProduct={editProduct}
+                  selected={selectedAttribute}
+                  clearBoard={clearBoard}
+                  attrIdandValue={attrIdandValue}
+                  setAttrIdandValue={setAttrIdandValue}
                   setNewAttrs={setNewAttrs}
                   newAttrs={newAttrs}
+
+                  productAttributes={productAttributes}
+                  setProductAttributes={setProductAttributes}
                 />
               </div>
             </div>
           </div>
         }
+        {/* {(productAttributes.length === 0) && */}
+        <div className="row justify-content-center">
+          <div style={{ marginLeft: "2.2rem" }} className="col-md-8">
+            <div className="col-md-12">
+              <label htmlFor="">Добавление партийных характеристик</label>
+              <AddAttributes
+                barcode={barcode}
+                readyOpt={readyOpt}
+                setReadyOpt={setReadyOpt}
+                attributeCode={attributeCode}
+                setAttributeCode={setAttributeCode}
+                setNewAttrs={setNewAttrs}
+                newAttrs={newAttrs}
+
+                listCode={listCode}
+                setListCode={setListCode}
+                productAttributes={productAttributes}
+                setProductAttributes={setProductAttributes}
+              />
+            </div>
+          </div>
+        </div>
+        {/* } */}
         <div className="row justify-content-center text-right mt-20">
           <div className="col-md-8">
             <button

@@ -182,8 +182,7 @@ export default function SecondLevel({ categories, updateCategory, deleteCategory
                                     Добавить
                                 </button>
                             </Grid>
-                            <Grid item xs={1} />
-                            <Grid item xs={1} />
+                            <Grid item xs={3} />
                             {
                                 category.child.lenght > 0 &&
                                 <Fragment>

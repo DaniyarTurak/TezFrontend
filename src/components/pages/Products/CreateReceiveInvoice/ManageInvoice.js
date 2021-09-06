@@ -49,6 +49,9 @@ export default function ManageInvoice({ location, history }) {
   const [message, setMessage] = useState("");
   const [attributeCode, setAttributeCode] = useState(null);
 
+  const [productAttributes, setProductAttributes] = useState([]);
+  const [listCode, setListCode] = useState(null);
+
   const breadcrumb = [
     { caption: "Товары" },
     { caption: "Новый товар" },
@@ -156,12 +159,22 @@ export default function ManageInvoice({ location, history }) {
     })
       .then((res) => res.data)
       .then((det) => {
+        console.log(det);
         toggleDisabled(idx);
         setProduct({
           ...product,
           ...det,
           attributes: product.attributes
         });
+
+        let a = [];
+        det.attributescaption.forEach(element => {
+          a.push(element);
+        });
+        console.log(a);
+        console.log(det);
+        setProductAttributes(det.attributescaption);
+        setListCode(det.attributes === "" ? null : det.attributes);
         setEditing(true);
         scrollRef.current.scrollIntoView({ behavior: "smooth" });
       })
@@ -581,7 +594,7 @@ export default function ManageInvoice({ location, history }) {
                     <td>
                       {product.name}
                       <br />
-                      {product.attrs_json !== null ?
+                      {/* {product.attrs_json !== null ?
                         product.attrs_json.map((e, indx) => {
                           if (e.code === null || e.value === null) {
                             return [];
@@ -592,7 +605,8 @@ export default function ManageInvoice({ location, history }) {
                               </span>
                             );
                           }
-                        }) : ""}
+                        }) : ""} */}
+                      {product.attributescaption}
                     </td>
                     <td className="text-center">{product.code}</td>
                     <td className="text-center tenge">
@@ -737,6 +751,11 @@ export default function ManageInvoice({ location, history }) {
             editProduct={product}
             attributeCode={attributeCode}
             setAttributeCode={setAttributeCode}
+
+            productAttributes={productAttributes}
+            setProductAttributes={setProductAttributes}
+            listCode={listCode}
+            setListCode={setListCode}
           />
           <div ref={scrollRef}></div>
         </Fragment>

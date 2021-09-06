@@ -317,7 +317,7 @@ export default function UpdateBonusPage() {
                     size="small"
                   />
                 </Grid>
-                <Grid item xs={1} style={{ paddingTop: "14px" }}>
+                <Grid item xs={2} style={{ paddingTop: "14px" }}>
                   <button
                     fullWidth
                     className="btn btn-success"
@@ -326,8 +326,7 @@ export default function UpdateBonusPage() {
                     Добавить
                   </button>
                 </Grid>
-                <Grid item xs={2}>
-                </Grid>
+                <Grid item xs={2} />
                 {
                   category.child.length > 0 &&
                   <SecondLevel categories={category.child} />
@@ -335,6 +334,7 @@ export default function UpdateBonusPage() {
               </Fragment>
 
             }
+            <hr />
           </Fragment>
         ))}
       </Grid>
