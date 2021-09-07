@@ -114,7 +114,6 @@ export default function ManageInvoice({ location, history }) {
   };
 
   const getInvoiceProducts = (invoicenumber) => {
-    //setDeleted(false);
     Axios.get("/api/invoice/product", {
       params: { invoicenumber },
     })
@@ -141,7 +140,7 @@ export default function ManageInvoice({ location, history }) {
 
   const toggleDisabled = (idx) => {
     const disable = _.clone(disableEdit);
-    // disable[idx] = true;
+    disable[idx] = true;
     disable.forEach(function (part, index) {
       if (index === idx) {
         this[index] = true;
@@ -159,20 +158,12 @@ export default function ManageInvoice({ location, history }) {
     })
       .then((res) => res.data)
       .then((det) => {
-        console.log(det);
         toggleDisabled(idx);
         setProduct({
           ...product,
           ...det,
           attributes: product.attributes
         });
-
-        let a = [];
-        det.attributescaption.forEach(element => {
-          a.push(element);
-        });
-        console.log(a);
-        console.log(det);
         setProductAttributes(det.attributescaption);
         setListCode(det.attributes === "" ? null : det.attributes);
         setEditing(true);
@@ -188,7 +179,6 @@ export default function ManageInvoice({ location, history }) {
     setDeleted(false);
   };
   const handleDetail = (product) => {
-    console.log(product);
     setProduct(product);
     setEditing(false);
     setModalOpen(true);
@@ -594,18 +584,6 @@ export default function ManageInvoice({ location, history }) {
                     <td>
                       {product.name}
                       <br />
-                      {/* {product.attrs_json !== null ?
-                        product.attrs_json.map((e, indx) => {
-                          if (e.code === null || e.value === null) {
-                            return [];
-                          } else {
-                            return (
-                              <span key={indx}>
-                                {e.name}: {e.value},
-                              </span>
-                            );
-                          }
-                        }) : ""} */}
                       {product.attributescaption}
                     </td>
                     <td className="text-center">{product.code}</td>
@@ -648,16 +626,15 @@ export default function ManageInvoice({ location, history }) {
                       <button
                         className="btn btn-w-icon detail-item"
                         title="Детали"
-                        //disabled={disableEdit[idx]}
+                        disabled={disableEdit[idx]}
                         onClick={() => {
                           handleDetail(product);
                         }}
                       ></button>
                       <button
-                        //disabled={isEditing}
                         className="btn btn-w-icon delete-item"
                         title="Удалить"
-                        //disabled={disableEdit[idx]}
+                        disabled={disableEdit[idx]}
                         onClick={() => {
                           handleDeleteProduct(product, idx);
                         }}
@@ -749,9 +726,6 @@ export default function ManageInvoice({ location, history }) {
             newProduct={addProduct}
             invoiceNumber={invoiceNumber}
             editProduct={product}
-            attributeCode={attributeCode}
-            setAttributeCode={setAttributeCode}
-
             productAttributes={productAttributes}
             setProductAttributes={setProductAttributes}
             listCode={listCode}

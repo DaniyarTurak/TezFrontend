@@ -6,115 +6,21 @@ import IconButton from '@material-ui/core/IconButton';
 import SweetAlert from "react-bootstrap-sweetalert";
 import ErrorAlert from "../../../ReusableComponents/ErrorAlert";
 
-export default function AddAttribute({
-  readyOpt,
-  setReadyOpt,
-  clearBoard,
-  changeState,
-  attributescaption,
-  editAttrubutes,
+export default function EditAttributes({
   setDeleted,
-  attrIdandValue,
-  setAttrIdandValue,
-  newAttrs,
-  setNewAttrs,
-
   productAttributes,
   setProductAttributes
 }) {
-  // const [changedAttr, setChangedAttr] = useState([]);
   const [sweetalert, setSweetAlert] = useState(null);
-
-  // useEffect(() => {
-  //   if (attributescaption && attributescaption.length > 0) {
-  //     attributescaption.forEach((element) => {
-  //       element = { ...element, value_select: "" };
-  //     });
-  //     setChangedAttr(attributescaption);
-  //     getAttributes();
-  //   } else {
-  //     if (editAttrubutes && editAttrubutes.length > 0) {
-  //       editAttrubutes.forEach((element) => {
-  //         element = { ...element, value_select: "" };
-  //       });
-  //       setChangedAttr(editAttrubutes);
-  //       getAttributes();
-  //     }
-  //   }
-  // }, [attributescaption]);
-
-  // useEffect(() => {
-  //   if (!editAttrubutes || editAttrubutes === []) {
-  //     clear();
-  //   }
-  //   setReadyOpt([]);
-  // }, [clearBoard]);
-
-  // useEffect(() => {
-  //   getAttrListId(readyOpt);
-  //   // console.log(readyOpt);
-  // }, [readyOpt]);
-
-  const [listAttributes, setListAttributes] = useState([]);
 
   useEffect(() => {
     getAttributes();
   }, []);
 
-  const filterSpr = (attributes) => {
-    let product =
-      attributescaption && attributescaption.length > 0 ? attributescaption : editAttrubutes;
-    let allSpr = [];
-    attributes.forEach((attr) => {
-      if (attr.format === "SPR") {
-        allSpr.push(attr);
-      }
-    });
-    let sprToProd = [];
-    product.forEach((ca) => {
-      allSpr.forEach((as) => {
-        if (ca.attribute_id !== 0 && !ca.attribute_id) {
-        } else {
-          if (ca.attribute_id.toString() === as.id) {
-            sprToProd.push({ id: as.id, values: as.sprvalues });
-          }
-        }
-      });
-    });
-    sprToProd.forEach((element, indx) => {
-      let a = [];
-      element.values.forEach((el, i) => {
-        a.push({ id: i, label: el });
-      });
-      sprToProd[indx] = { ...sprToProd[indx], options: a };
-    });
-    product.forEach((prod, i) => {
-      sprToProd.forEach((element) => {
-        if (prod.attribute_id.toString() === element.id) {
-          product[i] = {
-            ...product[i],
-            options: element.options,
-            attribute_value: "",
-          };
-        }
-      });
-    });
-    product.forEach((element, i) => {
-      if (element.attribute_format === "DATE") {
-        product[i] = {
-          ...product[i],
-          attribute_value: "",
-        };
-      }
-    });
-    setReadyOpt(product);
-  };
-
   const getAttributes = () => {
     Axios.get("/api/attributes")
       .then((res) => res.data)
       .then((attributes) => {
-        console.log(attributes);
         attributes.forEach(attr => {
           if (attr.sprvalues.length > 0) {
             let temp = [];
@@ -123,12 +29,9 @@ export default function AddAttribute({
             });
             attr.options = temp;
           }
-          console.log(attributes);
-          setListAttributes(attributes);
           productAttributes.forEach((prod, idx) => {
             attributes.forEach(attr => {
               if (prod.attribute_id.toString() === attr.id.toString()) {
-                console.log("attr.options", attr.options);
                 setProductAttributes(prevState => {
                   let obj = prevState[idx];
                   obj.options = attr.options;
@@ -144,48 +47,13 @@ export default function AddAttribute({
       });
   };
 
-  // const clear = () => {
-  //   setChangedAttr(attributescaption);
-  //   setReadyOpt([]);
-  // };
-
-
-
-
-
-  // const getAttrListId = (id) => {
-  //   let a = [];
-  //   if (changedAttr.length > 0) {
-  //     changedAttr.forEach((el, i) => {
-  //       if (id) {
-  //         if (el.attribute_id !== id) {
-  //           a.push({
-  //             code: el.attribute_id,
-  //             value: el.attribute_value,
-  //             name: el.attribute_name,
-  //           });
-  //         }
-  //       }
-  //       else {
-  //         a.push({
-  //           code: el.attribute_id,
-  //           value: el.attribute_value,
-  //           name: el.attribute_name,
-  //         });
-  //       }
-  //     });
-  //   }
-  //   changeState(a);
-  // };
-
-
   const deleteAttribute = (attribute) => {
-    console.log(attribute);
     setDeleted(true);
     const reqdata = {
       listcode: attribute.attribute_listcode,
       attribcode: attribute.attribute_id
     };
+
     Axios.post("/api/attributes/delete", reqdata)
       .then((res) => {
         if (res.data.code === "success") {
@@ -224,14 +92,13 @@ export default function AddAttribute({
   };
 
   const sprChange = (event, attribute) => {
-    console.log(event, attribute);
     let index;
     productAttributes.forEach((attr, i) => {
       if (attr.attribute_id === attribute.attribute_id) {
         index = i;
       }
     });
-    setReadyOpt((prevState) => {
+    setProductAttributes((prevState) => {
       let obj = prevState[index];
       obj.attribute_value = event.label;
       obj.value_select = event;
@@ -256,19 +123,6 @@ export default function AddAttribute({
       </SweetAlert>
     );
   };
-
-
-  const showOptions = (attribute_id) => {
-    let a = {};
-    listAttributes.forEach(element => {
-      if (element.id === attribute_id) {
-        a = element.options;
-
-      }
-    });
-    console.log(a);
-    return a;
-  }
 
   return (
     <Fragment>

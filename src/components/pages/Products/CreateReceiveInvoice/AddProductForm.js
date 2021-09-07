@@ -66,15 +66,12 @@ let AddProductForm = ({
   isEditing,
   handleEditing,
   editProduct,
-  attributeCode,
-  setAttributeCode,
-
   productAttributes,
   setProductAttributes,
   listCode,
   setListCode
 }) => {
-  const [isDeleted, setDeleted] = useState(false);
+
   const [addProductData, setAddProductData] = useState("");
   const [barcode, setBarcode] = useState("");
   const [bottomLimit, setBottomLimit] = useState(0);
@@ -103,7 +100,6 @@ let AddProductForm = ({
   const [productSelectValue, setProductSelectValue] = useState("");
   const [oldprice, setOldPrice] = useState(0);
   const [sellByPieces, setSellByPieces] = useState(false);
-  const [selectedAttribute, setSelectedAttribute] = useState([]);
   const [staticprice, setStaticPrice] = useState("");
   const [taxOptions, setTaxOptions] = useState([]);
   const [topLimit, setTopLimit] = useState(0);
@@ -111,27 +107,6 @@ let AddProductForm = ({
   const [unitOptions, setUnitOptions] = useState([]);
   const [updateprice, setUpdatePrice] = useState(true);
   const [completedProduct, setCompletedProduct] = useState("");
-  const [attributescaption, setAttributeCapation] = useState([]);
-  const [attrIdandValue, setAttrIdandValue] = useState([]);
-  const [editAttrubutes, setEditAttrubutes] = useState([]);
-  const [readyOpt, setReadyOpt] = useState([]);
-  const [newAttrs, setNewAttrs] = useState([]);
-
-
-  useEffect(() => {
-    if (editProduct !== "") {
-      setEditAttrubutes(Array.isArray(editProduct.attributescaption) ? editProduct.attributescaption : editProduct.attrs_json);
-      // setAttributeCode(editProduct.attributes);
-    }
-  }, [editProduct]);
-
-  useEffect(() => {
-    changeState(attrIdandValue);
-  }, []);
-
-  useEffect(() => {
-    console.log("productAttributes", productAttributes)
-  }, [productAttributes]);
 
   const companyData =
     JSON.parse(sessionStorage.getItem("isme-company-data")) || {};
@@ -145,14 +120,6 @@ let AddProductForm = ({
     getOptions("top_limit");
     getOptions("bottom_limit");
   }, []);
-
-  useEffect(() => {
-    if (editProduct !== "") {
-      setReadyOpt(Array.isArray(editProduct.attributescaption) ? editProduct.attributescaption : editProduct.attrs_json);
-    }
-    // console.log("editProduct", editProduct)
-  }, [editProduct]);
-
 
   useEffect(() => {
     if (completedProduct) {
@@ -190,9 +157,6 @@ let AddProductForm = ({
         value: editProduct.taxid,
       };
       //Расчёт Единиц измерения
-      // const unitLabel = unitOptions.filter((e) => {
-      //   return e && e.id === editProduct.unitspridc;
-      // });
       const unit = {
         label: editProduct.units_name_new
           ? editProduct.units_name_new
@@ -390,23 +354,17 @@ let AddProductForm = ({
   };
 
   const clearForm = () => {
-    // console.log("clear");
     setClearBoard(!clearBoard);
     setBarcode(null);
     setCnofeaName(null);
     setUpdatePrice(true);
     setSellByPieces(false);
     setProductSelectValue("");
-    // setProductID(null);
-    // setAttributeCode(null);
-    setSelectedAttribute([]);
     setLastPurchasePrice(0);
     setNewPrice(0);
     setNewProductGenerating(false);
     setBarcodeExists(false);
     setStaticPrice("");
-    setAttributeCapation([]);
-    setAttrIdandValue([]);
     reset();
     const tx = taxOptions.find((tax) => {
       return tax.id === "1";
@@ -430,7 +388,7 @@ let AddProductForm = ({
       return;
     } else if (!barcodeChanged) {
       clearForm();
-      // setAttributeCode(null);
+      setProductAttributes([]);
       setListCode(null);
     } else {
       setBarcode(barcodeChanged);
@@ -671,16 +629,16 @@ let AddProductForm = ({
 
   const productListChange = (productChanged) => {
     clearForm();
+    setProductAttributes([]);
     setListCode(null);
-    // setAttributeCode(null);
     setProductSelectValue(productChanged);
     if (productChanged.code) {
       setBarcode(productChanged.code);
       handleSearch(productChanged.code);
     } else {
       clearForm();
+      setProductAttributes([]);
       setListCode(null);
-      // setAttributeCode(null);
     }
   };
 
@@ -708,7 +666,7 @@ let AddProductForm = ({
   const generateBarcode = () => {
     clearForm();
     setListCode(null);
-    // setAttributeCode(null);
+    setProductAttributes([]);
     Axios.get("/api/invoice/newbarcode")
       .then((res) => res.data)
       .then((barcodeseq) => {
@@ -783,7 +741,6 @@ let AddProductForm = ({
           clearForm();
           setListCode(null);
           setProductAttributes([]);
-          // setAttributeCode(null);
           dispatch(change("AddProductForm", "code", barcodeChanged));
           setBarcode(barcodeChanged);
           setLoading(false);
@@ -813,12 +770,6 @@ let AddProductForm = ({
         setProductID(prodID.slice(-1) === "s" ? null : product.id);
         setLoading(false);
         setProductSelectValue(name);
-
-        const attributeCapat = product.attributescaption;
-        setAttributeCapation(attributeCapat);
-
-        const attrCode = product.attributes === "0" ? null : product.attributes;
-        // setAttributeCode(attrCode);
 
         const productCategory = {
           label: product.category,
@@ -853,7 +804,7 @@ let AddProductForm = ({
 
           dispatch(change("AddProductForm", "unitsprid", unit));
         }
-        // //Услуга
+        //Услуга
         if (product.unitsprid === "3") {
           setDisableUnits(true);
           dispatch(change("AddProductForm", "lastpurchaseprice", 0));
@@ -949,16 +900,10 @@ let AddProductForm = ({
   };
   const addProduct = (data) => {
     let state = true;
-    console.log(productAttributes);
-
     productAttributes.forEach((element) => {
-      // if (!element.attribute_id) {
-      //   state = true;
-      // } else {
       if (!element.attribute_value || element.attribute_value === "") {
         state = false;
       }
-      // }
     });
 
     if (!state) {
@@ -987,23 +932,10 @@ let AddProductForm = ({
       const newData = {
         amount: unitsprid === "3" ? 0 : data.amount,
         attributes: listCode,
-        //  attributeCode,
-        // !isEditing
-        //   ? attributeCode
-        //   : editProduct.attributes !== "0" &&
-        //     parseInt(editProduct.attributes, 0) >= 0
-        //     ? editProduct.attributes
-        //     : editProduct.attributes,
-
         brand: data.brand ? data.brand.value : 0,
         category: data.category ? data.category.value : null,
         cnofea: data.cnofea,
         code: !isEditing ? data.code : editProduct.code,
-        // id: !isEditing
-        //   ? productID
-        //   : editProduct.is_new
-        //     ? null
-        //     : editProduct.id,
         id: productID || editProduct.id,
         isstaticprice: data.isstaticprice,
         lastpurchaseprice: oldprice,
@@ -1019,12 +951,6 @@ let AddProductForm = ({
         unitsprid: data.unitsprid.value,
         updateprice,
         attrlist: temp,
-        // attrIdandValue.concat(newAttrs)
-        // editProduct.attributes
-        //   ? attrIdandValue.length > 0 ? attrIdandValue : newAttrs
-        //   : attributeCode === "0" || !attributeCode
-        //     ? []
-        //     : attrIdandValue.length > 0 ? attrIdandValue : newAttrs,
       };
       // всё что выше переписывалось 100500 раз, трогать осторожно.
 
@@ -1038,11 +964,9 @@ let AddProductForm = ({
       newData.code = newData.code.replace(/\\t| {2}/g, "").trim();
       Axios.post("/api/invoice/products/add", reqdata)
         .then((res) => {
-          setEditAttrubutes(newData.attrlist);
           const newProductChanged = {
             invoice: reqdata.invoice,
             attributes: listCode,
-            // attributeCode || null,
             categoryName: newData.category,
             brand: newData.brand,
             code: newData.code,
@@ -1060,9 +984,6 @@ let AddProductForm = ({
           clearForm();
           setListCode(null);
           setProductAttributes([]);
-          // setAttributeCode(null);
-          // setReadyOpt([]);
-          setProductAttributes([]);
           alert.success("Товар успешно добавлен", {
             position: "top-right",
             effect: "bouncyflip",
@@ -1076,9 +997,6 @@ let AddProductForm = ({
         });
     }
   };
-  const changeState = (value) => {
-    setAttrIdandValue(value);
-  };
 
   const numberValidation = (e) => {
     const { value } = e.target;
@@ -1087,7 +1005,6 @@ let AddProductForm = ({
   };
 
   const reloadPage = () => {
-    //https://github.com/Microsoft/TypeScript/issues/28898
     window.location.reload(false);
   };
 
@@ -1359,21 +1276,6 @@ let AddProductForm = ({
             <div style={{ marginLeft: "2.2rem" }} className="col-md-8">
               <div className="col-md-12">
                 <EditAttributes
-                  readyOpt={readyOpt}
-                  setReadyOpt={setReadyOpt}
-                  setDeleted={setDeleted}
-                  attributescaption={attributescaption}
-                  editAttrubutes={editAttrubutes}
-                  changeState={changeState}
-                  isEditing={isEditing}
-                  editProduct={editProduct}
-                  selected={selectedAttribute}
-                  clearBoard={clearBoard}
-                  attrIdandValue={attrIdandValue}
-                  setAttrIdandValue={setAttrIdandValue}
-                  setNewAttrs={setNewAttrs}
-                  newAttrs={newAttrs}
-
                   productAttributes={productAttributes}
                   setProductAttributes={setProductAttributes}
                 />
@@ -1381,20 +1283,12 @@ let AddProductForm = ({
             </div>
           </div>
         }
-        {/* {(productAttributes.length === 0) && */}
         <div className="row justify-content-center">
           <div style={{ marginLeft: "2.2rem" }} className="col-md-8">
             <div className="col-md-12">
               <label htmlFor="">Добавление партийных характеристик</label>
               <AddAttributes
                 barcode={barcode}
-                readyOpt={readyOpt}
-                setReadyOpt={setReadyOpt}
-                attributeCode={attributeCode}
-                setAttributeCode={setAttributeCode}
-                setNewAttrs={setNewAttrs}
-                newAttrs={newAttrs}
-
                 listCode={listCode}
                 setListCode={setListCode}
                 productAttributes={productAttributes}
@@ -1403,14 +1297,13 @@ let AddProductForm = ({
             </div>
           </div>
         </div>
-        {/* } */}
         <div className="row justify-content-center text-right mt-20">
           <div className="col-md-8">
             <button
               type="button"
               className="btn mr-10"
               disabled={isSubmitting || pristine || submitting}
-              onClick={clearForm}
+              onClick={() => { clearForm(); setListCode(null); setProductAttributes([]); }}
             >
               Очистить
             </button>
