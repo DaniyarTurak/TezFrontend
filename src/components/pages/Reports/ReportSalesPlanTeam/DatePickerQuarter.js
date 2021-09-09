@@ -20,6 +20,11 @@ export default function DatePickerQuarter({ handleQuarter }) {
       onChange={handleChange}
       dateFormat="yyyy, QQQ"
       showQuarterYearPicker
+      inputProps={{
+        style: {
+          minHeight: "41px"
+        }
+      }}
     />
   );
 }

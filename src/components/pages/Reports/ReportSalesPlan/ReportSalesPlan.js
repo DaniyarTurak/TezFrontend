@@ -56,6 +56,7 @@ export default function ReportSalesPlan({ companyProps }) {
     ? JSON.parse(sessionStorage.getItem("isme-user-data")).companyname
     : "";
   const now = Moment().format("DD.MM.YYYY HH:mm:ss");
+  const [planType, setPlanType] = useState({ value: 1, label: "Ежедневный" });
 
   useEffect(() => {
     getCashboxUsers();
@@ -121,7 +122,7 @@ export default function ReportSalesPlan({ companyProps }) {
     Axios.get(
       `/api/report/salesplan/daily${cashboxuser.value === "0" ? "/all" : ""}`,
       {
-        params: { dateFrom, dateTo, cashboxuser: cashboxuser.value },
+        params: { dateFrom, dateTo, cashboxuser: cashboxuser.value, type: planType.value },
       }
     )
       .then((res) => res.data)
@@ -147,6 +148,8 @@ export default function ReportSalesPlan({ companyProps }) {
         dateFromChange={dateFromChange}
         dateToChange={dateToChange}
         getDailyBonus={getDailyBonus}
+        planType={planType}
+        setPlanType={setPlanType}
       />
       {isLoading && (
         <Grid item xs={12}>

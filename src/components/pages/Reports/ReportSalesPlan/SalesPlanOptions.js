@@ -2,6 +2,10 @@ import React, { Fragment } from "react";
 import Grid from "@material-ui/core/Grid";
 import MaterialDateDefault from "../../../ReusableComponents/MaterialDateDefault";
 import AutocompleteSelect from "../../../ReusableComponents/AutocompleteSelect";
+import FormControl from '@material-ui/core/FormControl';
+import Select from '@material-ui/core/Select';
+import InputLabel from '@material-ui/core/InputLabel';
+import MenuItem from '@material-ui/core/MenuItem';
 
 export default function SalesPlanOptions({
   cashboxuser,
@@ -14,7 +18,15 @@ export default function SalesPlanOptions({
   dateToChange,
   getDailyBonus,
   isSubmitting,
+  planType,
+  setPlanType
 }) {
+  const planTypes = [
+    { value: 1, label: "Ежедневный" },
+    { value: 2, label: "Ежемесячный" },
+    { value: 3, label: "Ежеквартальный" }
+  ];
+
   return (
     <Fragment>
       <Grid item xs={12}>
@@ -36,6 +48,15 @@ export default function SalesPlanOptions({
           options={cashboxUsers}
           noOptions="Пользователи не найдены"
           label="Пользователь"
+        />
+      </Grid>
+      <Grid item xs={3}>
+        <AutocompleteSelect
+          value={planType}
+          onChange={(e, value) => setPlanType(value)}
+          options={planTypes}
+          noOptions=""
+          label="Тип плана"
         />
       </Grid>
     </Fragment>

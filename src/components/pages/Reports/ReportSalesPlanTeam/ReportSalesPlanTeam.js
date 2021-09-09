@@ -58,6 +58,7 @@ export default function ReportSalesPlanTeam({ companyProps, holding }) {
   const [totalAward, setTotalAward] = useState(0);
   const [uniqueSold, setUniqueSold] = useState([]);
   const [type, setType] = useState(1);
+  const [planType, setPlanType] = useState({ value: 1, label: "Ежедневный" });
 
   const company = JSON.parse(sessionStorage.getItem("isme-user-data"))
     ? JSON.parse(sessionStorage.getItem("isme-user-data")).companyname
@@ -70,7 +71,7 @@ export default function ReportSalesPlanTeam({ companyProps, holding }) {
 
   useEffect(() => {
     clean();
-  }, [type]);
+  }, [planType.value]);
 
   useEffect(() => {
     getPoints();
@@ -190,14 +191,14 @@ export default function ReportSalesPlanTeam({ companyProps, holding }) {
   };
 
   const handleSearch = () => {
-    if ((type === 1 || type === 2) && !checkDateRange()) {
+    if ((planType.value === 1 || planType.value === 2) && !checkDateRange()) {
       return Alert.warning("Максимальный период 3 месяца", {
         position: "top-right",
         effect: "bouncyflip",
         timeout: 3000,
       });
     } else if (
-      type === 2 &&
+      planType.value === 2 &&
       ((Moment().month() !== Moment(dateTo).month() &&
         dateTo !== Moment(dateTo).startOf("month").format("YYYY-MM-DD")) ||
         (Moment().month() !== Moment(dateFrom).month() &&
@@ -216,7 +217,7 @@ export default function ReportSalesPlanTeam({ companyProps, holding }) {
         dateTo,
         company: company.value,
         holding,
-        type,
+        type: planType.value,
         point: point.value,
       },
     })
@@ -293,7 +294,8 @@ export default function ReportSalesPlanTeam({ companyProps, holding }) {
         onPointChange={onPointChange}
         point={point}
         points={points}
-        type={type}
+        planType={planType}
+        setPlanType={setPlanType}
       />
 
       {isLoading && (

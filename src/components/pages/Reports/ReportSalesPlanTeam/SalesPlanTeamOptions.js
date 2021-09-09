@@ -20,17 +20,20 @@ export default function SalesPlanTeamOptions({
   onPointChange,
   point,
   points,
-  type,
+  planType,
+  setPlanType
 }) {
-  const buttonArr = [
-    { id: 1, name: "Ежедневный план" },
-    { id: 2, name: "Ежемесячный план" },
-    { id: 3, name: "Ежеквартальный план" },
-    { id: 4, name: "Ежегодный план" },
+
+  const planTypes = [
+    { value: 1, label: "Ежедневный" },
+    { value: 2, label: "Ежемесячный" },
+    { value: 3, label: "Ежеквартальный" }
   ];
+
   return (
     <Fragment>
-      <Grid item xs={12}>
+
+      <Grid item xs={3}>
         <AutocompleteSelect
           value={point}
           onChange={onPointChange}
@@ -39,24 +42,16 @@ export default function SalesPlanTeamOptions({
           label="Торговая точка"
         />
       </Grid>
-
-      {buttonArr.map((b) => {
-        return (
-          <Grid key={b.id} item xs={3} className={classes.buttonGrid}>
-            <Button
-              fullWidth
-              className={classes.button}
-              variant={b.id === type ? "contained" : "outlined"}
-              color="primary"
-              onClick={() => changePlanDate(b.id)}
-            >
-              {b.name}
-            </Button>
-          </Grid>
-        );
-      })}
-
-      {(type === 1 || type === 2) && (
+      <Grid item xs={3}>
+        <AutocompleteSelect
+          value={planType}
+          onChange={(e, value) => setPlanType(value)}
+          options={planTypes}
+          noOptions="Торговые точки не найдены"
+          label="Тип плана"
+        />
+      </Grid>
+      {(planType.value === 1 || planType.value === 2) && (
         <Grid item xs={12}>
           <MaterialDateDefault
             changeDate={changeDate}
@@ -69,19 +64,18 @@ export default function SalesPlanTeamOptions({
         </Grid>
       )}
 
-      {type === 3 && (
+      {planType.value === 3 && (
         <Grid item xs={3}>
           <DatePickerQuarter handleQuarter={handleQuarter} />
         </Grid>
       )}
 
-      {type === 4 && (
+      {planType.value === 4 && (
         <Grid item xs={3}>
           <DatePickerYear handleYear={handleYear} />
         </Grid>
       )}
-
-      {(type === 3 || type === 4) && (
+      {(planType.value === 3 || planType.value === 4) && (
         <Grid item xs={3}>
           <Button
             fullWidth

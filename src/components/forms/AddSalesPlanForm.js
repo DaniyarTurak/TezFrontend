@@ -34,7 +34,9 @@ let AddSalesPlanForm = ({
     } else {
       getCashboxUsers();
       getPoints();
-    }
+    };
+    console.log(salesPlanData);
+    console.log(bonusType);
   }, []);
 
   const getCashboxUsers = () => {
@@ -79,10 +81,10 @@ let AddSalesPlanForm = ({
     data.quarterly = data.quarterly || 0;
     data.yearly = data.yearly || 0;
 
-    data.d_rate = data.d_rate || 0;
-    data.m_rate = data.m_rate || 0;
-    data.q_rate = data.q_rate || 0;
-    data.y_rate = data.y_rate || 0;
+    data.drate = data.drate || 0;
+    data.mrate = data.mrate || 0;
+    data.qrate = data.qrate || 0;
+    data.yrate = data.yrate || 0;
 
     const reqdata = { plan: data };
     console.log(reqdata);
@@ -170,7 +172,7 @@ let AddSalesPlanForm = ({
         <div className="row mt-10">
           <div className="col-md-12">
             <label htmlFor="">
-              {bonusType === "1"
+              {bonusType.toString() === "1"
                 ? "Выберите кассира"
                 : "Выберите торговую точку"}
             </label>
@@ -179,7 +181,7 @@ let AddSalesPlanForm = ({
                 name="object"
                 component={SelectField}
                 placeholder={
-                  bonusType === "1"
+                  bonusType.toString() === "1"
                     ? "Выберите пользователя"
                     : "Выберите торговую точку"
                 }
@@ -215,7 +217,7 @@ let AddSalesPlanForm = ({
           <div className="col-md-6">
             <label htmlFor="">Ставка для расчета бонусов</label>
             <Field
-              name="d_rate"
+              name="drate"
               component={InputGroup}
               type="text"
               className="form-control"
@@ -237,7 +239,7 @@ let AddSalesPlanForm = ({
           <div className="col-md-6">
             <label htmlFor="">Ставка для расчета бонусов</label>
             <Field
-              name="m_rate"
+              name="mrate"
               component={InputGroup}
               type="text"
               className="form-control"
@@ -261,7 +263,7 @@ let AddSalesPlanForm = ({
           <div className="col-md-6">
             <label htmlFor="">Ставка для расчета бонусов</label>
             <Field
-              name="q_rate"
+              name="qrate"
               component={InputGroup}
               type="text"
               className="form-control"
@@ -269,7 +271,7 @@ let AddSalesPlanForm = ({
               appendItem={<span className="input-group-text">&#37;</span>}
             />
           </div>
-          <div className="col-md-6">
+          {/* <div className="col-md-6">
             <label htmlFor="">Годовой план</label>
             <Field
               name="yearly"
@@ -283,14 +285,14 @@ let AddSalesPlanForm = ({
           <div className="col-md-6">
             <label htmlFor="">Ставка для расчета бонусов</label>
             <Field
-              name="y_rate"
+              name="yrate"
               component={InputGroup}
               type="text"
               className="form-control"
               placeholder="Ставка для расчета бонусов"
               appendItem={<span className="input-group-text">&#37;</span>}
             />
-          </div>
+          </div> */}
         </div>
         <div className="row mt-10">
           <div className="col-md-12">
