@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from "react";
 import { Field, reduxForm, initialize } from "redux-form";
-
+import Grid from "@material-ui/core/Grid";
 import { InputGroup, SelectField, InputField } from "../fields";
 import { RequiredField } from "../../validation";
 
@@ -74,27 +74,32 @@ let AddSalesPlanForm = ({
     data.type = bonusType;
     data.deleted = false;
 
-    data.daily = data.daily || null;
-    data.monthly = data.monthly || null;
-    data.quarterly = data.quarterly || null;
-    data.yearly = data.yearly || null;
+    data.daily = data.daily || 0;
+    data.monthly = data.monthly || 0;
+    data.quarterly = data.quarterly || 0;
+    data.yearly = data.yearly || 0;
+
+    data.d_rate = data.d_rate || 0;
+    data.m_rate = data.m_rate || 0;
+    data.q_rate = data.q_rate || 0;
+    data.y_rate = data.y_rate || 0;
 
     const reqdata = { plan: data };
-
+    console.log(reqdata);
     Axios.post("/api/salesplan/manage", reqdata)
       .then(() => {
         salesPlanData
           ? history.push({
-              pathname: "/usercabinet/salesplan",
-              state: {
-                fromEdit: true,
-              },
-            })
+            pathname: "/usercabinet/salesplan",
+            state: {
+              fromEdit: true,
+            },
+          })
           : Alert.success("План продаж успешно сохранен", {
-              position: "top-right",
-              effect: "bouncyflip",
-              timeout: 2000,
-            });
+            position: "top-right",
+            effect: "bouncyflip",
+            timeout: 2000,
+          });
         setSubmitting(false);
         dispatch(reset("AddSalesPlanForm"));
       })
@@ -142,9 +147,8 @@ let AddSalesPlanForm = ({
             <div className="col-md-6">
               <button
                 type="button"
-                className={`btn btn-block btn-sm ${
-                  bonusType === "1" ? "btn-info" : "btn-outline-info"
-                }`}
+                className={`btn btn-block btn-sm ${bonusType === "1" ? "btn-info" : "btn-outline-info"
+                  }`}
                 onClick={() => changeBonusType("1")}
               >
                 Индивидуальный
@@ -153,9 +157,8 @@ let AddSalesPlanForm = ({
             <div className="col-md-6">
               <button
                 type="button"
-                className={`btn btn-block btn-sm ${
-                  bonusType === "3" ? "btn-info" : "btn-outline-info"
-                }`}
+                className={`btn btn-block btn-sm ${bonusType === "3" ? "btn-info" : "btn-outline-info"
+                  }`}
                 onClick={() => changeBonusType("3")}
               >
                 Командный
@@ -210,6 +213,17 @@ let AddSalesPlanForm = ({
             />
           </div>
           <div className="col-md-6">
+            <label htmlFor="">Ставка для расчета бонусов</label>
+            <Field
+              name="d_rate"
+              component={InputGroup}
+              type="text"
+              className="form-control"
+              placeholder="Ставка для расчета бонусов"
+              appendItem={<span className="input-group-text">&#37;</span>}
+            />
+          </div>
+          <div className="col-md-6">
             <label htmlFor="">Месячный план</label>
             <Field
               name="monthly"
@@ -218,6 +232,17 @@ let AddSalesPlanForm = ({
               className="form-control"
               placeholder="Месячный план"
               appendItem={<span className="input-group-text">&#8376;</span>}
+            />
+          </div>
+          <div className="col-md-6">
+            <label htmlFor="">Ставка для расчета бонусов</label>
+            <Field
+              name="m_rate"
+              component={InputGroup}
+              type="text"
+              className="form-control"
+              placeholder="Ставка для расчета бонусов"
+              appendItem={<span className="input-group-text">&#37;</span>}
             />
           </div>
         </div>
@@ -234,6 +259,17 @@ let AddSalesPlanForm = ({
             />
           </div>
           <div className="col-md-6">
+            <label htmlFor="">Ставка для расчета бонусов</label>
+            <Field
+              name="q_rate"
+              component={InputGroup}
+              type="text"
+              className="form-control"
+              placeholder="Ставка для расчета бонусов"
+              appendItem={<span className="input-group-text">&#37;</span>}
+            />
+          </div>
+          <div className="col-md-6">
             <label htmlFor="">Годовой план</label>
             <Field
               name="yearly"
@@ -242,6 +278,17 @@ let AddSalesPlanForm = ({
               className="form-control"
               placeholder="Годовой план"
               appendItem={<span className="input-group-text">&#8376;</span>}
+            />
+          </div>
+          <div className="col-md-6">
+            <label htmlFor="">Ставка для расчета бонусов</label>
+            <Field
+              name="y_rate"
+              component={InputGroup}
+              type="text"
+              className="form-control"
+              placeholder="Ставка для расчета бонусов"
+              appendItem={<span className="input-group-text">&#37;</span>}
             />
           </div>
         </div>

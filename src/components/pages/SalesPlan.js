@@ -145,19 +145,39 @@ class SalesPlan extends Component {
 							<table className="table table-hover">
 								<thead>
 									<tr>
-										<th style={{ width: "1%" }}></th>
-										<th style={{ width: "21%" }}>Имя кассира</th>
-										<th style={{ width: "21%" }}>Название торговой точки</th>
-										<th className="text-center" style={{ width: "12%" }}>Еженедневный</th>
-										<th className="text-center" style={{ width: "12%" }}>Месячный</th>
-										<th className="text-center" style={{ width: "12%" }}>Квартальный</th>
-										<th className="text-center" style={{ width: "12%" }}>Годовой</th>
-										<th style={{ width: "9%" }}></th>
+										<th style={{ width: "1%" }}
+										// rowSpan={2}
+										></th>
+										<th style={{ width: "21%" }}
+										// rowSpan={2} 
+										>Имя кассира</th>
+										<th style={{ width: "21%" }}
+										// rowSpan={2}
+										>Название торговой точки</th>
+										<th className="text-center" colSpan={0} style={{ width: "12%" }}>Еженедневный</th>
+										<th className="text-center" colSpan={0} style={{ width: "12%" }}>Месячный</th>
+										<th className="text-center" colSpan={0} style={{ width: "12%" }}>Квартальный</th>
+										<th className="text-center" colSpan={0} style={{ width: "12%" }}>Годовой</th>
+										<th style={{ width: "9%" }}
+										// rowSpan={2}
+										></th>
 									</tr>
+									{/* <tr>
+
+
+										<th className="text-center" style={{ width: "6%" }}>Сумма</th>
+										<th className="text-center" style={{ width: "6%" }}>Процент</th>
+										<th className="text-center" style={{ width: "6%" }}>Сумма</th>
+										<th className="text-center" style={{ width: "6%" }}>Процент</th>
+										<th className="text-center" style={{ width: "6%" }}>Сумма</th>
+										<th className="text-center" style={{ width: "6%" }}>Процент</th>
+										<th className="text-center" style={{ width: "6%" }}>Сумма</th>
+										<th className="text-center" style={{ width: "6%" }}>Процент</th>
+									</tr> */}
 								</thead>
 								<tbody>
 									<tr className="bg-info" style={{ color: "#fff" }}>
-										<td colSpan="8">Индивидуальный план</td>
+										<td colSpan="12">Индивидуальный план</td>
 									</tr>
 
 									{indSalesPlan.map((saleplan, idx) =>
@@ -165,10 +185,30 @@ class SalesPlan extends Component {
 											<td>{idx + 1}</td>
 											<td>{saleplan.name}</td>
 											<td>{saleplan.pointName}</td>
-											<td className={`text-center ${saleplan.daily ? 'tenge' : ''}`}>{saleplan.daily && parseFloat(saleplan.daily).toLocaleString('ru', { minimumFractionDigits: 2 })}</td>
+											<td title="Сумма | Ставка для расчета бонусов" className={`text-center`}>{saleplan.daily && parseFloat(saleplan.daily).toLocaleString('ru', { minimumFractionDigits: 2 })} &#8376;
+												| {saleplan.drate && parseFloat(saleplan.drate).toLocaleString('ru', { minimumFractionDigits: 1 })} %
+											</td>
+											<td title="Сумма | Ставка для расчета бонусов" className={`text-center`}>{saleplan.monthly && parseFloat(saleplan.monthly).toLocaleString('ru', { minimumFractionDigits: 2 })} &#8376;
+												| {saleplan.mrate && parseFloat(saleplan.mrate).toLocaleString('ru', { minimumFractionDigits: 1 })} %
+											</td>
+											<td title="Сумма | Ставка для расчета бонусов" className={`text-center`}>{saleplan.quarterly && parseFloat(saleplan.quarterly).toLocaleString('ru', { minimumFractionDigits: 2 })} &#8376;
+												| {saleplan.qrate && parseFloat(saleplan.qrate).toLocaleString('ru', { minimumFractionDigits: 1 })} %
+											</td>
+											<td title="Сумма | Ставка для расчета бонусов" className={`text-center`}>{saleplan.yearly && parseFloat(saleplan.yearly).toLocaleString('ru', { minimumFractionDigits: 2 })} &#8376;
+												| {saleplan.yrate && parseFloat(saleplan.yrate).toLocaleString('ru', { minimumFractionDigits: 1 })} %
+											</td>
+											{/* <td className={`text-center ${saleplan.daily ? 'tenge' : ''}`}>{saleplan.daily && parseFloat(saleplan.daily).toLocaleString('ru', { minimumFractionDigits: 2 })}</td>
+											<td className={`text-center ${saleplan.drate ? 'percent' : ''}`}>{saleplan.drate && parseFloat(saleplan.drate).toLocaleString('ru', { minimumFractionDigits: 1 })} %</td>
+
 											<td className={`text-center ${saleplan.monthly ? 'tenge' : ''}`}>{saleplan.monthly && parseFloat(saleplan.monthly).toLocaleString('ru', { minimumFractionDigits: 2 })}</td>
+											<td className={`text-center ${saleplan.mrate ? 'percent' : ''}`}>{saleplan.mrate && parseFloat(saleplan.mrate).toLocaleString('ru', { minimumFractionDigits: 1 })} %</td>
+
 											<td className={`text-center ${saleplan.quarterly ? 'tenge' : ''}`}>{saleplan.quarterly && parseFloat(saleplan.quarterly).toLocaleString('ru', { minimumFractionDigits: 2 })}</td>
+											<td className={`text-center ${saleplan.qrate ? 'percent' : ''}`}>{saleplan.qrate && parseFloat(saleplan.qrate).toLocaleString('ru', { minimumFractionDigits: 1 })} %</td>
+
 											<td className={`text-center ${saleplan.yearly ? 'tenge' : ''}`}>{saleplan.yearly && parseFloat(saleplan.yearly).toLocaleString('ru', { minimumFractionDigits: 2 })}</td>
+											<td className={`text-center ${saleplan.drate ? 'percent' : ''}`}>{saleplan.yrate && parseFloat(saleplan.yrate).toLocaleString('ru', { minimumFractionDigits: 1 })} %</td> */}
+
 											<td className="text-right">
 												<button className="btn btn-w-icon edit-item"
 													onClick={() => { this.handleEdit(saleplan) }}>
@@ -209,10 +249,31 @@ class SalesPlan extends Component {
 										<tr key={idx}>
 											<td>{idx + 1}</td>
 											<td>{saleplan.name}</td>
-											<td className={`text-center ${saleplan.daily ? 'tenge' : ''}`}>{saleplan.daily && parseFloat(saleplan.daily).toLocaleString('ru', { minimumFractionDigits: 2 })}</td>
+											<td title="Сумма | Ставка для расчета бонусов" className={`text-center`}>{saleplan.daily && parseFloat(saleplan.daily).toLocaleString('ru', { minimumFractionDigits: 2 })} &#8376;
+												| {saleplan.drate && parseFloat(saleplan.drate).toLocaleString('ru', { minimumFractionDigits: 1 })} %
+											</td>
+											<td title="Сумма | Ставка для расчета бонусов" className={`text-center`}>{saleplan.monthly && parseFloat(saleplan.monthly).toLocaleString('ru', { minimumFractionDigits: 2 })} &#8376;
+												| {saleplan.mrate && parseFloat(saleplan.mrate).toLocaleString('ru', { minimumFractionDigits: 1 })} %
+											</td>
+											<td title="Сумма | Ставка для расчета бонусов" className={`text-center`}>{saleplan.quarterly && parseFloat(saleplan.quarterly).toLocaleString('ru', { minimumFractionDigits: 2 })} &#8376;
+												| {saleplan.qrate && parseFloat(saleplan.qrate).toLocaleString('ru', { minimumFractionDigits: 1 })} %
+											</td>
+											<td title="Сумма | Ставка для расчета бонусов" className={`text-center`}>{saleplan.yearly && parseFloat(saleplan.yearly).toLocaleString('ru', { minimumFractionDigits: 2 })} &#8376;
+												| {saleplan.yrate && parseFloat(saleplan.yrate).toLocaleString('ru', { minimumFractionDigits: 1 })} %
+											</td>
+
+											{/* <td className={`text-center ${saleplan.daily ? 'tenge' : ''}`}>{saleplan.daily && parseFloat(saleplan.daily).toLocaleString('ru', { minimumFractionDigits: 2 })}</td>
+											<td className={`text-center ${saleplan.drate ? 'percent' : ''}`}>{saleplan.drate && parseFloat(saleplan.drate).toLocaleString('ru', { minimumFractionDigits: 1 })} %</td>
+
 											<td className={`text-center ${saleplan.monthly ? 'tenge' : ''}`}>{saleplan.monthly && parseFloat(saleplan.monthly).toLocaleString('ru', { minimumFractionDigits: 2 })}</td>
+											<td className={`text-center ${saleplan.mrate ? 'percent' : ''}`}>{saleplan.mrate && parseFloat(saleplan.mrate).toLocaleString('ru', { minimumFractionDigits: 1 })} %</td>
+
 											<td className={`text-center ${saleplan.quarterly ? 'tenge' : ''}`}>{saleplan.quarterly && parseFloat(saleplan.quarterly).toLocaleString('ru', { minimumFractionDigits: 2 })}</td>
+											<td className={`text-center ${saleplan.qrate ? 'percent' : ''}`}>{saleplan.qrate && parseFloat(saleplan.qrate).toLocaleString('ru', { minimumFractionDigits: 1 })} %</td>
+
 											<td className={`text-center ${saleplan.yearly ? 'tenge' : ''}`}>{saleplan.yearly && parseFloat(saleplan.yearly).toLocaleString('ru', { minimumFractionDigits: 2 })}</td>
+											<td className={`text-center ${saleplan.yrate ? 'percent' : ''}`}>{saleplan.yrate && parseFloat(saleplan.yrate).toLocaleString('ru', { minimumFractionDigits: 1 })} %</td> */}
+
 											<td className="text-right">
 												<button className="btn btn-w-icon edit-item"
 													onClick={() => { this.handleEdit(saleplan) }}>
