@@ -85,6 +85,9 @@ export default function AddAttributes({
             });
             setAttrValues(temp2);
         }
+        else {
+            setAttrValues([]);
+        }
     };
 
     const addAttribute = () => {

@@ -1,18 +1,15 @@
 import React, { Fragment, useEffect, useState } from "react";
-import { withStyles, makeStyles, createStyles } from '@material-ui/core/styles';
-import Paper from '@material-ui/core/Paper';
+import { makeStyles, createStyles } from '@material-ui/core/styles';
 import Grid from '@material-ui/core/Grid';
 import TextField from '@material-ui/core/TextField';
-import AddCircleIcon from '@material-ui/icons/AddCircle';
-import Button from '@material-ui/core/Button';
 import DeleteIcon from '@material-ui/icons/Delete';
 import SaveIcon from '@material-ui/icons/Save';
 import IconButton from '@material-ui/core/IconButton';
-import CancelIcon from '@material-ui/icons/Cancel';
+import Button from '@material-ui/core/Button';
 import Axios from "axios";
 import Alert from "react-s-alert";
 
-export default function ThirdLevel({ categories, updateCategory, deleteCategory, getCategories }) {
+export default function ThirdLevel({ subcategories, number, number2, parentid, parentCategories, setParentCategories }) {
 
     const useStylesAC = makeStyles(theme =>
         createStyles({
@@ -38,58 +35,144 @@ export default function ThirdLevel({ categories, updateCategory, deleteCategory,
         })
     );
     const classesAC = useStylesAC();
-
-    const [subCategories, setSubCategories] = useState([]);
+    const [categories, setCategories] = useState([]);
 
     useEffect(() => {
         let temp = [];
-        categories.forEach(cat => {
-            temp.push({ ...cat, name_temp: cat.name, isAddingSub: false, subName: "" })
+        subcategories.forEach(cat => {
+            temp.push({ ...cat, name_temp: cat.name, isAddingSub: false, subName: "", deleted: false })
         });
-        setSubCategories(temp);
-    }, [categories]);
-
+        setCategories(temp);
+    }, [subcategories]);
 
     const nameChange = (value, id) => {
-        setSubCategories(prevState => {
+        setCategories(prevState => {
             let obj = prevState[id];
             obj.name = value;
             return [...prevState];
         });
     };
 
+    const deleteCategory = (cat) => {
+        if (cat.child.length > 0) {
+            Alert.warning("Сначала необходимо удалить все подкатегории", {
+                position: "top-right",
+                effect: "bouncyflip",
+                timeout: 4000,
+            });
+        }
+        else {
+            const category = {
+                name: cat.name,
+                deleted: true,
+                id: cat.id,
+                parent_id: cat.parentid
+            };
+            Axios.post("/api/categories/updatecategories", { category })
+                .then(() => {
+                    Alert.success("Категория успешно удалена", {
+                        position: "top-right",
+                        effect: "bouncyflip",
+                        timeout: 2000,
+                    });
+
+                    let temp = categories;
+                    let temp2 = [];
+                    temp.forEach(el => {
+                        if (el.id !== cat.id) {
+                            temp2.push(el)
+                        }
+                    });
+                    let id;
+                    parentCategories.forEach((el, idx) => {
+                        if (el.id === cat.parentid) {
+                            id = idx
+                        }
+                    })
+                    setParentCategories(prevState => {
+                        let obj = prevState[id];
+                        obj.child = temp2;
+                        return [...prevState];
+                    })
+                })
+                .catch((err) => {
+                    Alert.error(err, {
+                        position: "top-right",
+                        effect: "bouncyflip",
+                        timeout: 2000,
+                    });
+                });
+        }
+    };
+
+    const updateCategory = (cat, id) => {
+        const category = {
+            name: cat.name,
+            deleted: false,
+            id: cat.id,
+            parent_id: cat.parentid
+        };
+        Axios.post("/api/categories/updatecategories", { category })
+            .then(() => {
+                Alert.success("Категория успешно обновлена", {
+                    position: "top-right",
+                    effect: "bouncyflip",
+                    timeout: 2000,
+                });
+                setCategories(prevState => {
+                    let obj = prevState[id];
+                    obj.name_temp = cat.name;
+                    return [...prevState];
+                })
+            })
+            .catch((err) => {
+                Alert.error(err, {
+                    position: "top-right",
+                    effect: "bouncyflip",
+                    timeout: 2000,
+                });
+            });
+    };
+
     return (
         <Fragment>
-            <Grid container spacing={0}>
-                {subCategories.map((subcat, id) => (
-                    <Fragment key={subcat.id}>
-                        <Grid item xs={8}>
-                            <TextField
-                                fullWidth
-                                value={subcat.name}
-                                classes={{
-                                    root: classesAC.root,
-                                }}
-                                onChange={(e) => nameChange(e.target.value, id)}
-                                placeholder="Название подкатегории"
-                                variant="outlined"
-                                size="small"
-                            />
-                        </Grid>
-                        <Grid item xs={4} style={{ textAlign: "right" }}>
-                            {subcat.name !== subcat.name_temp &&
-                                <IconButton onClick={() => updateCategory(subcat)}>
-                                    <SaveIcon />
-                                </IconButton>
-                            }
-                            <IconButton onClick={() => deleteCategory(subcat)}>
-                                <DeleteIcon />
-                            </IconButton>
-                        </Grid>
-                    </Fragment>
-                ))}
-            </Grid>
+            {categories.map((category, id) => (
+                !category.deleted &&
+                <Fragment key={category.id}>
+                    <Grid item xs={1} />
+                    <Grid item xs={1} />
+                    <Grid item xs={1} style={{ textAlign: "right" }}>
+                        {number}.{number2}.{id + 1}
+                    </Grid>
+                    <Grid item xs={7}>
+                        <TextField
+                            fullWidth
+                            value={category.name}
+                            classes={{
+                                root: classesAC.root,
+                            }}
+                            onChange={(e) => nameChange(e.target.value, id)}
+                            placeholder="Название подкатегории"
+                            variant="outlined"
+                            size="small"
+                            inputProps={{
+                                style: { padding: "5px" },
+                            }}
+                        />
+                    </Grid>
+                    <Grid item xs={2} style={{ textAlign: "right" }}>
+                        {category.name !== category.name_temp &&
+                            <Button onClick={() => updateCategory(category, id)} style={{ padding: "5px", backgroundColor: "#28a745", fontSize: 10, color: "white" }} size="small">
+                                Сохранить
+                            </Button>
+                        }
+                        <IconButton onClick={() => deleteCategory(category, id)} style={{ padding: "5px" }}>
+                            <DeleteIcon style={{ color: "FireBrick" }} />
+                        </IconButton>
+                    </Grid>
+                </Fragment>
+            ))}
             <hr />
         </Fragment>
     )
-}
+};

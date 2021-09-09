@@ -7,7 +7,6 @@ import SweetAlert from "react-bootstrap-sweetalert";
 import ErrorAlert from "../../../ReusableComponents/ErrorAlert";
 
 export default function EditAttributes({
-  setDeleted,
   productAttributes,
   setProductAttributes
 }) {
@@ -48,7 +47,6 @@ export default function EditAttributes({
   };
 
   const deleteAttribute = (attribute) => {
-    setDeleted(true);
     const reqdata = {
       listcode: attribute.attribute_listcode,
       attribcode: attribute.attribute_id

@@ -1,28 +1,27 @@
 import React, { Fragment, useEffect, useState } from "react";
 import Axios from "axios";
 import Alert from "react-s-alert";
-import SweetAlert from "react-bootstrap-sweetalert";
-import Paper from '@material-ui/core/Paper';
 import Grid from '@material-ui/core/Grid';
-import { withStyles, makeStyles, createStyles } from '@material-ui/core/styles';
+import { makeStyles, createStyles } from '@material-ui/core/styles';
 import TextField from '@material-ui/core/TextField';
-import AddCircleIcon from '@material-ui/icons/AddCircle';
 import IconButton from '@material-ui/core/IconButton';
-import Button from '@material-ui/core/Button';
-import SaveIcon from '@material-ui/icons/Save';
-import CancelIcon from '@material-ui/icons/Cancel';
 import DeleteIcon from '@material-ui/icons/Delete';
 import ExpandMoreIcon from '@material-ui/icons/ExpandMore';
-import ReplayIcon from '@material-ui/icons/Replay';
 import SecondLevel from './SecondLevel';
 import ChevronRightIcon from '@material-ui/icons/ChevronRight';
-// import TreeItem from '@material-ui/lab/TreeItem';
+import DeletedCategories from "./DeletedCategories";
+import Link from '@material-ui/core/Link';
+import Button from '@material-ui/core/Button';
 
-export default function UpdateBonusPage() {
+export default function UpdateCategoryPage() {
 
   const useStylesAC = makeStyles(theme =>
     createStyles({
+      input: {
+        padding: "5px"
+      },
       root: {
+
         '& label.Mui-focused': {
           color: '#17a2b8',
         },
@@ -48,6 +47,8 @@ export default function UpdateBonusPage() {
   const [categories, setCategories] = useState([]);
   const [deletedCategories, setDeletedCategories] = useState([]);
   const [name, setName] = useState("");
+  const [showDeleted, setShowDeleted] = useState(false);
+
   useEffect(() => {
     getCategories();
   }, []);
@@ -64,7 +65,7 @@ export default function UpdateBonusPage() {
           }
           else {
             if (category.parentid === 0) {
-              c.push({ ...category, name_temp: category.name, isAddingSub: false, subName: "", open: false });
+              c.push({ ...category, name_temp: category.name, isAddingSub: false, subName: "", open: false, deleted: false });
             }
           }
         });
@@ -76,22 +77,6 @@ export default function UpdateBonusPage() {
       });
   };
 
-  const addSubcategory = (id) => {
-    setCategories(prevState => {
-      let obj = prevState[id];
-      obj.isAddingSub = true;
-      return [...prevState];
-    })
-  };
-
-  const cancelAdd = (id) => {
-    setCategories(prevState => {
-      let obj = prevState[id];
-      obj.isAddingSub = false;
-      return [...prevState];
-    })
-  };
-
   const nameChange = (value, id) => {
     setCategories(prevState => {
       let obj = prevState[id];
@@ -100,7 +85,13 @@ export default function UpdateBonusPage() {
     });
   };
 
-  const subNameChange = (value, id) => {
+  const subNameChange = (value, idx) => {
+    let id;
+    categories.forEach((cat, indx) => {
+      if (cat.id === idx) {
+        id = indx;
+      }
+    });
     setCategories(prevState => {
       let obj = prevState[id];
       obj.subName = value;
@@ -108,7 +99,7 @@ export default function UpdateBonusPage() {
     });
   };
 
-  const updateCategory = (cat) => {
+  const updateCategory = (cat, id) => {
     const category = {
       name: cat.name,
       deleted: false,
@@ -122,7 +113,11 @@ export default function UpdateBonusPage() {
           effect: "bouncyflip",
           timeout: 2000,
         });
-        getCategories();
+        setCategories(prevState => {
+          let obj = prevState[id];
+          obj.name_temp = cat.name;
+          return [...prevState];
+        })
       })
       .catch((err) => {
         Alert.error(err, {
@@ -133,20 +128,38 @@ export default function UpdateBonusPage() {
       });
   };
 
-  const saveSubcategory = (cat) => {
-    const category = {
-      name: cat.subName,
-      deleted: false,
-      parent_id: cat.id,
-    };
+  const saveSubcategory = (idx) => {
+    let category;
+    let id;
+    categories.forEach((el, indx) => {
+      if (el.id === idx) {
+        id = indx
+        category = {
+          name: el.subName,
+          deleted: false,
+          parent_id: el.id,
+        }
+      }
+    });
     Axios.post("/api/categories/updatecategories", { category })
-      .then(() => {
-        Alert.success("Категория успешно обновлена", {
+      .then((res) => {
+        Alert.success("Подкатегория успешно добавлена", {
           position: "top-right",
           effect: "bouncyflip",
           timeout: 2000,
         });
-        getCategories();
+        setCategories(prevState => {
+          let obj = prevState[id];
+          obj.subName = "";
+          obj.child = [...obj.child, {
+            child: [],
+            deleted: false,
+            id: res.data.text,
+            name: category.name,
+            parentid: category.parent_id,
+          }];
+          return [...prevState];
+        });
       })
       .catch((err) => {
         Alert.error(err, {
@@ -170,6 +183,7 @@ export default function UpdateBonusPage() {
           effect: "bouncyflip",
           timeout: 2000,
         });
+        setName("");
         getCategories();
       })
       .catch((err) => {
@@ -182,7 +196,7 @@ export default function UpdateBonusPage() {
       });
   };
 
-  const deleteCategory = (cat) => {
+  const deleteCategory = (cat, id) => {
     if (cat.child.length > 0) {
       Alert.warning("Сначала необходимо удалить все подкатегории", {
         position: "top-right",
@@ -195,7 +209,7 @@ export default function UpdateBonusPage() {
         name: cat.name,
         deleted: true,
         id: cat.id,
-        parent_id: 0
+        parent_id: cat.parentid
       };
       Axios.post("/api/categories/updatecategories", { category })
         .then(() => {
@@ -204,7 +218,12 @@ export default function UpdateBonusPage() {
             effect: "bouncyflip",
             timeout: 2000,
           });
-          getCategories();
+          setCategories(prevState => {
+            let obj = prevState[id];
+            obj.deleted = true;
+            return [...prevState];
+          })
+          setDeletedCategories([...deletedCategories, cat]);
         })
         .catch((err) => {
           Alert.error(err, {
@@ -216,47 +235,6 @@ export default function UpdateBonusPage() {
     }
   };
 
-  const recoverCategory = (cat) => {
-    const category = {
-      name: cat.name,
-      deleted: false,
-      id: cat.id,
-      parent_id: 0
-    };
-    Axios.post("/api/categories/updatecategories", { category })
-      .then(() => {
-        Alert.success("Категория успешно удалена", {
-          position: "top-right",
-          effect: "bouncyflip",
-          timeout: 2000,
-        });
-        getCategories();
-      })
-      .catch((err) => {
-        Alert.error(err, {
-          position: "top-right",
-          effect: "bouncyflip",
-          timeout: 2000,
-        });
-      });
-  };
-
-  const openChildren = (idx) => {
-    setCategories(prevState => {
-      let obj = prevState[idx];
-      obj.open = true;
-      return [...prevState];
-    })
-  };
-
-  const closeChildren = (idx) => {
-    setCategories(prevState => {
-      let obj = prevState[idx];
-      obj.open = false;
-      return [...prevState];
-    })
-  };
-
   const expandSubcategories = (idx) => {
     setCategories(prevState => {
       let obj = prevState[idx];
@@ -265,19 +243,55 @@ export default function UpdateBonusPage() {
     })
   };
 
+
+
   return (
     <Fragment>
-      <Grid container spacing={2}>
+      <Grid container spacing={1}>
+        <Grid item xs={1} />
+        <Grid item xs={11}>
+          Создание новой категории
+        </Grid>
+        <Grid item xs={1} />
+        <Grid item xs={9}>
+          <TextField
+            style={{ paddingTop: "5px" }}
+            fullWidth
+            value={name}
+            classes={{
+              root: classesAC.root,
+            }}
+            onChange={(e) => setName(e.target.value)}
+            placeholder="Название категории"
+            variant="outlined"
+            size="small"
+          />
+        </Grid>
+        <Grid item xs={2} style={{ paddingTop: "10px" }}>
+          <button
+            className="btn btn-success btn-block"
+            onClick={newCategory}
+          >
+            Создать
+          </button>
+        </Grid>
+        <Grid item xs={12}>
+          <hr style={{ margin: "0px" }} />
+        </Grid>
+        <Grid item xs={12} style={{ display: "flex", justifyContent: "center", alignItems: "center" }}>
+          <b>Список категорий</b>
+        </Grid>
         {categories.map((category, id) => (
-          <Fragment key={category.id} >
-            <Grid item xs={1}>
-              <IconButton onClick={() => expandSubcategories(id)}>
+          category.deleted === false &&
+          <Fragment key={id} >
+            <Grid item xs={1} style={{ textAlign: "right" }}>
+              {id + 1} &emsp;
+              <IconButton onClick={() => expandSubcategories(id)} style={{ padding: "5px" }}>
                 {category.open ? <ExpandMoreIcon /> : <ChevronRightIcon />}
               </IconButton>
             </Grid>
-            <Grid item xs={9}>
+            <Grid item xs={9} style={{ display: "flex", alignItems: "center" }}>
               <TextField
-                style={{ paddingTop: "5px" }}
                 fullWidth
                 value={category.name}
                 classes={{
@@ -287,16 +301,21 @@ export default function UpdateBonusPage() {
                 placeholder="Название категории"
                 variant="outlined"
                 size="small"
+                inputProps={{
+                  style: { padding: "5px" },
+                }}
               />
             </Grid>
             <Grid item xs={2} style={{ textAlign: "right" }}>
               {category.name !== category.name_temp &&
-                <IconButton onClick={() => updateCategory(category)}>
-                  <SaveIcon />
-                </IconButton>
+                <Button onClick={() => updateCategory(category, id)}
+                  style={{ padding: "5px", backgroundColor: "#28a745", fontSize: 10, color: "white" }}
+                  size="small">
+                  Сохранить
+                </Button>
               }
-              <IconButton onClick={() => deleteCategory(category)}>
-                <DeleteIcon />
+              <IconButton onClick={() => deleteCategory(category, id)} style={{ padding: "5px" }}>
+                <DeleteIcon style={{ color: "FireBrick" }} />
               </IconButton>
             </Grid>
             {category.open === true &&
@@ -307,21 +326,20 @@ export default function UpdateBonusPage() {
                   <TextField
                     style={{ paddingTop: "5px" }}
                     fullWidth
-                    // value={category.name}
+                    value={category.subName}
                     classes={{
                       root: classesAC.root,
                     }}
-                    // onChange={(e) => subNameChange(e.target.value, id)}
+                    onChange={(e) => subNameChange(e.target.value, category.id)}
                     placeholder="Название подкатегории"
                     variant="outlined"
                     size="small"
                   />
                 </Grid>
-                <Grid item xs={2} style={{ paddingTop: "14px" }}>
+                <Grid item xs={2} style={{ paddingTop: "10px" }}>
                   <button
-                    fullWidth
-                    className="btn btn-success"
-                    onClick={() => saveSubcategory(category)}
+                    className="btn btn-success btn-block"
+                    onClick={() => saveSubcategory(category.id)}
                   >
                     Добавить
                   </button>
@@ -329,182 +347,34 @@ export default function UpdateBonusPage() {
                 <Grid item xs={2} />
                 {
                   category.child.length > 0 &&
-                  <SecondLevel categories={category.child} />
+                  <SecondLevel
+                    number={id + 1}
+                    subcategories={category.child}
+                    parentid={category.parentid}
+                    setParentCategories={setCategories}
+                    parentCategories={categories}
+                  />
                 }
               </Fragment>
-
             }
-            <hr />
+            <Grid item xs={12}>
+              <hr style={{ margin: "0px" }} />
+            </Grid>
           </Fragment>
         ))}
       </Grid>
-
-      {/* <TreeList
-        data={DATA}
-        columns={COLUMNS}
-        options={OPTIONS}
-        handlers={{}}
-        id={'id'}
-        parentId={'parentId'}></TreeList> */}
-      {/* <Grid container spacing={3}>
-        <Grid item xs={12}>
-          <Paper>
-            <Grid container spacing={2}>
-              <Grid item xs={1} />
-              <Grid item xs={6}>
-                <TextField
-                  fullWidth
-                  value={name}
-                  classes={{
-                    root: classesAC.root,
-                  }}
-                  onChange={(e) => setName(e.target.value)}
-                  placeholder="Название категории"
-                  variant="outlined"
-                  size="small"
-                />
-              </Grid>
-              <Grid item xs={5}>
-                <button
-                  className="btn btn-success"
-                  onClick={newCategory}
-                >
-                  Добавить
-                </button>
-              </Grid>
-            </Grid>
-          </Paper>
+      <Grid container spacing={1} >
+        <Grid item xs={12} style={{ paddingTop: "15px", paddingBottom: "15px" }}>
+          <Link color="inherit" href="#" onClick={() => setShowDeleted(!showDeleted)}>{!showDeleted ? "Показать удалённые категории" : "Скрыть удалённые категории"}</Link>
         </Grid>
-
-
-        {categories.map((category, id) => (
-          <Grid item xs={12} key={category.id}>
-            <Paper>
-              <Grid container spacing={1}>
-                <Grid item xs={1} style={{ textAlign: "center" }}>
-                  {id + 1}
-                </Grid>
-                <Grid item xs={9}>
-                  <TextField
-                    fullWidth
-                    value={category.name}
-                    classes={{
-                      root: classesAC.root,
-                    }}
-                    onChange={(e) => nameChange(e.target.value, id)}
-                    placeholder="Название категории"
-                    variant="outlined"
-                    size="small"
-                  />
-                </Grid>
-                <Grid item xs={2} style={{ textAlign: "right" }}>
-                  {category.name !== category.name_temp &&
-                    <IconButton onClick={() => updateCategory(category)}>
-                      <SaveIcon />
-                    </IconButton>
-                  }
-                  <IconButton onClick={() => deleteCategory(category)}>
-                    <DeleteIcon />
-                  </IconButton>
-                </Grid>
-
-
-                <Grid item xs={1} />
-                {!category.isAddingSub &&
-                  <Grid item xs={11} style={{ cursor: "pointer" }}>
-                    <Button
-                      onClick={() => addSubcategory(id)}
-                    >
-                      <AddCircleIcon />
-                      &emsp; Добавить подкатегорию
-                    </Button>
-                  </Grid>}
-                {category.isAddingSub &&
-                  <Fragment>
-                    <Grid item xs={7}>
-                      <TextField
-                        fullWidth
-                        value={category.subName}
-                        classes={{
-                          root: classesAC.root,
-                        }}
-                        onChange={(e) => subNameChange(e.target.value, id)}
-                        placeholder="Название подкатегории"
-                        variant="outlined"
-                        size="small"
-                      />
-                    </Grid>
-                    <Grid item xs={4}>
-                      <button
-                        className="btn btn-success"
-                        onClick={() => saveSubcategory(category)}
-                      >
-                        <AddCircleIcon />
-                      </button>
-                      &nbsp;
-                      <button
-                        className="btn btn-secondary"
-                        onClick={() => cancelAdd(id)}
-                      >
-                        <CancelIcon />
-
-                      </button>
-                    </Grid>
-                  </Fragment>}
-
-                {category.child.length > 0 &&
-                  <Fragment>
-                    <Grid item xs={2} />
-                    <Grid item xs={10}>
-                      <SecondLevel
-                        categories={category.child}
-                        deleteCategory={deleteCategory}
-                        updateCategory={updateCategory}
-                        getCategories={getCategories}
-                      />
-                    </Grid>
-                  </Fragment>
-                }
-              </Grid>
-            </Paper>
-          </Grid>
-        ))}
-
-
-        <Grid item xs={12} >
-          <Accordion>
-            <AccordionSummary
-              expandIcon={<ExpandMoreIcon />}
-              aria-controls="panel1a-content"
-              id="panel1a-header"
-            >
-              Удалённые категории
-            </AccordionSummary>
-            <AccordionDetails>
-              <Grid container spacing={3}>
-                {deletedCategories.map((category, id) => (
-                  <Grid item xs={12} key={category.id}>
-                    <Paper>
-                      <Grid container spacing={2}>
-                        <Grid item xs={1} style={{ textAlign: "center", verticalAlign: "middle", display: 'flex' }}>
-                          {id + 1}
-                        </Grid>
-                        <Grid item xs={6}>
-                          {category.name}
-                        </Grid>
-                        <Grid item xs={5} style={{ textAlign: "right" }}>
-                          <IconButton onClick={() => recoverCategory(category)}>
-                            <ReplayIcon />
-                          </IconButton>
-                        </Grid>
-                      </Grid>
-                    </Paper>
-                  </Grid>))}
-              </Grid>
-            </AccordionDetails>
-          </Accordion>
-        </Grid>
-      </Grid> */}
+        {
+          showDeleted &&
+          <DeletedCategories
+            deletedCategories={deletedCategories}
+            getCategories={getCategories}
+          />
+        }
+      </Grid>
     </Fragment >
   )
 }
