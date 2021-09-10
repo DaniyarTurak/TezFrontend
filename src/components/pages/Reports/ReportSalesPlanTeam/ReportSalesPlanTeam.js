@@ -79,8 +79,8 @@ export default function ReportSalesPlanTeam({ companyProps, holding }) {
 
   const clean = () => {
     setBonusResult([]);
-    setDateFrom(Moment().startOf("month").format("YYYY-MM-DD"));
-    setDateTo(Moment().format("YYYY-MM-DD"));
+    // setDateFrom(Moment().startOf("month").format("YYYY-MM-DD"));
+    // setDateTo(Moment().format("YYYY-MM-DD"));
     setIndBonusResult([]);
     setIndBonusResultRowspan("");
     setTotalAward(0);
@@ -144,7 +144,7 @@ export default function ReportSalesPlanTeam({ companyProps, holding }) {
       });
     }
     setPoint(p);
-    resetDate();
+    // resetDate();
   };
 
   const changeDate = (dateStr) => {
@@ -191,91 +191,115 @@ export default function ReportSalesPlanTeam({ companyProps, holding }) {
   };
 
   const handleSearch = () => {
-    if ((planType.value === 1 || planType.value === 2) && !checkDateRange()) {
-      return Alert.warning("Максимальный период 3 месяца", {
-        position: "top-right",
-        effect: "bouncyflip",
-        timeout: 3000,
-      });
-    } else if (
-      planType.value === 2 &&
-      ((Moment().month() !== Moment(dateTo).month() &&
-        dateTo !== Moment(dateTo).startOf("month").format("YYYY-MM-DD")) ||
-        (Moment().month() !== Moment(dateFrom).month() &&
-          dateFrom !== Moment(dateFrom).startOf("month").format("YYYY-MM-DD")))
-    ) {
-      return Alert.warning("Выберите 1-ое число месяца", {
+    if (point === "") {
+      return Alert.warning("Выберите торговую точку", {
         position: "top-right",
         effect: "bouncyflip",
         timeout: 3000,
       });
     }
-    setLoading(true);
-    Axios.get("/api/report/salesplan/team/list", {
-      params: {
-        dateFrom,
-        dateTo,
-        company: company.value,
-        holding,
-        type: planType.value,
-        point: point.value,
-      },
-    })
-      .then((res) => res.data)
-      .then((response) => {
-        const uniqueSoldChanged = response.filter(
-          (bonus, index, self) =>
-            index ===
-            self.findIndex((t) => t.dat === bonus.dat && t.sold === bonus.sold)
-        );
-
-        const totalAwardChanged = response.reduce((prev, cur) => {
-          return prev + parseFloat(cur.each_award);
-        }, 0);
-
-        const indBonusResultTemp = _.mapValues(
-          _.groupBy(response, "name"),
-          (list) => list.map((st) => _.omit(st, "name"))
-        );
-        const indBonusResultChanged = Object.keys(indBonusResultTemp).map(
-          (key) => {
-            return {
-              user: key,
-              award: indBonusResultTemp[key],
-            };
-          }
-        );
-
-        const bonusResultTemp = _.mapValues(
-          _.groupBy(response, "dat"),
-          (list) => list.map((st) => _.omit(st, "dat"))
-        );
-        const bonusResultChanged = Object.keys(bonusResultTemp).map((key) => {
-          return {
-            dat: key,
-            rowSpan: bonusResultTemp[key].length,
-            users: bonusResultTemp[key],
-          };
+    else {
+      if ((planType.value === 1 || planType.value === 2) && !checkDateRange()) {
+        return Alert.warning("Максимальный период 3 месяца", {
+          position: "top-right",
+          effect: "bouncyflip",
+          timeout: 3000,
         });
-
-        indBonusResultChanged.sort(function (a, b) {
-          var textA = a.user.toUpperCase();
-          var textB = b.user.toUpperCase();
-          return textA < textB ? -1 : textA > textB ? 1 : 0;
-        });
-
-        resetDate();
-        setUniqueSold(uniqueSoldChanged);
-        setTotalAward(totalAwardChanged);
-        setBonusResult(bonusResultChanged);
-        setIndBonusResult(indBonusResultChanged);
-        setIndBonusResultRowspan(indBonusResultChanged.length);
-        setLoading(false);
+      } else 
+      // if (
+      //   planType.value === 2 &&
+      //   ((Moment().month() !== Moment(dateTo).month() &&
+      //     dateTo !== Moment(dateTo).startOf("month").format("YYYY-MM-DD")) ||
+      //     (Moment().month() !== Moment(dateFrom).month() &&
+      //       dateFrom !== Moment(dateFrom).startOf("month").format("YYYY-MM-DD")))
+      // ) {
+      //   return Alert.warning("Выберите 1-ое число месяца", {
+      //     position: "top-right",
+      //     effect: "bouncyflip",
+      //     timeout: 3000,
+      //   });
+      // }
+      setLoading(true);
+      let path = "";
+      switch (planType.value) {
+        case 1:
+          path = `/daily`
+          break;
+        case 2:
+          path = `/monthly`
+          break;
+        case 3:
+          path = `/quarterly`
+          break;
+        default:
+          break;
+      }
+      Axios.get(`/api/report/salesplan/team${path}`, {
+        params: {
+          dateFrom,
+          dateTo,
+          company: company.value,
+          holding,
+          type: planType.value,
+          point: point.value,
+        },
       })
-      .catch((err) => {
-        ErrorAlert(err);
-        setLoading(false);
-      });
+        .then((res) => res.data)
+        .then((response) => {
+          const uniqueSoldChanged = response.filter(
+            (bonus, index, self) =>
+              index ===
+              self.findIndex((t) => t.dat === bonus.dat && t.sold === bonus.sold)
+          );
+
+          const totalAwardChanged = response.reduce((prev, cur) => {
+            return prev + parseFloat(cur.each_award);
+          }, 0);
+
+          const indBonusResultTemp = _.mapValues(
+            _.groupBy(response, "name"),
+            (list) => list.map((st) => _.omit(st, "name"))
+          );
+          const indBonusResultChanged = Object.keys(indBonusResultTemp).map(
+            (key) => {
+              return {
+                user: key,
+                award: indBonusResultTemp[key],
+              };
+            }
+          );
+
+          const bonusResultTemp = _.mapValues(
+            _.groupBy(response, "dat"),
+            (list) => list.map((st) => _.omit(st, "dat"))
+          );
+          const bonusResultChanged = Object.keys(bonusResultTemp).map((key) => {
+            return {
+              dat: key,
+              rowSpan: bonusResultTemp[key].length,
+              users: bonusResultTemp[key],
+            };
+          });
+
+          indBonusResultChanged.sort(function (a, b) {
+            var textA = a.user.toUpperCase();
+            var textB = b.user.toUpperCase();
+            return textA < textB ? -1 : textA > textB ? 1 : 0;
+          });
+
+          // resetDate();
+          setUniqueSold(uniqueSoldChanged);
+          setTotalAward(totalAwardChanged);
+          setBonusResult(bonusResultChanged);
+          setIndBonusResult(indBonusResultChanged);
+          setIndBonusResultRowspan(indBonusResultChanged.length);
+          setLoading(false);
+        })
+        .catch((err) => {
+          ErrorAlert(err);
+          setLoading(false);
+        });
+    }
   };
 
   return (

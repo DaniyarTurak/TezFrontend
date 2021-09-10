@@ -497,6 +497,7 @@ export default function ReportSales({ companyProps }) {
         setOrderBy("");
       })
       .catch((err) => {
+        console.log(err);
         setSubmitting(false);
         setLoading(false);
         ErrorAlert(err);

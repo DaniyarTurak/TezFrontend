@@ -136,6 +136,60 @@ export default function ReportSalesPlan({ companyProps }) {
       });
   };
 
+  const getMonthlyBonus = () => {
+    setLoading(true);
+    Axios.get(
+      `/api/report/salesplan/monthly${cashboxuser.value === "0" ? "/all" : ""}`,
+      {
+        params: { dateFrom, dateTo, cashboxuser: cashboxuser.value, type: planType.value },
+      }
+    )
+      .then((res) => res.data)
+      .then((res) => {
+        setBonusResult(res);
+        setLoading(false);
+      })
+      .catch((err) => {
+        ErrorAlert(err);
+        setLoading(false);
+      });
+  };
+
+  const getQuarterlyBonus = () => {
+    setLoading(true);
+    Axios.get(
+      `/api/report/salesplan/quarterly${cashboxuser.value === "0" ? "/all" : ""}`,
+      {
+        params: { dateFrom, dateTo, cashboxuser: cashboxuser.value, type: planType.value },
+      }
+    )
+      .then((res) => res.data)
+      .then((res) => {
+        setBonusResult(res);
+        setLoading(false);
+      })
+      .catch((err) => {
+        ErrorAlert(err);
+        setLoading(false);
+      });
+  };
+
+  const getBonus = () => {
+    switch (planType.value) {
+      case 1:
+        getDailyBonus();
+        break;
+      case 2:
+        getMonthlyBonus();
+        break;
+      case 3:
+        getQuarterlyBonus();
+        break;
+      default:
+        break;
+    }
+  }
+
   return (
     <Grid container spacing={3}>
       <SalesPlanOptions
@@ -147,9 +201,10 @@ export default function ReportSalesPlan({ companyProps }) {
         dateTo={dateTo}
         dateFromChange={dateFromChange}
         dateToChange={dateToChange}
-        getDailyBonus={getDailyBonus}
+        getBonus={getBonus}
         planType={planType}
         setPlanType={setPlanType}
+        setBonusResult={setBonusResult}
       />
       {isLoading && (
         <Grid item xs={12}>
@@ -173,6 +228,7 @@ export default function ReportSalesPlan({ companyProps }) {
           dateTo={dateTo}
           now={now}
           bonusResult={bonusResult}
+          planType={planType}
         />
       )}
     </Grid>

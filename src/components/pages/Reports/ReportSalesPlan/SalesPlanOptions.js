@@ -16,10 +16,11 @@ export default function SalesPlanOptions({
   dateTo,
   dateFromChange,
   dateToChange,
-  getDailyBonus,
+  getBonus,
   isSubmitting,
   planType,
-  setPlanType
+  setPlanType,
+  setBonusResult
 }) {
   const planTypes = [
     { value: 1, label: "Ежедневный" },
@@ -36,7 +37,7 @@ export default function SalesPlanOptions({
           dateTo={dateTo}
           dateFromChange={dateFromChange}
           dateToChange={dateToChange}
-          searchInvoices={getDailyBonus}
+          searchInvoices={getBonus}
           disableButton={isSubmitting}
         />
       </Grid>
@@ -53,7 +54,7 @@ export default function SalesPlanOptions({
       <Grid item xs={3}>
         <AutocompleteSelect
           value={planType}
-          onChange={(e, value) => setPlanType(value)}
+          onChange={(e, value) => { setPlanType(value); setBonusResult([]); }}
           options={planTypes}
           noOptions=""
           label="Тип плана"

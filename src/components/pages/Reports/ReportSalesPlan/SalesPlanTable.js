@@ -36,6 +36,7 @@ export default function SalesPlanTable({
   dateTo,
   now,
   bonusResult,
+  planType
 }) {
   return (
     <Fragment>
@@ -95,7 +96,7 @@ export default function SalesPlanTable({
                 {cashboxuser.value !== "0" && (
                   <StyledTableCell>Дата</StyledTableCell>
                 )}
-                <StyledTableCell>Ежедневный план продаж</StyledTableCell>
+                <StyledTableCell>{planType.label} план продаж</StyledTableCell>
                 <StyledTableCell>Сумма продаж</StyledTableCell>
                 <StyledTableCell>Сумма бонусов</StyledTableCell>
               </TableRow>
@@ -110,6 +111,14 @@ export default function SalesPlanTable({
                   <StyledTableCell className="tenge">
                     {bonus.daily &&
                       bonus.daily.toLocaleString("ru", {
+                        minimumFractionDigits: 2,
+                      })}
+                    {bonus.monthly &&
+                      bonus.monthly.toLocaleString("ru", {
+                        minimumFractionDigits: 2,
+                      })}
+                    {bonus.quarterly &&
+                      bonus.quarterly.toLocaleString("ru", {
                         minimumFractionDigits: 2,
                       })}
                   </StyledTableCell>
@@ -157,11 +166,10 @@ export default function SalesPlanTable({
         <ReactHTMLTableToExcel
           className="btn btn-sm btn-outline-success"
           table="table-to-xls"
-          filename={`Индивидуальный бонус ${
-            cashboxuser.value !== "0" ? `(${cashboxuser.label})` : ""
-          } c ${Moment(dateFrom).format("DD.MM.YYYY")} по ${Moment(
-            dateTo
-          ).format("DD.MM.YYYY")}`}
+          filename={`Индивидуальный бонус ${cashboxuser.value !== "0" ? `(${cashboxuser.label})` : ""
+            } c ${Moment(dateFrom).format("DD.MM.YYYY")} по ${Moment(
+              dateTo
+            ).format("DD.MM.YYYY")}`}
           sheet="tablexls"
           buttonText="Выгрузить в excel"
         />
