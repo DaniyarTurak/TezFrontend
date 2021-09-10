@@ -9,8 +9,9 @@ import Axios from "axios";
 import Alert from "react-s-alert";
 import ChevronRightIcon from '@material-ui/icons/ChevronRight';
 import ExpandMoreIcon from '@material-ui/icons/ExpandMore';
-import FourthLevel from './FourthLevel'
-export default function ThirdLevel({ subcategories, number, number2, parentid, parentCategories, setParentCategories }) {
+import FifthLevel from './FifthLevel';
+
+export default function Fourth({ subcategories, number, number2, number3, parentid, parentCategories, setParentCategories }) {
 
     const useStylesAC = makeStyles(theme =>
         createStyles({
@@ -202,13 +203,14 @@ export default function ThirdLevel({ subcategories, number, number2, parentid, p
                 <Fragment key={category.id}>
                     <Grid item xs={1} />
                     <Grid item xs={1} />
+                    <Grid item xs={1} />
                     <Grid item xs={1} style={{ textAlign: "right" }}>
-                        {number}.{number2}.{id + 1} &emsp;
+                        {number}.{number2}.{number3}.{id + 1} &emsp;
                         <IconButton onClick={() => expandSubcategories(id)} style={{ padding: "5px" }}>
                             {category.open ? <ExpandMoreIcon /> : <ChevronRightIcon />}
                         </IconButton>
                     </Grid>
-                    <Grid item xs={7}>
+                    <Grid item xs={6}>
                         <TextField
                             fullWidth
                             value={category.name}
@@ -240,7 +242,8 @@ export default function ThirdLevel({ subcategories, number, number2, parentid, p
                             <Grid item xs={1} />
                             <Grid item xs={1} />
                             <Grid item xs={1} />
-                            <Grid item xs={4}>
+                            <Grid item xs={1} />
+                            <Grid item xs={3}>
                                 <TextField
                                     style={{ paddingTop: "5px" }}
                                     fullWidth
@@ -266,10 +269,11 @@ export default function ThirdLevel({ subcategories, number, number2, parentid, p
                             <Grid item xs={2} />
                             {
                                 category.child.length > 0 &&
-                                <FourthLevel
+                                <FifthLevel
                                     number={number}
                                     number2={number2}
-                                    number3={id+1}
+                                    number3={number3}
+                                    number4={id + 1}
                                     subcategories={category.child}
                                     parentid={category.parentid}
                                     setParentCategories={setCategories}
