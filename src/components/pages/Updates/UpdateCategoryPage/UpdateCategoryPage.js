@@ -64,9 +64,7 @@ export default function UpdateCategoryPage() {
             d.push(category);
           }
           else {
-            if (category.parentid === 0) {
-              c.push({ ...category, name_temp: category.name, isAddingSub: false, subName: "", open: false, deleted: false });
-            }
+            c.push({ ...category, name_temp: category.name, isAddingSub: false, subName: "", open: false, deleted: false, child: [] });
           }
         });
         setCategories(c);
@@ -235,15 +233,30 @@ export default function UpdateCategoryPage() {
     }
   };
 
-  const expandSubcategories = (idx) => {
-    setCategories(prevState => {
-      let obj = prevState[idx];
-      obj.open = !obj.open;
-      return [...prevState];
-    })
+  const expandSubcategories = (idx, category) => {
+    if (category.open) {
+      setCategories(prevState => {
+        let obj = prevState[idx];
+        obj.open = !obj.open;
+        return [...prevState];
+      });
+    }
+    else {
+      Axios.get("/api/categories/getcategories", { params: { parentid: category.id } })
+        .then((res) => res.data)
+        .then((data) => {
+          setCategories(prevState => {
+            let obj = prevState[idx];
+            obj.open = !obj.open;
+            obj.child = data;
+            return [...prevState];
+          });
+        })
+        .catch((err) => {
+          console.log(err);
+        });
+    }
   };
-
-
 
   return (
     <Fragment>
@@ -286,7 +299,7 @@ export default function UpdateCategoryPage() {
           <Fragment key={id} >
             <Grid item xs={1} style={{ textAlign: "right" }}>
               {id + 1} &emsp;
-              <IconButton onClick={() => expandSubcategories(id)} style={{ padding: "5px" }}>
+              <IconButton onClick={() => expandSubcategories(id, category)} style={{ padding: "5px" }}>
                 {category.open ? <ExpandMoreIcon /> : <ChevronRightIcon />}
               </IconButton>
             </Grid>

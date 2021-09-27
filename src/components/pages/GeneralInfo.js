@@ -6,8 +6,14 @@ import Alert from "react-s-alert";
 import { InputField } from "../fields";
 import { RequiredField, ValidateIDN } from "../../validation";
 import ReactModal from "react-modal";
+import { withStyles } from '@material-ui/core/styles';
 
 import GeneralDetails from "./GeneralDetails";
+import ToggleButton from '@material-ui/lab/ToggleButton';
+import ToggleButtonGroup from '@material-ui/lab/ToggleButtonGroup';
+import Switch from '@material-ui/core/Switch';
+import FormGroup from '@material-ui/core/FormGroup';
+import FormControlLabel from '@material-ui/core/FormControlLabel';
 
 const customStyles = {
   content: {
@@ -24,6 +30,20 @@ const customStyles = {
   },
   overlay: { zIndex: 10 },
 };
+
+const PurpleSwitch = withStyles({
+  switchBase: {
+    color: "#28a745",
+    '&$checked': {
+      color: "#28a745",
+    },
+    '&$checked + $track': {
+      backgroundColor: "#28a745",
+    },
+  },
+  checked: {},
+  track: {},
+})(Switch);
 
 class GeneralInfo extends Component {
   state = {
@@ -69,6 +89,7 @@ class GeneralInfo extends Component {
     grouping: false,
     isLoading: false,
     editEnabled: false,
+    wholesale: JSON.parse(sessionStorage.getItem("isme-company-data")).wholesale || false,
   };
 
   componentDidMount() {
@@ -120,7 +141,7 @@ class GeneralInfo extends Component {
 
   submit = (data) => {
     delete data.bin;
-    const reqdata = { company: data };
+    const reqdata = { company: { ...data, wholesale: this.state.wholesale } };
 
     Axios.post("/api/company/manage", reqdata)
       .then(() => {
@@ -219,6 +240,7 @@ class GeneralInfo extends Component {
 
   handleCancel = () => {
     this.setState({
+      wholesale: JSON.parse(sessionStorage.getItem("isme-company-data")).wholesale || false,
       isEdit: false,
       grouping: false,
       field: {
@@ -237,8 +259,13 @@ class GeneralInfo extends Component {
     this.setState({ modalIsOpen: false, grouping: true });
   };
 
+  wholeSalesChange = (event) => {
+    console.log(event.target.checked);
+
+  }
+
   render() {
-    const { handleSubmit, pristine, submitting } = this.props;
+    const { handleSubmit, pristine, submitting, wholeSalesChange } = this.props;
     const {
       companyData,
       isEdit,
@@ -248,6 +275,7 @@ class GeneralInfo extends Component {
       editEnabled,
       modalIsOpen,
       grouping,
+      wholesale
     } = this.state;
 
     return (
@@ -388,6 +416,27 @@ class GeneralInfo extends Component {
                   />
                 </td>
               </tr>
+              <tr>
+                <td className={`${isEdit ? "edit-general-info-title" : ""}`}>
+                  Оптовые продажи
+                </td>
+                <td
+                  className={`bold-text ${isEdit ? "edit-general-info" : ""}`}
+                >
+                  <FormGroup row>
+                    <FormControlLabel
+                      control={<PurpleSwitch
+                        disabled={!isEdit}
+                        checked={wholesale}
+                        onChange={(event) => this.setState({ [event.target.name]: event.target.checked })}
+                        color="primary"
+                        name="wholesale"
+                      />}
+                      label={wholesale ? "Включено" : "Выключено"}
+                    />
+                  </FormGroup>
+                </td>
+              </tr>
             </tbody>
             {!companyData.certificateseries && isEdit && (
               <tbody>
@@ -426,8 +475,8 @@ class GeneralInfo extends Component {
                   <td style={{ width: "12rem" }}>
                     <div
                       className={`${isEdit && !companyData.certificateseries
-                          ? "edit-general-info-title"
-                          : ""
+                        ? "edit-general-info-title"
+                        : ""
                         }`}
                     >
                       {label.hasNds}
@@ -455,8 +504,8 @@ class GeneralInfo extends Component {
                   <td style={{ width: "12rem" }}>
                     <div
                       className={`${isEdit && !companyData.certificateseries
-                          ? "edit-general-info-title"
-                          : ""
+                        ? "edit-general-info-title"
+                        : ""
                         }`}
                     >
                       {label.ndsRegisterNumber}
@@ -484,8 +533,8 @@ class GeneralInfo extends Component {
                   <td style={{ width: "12rem" }}>
                     <div
                       className={`${isEdit && !companyData.certificateseries
-                          ? "edit-general-info-title"
-                          : ""
+                        ? "edit-general-info-title"
+                        : ""
                         }`}
                     >
                       {label.ndsDate}
@@ -519,7 +568,7 @@ class GeneralInfo extends Component {
             <div className="text-right">
               <button
                 className="btn btn-outline-success btn-sm"
-                disabled={pristine || submitting}
+                disabled={submitting}
               >
                 {label.buttonLabel.save}
               </button>

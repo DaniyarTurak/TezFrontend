@@ -135,13 +135,30 @@ export default function ThirdLevel({ subcategories, number, number2, parentid, p
             });
     };
 
-    const expandSubcategories = (idx) => {
-        setCategories(prevState => {
+    const expandSubcategories = (idx, category) => {
+        if (category.open) {
+          setCategories(prevState => {
             let obj = prevState[idx];
             obj.open = !obj.open;
             return [...prevState];
-        })
-    };
+          });
+        }
+        else {
+          Axios.get("/api/categories/getcategories", { params: { parentid: category.id } })
+            .then((res) => res.data)
+            .then((data) => {
+              setCategories(prevState => {
+                let obj = prevState[idx];
+                obj.open = !obj.open;
+                obj.child = data;
+                return [...prevState];
+              });
+            })
+            .catch((err) => {
+              console.log(err);
+            });
+        }
+      };
 
     const subNameChange = (value, id) => {
         setCategories(prevState => {
@@ -204,7 +221,7 @@ export default function ThirdLevel({ subcategories, number, number2, parentid, p
                     <Grid item xs={1} />
                     <Grid item xs={1} style={{ textAlign: "right" }}>
                         {number}.{number2}.{id + 1} &emsp;
-                        <IconButton onClick={() => expandSubcategories(id)} style={{ padding: "5px" }}>
+                        <IconButton onClick={() => expandSubcategories(id, category)} style={{ padding: "5px" }}>
                             {category.open ? <ExpandMoreIcon /> : <ChevronRightIcon />}
                         </IconButton>
                     </Grid>
@@ -269,7 +286,7 @@ export default function ThirdLevel({ subcategories, number, number2, parentid, p
                                 <FourthLevel
                                     number={number}
                                     number2={number2}
-                                    number3={id+1}
+                                    number3={id + 1}
                                     subcategories={category.child}
                                     parentid={category.parentid}
                                     setParentCategories={setCategories}

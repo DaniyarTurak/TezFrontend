@@ -43,7 +43,7 @@ export default function SecondLevel({ subcategories, number, parentid, parentCat
     useEffect(() => {
         let temp = [];
         subcategories.forEach(cat => {
-            temp.push({ ...cat, name_temp: cat.name, isAddingSub: false, subName: "", open: false, deleted: cat.deleted })
+            temp.push({ ...cat, name_temp: cat.name, isAddingSub: false, subName: "", open: false, deleted: cat.deleted, child: [] })
         });
         setCategories(temp);
     }, [subcategories]);
@@ -100,13 +100,30 @@ export default function SecondLevel({ subcategories, number, parentid, parentCat
             });
     };
 
-    const expandSubcategories = (idx) => {
-        setCategories(prevState => {
+    const expandSubcategories = (idx, category) => {
+        if (category.open) {
+          setCategories(prevState => {
             let obj = prevState[idx];
             obj.open = !obj.open;
             return [...prevState];
-        })
-    };
+          });
+        }
+        else {
+          Axios.get("/api/categories/getcategories", { params: { parentid: category.id } })
+            .then((res) => res.data)
+            .then((data) => {
+              setCategories(prevState => {
+                let obj = prevState[idx];
+                obj.open = !obj.open;
+                obj.child = data;
+                return [...prevState];
+              });
+            })
+            .catch((err) => {
+              console.log(err);
+            });
+        }
+      };
 
     const subNameChange = (value, id) => {
         setCategories(prevState => {
@@ -205,7 +222,7 @@ export default function SecondLevel({ subcategories, number, parentid, parentCat
                     <Grid item xs={1} />
                     <Grid item xs={1} style={{ textAlign: "right" }}>
                         {number}.{id + 1} &emsp;
-                        <IconButton onClick={() => expandSubcategories(id)} style={{ padding: "5px" }}>
+                        <IconButton onClick={() => expandSubcategories(id, category)} style={{ padding: "5px" }}>
                             {category.open ? <ExpandMoreIcon /> : <ChevronRightIcon />}
                         </IconButton>
                     </Grid>
