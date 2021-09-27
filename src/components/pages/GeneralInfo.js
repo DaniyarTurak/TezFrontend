@@ -48,6 +48,7 @@ const PurpleSwitch = withStyles({
 class GeneralInfo extends Component {
   state = {
     companyData: JSON.parse(sessionStorage.getItem("isme-company-data")) || {},
+    wholesale: JSON.parse(sessionStorage.getItem("isme-company-data")) ? JSON.parse(sessionStorage.getItem("isme-company-data")).wholesale : false,
     isEdit: false,
     isEdited: false,
     modalIsOpen: false,
@@ -89,7 +90,6 @@ class GeneralInfo extends Component {
     grouping: false,
     isLoading: false,
     editEnabled: false,
-    wholesale: JSON.parse(sessionStorage.getItem("isme-company-data")).wholesale || false,
   };
 
   componentDidMount() {

@@ -91,57 +91,67 @@ export default function AddAttributes({
     };
 
     const addAttribute = () => {
+
         if (barcode !== "") {
-            if ((attrFormat === "TEXT" && textValue === "") || (attrFormat === "SPR" && sprValue === null)) {
-                Alert.warning(`Введите значение атрибута`, {
+            if (!selectedAttrName) {
+                Alert.warning(`Выберите атрибут`, {
                     position: "top-right",
                     effect: "bouncyflip",
                     timeout: 2000,
                 });
             }
             else {
-                let flag = false;
-                productAttributes.forEach(pa => {
-                    if (pa.attribute_id.toString().trim() === selectedAttrName.value.toString().trim()) {
-                        flag = true
-                    }
-                });
-                if (flag) {
-                    Alert.warning(`Выбранный атрибут уже существует`, {
+                if ((attrFormat === "TEXT" && textValue === "") || (attrFormat === "SPR" && sprValue === null)) {
+                    Alert.warning(`Введите значение атрибута`, {
                         position: "top-right",
                         effect: "bouncyflip",
                         timeout: 2000,
                     });
                 }
                 else {
-                    const reqbody = {
-                        attribcode: selectedAttrName.value ? selectedAttrName.value : 0,
-                        listcode: listCode,
-                        value:
-                            attrFormat === "DATE" ? Moment(dateValue).format("YYYY-MM-DD") :
-                                attrFormat === "TEXT" ? textValue :
-                                    attrFormat === "SPR" ? sprValue.label : ""
-                    }
-                    Axios.post("/api/attributes/add", reqbody)
-                        .then((res) => res.data)
-                        .then((result) => {
-                            setListCode(result.text);
-                            setProductAttributes([...productAttributes, {
-                                attribute_format: attrFormat,
-                                attribute_id: selectedAttrName.value,
-                                attribute_listcode: result.text,
-                                attribute_name: selectedAttrName.label,
-                                attribute_value: reqbody.value,
-                            }]);
-                            setAttrFormat("");
-                            setSelectedAttrName(null);
-                            setTextValue("");
-                            setSprValue(null);
-                            setDateValue(Moment().format("YYYY-MM-DD"));
-                        })
-                        .catch((err) => {
-                            ErrorAlert(err);
+                    let flag = false;
+                    productAttributes.forEach(pa => {
+                        if (pa.attribute_id.toString().trim() === selectedAttrName.value.toString().trim()) {
+                            flag = true
+                        }
+                    });
+                    if (flag) {
+                        Alert.warning(`Выбранный атрибут уже существует`, {
+                            position: "top-right",
+                            effect: "bouncyflip",
+                            timeout: 2000,
                         });
+                    }
+                    else {
+                        const reqbody = {
+                            attribcode: selectedAttrName.value ? selectedAttrName.value : 0,
+                            listcode: listCode,
+                            value:
+                                attrFormat === "DATE" ? Moment(dateValue).format("YYYY-MM-DD") :
+                                    attrFormat === "TEXT" ? textValue :
+                                        attrFormat === "SPR" ? sprValue.label : ""
+                        }
+                        Axios.post("/api/attributes/add", reqbody)
+                            .then((res) => res.data)
+                            .then((result) => {
+                                setListCode(result.text);
+                                setProductAttributes([...productAttributes, {
+                                    attribute_format: attrFormat,
+                                    attribute_id: selectedAttrName.value,
+                                    attribute_listcode: result.text,
+                                    attribute_name: selectedAttrName.label,
+                                    attribute_value: reqbody.value,
+                                }]);
+                                setAttrFormat("");
+                                setSelectedAttrName(null);
+                                setTextValue("");
+                                setSprValue(null);
+                                setDateValue(Moment().format("YYYY-MM-DD"));
+                            })
+                            .catch((err) => {
+                                ErrorAlert(err);
+                            });
+                    }
                 }
             }
         }

@@ -51,6 +51,7 @@ export default function ManageInvoice({ location, history }) {
 
   const [productAttributes, setProductAttributes] = useState([]);
   const [listCode, setListCode] = useState(null);
+  const [isWholesale, setWholesale] = useState(false);
 
   const breadcrumb = [
     { caption: "Товары" },
@@ -78,7 +79,9 @@ export default function ManageInvoice({ location, history }) {
     })
       .then((res) => res.data[0])
       .then((stockTo) => {
+        console.log(stockTo);
         setStockTo(stockTo);
+        setWholesale(stockTo.wholesale)
       })
       .catch((err) => {
         ErrorAlert(err);
@@ -730,6 +733,7 @@ export default function ManageInvoice({ location, history }) {
             setProductAttributes={setProductAttributes}
             listCode={listCode}
             setListCode={setListCode}
+            isWholesale={isWholesale}
           />
           <div ref={scrollRef}></div>
         </Fragment>

@@ -69,7 +69,8 @@ let AddProductForm = ({
   productAttributes,
   setProductAttributes,
   listCode,
-  setListCode
+  setListCode,
+  isWholesale
 }) => {
 
   const [addProductData, setAddProductData] = useState("");
@@ -95,6 +96,7 @@ let AddProductForm = ({
   const [modalIsOpenAlert, setModalOpenAlert] = useState(false);
   const [newProductGenerating, setNewProductGenerating] = useState(false);
   const [newprice, setNewPrice] = useState(0);
+  const [newWholeprice, setNewWholePrice] = useState(0);
   const [productID, setProductID] = useState(null);
   const [productOptions, setProductOptions] = useState([]);
   const [productSelectValue, setProductSelectValue] = useState("");
@@ -200,6 +202,7 @@ let AddProductForm = ({
         change("AddProductForm", "lastpurchaseprice", editProduct.purchaseprice)
       );
       dispatch(change("AddProductForm", "newprice", editProduct.newprice));
+      dispatch(change("AddProductForm", "newwholeprice", editProduct.wholesale_price));
       setUpdatePrice(editProduct.updateallprodprice);
       dispatch(change("AddProductForm", "amount", editProduct.amount));
       dispatch(change("AddProductForm", "taxid", tax));
@@ -581,6 +584,32 @@ let AddProductForm = ({
     }
   };
 
+  const onNewWholePriceChange = (e) => {
+    numberValidation(e);
+
+    const newpriceTarget = isNaN(e.target.value) ? 0 : e.target.value;
+    const lpNum = +lastpurchaseprice;
+    let isStatic = false;
+
+    if (staticprice && newpriceTarget > staticprice) {
+      isStatic = true;
+    }
+    if (isStatic) {
+      alert.warning(
+        `Внимание! Цена продажи не может превышать предельную цену: ${staticprice}`,
+        {
+          position: "top-right",
+          effect: "bouncyflip",
+          timeout: 2000,
+        }
+      );
+      e.preventDefault();
+    } else {
+      dispatch(change("AddProductForm", "newwholeprice", newpriceTarget));
+      setNewWholePrice(newpriceTarget);
+    }
+  };
+
   const onUpdatePriceChange = (e) => {
     setUpdatePrice(e.target.checked);
   };
@@ -723,6 +752,7 @@ let AddProductForm = ({
       );
       dispatch(change("AddProductForm", "surcharge", surchargeRounded));
       dispatch(change("AddProductForm", "newprice", product.price));
+      dispatch(change("AddProductForm", "newwholeprice", editProduct.wholesale_price));
     }
   };
 
@@ -793,6 +823,7 @@ let AddProductForm = ({
         dispatch(change("AddProductForm", "code", barcodeChanged));
 
         dispatch(change("AddProductForm", "newprice", product.price));
+        dispatch(change("AddProductForm", "newwholeprice", product.wholesale_price));
 
         //Изменения единиц измерения ****************BEGIN*************
         if (product.unitsprid) {
@@ -845,6 +876,7 @@ let AddProductForm = ({
           setNewPrice(product.price);
         } else {
           dispatch(change("AddProductForm", "newprice", ""));
+          dispatch(change("AddProductForm", "newwholeprice", ""));
           dispatch(change("AddProductForm", "lastpurchaseprice", ""));
           dispatch(change("AddProductForm", "surcharge", ""));
         }
@@ -951,6 +983,7 @@ let AddProductForm = ({
         unitsprid: data.unitsprid.value,
         updateprice,
         attrlist: temp,
+        wholesale_price: isWholesale ? data.newwholeprice : 0
       };
       // всё что выше переписывалось 100500 раз, трогать осторожно.
 
@@ -972,6 +1005,7 @@ let AddProductForm = ({
             code: newData.code,
             name: newData.name,
             newprice: newData.newprice,
+            wholesale_price: newData.wholesale_price,
             purchaseprice: newData.lastpurchaseprice,
             stock: res.data.text,
             amount: newData.amount,
@@ -1210,6 +1244,24 @@ let AddProductForm = ({
                 unitsprid !== "3" ? [RequiredField, LessThanZero] : []
               }
             />
+            {isWholesale &&
+              <Fragment>
+                <label>Оптовая цена продажи</label>
+                <Field
+                  name="newwholeprice"
+                  component={InputGroup}
+                  type="number"
+                  className="form-control"
+                  onChange={onNewWholePriceChange}
+                  autocomplete="off"
+                  onWheel={(event) => event.currentTarget.blur()}
+                  appendItem={<span className="input-group-text">&#8376;</span>}
+                  validate={
+                    unitsprid !== "3" ? [RequiredField, LessThanZero] : []
+                  }
+                />
+              </Fragment>
+            }
           </div>
           <div className="col-md-2">
             <FormControlLabel
