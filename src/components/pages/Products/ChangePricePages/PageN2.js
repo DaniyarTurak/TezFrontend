@@ -6,6 +6,7 @@ class PageN2 extends Component {
   };
 
   render() {
+    let isWholesale = this.props.isWholesale;
     const { products } = this.state;
     let isSelledByPieces;
     products.forEach((element) => {
@@ -16,6 +17,7 @@ class PageN2 extends Component {
 
     return (
       <div className="product-change-price-page-n2">
+        {console.log(products)}
         <i>Вы установили новые цены на следующие товары/услуги : </i>
         <table className="table table-hover change-price-plt">
           <thead>
@@ -25,13 +27,19 @@ class PageN2 extends Component {
               </th>
               <th style={{ width: "20%" }}>Штрих код</th>
               <th style={{ width: "15%" }} className="text-center">
-                Новая цена
+                Новая {isWholesale ? "розничная" : ""} цена
               </th>
+              {isWholesale &&
+                <th style={{ width: "15%" }} className="text-center">
+                  Новая оптовая цена
+                </th>
+              }
               {isSelledByPieces && (
                 <th style={{ width: "15%" }} className="text-center">
                   Новая цена за штуку
                 </th>
               )}
+
               <th>Торговая точка</th>
             </tr>
           </thead>
@@ -42,13 +50,16 @@ class PageN2 extends Component {
                   <td>{product.name}</td>
                   <td>{product.code}</td>
                   <td className="text-center">{product.price}</td>
+                  {isWholesale &&
+                    <td className="text-center">{product.wholesale_price}</td>
+                  }
                   {isSelledByPieces && (
                     <td className="text-center">{product.pieceprice}</td>
                   )}
                   <td>
                     <ul>
                       {product.selectedPoints.map((point) => {
-                        return <li key={point.id}>{point.name}</li>;
+                        return <span key={point.id}>{point.name}</span>;
                       })}
                     </ul>
                   </td>

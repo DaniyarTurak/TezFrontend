@@ -267,7 +267,8 @@ export default function PageN1({
           newprice: newPriceCheck ? detail.priceto : detail.price,
           piece: detail.piece,
           pieceprice: detail.pieceprice,
-          unitsprid: detail.unitsprid
+          unitsprid: detail.unitsprid,
+          wholesale_price: detail.wholesale_price
         },
       ],
     };

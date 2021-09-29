@@ -9,11 +9,12 @@ import ErrorAlert from "../../../ReusableComponents/ErrorAlert";
 
 ReactModal.setAppElement("#root");
 
-export default function PageN1({ productListProps }) {
+export default function PageN1({ productListProps, isWholesale, setWholeSale }) {
   const [isLoading, setisLoading] = useState(true);
   const [isSearching, setisSearching] = useState(false);
   const [isSelledByPieces, setisSelledByPieces] = useState(false);
   const [newPrice, setnewPrice] = useState("");
+  const [newWSPrice, setnewWSPrice] = useState("");
   const [newPiecePrice, setnewPiecePrice] = useState("");
   const [options, setoptions] = useState([]);
   const [productList, setproductList] = useState(
@@ -23,10 +24,16 @@ export default function PageN1({ productListProps }) {
   const [productsList, setproductsList] = useState([]);
   const [selectValue, setselectValue] = useState("");
   const [staticprice, setstaticprice] = useState("");
+  const [wholePrice, setWholePrice] = useState(0);
 
   useEffect(() => {
+    setWholeSale(JSON.parse(sessionStorage.getItem("isme-company-data")).wholesale);
     getProducts();
   }, []);
+
+  useEffect(() => {
+    console.log(productList);
+  }, [productList]);
 
   const getProducts = (inputValue) => {
     Axios.get("/api/products/stockcurrent/point", {
@@ -92,6 +99,11 @@ export default function PageN1({ productListProps }) {
     setnewPrice(changedAmount);
   }
 
+  function onWSSumChange(e) {
+    const changedAmount = isNaN(e.target.value) ? 0 : e.target.value;
+    setnewWSPrice(changedAmount);
+  }
+
   function onPieceSumChange(e) {
     const changedAmount = isNaN(e.target.value) ? 0 : e.target.value;
     setnewPiecePrice(changedAmount);
@@ -135,11 +147,13 @@ export default function PageN1({ productListProps }) {
     })
       .then((res) => res.data)
       .then((result) => {
+        console.log(result);
         let newisstaticprice;
         result.forEach((e) => {
           let newisSelledByPieces = e.info[0].piece ? true : false;
           newisstaticprice = e.isstaticprice;
           setisSelledByPieces(newisSelledByPieces);
+          setWholePrice(e.info[0].wholesale_price)
         });
         if (newisstaticprice) {
           result.forEach((e) => {
@@ -172,10 +186,10 @@ export default function PageN1({ productListProps }) {
         !productBarcode
           ? "Выберите товар"
           : !newPrice
-          ? "Внесите новую цену продажи"
-          : !newPiecePrice && isSelledByPieces
-          ? "Внесите новую цену продажи за штуку"
-          : "",
+            ? "Внесите новую цену продажи"
+            : !newPiecePrice && isSelledByPieces
+              ? "Внесите новую цену продажи за штуку"
+              : "",
         {
           position: "top-right",
           effect: "bouncyflip",
@@ -213,8 +227,7 @@ export default function PageN1({ productListProps }) {
           ];
           const prodName =
             product.name +
-            `${
-              product.attributescaption ? " " + product.attributescaption : ""
+            `${product.attributescaption ? " " + product.attributescaption : ""
             }`;
           const newProduct = {
             id: product.productID,
@@ -224,7 +237,10 @@ export default function PageN1({ productListProps }) {
             pieceprice: newPiecePrice,
             price: newPrice,
             oldPrice: product.price,
+            wholesale_price: newWSPrice === "" ? 0 : newWSPrice,
+            oldWholesale_price: product.wholesale_price,
             selectedPoints: selectedPointsList,
+            isWholesale: isWholesale
           };
 
           let alreadyExist = productList.filter(
@@ -253,7 +269,7 @@ export default function PageN1({ productListProps }) {
       );
     } else {
       setnewPrice("");
-
+      setnewWSPrice("");
       setproductsList([]);
       setproductBarcode("");
     }
@@ -285,7 +301,7 @@ export default function PageN1({ productListProps }) {
         <div className="col-md-12">
           <label htmlFor="">Выберите товары на складе</label>
         </div>
-        <div className="col-md-6">
+        <div className="col-md-5">
           <input
             type="text"
             name="barcode"
@@ -295,7 +311,7 @@ export default function PageN1({ productListProps }) {
             onChange={onBarcodeChange}
           />
         </div>
-        <div className="col-md-6 zi-3">
+        <div className="col-md-5 zi-3">
           <Select
             name="productList"
             value={selectValue}
@@ -340,10 +356,17 @@ export default function PageN1({ productListProps }) {
                           <th style={{ width: "50%" }}>Наименование товара</th>
                           <th
                             style={{
-                              width: isSelledByPieces ? "20%" : "40%",
+                              width: isSelledByPieces ? "10%" : "20%",
                             }}
                           >
-                            Текущая цена
+                            Текущая розничная цена
+                          </th>
+                          <th
+                            style={{
+                              width: isSelledByPieces ? "10%" : "20%",
+                            }}
+                          >
+                            Текущая оптовая цена
                           </th>
                           {isSelledByPieces && (
                             <th style={{ width: "20%" }}>Цена за штуку</th>
@@ -364,13 +387,13 @@ export default function PageN1({ productListProps }) {
                             <tr key={index}>
                               <td>
                                 {product.name +
-                                  `${
-                                    product.attributescaption
-                                      ? " " + product.attributescaption
-                                      : ""
+                                  `${product.attributescaption
+                                    ? " " + product.attributescaption
+                                    : ""
                                   }`}
                               </td>
                               <td>{product.price}</td>
+                              <td>{product.wholesale_price === 0 ? "-" : product.wholesale_price}</td>
                               {isSelledByPieces && (
                                 <td>{product.pieceprice}</td>
                               )}
@@ -397,26 +420,45 @@ export default function PageN1({ productListProps }) {
           </div>
 
           <div className={`row pt-30 ${productList.length > 0 ? "pb-10" : ""}`}>
-            <div className="col-md-2 pt-5px">
-              <b>Новая цена:</b>
+            <div className="col-md-2 pt-5px pb-10 text-right">
+              <b>Новая {isWholesale ? "розничная" : ""} цена:</b>
             </div>
-            <div className={isSelledByPieces ? "col-md-4" : "col-md-7"}>
+            <div className="col-md-2 pb-10 pr-0 pl-0">
               <input
                 type="text"
                 name="newPrice"
                 className="form-control"
-                placeholder="Новая цена"
+                placeholder={`Новая ${isWholesale ? "розничная" : ""} цена`}
                 value={newPrice}
                 onChange={onSumChange}
               />
             </div>
-
+            {isWholesale &&
+              <Fragment>
+                <div className="col-md-2 pt-5px text-right">
+                  <b>Новая оптовая цена:</b>
+                </div>
+                <div className="col-md-2 pr-0 pl-0">
+                  <input
+                    type="text"
+                    name="newWSPrice"
+                    className="form-control"
+                    placeholder="Новая оптовая цена"
+                    value={newWSPrice}
+                    onChange={onWSSumChange}
+                  />
+                  {(newWSPrice === "" || newWSPrice.toString() === "0") &&
+                    <p style={{ lineHeight: "0.9", fontSize: "12px", padding: "5px", fontWeight: "lighter", color: "red" }}>*Товар не будет продаваться оптом</p>
+                  }
+                </div>
+              </Fragment>
+            }
             {isSelledByPieces && (
               <Fragment>
-                <div className="col-md-2 pt-5px">
+                <div className={`col-md-${isWholesale ? "2" : "4"} pt-5px text-right`}>
                   <b>Новая цена за штуку:</b>
                 </div>
-                <div className="col-md-3">
+                <div className={`col-md-${isWholesale ? "2" : "3"}`}>
                   <input
                     type="text"
                     name="newpieceprice"
@@ -429,8 +471,7 @@ export default function PageN1({ productListProps }) {
               </Fragment>
             )}
             <div
-              style={{ marginTop: "1rem" }}
-              className={`col-md-${isSelledByPieces ? "7" : "3"} text-right`}
+              className={`col-md-${isSelledByPieces ? "12" : "2"} text-center`}
             >
               <button
                 className="btn btn-info"
@@ -455,11 +496,21 @@ export default function PageN1({ productListProps }) {
                 </th>
                 <th style={{ width: "10%" }}>Штрих код</th>
                 <th style={{ width: "10%" }} className="text-center">
-                  Текущая цена
+                  Текущая {isWholesale ? "розничная" : ""} цена
                 </th>
                 <th style={{ width: "10%" }} className="text-center">
-                  Новая цена
+                  Новая {isWholesale ? "розничная" : ""} цена
                 </th>
+                {isWholesale &&
+                  <Fragment>
+                    <th style={{ width: "10%" }} className="text-center">
+                      Текущая оптовая цена
+                    </th>
+                    <th style={{ width: "10%" }} className="text-center">
+                      Новая оптовая цена
+                    </th>
+                  </Fragment>
+                }
                 {isSelledByPieces && (
                   <th style={{ width: "10%" }} className="text-center">
                     Новая цена за штуку
@@ -478,13 +529,18 @@ export default function PageN1({ productListProps }) {
                     <td>{product.code}</td>
                     <td className="text-center">{product.oldPrice}</td>
                     <td className="text-center">{product.price}</td>
+                    {isWholesale &&
+                      <Fragment>
+                        <td className="text-center">{product.oldWholesale_price}</td>
+                        <td className="text-center">{product.wholesale_price}</td>
+                      </Fragment>}
                     {isSelledByPieces && (
                       <td className="text-center">{product.pieceprice}</td>
                     )}
                     <td>
                       <ul>
                         {product.selectedPoints.map((point) => {
-                          return <li key={point.id}>{point.name}</li>;
+                          return <span key={point.id}>{point.name}</span>;
                         })}
                       </ul>
                     </td>

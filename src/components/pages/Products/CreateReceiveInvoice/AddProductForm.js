@@ -109,7 +109,7 @@ let AddProductForm = ({
   const [unitOptions, setUnitOptions] = useState([]);
   const [updateprice, setUpdatePrice] = useState(true);
   const [completedProduct, setCompletedProduct] = useState("");
-
+  const [newWSPrice, setnewWSPrice] = useState("");
   const companyData =
     JSON.parse(sessionStorage.getItem("isme-company-data")) || {};
 
@@ -202,7 +202,7 @@ let AddProductForm = ({
         change("AddProductForm", "lastpurchaseprice", editProduct.purchaseprice)
       );
       dispatch(change("AddProductForm", "newprice", editProduct.newprice));
-      dispatch(change("AddProductForm", "newwholeprice", editProduct.wholesale_price));
+      dispatch(change("AddProductForm", "newwholeprice", editProduct.wholesale_price === "" ? 0 : editProduct.wholesale_price));
       setUpdatePrice(editProduct.updateallprodprice);
       dispatch(change("AddProductForm", "amount", editProduct.amount));
       dispatch(change("AddProductForm", "taxid", tax));
@@ -586,7 +586,7 @@ let AddProductForm = ({
 
   const onNewWholePriceChange = (e) => {
     numberValidation(e);
-
+    setnewWSPrice(e.target.value);
     const newpriceTarget = isNaN(e.target.value) ? 0 : e.target.value;
     const lpNum = +lastpurchaseprice;
     let isStatic = false;
@@ -1260,6 +1260,9 @@ let AddProductForm = ({
                     unitsprid !== "3" ? [RequiredField, LessThanZero] : []
                   }
                 />
+                {(newWSPrice === "" || newWSPrice.toString() === "0") &&
+                  <p style={{ lineHeight: "0.9", fontSize: "12px", padding: "5px", fontWeight: "lighter", color: "red" }}>*Товар не будет продаваться оптом</p>
+                }
               </Fragment>
             }
           </div>

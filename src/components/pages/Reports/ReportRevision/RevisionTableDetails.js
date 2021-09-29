@@ -1,4 +1,4 @@
-import React, { Fragment } from "react";
+import React, { Fragment, useState } from "react";
 import Typography from "@material-ui/core/Typography";
 import ReactHTMLTableToExcel from "react-html-table-to-excel";
 import Moment from "moment";
@@ -14,6 +14,11 @@ import Table from "@material-ui/core/Table";
 import Button from "@material-ui/core/Button";
 import Paper from "@material-ui/core/Paper";
 import "moment/locale/ru";
+import FormGroup from '@material-ui/core/FormGroup';
+import FormControlLabel from '@material-ui/core/FormControlLabel';
+import FormControl from '@material-ui/core/FormControl';
+import FormLabel from '@material-ui/core/FormLabel';
+import Checkbox from '@material-ui/core/Checkbox';
 Moment.locale("ru");
 
 const StyledTableCell = withStyles((theme) => ({
@@ -37,13 +42,36 @@ export default function RevisionTableDetails({
   dateRev,
   backToList,
   revisionDetails,
+  onlyInRev,
+  setOnlyInRev,
+  onlyDiff,
+  setOnlyDiff,
+  revnumber,
+  getRevisionDetails
 }) {
+
   return (
     <Fragment>
-      <Grid item xs={8}>
+      <Grid item xs={4}>
         <Typography className={classes.label}>
           Ревизор {username} от {dateRev}
         </Typography>
+      </Grid>
+      <Grid item xs={2}>
+        <FormControlLabel
+          value="start"
+          control={<Checkbox color="primary" checked={onlyInRev} onChange={(e) => { setOnlyInRev(e.target.checked) }} />}
+          label="Только товары прошедшие ревизию"
+          labelPlacement="start"
+        />
+      </Grid>
+      <Grid item xs={2}>
+        <FormControlLabel
+          value="start"
+          control={<Checkbox color="primary" checked={onlyDiff} onChange={(e) => { setOnlyDiff(e.target.checked) }} />}
+          label="Только товары с разницей в остатках"
+          labelPlacement="start"
+        />
       </Grid>
       <Grid item xs={4}>
         <Button
@@ -104,7 +132,7 @@ export default function RevisionTableDetails({
                     })}
                   </StyledTableCell>
                   <StyledTableCell>
-                    {Moment(detail.date).format("DD.MM.YYYY HH:mm:ss")}
+                    {Moment(detail.revisiondate).format("DD.MM.YYYY HH:mm:ss")}
                   </StyledTableCell>
                 </TableRow>
               ))}

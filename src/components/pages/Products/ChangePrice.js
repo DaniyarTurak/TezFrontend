@@ -37,6 +37,7 @@ const useStyles = makeStyles((theme) => ({
 export default function ChangePrice({ history }) {
   const classes = useStyles();
 
+  const [isWholesale, setWholeSale] = useState(false);
   const [isSubmitting, setisSubmitting] = useState(false);
   const [isSmaller, setisSmaller] = useState(false);
   const [oldPrice, setoldPrice] = useState([]);
@@ -100,6 +101,8 @@ export default function ChangePrice({ history }) {
           pieceprice: product.pieceprice,
           pointid: point.id,
           oldprice: product.oldPrice.toString(),
+          new_wprice: product.wholesale_price,
+          old_wprice: product.oldWholesale_price.toString()
         };
 
         changes.push(change);
@@ -177,8 +180,8 @@ export default function ChangePrice({ history }) {
         <Breadcrumb content={breadcrumb} />
       </div>
 
-      {pages.n1 && <PageN1 productListProps={productListFunc} />}
-      {pages.n2 && <PageN2 productList={productList} />}
+      {pages.n1 && <PageN1 productListProps={productListFunc} isWholesale={isWholesale} setWholeSale={setWholeSale} />}
+      {pages.n2 && <PageN2 productList={productList} isWholesale={isWholesale} />}
 
       {productList.length > 0 && (
         <div className="text-right mt-20">

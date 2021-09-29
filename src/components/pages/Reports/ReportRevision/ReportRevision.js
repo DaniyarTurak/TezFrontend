@@ -52,6 +52,11 @@ export default function ReportRevision({ companyProps }) {
   const [userid, setUserid] = useState("");
   const [username, setUsername] = useState("");
 
+  const [onlyDiff, setOnlyDiff] = useState(false);
+  const [onlyInRev, setOnlyInRev] = useState(false);
+
+  const [revnumber, setRevnumber] = useState("");
+
   const company = companyProps ? companyProps.value : "";
   const companyData =
     JSON.parse(sessionStorage.getItem("isme-user-data")) || {};
@@ -62,6 +67,12 @@ export default function ReportRevision({ companyProps }) {
       clean();
     }
   }, [company]);
+
+  useEffect(() => {
+    if (revnumber !== "") {
+      getRevisionDetails(revnumber);
+    }
+  }, [onlyDiff, onlyInRev]);
 
   const clean = () => {
     setPoint("");
@@ -171,12 +182,13 @@ export default function ReportRevision({ companyProps }) {
 
   const handleDetails = (revisionnumber) => {
     getRevisionDetails(revisionnumber);
+    setRevnumber(revisionnumber);
     setLoading(true);
   };
 
   const getRevisionDetails = (revisionnumber) => {
     Axios.get("/api/report/revision/details", {
-      params: { revisionnumber: revisionnumber }
+      params: { revisionnumber: revisionnumber, onlyInRev: onlyInRev ? 1 : 0 , onlyDiff: onlyDiff ? 1 : 0 }
     })
       .then((res) => res.data)
       .then((res) => {
@@ -280,6 +292,7 @@ export default function ReportRevision({ companyProps }) {
           Показать Ревизии
         </Button>
       </Grid>
+      <Grid item xs={6} />
 
       {isLoading && (
         <Grid item xs={12}>
@@ -324,6 +337,12 @@ export default function ReportRevision({ companyProps }) {
           revisionDetails={revisionDetails}
           condition={condition}
           getDifferenceExcel={getDifferenceExcel}
+          revnumber={revnumber}
+          onlyInRev={onlyInRev}
+          setOnlyInRev={setOnlyInRev}
+          onlyDiff={onlyDiff}
+          setOnlyDiff={setOnlyDiff}
+          getRevisionDetails={getRevisionDetails}
         />
       )}
     </Grid>
