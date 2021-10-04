@@ -17,7 +17,6 @@ class PageN2 extends Component {
 
     return (
       <div className="product-change-price-page-n2">
-        {console.log(products)}
         <i>Вы установили новые цены на следующие товары/услуги : </i>
         <table className="table table-hover change-price-plt">
           <thead>

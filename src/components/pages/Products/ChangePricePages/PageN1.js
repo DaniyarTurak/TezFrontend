@@ -31,10 +31,6 @@ export default function PageN1({ productListProps, isWholesale, setWholeSale }) 
     getProducts();
   }, []);
 
-  useEffect(() => {
-    console.log(productList);
-  }, [productList]);
-
   const getProducts = (inputValue) => {
     Axios.get("/api/products/stockcurrent/point", {
       params: { productName: inputValue },
@@ -147,7 +143,6 @@ export default function PageN1({ productListProps, isWholesale, setWholeSale }) 
     })
       .then((res) => res.data)
       .then((result) => {
-        console.log(result);
         let newisstaticprice;
         result.forEach((e) => {
           let newisSelledByPieces = e.info[0].piece ? true : false;

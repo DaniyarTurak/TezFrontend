@@ -77,8 +77,8 @@
       },
       {
         "id": 13,
-        "route": "options/stockmonitoring",
-        "name": "Мониторинг остатков"
+        "route": "options/workorder",
+        "name": "Заказ-наряд"
       }
     ]
   },

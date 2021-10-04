@@ -74,6 +74,11 @@
         "id": 12,
         "route": "options/createprefix",
         "name": "Префикс весов"
+      },
+      {
+        "id": 12,
+        "route": "options/workorder",
+        "name": "Заказ-наряд"
       }
     ]
   },

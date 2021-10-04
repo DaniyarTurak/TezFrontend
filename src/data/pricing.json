@@ -8,5 +8,15 @@
     "id": 1,
     "route": "AdditionalOptions",
     "caption": "Дополнительные настройки"
+  },
+  {
+    "id": 3,
+    "route": "PurchasePrices",
+    "caption": "Настройка ЗЦ"
+  },
+  {
+    "id": 4,
+    "route": "SellingPrices",
+    "caption": "Настройка ЦР"
   }
 ]

@@ -25,6 +25,8 @@ import NewsInformation from "../pages/News/NewsInformation";
 import ESF from "../pages/ESF/ESF";
 import PricingMasterPage from "../pages/PricingMasterPage";
 import CreatePrefix from "../pages/ProductsWeight/CreatePrefix";
+import WorkorderPage from "../pages/WorkorderPage";
+
 
 // import UpdateCategoryPage from "../pages/Products/ProductReference/UpdateCategoryPage";
 import UpdateBonusPage from "../pages/Updates/UpdateBonusPage";
@@ -173,6 +175,8 @@ export default function getBody({
             return <PricingMasterPage history={history} location={location} />;
           case "createprefix":
             return <CreatePrefix history={history} location={location} />;
+          case "workorder":
+            return <WorkorderPage history={history} location={location} />;
           default:
             return <ReferencesListPage history={history} location={location} />;
         }

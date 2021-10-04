@@ -93,6 +93,7 @@ export default function ChangePrice({ history }) {
   const submitChangePrice = () => {
     let changes = [];
     let products = "";
+    console.log(productList);
     productList.forEach((product) => {
       product.selectedPoints.forEach((point) => {
         const change = {
