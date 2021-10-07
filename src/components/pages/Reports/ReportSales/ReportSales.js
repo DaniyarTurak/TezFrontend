@@ -490,7 +490,11 @@ export default function ReportSales({ companyProps }) {
     })
       .then((res) => res.data)
       .then((salesList) => {
-        setSales(salesList);
+        let temp = [];
+        salesList.forEach((el, idx) => {
+          temp.push({ ...el, num: idx + 1 })
+        });
+        setSales(temp);
         setLoading(false);
         setSubmitting(false);
         setHandleGrouping(true);

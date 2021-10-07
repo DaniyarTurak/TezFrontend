@@ -57,6 +57,7 @@ import PromotionsPage from "../pages/Products/PromotionsPage";
 import MarginalPricePage from "../pages/Products/MarginalPricePage";
 import ProductReference from "../pages/Products/ProductReference";
 import ReconciliationPage from "../pages/Products/ReconciliationPage";
+import RecieveByWorkorder from "../pages/Products/RecieveByWorkorder";
 import StockMonitoringPage from '../pages/StockMonitoringPage';
 import Revision from '../pages/Products/Revision';
 
@@ -186,6 +187,8 @@ export default function getBody({
             return (
               <CreateReceiveInvoice history={history} location={location} />
             );
+            case "recievebyworkorder":
+              return <RecieveByWorkorder history={history} location={location} />;
           case "changeprice":
             return <ChangePrice history={history} location={location} />;
           case "invoice":
@@ -233,6 +236,7 @@ export default function getBody({
             return <MarginalPricePage history={history} location={location} />;
           case "reconciliationpage":
             return <ReconciliationPage history={history} location={location} />;
+            
           case "stockmonitoring":
             return <StockMonitoringPage history={history} location={location} />;
           default:

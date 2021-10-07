@@ -79,13 +79,13 @@ export default function ReportTransactions({
   const [filter, setFilter] = useState(
     parameters
       ? {
-          value: "jur",
-          label: "По юр. лицам",
-        }
+        value: "jur",
+        label: "По юр. лицам",
+      }
       : {
-          value: "fiz",
-          label: "По физ. лицам",
-        }
+        value: "fiz",
+        label: "По физ. лицам",
+      }
   );
   const [isDateChanging, setDateChanging] = useState(false);
   const [isExcelLoading, setExcelLoading] = useState(false);
@@ -188,13 +188,13 @@ export default function ReportTransactions({
         ? textA < textB
           ? -1
           : textA > textB
-          ? 1
-          : 0
+            ? 1
+            : 0
         : textB < textA
-        ? -1
-        : textB > textA
-        ? 1
-        : 0;
+          ? -1
+          : textB > textA
+            ? 1
+            : 0;
       return res;
     });
     setTransactions(t);
@@ -266,7 +266,11 @@ export default function ReportTransactions({
     })
       .then((res) => res.data)
       .then((res) => {
-        setTransactions(res);
+        let temp = [];
+        res.forEach((el, idx) => {
+          temp.push({ ...el, num: idx + 1 })
+        });
+        setTransactions(temp);
         setLoading(false);
         setOrderBy("");
       })

@@ -1,5 +1,5 @@
 
-import React, { useState, Fragment } from "react";
+import React, { useState, useEffect, Fragment } from "react";
 import Grid from '@material-ui/core/Grid';
 import Axios from "axios";
 import Table from "@material-ui/core/Table";
@@ -8,7 +8,6 @@ import TableCell from "@material-ui/core/TableCell";
 import TableContainer from "@material-ui/core/TableContainer";
 import TableRow from "@material-ui/core/TableRow";
 import TableHead from "@material-ui/core/TableHead";
-import DeleteIcon from '@material-ui/icons/DeleteForever';
 import IconButton from "@material-ui/core/IconButton";
 import PropTypes from "prop-types";
 import TablePagination from "@material-ui/core/TablePagination";
@@ -18,27 +17,12 @@ import KeyboardArrowRight from "@material-ui/icons/KeyboardArrowRight";
 import LastPageIcon from "@material-ui/icons/LastPage";
 import { withStyles, makeStyles, useTheme } from "@material-ui/core/styles";
 import Paper from "@material-ui/core/Paper";
-import InputBase from '@material-ui/core/InputBase';
-import SaveIcon from '@material-ui/icons/Save';
 import Alert from "react-s-alert";
 import SweetAlert from "react-bootstrap-sweetalert";
-import ErrorAlert from "../../ReusableComponents/ErrorAlert";
-
-const UnitsInput = withStyles((theme) => ({
-    input: {
-        borderRadius: 4,
-        position: 'relative',
-        backgroundColor: theme.palette.common.white,
-        border: '1px solid #ced4da',
-        fontSize: 16,
-        width: '150px',
-        padding: '5px',
-        transition: theme.transitions.create(['border-color', 'box-shadow']),
-        '&:focus': {
-            borderColor: "#17a2b8",
-        },
-    },
-}))(InputBase);
+import Moment from "moment";
+import Breadcrumb from "../../../Breadcrumb";
+import Modal from 'react-modal';
+import AttributeWindow from "./AttributeWindow";
 
 const useStyles1 = makeStyles((theme) => ({
     root: {
@@ -136,21 +120,37 @@ const StyledTableCell = withStyles((theme) => ({
     },
 }))(TableCell);
 
-export default function WorkorderTable({
+export default function WorkorderAddAttributes({
     workorderId,
-    workorderProducts,
-    setWorkorderProducts,
-    getWorkorderProducts,
-    clearOptions,
-    onlyView
+    setWorkorderId,
+    setActivePage
 }) {
+
+    const customStyles = {
+        content: {
+            top: "50%",
+            left: "50%",
+            right: "auto",
+            bottom: "auto",
+            marginRight: "-50%",
+            transform: "translate(-50%, -50%)",
+            minHeight: "400px",
+            maxWidth: "700px",
+            maxHeight: "700px",
+            overlfow: "scroll",
+            zIndex: 11,
+        },
+        overlay: { zIndex: 10 },
+    };
 
 
     const [page, setPage] = useState(0);
     const [rowsPerPage, setRowsPerPage] = useState(10);
     const [isLoading, setLoading] = useState(false);
-    const [isCreated, setCreated] = useState(false);
-    const [sweetAlert, setSweetAlert] = useState(null);
+    const [workorderProducts, setWorkorderProducts] = useState([]);
+    const [info, setInfo] = useState(null);
+    const [sweetalert, setSweetAlert] = useState(null);
+    const [modalWindow, setModalWindow] = useState(null);
 
     const handleChangePage = (event, newPage) => {
         setPage(newPage);
@@ -161,26 +161,89 @@ export default function WorkorderTable({
         setPage(0);
     };
 
-    const unitsChange = (value, idx) => {
-        setWorkorderProducts(prevState => {
-            let obj = prevState[idx];
-            obj.units = value;
-            return [...prevState];
-        });
+    useEffect(() => {
+        if (workorderId !== "") {
+            getInfo();
+            getWorkorderProducts();
+        }
+    }, [workorderId]);
+
+    useEffect(() => {
+        if (modalWindow === null) {
+            getWorkorderProducts();
+        }
+    }, [modalWindow]);
+
+    const getInfo = () => {
+        Axios.get("/api/workorder/info", { params: { workorder_id: workorderId } })
+            .then((res) => res.data)
+            .then((info) => {
+                setInfo(info[0])
+            })
+            .catch((err) => {
+                console.log(err);
+            });
     };
 
-    const updateProduct = (product) => {
+    const getWorkorderProducts = () => {
+        Axios.get("/api/workorder/details", { params: { workorder_id: workorderId } })
+            .then((res) => res.data)
+            .then((products) => {
+                let prods = [];
+                products.forEach(product => {
+                    if (product.attr_json.length > 0) {
+                        let temp = [];
+                        product.attr_json.forEach(attr => {
+                            temp.push(JSON.parse(attr));
+                        });
+                        product.attr_json = temp;
+                    }
+                    prods.push(product);
+                });
+                setWorkorderProducts(prods);
+            })
+            .catch((err) => console.log(err));
+    };
+
+    const showModal = (product) => {
+        setModalWindow(
+            <Modal
+                isOpen={true}
+                style={customStyles}
+            >
+                <AttributeWindow
+                    product={product}
+                    setModalWindow={setModalWindow}
+                    workorderId={workorderId}
+                />
+            </Modal>
+        )
+    };
+
+    const receiveWorkorder = () => {
         setLoading(true);
-        Axios.post("/api/workorder/details/update", {
-            units: product.units,
-            product: product.product,
-            workorder_id: product.workorder_id,
-            attributes: product.attributes
-        })
+        Axios.post("/api/workorder/invoice", { workorder_id: workorderId })
             .then((res) => res.data)
             .then((res) => {
-                setLoading(false);
-                getWorkorderProducts();
+                console.log(res);
+                changeStatus();
+                setSweetAlert(
+                    <SweetAlert
+                        success
+                        showCancel
+                        confirmBtnText={"Закрыть"}
+                        cancelBtnText={"Выгрузить в Excel"}
+                        confirmBtnBsStyle="success"
+                        cancelBtnBsStyle="success"
+                        title={""}
+                        allowEscape={false}
+                        closeOnClickOutside={false}
+                        onConfirm={() => { setWorkorderId(""); setLoading(false); setSweetAlert(null); setActivePage(1) }}
+                        onCancel={() => { setWorkorderId(""); setLoading(false); setSweetAlert(null); setActivePage(1) }}
+                    >
+                        Товары по заказ-наряду успешно приняты на склад
+                    </SweetAlert>)
+
             })
             .catch((err) => {
                 console.log(err);
@@ -191,66 +254,18 @@ export default function WorkorderTable({
                 });
                 setLoading(false);
             });
-    }
-
-    const deleteProduct = (product) => {
-        setLoading(true);
-        Axios.post("/api/workorder/details/delete", {
-            product: product.id,
-            workorder_id: product.workorder_id,
-            attributes: product.attributes
-        })
-            .then((res) => res.data)
-            .then((res) => {
-                getWorkorderProducts();
-            })
-            .catch((err) => {
-                console.log(err);
-                Alert.error(err, {
-                    position: "top-right",
-                    effect: "bouncyflip",
-                    timeout: 2000,
-                });
-                setLoading(false);
-            });
     };
 
-    const saveWorkorder = () => {
+    const changeStatus = () => {
         setLoading(true);
         Axios.post("/api/workorder/manage", {
             workorder_id: workorderId,
-            status: 'CREATED'
+            status: 'ACCEPTED'
         })
             .then((res) => res.data)
             .then((res) => {
-                if (res[0].workorder_management.code === 'success') {
-                    setCreated(true);
-                    setSweetAlert(
-                        <SweetAlert
-                            success
-                            showCancel
-                            confirmBtnText={"Закрыть"}
-                            cancelBtnText={"Выгрузить в Excel"}
-                            confirmBtnBsStyle="default"
-                            cancelBtnBsStyle="success"
-                            title={""}
-                            allowEscape={false}
-                            closeOnClickOutside={false}
-                            onConfirm={() => clearOptions()}
-                            onCancel={workOrderToExcel}
-                        >
-                            Заказ-наряд успешно создан
-                        </SweetAlert>)
-                    setLoading(false);
-                }
-                else {
-                    Alert.error(res[0].workorder_management.text, {
-                        position: "top-right",
-                        effect: "bouncyflip",
-                        timeout: 2000,
-                    });
-                    setLoading(false);
-                }
+                console.log(res);
+                setLoading(false);
             })
             .catch((err) => {
                 console.log(err);
@@ -259,42 +274,55 @@ export default function WorkorderTable({
                     effect: "bouncyflip",
                     timeout: 2000,
                 });
-                setLoading(false);
-            });
-    };
-
-    const workOrderToExcel = () => {
-        setLoading(true);
-        Axios({
-            method: "POST",
-            url: "/api/workorder/createdtoexcel",
-            data: { workorderProducts },
-            responseType: "blob",
-        })
-            .then((res) => res.data)
-            .then((res) => {
-                const url = window.URL.createObjectURL(new Blob([res]));
-                const link = document.createElement("a");
-                link.href = url;
-                link.setAttribute("download", `Заказ-наряд.xlsx`);
-                document.body.appendChild(link);
-                link.click();
-                setLoading(false);
-                clearOptions();
-            })
-            .catch((err) => {
-                ErrorAlert(err);
                 setLoading(false);
             });
     };
 
     return (
         <Fragment>
-            {sweetAlert}
+            {sweetalert}
+            {modalWindow}
             <Grid
                 container
-                spacing={2}
+                spacing={1}
             >
+                <Grid item xs={10} style={{ paddingBottom: "0px" }}>
+                    <Breadcrumb content={[
+                        { caption: "Управление товарами" },
+                        { caption: "Прием товара по заказ-наряду" },
+                        { caption: "Список заказ-нарядов", },
+                        { caption: "Просмотр заказ-наряда", },
+                        { caption: "Добавление атрибутов", active: true },
+                    ]} />
+                </Grid>
+                <Grid item xs={2} style={{ paddingBottom: "0px", textAlign: "right" }}>
+                    <button className="btn btn-link btn-sm" onClick={() => { setWorkorderId(""); }}>
+                        Назад
+                    </button>
+                </Grid>
+                {info &&
+                    <Fragment>
+                        <Grid item xs={2}>
+                            <span style={{ color: "gray" }}>
+                                Заказ-наряд № <br />
+                                Контрагент <br />
+                                Торовая точка <br />
+                                Пользователь <br />
+                                Дата создания
+                            </span>
+                        </Grid>
+                        <Grid item xs={10}>
+                            <span style={{ color: "gray" }}>
+                                <b>{info.workorder_number}</b><br />
+                                <b>{info.counterparty + " (" + info.bin + ")"}</b><br />
+                                <b>{info.point}</b> <br />
+                                <b>{info.username}</b><br />
+                                <b>{Moment(info.date).format("MM.DD.YYYY HH:mm:ss")}</b>
+                            </span>
+                        </Grid>
+
+                    </Fragment>
+                }
                 {workorderProducts.length === 0 ?
                     <Grid item xs={12} style={{ textAlign: "center", color: '#6c757d' }}>
                         В заказ-наряде пока нет товаров
@@ -318,7 +346,10 @@ export default function WorkorderTable({
                                             <StyledTableCell align="center">
                                                 Количество
                                             </StyledTableCell>
-                                            {!onlyView && <StyledTableCell />}
+                                            <StyledTableCell align="center">
+                                                Атрибуты
+                                            </StyledTableCell>
+                                            <StyledTableCell align="center" />
                                         </TableRow>
                                     </TableHead>
                                     <TableBody>
@@ -326,39 +357,27 @@ export default function WorkorderTable({
                                             .slice(page * rowsPerPage, page * rowsPerPage + rowsPerPage)
                                             .map((product, idx) => (
                                                 <TableRow key={idx}>
-                                                    <StyledTableCell>
+                                                    <StyledTableCell align="center">
                                                         {product.code}
                                                     </StyledTableCell>
                                                     <StyledTableCell>
                                                         {product.name}
                                                     </StyledTableCell>
                                                     <StyledTableCell align="center">
-                                                        {!onlyView ? <UnitsInput
-                                                            variant="outlined"
-                                                            value={product.units}
-                                                            onChange={(e) => unitsChange(e.target.value, idx)}
-                                                        /> : product.units
-                                                        }
+                                                        {product.units}
                                                     </StyledTableCell>
-                                                    {!onlyView && <StyledTableCell align="right">
-                                                        {product.units.toString() !== product.temp_units.toString() &&
-                                                            <IconButton
-                                                                size="small"
-                                                                disabled={isLoading}
-                                                                onClick={() => {
-                                                                    updateProduct(product);
-                                                                }}>
-                                                                <SaveIcon fontSize="small" />
-                                                            </IconButton>}
-                                                        <IconButton
-                                                            size="small"
-                                                            disabled={isLoading}
-                                                            onClick={() => {
-                                                                deleteProduct(product);
-                                                            }}>
-                                                            <DeleteIcon fontSize="small" />
-                                                        </IconButton>
-                                                    </StyledTableCell>}
+                                                    <StyledTableCell align={product.attributes !== "0" ? 'left' : 'center'}>
+                                                        {product.attributes === "0" ? "Нет атрибутов" :
+                                                            product.attr_json.map((attr, idx) => (
+                                                                <span key={idx}>{attr.name + ": " + attr.value + " "}<br /> </span>
+                                                            ))}
+
+                                                    </StyledTableCell>
+                                                    <StyledTableCell align="center">
+                                                        <button className="btn btn-link btn-sm" onClick={() => showModal(product)}>
+                                                            {product.attributes === "0" ? "Добавить атрибуты" : "Изменить атрибуты"}
+                                                        </button>
+                                                    </StyledTableCell>
                                                 </TableRow>
                                             ))}
                                     </TableBody>
@@ -379,17 +398,14 @@ export default function WorkorderTable({
                             />
                         </Grid>
                     </Fragment>}
-                {!onlyView && workorderProducts.length !== 0 &&
-                    <Grid item xs={12} style={{ textAlign: "center" }}>
-                        <button
-                            className="btn btn-success"
-                            onClick={saveWorkorder}
-                            disabled={isLoading}
-                        >
-                            Сохранить заказ-наряд
-                        </button>
-                    </Grid>}
+            </Grid >
+            <Grid item xs={12} style={{ textAlign: "center" }}>
+                <button
+                    className="btn btn-success"
+                    onClick={receiveWorkorder}>
+                    ПРИНЯТЬ ТОВАРЫ НА СКЛАД
+                </button>
             </Grid>
-        </Fragment>
+        </Fragment >
     )
 }

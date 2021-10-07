@@ -197,31 +197,31 @@ export default function TransactionsTable({
                     selected={selectedID === tr.id}
                     onClick={() => setSelectedID(tr.id)}
                   >
-                    <StyledTableCell>{idx + 1 + page * 10}</StyledTableCell>
+                    <StyledTableCell>{tr.num}</StyledTableCell>
                     <StyledTableCell>
                       {Moment(tr.date).format("DD.MM.YYYY HH:mm:ss")}
                     </StyledTableCell>
                     <StyledTableCell align="center">
                       <span
                         className={`btn btn-w-big-icon ${tr.paymenttype === "card"
-                            ? "paycard-item"
-                            : tr.paymenttype === "cash"
-                              ? "tenge-item"
-                              : tr.paymenttype === "mixed"
-                                ? "mixed-item"
-                                : tr.paymenttype === "debt"
-                                  ? "debt-item"
-                                  : "debit-item"
+                          ? "paycard-item"
+                          : tr.paymenttype === "cash"
+                            ? "tenge-item"
+                            : tr.paymenttype === "mixed"
+                              ? "mixed-item"
+                              : tr.paymenttype === "debt"
+                                ? "debt-item"
+                                : "debit-item"
                           }`}
                         title={`${tr.paymenttype === "card"
-                            ? "Карта"
-                            : tr.paymenttype === "cash"
-                              ? "Наличными"
-                              : tr.paymenttype === "mixed"
-                                ? "Смешанная"
-                                : tr.paymenttype === "debt"
-                                  ? "Долг"
-                                  : "Перевод"
+                          ? "Карта"
+                          : tr.paymenttype === "cash"
+                            ? "Наличными"
+                            : tr.paymenttype === "mixed"
+                              ? "Смешанная"
+                              : tr.paymenttype === "debt"
+                                ? "Долг"
+                                : "Перевод"
                           }`}
                       />
                     </StyledTableCell>

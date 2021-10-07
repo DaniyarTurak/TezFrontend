@@ -1,25 +1,19 @@
 
 import React, { useState, useEffect, Fragment } from "react";
-import { makeStyles, withStyles, createStyles } from '@material-ui/core/styles';
+import { makeStyles, createStyles } from '@material-ui/core/styles';
 import Grid from '@material-ui/core/Grid';
-import Select from "react-select";
 import Axios from "axios";
-import ErrorAlert from "../../ReusableComponents/ErrorAlert";
 import Autocomplete from "@material-ui/lab/Autocomplete";
 import TextField from "@material-ui/core/TextField";
 import Breadcrumb from "../../Breadcrumb";
 import Alert from "react-s-alert";
-import SweetAlert from "react-bootstrap-sweetalert";
 import Modal from 'react-modal';
 
 export default function PurchasePriceAdd({
     workorderId,
-    workorderNumber,
     point,
     setPoint,
     setCounterparty,
-    workorderProducts,
-    setWorkorderProducts,
     getWorkorderProducts,
     setWorkorderId,
     onlyView,
@@ -90,7 +84,7 @@ export default function PurchasePriceAdd({
             .catch((err) => {
                 console.log(err);
             });
-    }
+    };
 
     const getProducts = () => {
         Axios.get("/api/products", { params: { productName: prodName, barcode: barcode } })
@@ -151,7 +145,6 @@ export default function PurchasePriceAdd({
                                                     setProdName("");
                                                     setBarcode("");
                                                 }}
-                                            // disabled={point === "" || counterparty === "" || isLoading ? true : false}
                                             >
                                                 Выбрать
                                             </button>
@@ -170,7 +163,6 @@ export default function PurchasePriceAdd({
                                             setProdName("");
                                             setBarcode("");
                                         }}
-                                    // disabled={point === "" || counterparty === "" || isLoading ? true : false}
                                     >
                                         Отмена
                                     </button>
@@ -184,13 +176,12 @@ export default function PurchasePriceAdd({
             });
     };
 
-
-
     const addProduct = () => {
         setLoading(true);
         Axios.post("/api/workorder/details/insert", { product: selectedProd.id, workorder_id: workorderId, units: units, point: point })
             .then((res) => res.data)
             .then((res) => {
+                setUnits("");
                 setSelectedProd(null);
                 getWorkorderProducts();
                 setLoading(false);
@@ -332,7 +323,6 @@ export default function PurchasePriceAdd({
                             <button
                                 className="btn btn-success"
                                 onClick={addProduct}
-                            // disabled={point === "" || counterparty === "" || isLoading ? true : false}
                             >
                                 Добавить
                             </button>

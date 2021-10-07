@@ -8,7 +8,6 @@ import TableCell from "@material-ui/core/TableCell";
 import TableContainer from "@material-ui/core/TableContainer";
 import TableRow from "@material-ui/core/TableRow";
 import TableHead from "@material-ui/core/TableHead";
-import DeleteIcon from '@material-ui/icons/DeleteForever';
 import IconButton from "@material-ui/core/IconButton";
 import PropTypes from "prop-types";
 import TablePagination from "@material-ui/core/TablePagination";
@@ -18,11 +17,11 @@ import KeyboardArrowRight from "@material-ui/icons/KeyboardArrowRight";
 import LastPageIcon from "@material-ui/icons/LastPage";
 import { withStyles, makeStyles, useTheme } from "@material-ui/core/styles";
 import Paper from "@material-ui/core/Paper";
-import Alert from "react-s-alert";
 import Moment from "moment";
-import EditIcon from '@material-ui/icons/Edit';
 import VisibilityIcon from '@material-ui/icons/Visibility';
-import SweetAlert from "react-bootstrap-sweetalert";
+import PlaylistAddCheckIcon from '@material-ui/icons/PlaylistAddCheck'
+import ErrorAlert from "../../../ReusableComponents/ErrorAlert";
+import Breadcrumb from "../../../Breadcrumb";
 
 const useStyles1 = makeStyles((theme) => ({
     root: {
@@ -122,19 +121,15 @@ const StyledTableCell = withStyles((theme) => ({
 
 export default function WorkorderListTable({
     workorderList,
+    setWorkorderList,
     setWorkorderId,
-    setPoint,
-    setWorkorderNumber,
-    setCounterparty,
-    getWorkorderProducts,
     setOnlyView,
-    getWorkorders
+    setActivePage
 }) {
 
     const [page, setPage] = useState(0);
     const [rowsPerPage, setRowsPerPage] = useState(10);
     const [isLoading, setLoading] = useState(false);
-    const [sweetAlert, setSweetAlert] = useState(null);
 
     const handleChangePage = (event, newPage) => {
         setPage(newPage);
@@ -145,45 +140,23 @@ export default function WorkorderListTable({
         setPage(0);
     };
 
-    const editWorkorder = (workorder) => {
-        setPoint(workorder.point);
-        setCounterparty(workorder.counterparty);
-        setWorkorderId(workorder.id);
-        setWorkorderNumber(workorder.workorder_number);
-        getWorkorderProducts(workorder.id);
-    };
+    useEffect(() => {
+        getWorkorders();
+    }, [])
 
-    const viewWorkorder = (workorder) => {
-        setOnlyView(true);
-        setPoint(workorder.point);
-        setCounterparty(workorder.counterparty);
-        setWorkorderId(workorder.id);
-        setWorkorderNumber(workorder.workorder_number);
-        getWorkorderProducts(workorder.id);
-    };
-
-    const deleteWorkorder = (workorder) => {
+    const getWorkorders = () => {
         setLoading(true);
-        Axios.post("/api/workorder/delete", { workorderId: workorder.id })
+        Axios.get("/api/workorder/list", { params: { rec: true } })
             .then((res) => res.data)
-            .then((res) => {
-                setSweetAlert(null);
+            .then((list) => {
+                setWorkorderList(list);
                 setLoading(false);
-                getWorkorders();
             })
             .catch((err) => {
-                console.log(err);
-                Alert.error(err, {
-                    position: "top-right",
-                    effect: "bouncyflip",
-                    timeout: 2000,
-                });
-                setSweetAlert(null);
                 setLoading(false);
-                getWorkorders();
+                ErrorAlert(err);
             });
     };
-
 
     // const workOrderToExcel = () => {
     //     setLoading(true);
@@ -210,34 +183,23 @@ export default function WorkorderListTable({
     //         });
     // }
 
-    const showConfiramtion = (workorder) => {
-        setSweetAlert(
-            <SweetAlert
-                warning
-                showCancel
-                confirmBtnText={"Да, удалить"}
-                cancelBtnText={"Нет"}
-                confirmBtnBsStyle="success"
-                cancelBtnBsStyle="default"
-                title={"Внимание"}
-                allowEscape={false}
-                closeOnClickOutside={false}
-                onConfirm={() => deleteWorkorder(workorder)}
-                onCancel={() => setSweetAlert(null)}
-            >
-                Заказ-наряд будет удалён без возможности восстановления. Удалить?
-            </SweetAlert>)
-    }
-
     return (
         <Fragment>
-            {sweetAlert}
             <Grid
                 container
                 spacing={2}
             >
+                <Grid item xs={12} style={{ paddingBottom: "0px" }}>
+
+                    <Breadcrumb content={[
+                        { caption: "Управление товарами" },
+                        { caption: "Прием товара по заказ-наряду" },
+                        { caption: "Список заказ-нарядов", active: true },
+                    ]} />
+                </Grid>
+
                 {workorderList.length === 0 &&
-                    <Grid item xs={12} style={{ textAlign: "center", color: '#6c757d' }}>
+                    <Grid item xs={12}>
                         У Вас пока нет заказ-нарядов
                     </Grid>
                 }
@@ -296,17 +258,12 @@ export default function WorkorderListTable({
                                                         : wo.status === 'ACCEPTED' ? <span style={{ color: "#28a745" }}>Принят</span> : ''}
                                             </StyledTableCell>
                                             <StyledTableCell align="right">
-                                                {wo.status === 'FORMATION' &&
-                                                    <IconButton onClick={() => editWorkorder(wo)}>
-                                                        <EditIcon size="small" />
-                                                    </IconButton>}
-                                                <IconButton onClick={() => viewWorkorder(wo)}>
+                                                <IconButton onClick={() => { setWorkorderId(wo.id); setOnlyView(true); setActivePage(2) }}>
                                                     <VisibilityIcon size="small" />
                                                 </IconButton>
-                                                {wo.status === 'FORMATION' &&
-                                                    <IconButton onClick={() => showConfiramtion(wo)}>
-                                                        <DeleteIcon size="small" />
-                                                    </IconButton>}
+                                                {wo.status === 'CREATED' && <IconButton onClick={() => { setWorkorderId(wo.id); setActivePage(2) }}>
+                                                    <PlaylistAddCheckIcon size="small" />
+                                                </IconButton>}
                                             </StyledTableCell>
                                         </TableRow>
                                     ))}
@@ -330,4 +287,4 @@ export default function WorkorderListTable({
             </Grid>
         </Fragment >
     )
-};
+}

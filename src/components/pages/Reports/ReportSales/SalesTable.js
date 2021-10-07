@@ -387,7 +387,7 @@ export default function SalesTable({
                 .slice(page * rowsPerPage, page * rowsPerPage + rowsPerPage)
                 .map((product, idx) => (
                   <TableRow key={idx}>
-                    <StyledTableCell>{idx + 1}</StyledTableCell>
+                    <StyledTableCell>{product.num}</StyledTableCell>
                     <StyledTableCell
                       style={{
                         fontWeight: "bold",
@@ -449,6 +449,7 @@ export default function SalesTable({
             <TableFooter>
               <TableRow>
                 <StyledTableCell colSpan="2">Итого</StyledTableCell>
+                <StyledTableCell />
                 <StyledTableCell />
                 <StyledTableCell />
                 <StyledTableCell align="center" className="tenge">

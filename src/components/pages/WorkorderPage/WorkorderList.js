@@ -13,7 +13,7 @@ export default function WorkorderList({
     getWorkorderProducts,
     setWorkorderId,
     setOnlyView
- }) {
+}) {
 
     const [workorderList, setWorkorderList] = useState([]);
     const [isLoading, setLoading] = useState(false);
@@ -46,6 +46,7 @@ export default function WorkorderList({
                 :
                 <Grid item xs={12}>
                     <WorkorderListTable
+                        getWorkorders={getWorkorders}
                         setPoint={setPoint}
                         setCounterparty={setCounterparty}
                         workorderList={workorderList}

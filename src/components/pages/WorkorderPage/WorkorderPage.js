@@ -1,7 +1,5 @@
 
 import React, { useState, useEffect, Fragment } from "react";
-import Grid from '@material-ui/core/Grid';
-import Select from "react-select";
 import Axios from "axios";
 import WorkorderOptions from "./WorkorderOptions";
 import WorkorderAddProducts from "./WorkorderAddProducts";

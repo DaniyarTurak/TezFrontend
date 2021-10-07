@@ -147,7 +147,7 @@ export default function RevisionSettings({
         Axios.post("/api/revision/revisionlist/delete", { revisionnumber })
             .then((res) => res.data)
             .then((res) => {
-                if (res.revlist_delete.code === "success") {
+                if (res.revisionlist_delete.code === "success") {
                     setHaveActive(false);
                     setSweetAlert(null);
                     setLoading(false);

@@ -166,6 +166,11 @@
         "id": 16,
         "route": "product/stockmonitoring",
         "name": "Мониторинг остатков"
+      },
+      {
+        "id": 17,
+        "route": "product/recievebyworkorder",
+        "name": "Прием товара по заказ-наряду"
       }
     ]
   }
