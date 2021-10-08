@@ -241,12 +241,10 @@ export default function RevisonProducts({
                     <hr />
                     <Grid container spacing={2}>
                         <Grid item xs={6} style={{ textAlign: "center" }}><b>Характеристики</b></Grid>
-                        <Grid item xs={6} style={{ textAlign: "center" }}><b>Количество</b></Grid>
                         {
                             fewProducts.map((prod, idx) => (
                                 <Fragment key={idx}>
                                     <Grid item xs={8}>{prod.attrvalue ? prod.attrvalue : "Без характеристик"}</Grid>
-                                    <Grid item xs={2} style={{ textAlign: "center" }}>{prod.units}</Grid>
                                     <Grid item xs={2} style={{ textAlign: "right" }} >
                                         <button
                                             className="btn btn-success"

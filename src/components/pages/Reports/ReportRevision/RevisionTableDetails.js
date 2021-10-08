@@ -83,13 +83,13 @@ export default function RevisionTableDetails({
           Вернуться назад
         </Button>
       </Grid>
-
       <Grid item xs={12}>
         <TableContainer component={Paper}>
           <Table id="table-to-xls">
             <TableHead>
               <TableRow>
                 <StyledTableCell />
+                <StyledTableCell>Штрих-код</StyledTableCell>
                 <StyledTableCell>Наименование товара</StyledTableCell>
                 <StyledTableCell>До ревизии</StyledTableCell>
                 <StyledTableCell>После ревизии</StyledTableCell>
@@ -106,6 +106,7 @@ export default function RevisionTableDetails({
               {revisionDetails.map((detail, idx) => (
                 <TableRow key={idx}>
                   <StyledTableCell>{idx + 1}</StyledTableCell>
+                  <StyledTableCell>{detail.code}</StyledTableCell>
                   <StyledTableCell>{detail.name + " " + detail.attributescaption}</StyledTableCell>
                   <StyledTableCell>{detail.unitswas}</StyledTableCell>
                   <StyledTableCell>{detail.units}</StyledTableCell>
@@ -140,6 +141,7 @@ export default function RevisionTableDetails({
             <TableFooter>
               <TableRow>
                 <StyledTableCell colSpan="2">Итого</StyledTableCell>
+                <StyledTableCell />
                 <StyledTableCell>
                   {revisionDetails
                     .reduce((prev, cur) => {
@@ -197,7 +199,6 @@ export default function RevisionTableDetails({
           </Table>
         </TableContainer>
       </Grid>
-
       <Grid item xs={6}>
         <ReactHTMLTableToExcel
           className="btn btn-sm btn-outline-success"
