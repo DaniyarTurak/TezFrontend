@@ -195,7 +195,7 @@ export default function PurchasePriceAdd({
                 });
                 setLoading(false);
             });
-    }
+    };
 
     return (
         <Fragment>
@@ -222,61 +222,63 @@ export default function PurchasePriceAdd({
                         Заказ-наряд: <b>{info.workorder_number}</b> | Контрагент: <b>{info.counterparty + " (" + info.bin + ")"}</b> | Торовая точка: <b>{info.point}</b> | Пользователь: <b>{info.username}</b>
                     </span>
                 </Grid>}
-                {!onlyView && <Fragment>          <Grid item xs={4}>
-                    <Autocomplete
-                        value={barcode}
-                        defaultValue={barcode}
-                        fullWidth
-                        disabled={isLoading}
-                        options={productList.map((option) => option.code)}
-                        onChange={(e, value) => { setBarcode(value) }}
-                        onInputChange={(e, value) => { setBarcode(value) }}
-                        noOptionsText="Товар не найден"
-                        renderInput={(params) => (
-                            <TextField
-                                classes={{
-                                    root: classesAC.root,
-                                }}
-                                {...params}
-                                placeholder="Штрих-код"
-                                variant="outlined"
-                                size="small"
+                {!onlyView &&
+                    <Fragment>
+                        <Grid item xs={4}>
+                            <Autocomplete
+                                value={barcode}
+                                defaultValue={barcode}
+                                fullWidth
+                                disabled={isLoading}
+                                options={productList.map((option) => option.code)}
+                                onChange={(e, value) => { setBarcode(value) }}
+                                onInputChange={(e, value) => { setBarcode(value) }}
+                                noOptionsText="Товар не найден"
+                                renderInput={(params) => (
+                                    <TextField
+                                        classes={{
+                                            root: classesAC.root,
+                                        }}
+                                        {...params}
+                                        placeholder="Штрих-код"
+                                        variant="outlined"
+                                        size="small"
+                                    />
+                                )}
                             />
-                        )}
-                    />
-                </Grid>
-                    <Grid item xs={4}>
-                        <Autocomplete
-                            value={prodName}
-                            fullWidth
-                            disabled={isLoading}
-                            options={productList.map((option) => option.name)}
-                            onChange={(e, value) => { setProdName(value) }}
-                            onInputChange={(e, value) => { setProdName(value) }}
-                            noOptionsText="Товар не найден"
-                            renderInput={(params) => (
-                                <TextField
-                                    classes={{
-                                        root: classesAC.root,
-                                    }}
-                                    {...params}
-                                    placeholder="Наименование товара"
-                                    variant="outlined"
-                                    size="small"
-                                />
-                            )}
-                        />
-                    </Grid>
-                    <Grid item xs={4}>
-                        <button
-                            className="btn btn-success"
-                            onClick={searchProduct}
-                        // disabled={point === "" || counterparty === "" || isLoading ? true : false}
-                        >
-                            Найти
-                        </button>
-                    </Grid>
-                </Fragment>}
+                        </Grid>
+                        <Grid item xs={4}>
+                            <Autocomplete
+                                value={prodName}
+                                fullWidth
+                                disabled={isLoading}
+                                options={productList.map((option) => option.name)}
+                                onChange={(e, value) => { setProdName(value) }}
+                                onInputChange={(e, value) => { setProdName(value) }}
+                                noOptionsText="Товар не найден"
+                                renderInput={(params) => (
+                                    <TextField
+                                        classes={{
+                                            root: classesAC.root,
+                                        }}
+                                        {...params}
+                                        placeholder="Наименование товара"
+                                        variant="outlined"
+                                        size="small"
+                                    />
+                                )}
+                            />
+                        </Grid>
+                        <Grid item xs={4}>
+                            <button
+                                className="btn btn-success"
+                                onClick={searchProduct}
+                            // disabled={point === "" || counterparty === "" || isLoading ? true : false}
+                            >
+                                Найти
+                            </button>
+                        </Grid>
+                    </Fragment>}
                 {selectedProd &&
                     <Fragment>
                         <Grid item xs={3}>

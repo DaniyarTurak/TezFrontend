@@ -22,6 +22,21 @@ import VisibilityIcon from '@material-ui/icons/Visibility';
 import PlaylistAddCheckIcon from '@material-ui/icons/PlaylistAddCheck'
 import ErrorAlert from "../../../ReusableComponents/ErrorAlert";
 import Breadcrumb from "../../../Breadcrumb";
+import LinearProgress from '@material-ui/core/LinearProgress';
+
+const BorderLinearProgress = withStyles((theme) => ({
+    root: {
+        height: 5,
+        borderRadius: 2,
+    },
+    colorPrimary: {
+        backgroundColor: theme.palette.grey[theme.palette.type === 'light' ? 200 : 700],
+    },
+    bar: {
+        borderRadius: 2,
+        backgroundColor: '#17a2b8',
+    },
+}))(LinearProgress);
 
 const useStyles1 = makeStyles((theme) => ({
     root: {
@@ -197,13 +212,17 @@ export default function WorkorderListTable({
                         { caption: "Список заказ-нарядов", active: true },
                     ]} />
                 </Grid>
-
-                {workorderList.length === 0 &&
+                {isLoading &&
+                    <Grid item xs={12}>
+                        <BorderLinearProgress />
+                    </Grid>
+                }
+                {workorderList.length === 0 && !isLoading &&
                     <Grid item xs={12}>
                         У Вас пока нет заказ-нарядов
                     </Grid>
                 }
-                <Grid item xs={12}>
+                {!isLoading && workorderList.length > 0 && <Grid item xs={12}>
                     <TableContainer
                         component={Paper}
                         style={{ boxShadow: "0px -1px 1px 1px white" }}
@@ -283,7 +302,7 @@ export default function WorkorderListTable({
                         onChangeRowsPerPage={handleChangeRowsPerPage}
                         ActionsComponent={TablePaginationActions}
                     />
-                </Grid>
+                </Grid>}
             </Grid>
         </Fragment >
     )

@@ -23,6 +23,21 @@ import SaveIcon from '@material-ui/icons/Save';
 import Alert from "react-s-alert";
 import SweetAlert from "react-bootstrap-sweetalert";
 import ErrorAlert from "../../ReusableComponents/ErrorAlert";
+import LinearProgress from '@material-ui/core/LinearProgress';
+
+const BorderLinearProgress = withStyles((theme) => ({
+    root: {
+        height: 5,
+        borderRadius: 2,
+    },
+    colorPrimary: {
+        backgroundColor: theme.palette.grey[theme.palette.type === 'light' ? 200 : 700],
+    },
+    bar: {
+        borderRadius: 2,
+        backgroundColor: '#17a2b8',
+    },
+}))(LinearProgress);
 
 const UnitsInput = withStyles((theme) => ({
     input: {
@@ -295,90 +310,95 @@ export default function WorkorderTable({
                 container
                 spacing={2}
             >
-                {workorderProducts.length === 0 ?
+                {isLoading &&
+                    <Grid item xs={12}>
+                        <BorderLinearProgress />
+                    </Grid>
+                }
+                {workorderProducts.length === 0 && !isLoading &&
                     <Grid item xs={12} style={{ textAlign: "center", color: '#6c757d' }}>
                         В заказ-наряде пока нет товаров
                     </Grid>
-                    :
-                    <Fragment>
-                        <Grid item xs={12}>
-                            <TableContainer
-                                component={Paper}
-                                style={{ boxShadow: "0px -1px 1px 1px white" }}
-                            >
-                                <Table id="table-to-xls">
-                                    <TableHead>
-                                        <TableRow style={{ fontWeight: "bold" }} >
-                                            <StyledTableCell align="center">
-                                                Штрих-код
-                                            </StyledTableCell>
-                                            <StyledTableCell align="center">
-                                                Наименование
-                                            </StyledTableCell>
-                                            <StyledTableCell align="center">
-                                                Количество
-                                            </StyledTableCell>
-                                            {!onlyView && <StyledTableCell />}
-                                        </TableRow>
-                                    </TableHead>
-                                    <TableBody>
-                                        {workorderProducts
-                                            .slice(page * rowsPerPage, page * rowsPerPage + rowsPerPage)
-                                            .map((product, idx) => (
-                                                <TableRow key={idx}>
-                                                    <StyledTableCell>
-                                                        {product.code}
-                                                    </StyledTableCell>
-                                                    <StyledTableCell>
-                                                        {product.name}
-                                                    </StyledTableCell>
-                                                    <StyledTableCell align="center">
-                                                        {!onlyView ? <UnitsInput
-                                                            variant="outlined"
-                                                            value={product.units}
-                                                            onChange={(e) => unitsChange(e.target.value, idx)}
-                                                        /> : product.units
-                                                        }
-                                                    </StyledTableCell>
-                                                    {!onlyView && <StyledTableCell align="right">
-                                                        {product.units.toString() !== product.temp_units.toString() &&
-                                                            <IconButton
-                                                                size="small"
-                                                                disabled={isLoading}
-                                                                onClick={() => {
-                                                                    updateProduct(product);
-                                                                }}>
-                                                                <SaveIcon fontSize="small" />
-                                                            </IconButton>}
+                }
+                {workorderProducts.length > 0 && !isLoading && <Fragment>
+                    <Grid item xs={12}>
+                        <TableContainer
+                            component={Paper}
+                            style={{ boxShadow: "0px -1px 1px 1px white" }}
+                        >
+                            <Table id="table-to-xls">
+                                <TableHead>
+                                    <TableRow style={{ fontWeight: "bold" }} >
+                                        <StyledTableCell align="center">
+                                            Штрих-код
+                                        </StyledTableCell>
+                                        <StyledTableCell align="center">
+                                            Наименование
+                                        </StyledTableCell>
+                                        <StyledTableCell align="center">
+                                            Количество
+                                        </StyledTableCell>
+                                        {!onlyView && <StyledTableCell />}
+                                    </TableRow>
+                                </TableHead>
+                                <TableBody>
+                                    {workorderProducts
+                                        .slice(page * rowsPerPage, page * rowsPerPage + rowsPerPage)
+                                        .map((product, idx) => (
+                                            <TableRow key={idx}>
+                                                <StyledTableCell>
+                                                    {product.code}
+                                                </StyledTableCell>
+                                                <StyledTableCell>
+                                                    {product.name}
+                                                </StyledTableCell>
+                                                <StyledTableCell align="center">
+                                                    {!onlyView ? <UnitsInput
+                                                        variant="outlined"
+                                                        value={product.units}
+                                                        onChange={(e) => unitsChange(e.target.value, idx)}
+                                                    /> : product.units
+                                                    }
+                                                </StyledTableCell>
+                                                {!onlyView && <StyledTableCell align="right">
+                                                    {product.units.toString() !== product.temp_units.toString() &&
                                                         <IconButton
                                                             size="small"
                                                             disabled={isLoading}
                                                             onClick={() => {
-                                                                deleteProduct(product);
+                                                                updateProduct(product);
                                                             }}>
-                                                            <DeleteIcon fontSize="small" />
-                                                        </IconButton>
-                                                    </StyledTableCell>}
-                                                </TableRow>
-                                            ))}
-                                    </TableBody>
-                                </Table>
-                            </TableContainer>
-                            <TablePagination
-                                rowsPerPageOptions={[10, 20, 50]}
-                                component="div"
-                                count={workorderProducts.length}
-                                backIconButtonText="Предыдущая страница"
-                                labelRowsPerPage="Строк в странице"
-                                nextIconButtonText="Следующая страница"
-                                rowsPerPage={rowsPerPage}
-                                page={page}
-                                onChangePage={handleChangePage}
-                                onChangeRowsPerPage={handleChangeRowsPerPage}
-                                ActionsComponent={TablePaginationActions}
-                            />
-                        </Grid>
-                    </Fragment>}
+                                                            <SaveIcon fontSize="small" />
+                                                        </IconButton>}
+                                                    <IconButton
+                                                        size="small"
+                                                        disabled={isLoading}
+                                                        onClick={() => {
+                                                            deleteProduct(product);
+                                                        }}>
+                                                        <DeleteIcon fontSize="small" />
+                                                    </IconButton>
+                                                </StyledTableCell>}
+                                            </TableRow>
+                                        ))}
+                                </TableBody>
+                            </Table>
+                        </TableContainer>
+                        <TablePagination
+                            rowsPerPageOptions={[10, 20, 50]}
+                            component="div"
+                            count={workorderProducts.length}
+                            backIconButtonText="Предыдущая страница"
+                            labelRowsPerPage="Строк в странице"
+                            nextIconButtonText="Следующая страница"
+                            rowsPerPage={rowsPerPage}
+                            page={page}
+                            onChangePage={handleChangePage}
+                            onChangeRowsPerPage={handleChangeRowsPerPage}
+                            ActionsComponent={TablePaginationActions}
+                        />
+                    </Grid>
+                </Fragment>}
                 {!onlyView && workorderProducts.length !== 0 &&
                     <Grid item xs={12} style={{ textAlign: "center" }}>
                         <button
@@ -388,7 +408,8 @@ export default function WorkorderTable({
                         >
                             Сохранить заказ-наряд
                         </button>
-                    </Grid>}
+                    </Grid>
+                }
             </Grid>
         </Fragment>
     )

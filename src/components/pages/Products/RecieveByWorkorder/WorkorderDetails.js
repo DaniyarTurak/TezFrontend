@@ -19,11 +19,24 @@ import { withStyles, makeStyles, useTheme } from "@material-ui/core/styles";
 import Paper from "@material-ui/core/Paper";
 import InputBase from '@material-ui/core/InputBase';
 import Alert from "react-s-alert";
-import SweetAlert from "react-bootstrap-sweetalert";
-import ErrorAlert from "../../../ReusableComponents/ErrorAlert";
 import Checkbox from '@material-ui/core/Checkbox';
 import Moment from "moment";
 import Breadcrumb from "../../../Breadcrumb";
+import LinearProgress from '@material-ui/core/LinearProgress';
+
+const BorderLinearProgress = withStyles((theme) => ({
+    root: {
+        height: 5,
+        borderRadius: 2,
+    },
+    colorPrimary: {
+        backgroundColor: theme.palette.grey[theme.palette.type === 'light' ? 200 : 700],
+    },
+    bar: {
+        borderRadius: 2,
+        backgroundColor: '#17a2b8',
+    },
+}))(LinearProgress);
 
 const GreenCheckbox = withStyles({
     root: {
@@ -171,7 +184,6 @@ export default function WorkorderDetails({
     const [isLoading, setLoading] = useState(false);
     const [workorderProducts, setWorkorderProducts] = useState([]);
     const [info, setInfo] = useState(null);
-    const [sweetalert, setSweetAlert] = useState(null);
 
     const handleChangePage = (event, newPage) => {
         setPage(newPage);
@@ -201,6 +213,7 @@ export default function WorkorderDetails({
     };
 
     const getWorkorderProducts = () => {
+        setLoading(true);
         Axios.get("/api/workorder/details", { params: { workorder_id: workorderId } })
             .then((res) => res.data)
             .then((products) => {
@@ -214,8 +227,13 @@ export default function WorkorderDetails({
                 else {
                     setWorkorderProducts(products);
                 }
+                setLoading(false);
+
             })
-            .catch((err) => console.log(err));
+            .catch((err) => {
+                setLoading(false);
+                console.log(err)
+            });
     };
 
     // const workOrderToExcel = () => {
@@ -259,9 +277,8 @@ export default function WorkorderDetails({
             return [...prevState];
         });
         if (e.target.checked === true) {
-            let send = { workorder_id: workorderId, products: [{ id: temp.product, units: temp.units }] }
             Axios.post("/api/workorder/details/update/units",
-                { send })
+                { workorder_id: workorderId, products: [{ id: temp.product, units: temp.units }] })
                 .then((res) => res.data)
                 .then((res) => {
                     setLoading(false);
@@ -365,7 +382,6 @@ export default function WorkorderDetails({
 
     return (
         <Fragment>
-            {sweetalert}
             <Grid
                 container
                 spacing={1}
@@ -409,11 +425,17 @@ export default function WorkorderDetails({
 
                     </Fragment>
                 }
-                {workorderProducts.length === 0 ?
+                {isLoading &&
+                    <Grid item xs={12}>
+                        <BorderLinearProgress />
+                    </Grid>
+                }
+                {workorderProducts.length === 0 && !isLoading &&
                     <Grid item xs={12} style={{ textAlign: "center", color: '#6c757d' }}>
                         В заказ-наряде пока нет товаров
-                    </Grid>
-                    :
+                    </Grid>}
+
+                {!isLoading && workorderProducts.length > 0 &&
                     <Fragment>
                         <Grid item xs={12}>
                             <TableContainer

@@ -23,6 +23,21 @@ import Moment from "moment";
 import Breadcrumb from "../../../Breadcrumb";
 import Modal from 'react-modal';
 import AttributeWindow from "./AttributeWindow";
+import LinearProgress from '@material-ui/core/LinearProgress';
+
+const BorderLinearProgress = withStyles((theme) => ({
+    root: {
+        height: 5,
+        borderRadius: 2,
+    },
+    colorPrimary: {
+        backgroundColor: theme.palette.grey[theme.palette.type === 'light' ? 200 : 700],
+    },
+    bar: {
+        borderRadius: 2,
+        backgroundColor: '#17a2b8',
+    },
+}))(LinearProgress);
 
 const useStyles1 = makeStyles((theme) => ({
     root: {
@@ -186,6 +201,7 @@ export default function WorkorderAddAttributes({
     };
 
     const getWorkorderProducts = () => {
+        setLoading(true);
         Axios.get("/api/workorder/details", { params: { workorder_id: workorderId } })
             .then((res) => res.data)
             .then((products) => {
@@ -201,8 +217,12 @@ export default function WorkorderAddAttributes({
                     prods.push(product);
                 });
                 setWorkorderProducts(prods);
+                setLoading(false);
             })
-            .catch((err) => console.log(err));
+            .catch((err) => {
+                console.log(err);
+                setLoading(false);
+            });
     };
 
     const showModal = (product) => {
@@ -226,7 +246,6 @@ export default function WorkorderAddAttributes({
             .then((res) => res.data)
             .then((res) => {
                 console.log(res);
-                changeStatus();
                 setSweetAlert(
                     <SweetAlert
                         success
@@ -242,7 +261,8 @@ export default function WorkorderAddAttributes({
                         onCancel={() => { setWorkorderId(""); setLoading(false); setSweetAlert(null); setActivePage(1) }}
                     >
                         Товары по заказ-наряду успешно приняты на склад
-                    </SweetAlert>)
+                    </SweetAlert>);
+                setLoading(false);
 
             })
             .catch((err) => {
@@ -257,7 +277,6 @@ export default function WorkorderAddAttributes({
     };
 
     const changeStatus = () => {
-        setLoading(true);
         Axios.post("/api/workorder/manage", {
             workorder_id: workorderId,
             status: 'ACCEPTED'
@@ -265,7 +284,7 @@ export default function WorkorderAddAttributes({
             .then((res) => res.data)
             .then((res) => {
                 console.log(res);
-                setLoading(false);
+                receiveWorkorder();
             })
             .catch((err) => {
                 console.log(err);
@@ -274,7 +293,6 @@ export default function WorkorderAddAttributes({
                     effect: "bouncyflip",
                     timeout: 2000,
                 });
-                setLoading(false);
             });
     };
 
@@ -296,7 +314,7 @@ export default function WorkorderAddAttributes({
                     ]} />
                 </Grid>
                 <Grid item xs={2} style={{ paddingBottom: "0px", textAlign: "right" }}>
-                    <button className="btn btn-link btn-sm" onClick={() => { setWorkorderId(""); }}>
+                    <button className="btn btn-link btn-sm" onClick={() => { setActivePage(2) }}>
                         Назад
                     </button>
                 </Grid>
@@ -323,11 +341,17 @@ export default function WorkorderAddAttributes({
 
                     </Fragment>
                 }
-                {workorderProducts.length === 0 ?
+                {isLoading &&
+                    <Grid item xs={12}>
+                        <BorderLinearProgress />
+                    </Grid>
+                }
+                {workorderProducts.length === 0 && !isLoading &&
                     <Grid item xs={12} style={{ textAlign: "center", color: '#6c757d' }}>
                         В заказ-наряде пока нет товаров
                     </Grid>
-                    :
+                }
+                {workorderProducts.length > 0 && !isLoading &&
                     <Fragment>
                         <Grid item xs={12}>
                             <TableContainer
@@ -397,15 +421,15 @@ export default function WorkorderAddAttributes({
                                 ActionsComponent={TablePaginationActions}
                             />
                         </Grid>
+                        <Grid item xs={12} style={{ textAlign: "center" }}>
+                            <button
+                                className="btn btn-success"
+                                onClick={changeStatus}>
+                                ПРИНЯТЬ ТОВАРЫ НА СКЛАД
+                            </button>
+                        </Grid>
                     </Fragment>}
-            </Grid >
-            <Grid item xs={12} style={{ textAlign: "center" }}>
-                <button
-                    className="btn btn-success"
-                    onClick={receiveWorkorder}>
-                    ПРИНЯТЬ ТОВАРЫ НА СКЛАД
-                </button>
             </Grid>
-        </Fragment >
+        </Fragment>
     )
 }

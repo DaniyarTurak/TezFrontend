@@ -194,10 +194,16 @@ export default function WorkorderOptions({
             });
     };
 
-
     const createWorkorder = () => {
-        console.log(point, counterparty);
-        Axios.post("/api/workorder/manage", { point, counterparty })
+        let send = {};
+        if (workorderNumber !== "") {
+            send = { point, counterparty, workorder_number: workorderNumber };
+        }
+        else {
+            send = { point, counterparty };
+        };
+
+        Axios.post("/api/workorder/manage", send)
             .then((res) => res.data[0].workorder_management)
             .then((res) => {
                 console.log(res);

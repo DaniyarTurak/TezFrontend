@@ -296,7 +296,7 @@ export default function WorkorderListTable({
                                                         : wo.status === 'ACCEPTED' ? <span style={{ color: "#28a745" }}>Принят</span> : ''}
                                             </StyledTableCell>
                                             <StyledTableCell align="right">
-                                                {wo.status === 'FORMATION' &&
+                                                {(wo.status === 'FORMATION' || wo.status === 'CREATED') &&
                                                     <IconButton onClick={() => editWorkorder(wo)}>
                                                         <EditIcon size="small" />
                                                     </IconButton>}
