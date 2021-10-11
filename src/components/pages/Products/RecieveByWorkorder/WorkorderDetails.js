@@ -419,7 +419,7 @@ export default function WorkorderDetails({
                                 <b>{info.counterparty + " (" + info.bin + ")"}</b><br />
                                 <b>{info.point}</b> <br />
                                 <b>{info.username}</b><br />
-                                <b>{Moment(info.date).format("MM.DD.YYYY HH:mm:ss")}</b>
+                                <b>{Moment(info.date).format("DD.MM.YYYY HH:mm:ss")}</b>
                             </span>
                         </Grid>
 

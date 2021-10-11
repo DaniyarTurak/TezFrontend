@@ -285,10 +285,10 @@ export default function WorkorderListTable({
                                                 {wo.username}
                                             </StyledTableCell>
                                             <StyledTableCell align="center">
-                                                {Moment(wo.date).format("MM.DD.YYYY HH:mm:ss")}
+                                                {Moment(wo.date).format("DD.MM.YYYY HH:mm:ss")}
                                             </StyledTableCell >
                                             <StyledTableCell align="center">
-                                                {wo.accept_date ? Moment(wo.accept_date).format("MM.DD.YYYY HH:mm:ss") : "-"}
+                                                {wo.accept_date ? Moment(wo.accept_date).format("DD.MM.YYYY HH:mm:ss") : "-"}
                                             </StyledTableCell>
                                             <StyledTableCell align="center">
                                                 {wo.status === 'CREATED' ? <span style={{ color: "#17a2b8" }}>Создан</span>
