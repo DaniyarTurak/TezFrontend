@@ -213,7 +213,7 @@ export default function CreateDiscounts() {
   };
 
   const getCategories = () => {
-    Axios.get("/api/categories", { params: { deleted: false } })
+    Axios.get("/api/categories/getcategories", { params: { deleted: false } })
       .then((res) => res.data)
       .then((list) => {
         const categoriesWithoutCat = list.filter(

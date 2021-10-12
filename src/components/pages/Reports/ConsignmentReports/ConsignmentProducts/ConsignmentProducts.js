@@ -120,7 +120,7 @@ export default function ConsginmentProducts({
   };
 
   const getCategories = (c) => {
-    Axios.get("/api/categories", {
+    Axios.get("/api/categories/getcategories", {
       params: { deleted: false, company: companyProps },
     })
       .then((res) => res.data)

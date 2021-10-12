@@ -101,8 +101,8 @@ export default function HistoryTable({
                   >
                     {invoice.purchaseprice
                       ? parseFloat(invoice.purchaseprice).toLocaleString("ru", {
-                          minimumFractionDigits: 2,
-                        })
+                        minimumFractionDigits: 2,
+                      })
                       : "n/a"}
                   </StyledTableCell>
                 )}
@@ -113,8 +113,8 @@ export default function HistoryTable({
                   >
                     {invoice.newprice
                       ? parseFloat(invoice.newprice).toLocaleString("ru", {
-                          minimumFractionDigits: 2,
-                        })
+                        minimumFractionDigits: 2,
+                      })
                       : "n/a"}
                   </StyledTableCell>
                 )}
@@ -124,7 +124,11 @@ export default function HistoryTable({
                     align="center"
                     className={`${invoice.newprice && "tenge"}`}
                   >
-                    {invoice.newprice}
+                    {invoice.newprice
+                      ? parseFloat(invoice.newprice).toLocaleString("ru", {
+                        minimumFractionDigits: 2,
+                      })
+                      : "n/a"}
                   </StyledTableCell>
                 )}
                 {["1", "7", "16", "17"].includes(invoicetype.value) && (

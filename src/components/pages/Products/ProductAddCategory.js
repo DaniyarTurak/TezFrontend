@@ -78,7 +78,7 @@ class ProductAddCategory extends Component {
   };
 
   getCategories = () => {
-    Axios.get("/api/categories", { params: { deleted: false } })
+    Axios.get("/api/categories/getcategories", { params: { deleted: false } })
       .then((res) => res.data)
       .then((list) => {
         const categories = list.map((result) => {

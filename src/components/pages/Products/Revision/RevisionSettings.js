@@ -6,6 +6,7 @@ import FormControl from '@material-ui/core/FormControl';
 import Grid from '@material-ui/core/Grid';
 import Alert from "react-s-alert";
 import SweetAlert from "react-bootstrap-sweetalert";
+import ActiveRevisionTable from "./ActiveRevisionTable";
 
 export default function RevisionSettings({
     setRevNumber,
@@ -33,11 +34,24 @@ export default function RevisionSettings({
     const [haveActive, setHaveActive] = useState(false);
     const [sweetAlert, setSweetAlert] = useState(null);
     const [isLoading, setLoading] = useState(false);
+    const [revisionList, setRevisionList] = useState([]);
 
     useEffect(() => {
         setPoint("");
         getPoints();
+        getActiveRevision();
     }, []);
+
+    const getActiveRevision = () => {
+        Axios.get("/api/revision/listactive")
+            .then((res) => res.data)
+            .then((list) => {
+                setRevisionList(list)
+            })
+            .catch((err) => {
+                ErrorAlert(err);
+            });
+    };
 
     //список торговых точек
     const getPoints = () => {
@@ -156,12 +170,16 @@ export default function RevisionSettings({
                         effect: "bouncyflip",
                         timeout: 2000,
                     });
+                    getActiveRevision();
+                    setLoading(false);
                 } else {
                     Alert.error("Возникла непредвиденная ошибка", {
                         position: "top-right",
                         effect: "bouncyflip",
                         timeout: 2000,
                     });
+                    setSweetAlert(null);
+                    getActiveRevision();
                     setLoading(false);
                 }
             })
@@ -211,6 +229,23 @@ export default function RevisionSettings({
                         Начать ревизию
                     </button>
                 </Grid>
+            </Grid>
+            <Grid
+                container
+                spacing={3}
+            >
+                <Grid item xs={12}>
+                    <hr style={{ margin: "0px" }} />
+                </Grid>
+                {revisionList.length > 0 &&
+                    <Grid item xs={12}>
+                        <ActiveRevisionTable
+                            revisionList={revisionList}
+                            setRevisionList={setRevisionList}
+                            deleteRevision={deleteRevision}
+                            setSweetAlert={setSweetAlert}
+                        />
+                    </Grid>}
             </Grid>
         </Fragment>
     );

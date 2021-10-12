@@ -362,7 +362,7 @@ export default function ReportIncome({ companyProps }) {
   };
 
   const getCategories = () => {
-    Axios.get("/api/categories", { params: { deleted: false, company } })
+    Axios.get("/api/categories/getcategories", { params: { deleted: false, company } })
       .then((res) => res.data)
       .then((list) => {
         const all = [{ label: "Все", value: "@" }];
