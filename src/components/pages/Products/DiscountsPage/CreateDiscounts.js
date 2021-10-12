@@ -16,6 +16,7 @@ import { Alert, AlertTitle } from "@material-ui/lab";
 import ShowInactive from "../../ClosedListPages/ShowInactive";
 import Paper from "@material-ui/core/Paper";
 import ReactTooltip from "react-tooltip";
+import Checkbox from '@material-ui/core/Checkbox';
 
 const StyledTableCell = withStyles((theme) => ({
   head: {
@@ -48,6 +49,16 @@ const useStyles = makeStyles({
   },
 });
 
+const GreenCheckbox = withStyles({
+  root: {
+      color: 'green',
+      '&$checked': {
+          color: 'green',
+      },
+  },
+  checked: {},
+})((props) => <Checkbox color="default" {...props} />);
+
 export default function CreateDiscounts() {
   const classes = useStyles();
   const [avgPrice, setAvgPrice] = useState(0);
@@ -60,6 +71,8 @@ export default function CreateDiscounts() {
   const [categories, setCategories] = useState([]);
   const [dateFrom, setDateFrom] = useState(Moment().format("YYYY-MM-DD"));
   const [dateTo, setDateTo] = useState(Moment().format("YYYY-MM-DD"));
+  const [timeFrom, setTimeFrom] = useState('00:00');
+  const [timeTo, setTimeTo] = useState('00:00');
   const [disc, setDisc] = useState(0);
   const [discountsum, setDiscountSum] = useState({
     label: "не суммировать",
@@ -166,6 +179,12 @@ export default function CreateDiscounts() {
       value: true,
     },
   ];
+
+  const [tag, setTag] = useState(false);
+
+  const tagChange = (event) => {
+    setTag(event.target.checked);
+  };
 
   useEffect(() => {
     getProducts();
@@ -500,97 +519,103 @@ export default function CreateDiscounts() {
       selectDiscount.value === 0
         ? 0
         : selectDiscount.value === 1
-        ? salesPoint.value
-        : selectDiscount.value === 2
-        ? category.value
-        : selectDiscount.value === 3
-        ? brand.value
-        : 0;
+          ? salesPoint.value
+          : selectDiscount.value === 2
+            ? category.value
+            : selectDiscount.value === 3
+              ? brand.value
+              : 0;
 
     const point =
       selectDiscount.value === 0
         ? 0
         : selectDiscount.value === 1
-        ? salesPoint.value
-        : selectDiscount.value === 2
-        ? salesPointWithAll.value
-        : selectDiscount.value === 3
-        ? salesPointWithAll.value
-        : 0;
+          ? salesPoint.value
+          : selectDiscount.value === 2
+            ? salesPointWithAll.value
+            : selectDiscount.value === 3
+              ? salesPointWithAll.value
+              : 0;
 
     const type = selectDiscount.value;
     const discount =
       selectDiscount.value !== 4
         ? {
-            object: object,
-            type: type,
-            discountsum: discountsum.value,
-            point: point,
-            datefrom: dateFrom,
-            dateto: dateTo,
-            discount: disc,
-          }
+          object: object,
+          type: type,
+          discountsum: discountsum.value,
+          point: point,
+          datefrom: dateFrom,
+          dateto: dateTo,
+          discount: disc,
+          tag: tag,
+          timefrom: timeFrom,
+          timeto: timeTo
+        }
         : {
-            stock: productList,
-            type: type,
-            discountsum: discountsum.value,
-            datefrom: dateFrom,
-            dateto: dateTo,
-            discount: avgDiscount,
-          };
+          stock: productList,
+          type: type,
+          discountsum: discountsum.value,
+          datefrom: dateFrom,
+          dateto: dateTo,
+          discount: avgDiscount,
+          tag: tag,
+          timefrom: timeFrom,
+          timeto: timeTo
+        };
     setLoading(true);
     selectDiscount.value !== 4
       ? Axios.post("/api/discount/add", { discount })
-          .then(() => {
-            setLoading(false);
+        .then(() => {
+          setLoading(false);
 
-            alert.success("Скидка успешно добавлена", {
-              position: "top-right",
-              effect: "bouncyflip",
-              timeout: 2000,
-            });
-            getDiscountsInfo();
-          })
-          .catch((err) => {
-            setLoading(false);
-            alert.error(
-              err.response.data.code === "internal_error"
-                ? "Возникла ошибка при обработке вашего запроса. Мы уже работает над решением. Попробуйте позже"
-                : err.response.data.text,
-              {
-                position: "top-right",
-                effect: "bouncyflip",
-                timeout: 2000,
-              }
-            );
-          })
-      : Axios.post("/api/discount/addprod", { discount })
-          .then(() => {
-            setLoading(false);
-            setAvgPrice(0);
-            setAvgDiscountAmount(0);
-            setAvgDiscount(0);
-            setBarcode("");
-            alert.success("Скидка успешно добавлена", {
-              position: "top-right",
-              effect: "bouncyflip",
-              timeout: 2000,
-            });
-            getDiscountsInfo();
-          })
-          .catch((err) => {
-            setLoading(false);
-            alert.error(
-              err.response.data.code === "internal_error"
-                ? "Возникла ошибка при обработке вашего запроса. Мы уже работает над решением. Попробуйте позже"
-                : err.response.data.text,
-              {
-                position: "top-right",
-                effect: "bouncyflip",
-                timeout: 2000,
-              }
-            );
+          alert.success("Скидка успешно добавлена", {
+            position: "top-right",
+            effect: "bouncyflip",
+            timeout: 2000,
           });
+          getDiscountsInfo();
+        })
+        .catch((err) => {
+          setLoading(false);
+          alert.error(
+            err.response.data.code === "internal_error"
+              ? "Возникла ошибка при обработке вашего запроса. Мы уже работает над решением. Попробуйте позже"
+              : err.response.data.text,
+            {
+              position: "top-right",
+              effect: "bouncyflip",
+              timeout: 2000,
+            }
+          );
+        })
+      : Axios.post("/api/discount/addprod", { discount })
+        .then(() => {
+          setLoading(false);
+          setAvgPrice(0);
+          setAvgDiscountAmount(0);
+          setAvgDiscount(0);
+          setBarcode("");
+          alert.success("Скидка успешно добавлена", {
+            position: "top-right",
+            effect: "bouncyflip",
+            timeout: 2000,
+          });
+          getDiscountsInfo();
+        })
+        .catch((err) => {
+          setLoading(false);
+          alert.error(
+            err.response.data.code === "internal_error"
+              ? "Возникла ошибка при обработке вашего запроса. Мы уже работает над решением. Попробуйте позже"
+              : err.response.data.text,
+            {
+              position: "top-right",
+              effect: "bouncyflip",
+              timeout: 2000,
+            }
+          );
+        });
   };
 
   const getDiscountsInfo = () => {
@@ -1161,10 +1186,9 @@ export default function CreateDiscounts() {
                               <tr key={index}>
                                 <td>
                                   {product.name +
-                                    `${
-                                      product.attributescaption
-                                        ? " " + product.attributescaption
-                                        : ""
+                                    `${product.attributescaption
+                                      ? " " + product.attributescaption
+                                      : ""
                                     }`}
                                 </td>
                                 <td className="text-center">
@@ -1275,15 +1299,44 @@ export default function CreateDiscounts() {
               onChange={dateFromChange}
             />
           </div>
-          <div className="row col-md-8">
-            <div className="col-md-5">
-              <label>Дата по</label>
+          <div className="col-md-3">
+            <label>Дата по</label>
+            <input
+              type="date"
+              value={dateTo}
+              className="form-control"
+              name="dateTo"
+              onChange={dateToChange}
+            />
+          </div>
+          <div className="row col-md-12">
+            <div className="col-md-2">
+              <label>Учитывать время</label> <br />
+              <GreenCheckbox
+                checked={tag}
+                onChange={tagChange}
+              />&nbsp;
+              {tag ? "Да" : "Нет"}
+
+            </div>
+            <div className="col-md-3">
+              <label>Время с</label>
               <input
-                type="date"
-                value={dateTo}
+                disabled={!tag}
+                type="time"
                 className="form-control"
-                name="dateTo"
-                onChange={dateToChange}
+                value={timeFrom}
+                onChange={(e) => setTimeFrom(e.target.value)}
+              />
+            </div>
+            <div className="col-md-3">
+              <label>Время по</label>
+              <input
+                disabled={!tag}
+                type="time"
+                className="form-control"
+                value={timeTo}
+                onChange={(e) => setTimeTo(e.target.value)}
               />
             </div>
           </div>
