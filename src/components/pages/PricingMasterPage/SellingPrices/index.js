@@ -1,3 +1,3 @@
-import SellingPrices from "./SellingPrices";
+import SellPrices from "./SellPrices";
 
-export default SellingPrices;
+export default SellPrices;

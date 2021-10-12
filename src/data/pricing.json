@@ -12,11 +12,11 @@
   {
     "id": 3,
     "route": "PurchasePrices",
-    "caption": "Настройка ЗЦ"
+    "caption": "Закупочные цены"
   },
   {
     "id": 4,
     "route": "SellingPrices",
-    "caption": "Настройка ЦР"
+    "caption": "Цены реализации"
   }
 ]

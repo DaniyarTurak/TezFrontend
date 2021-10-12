@@ -388,7 +388,7 @@ export default function WorkorderAddAttributes({
                                                         {product.name}
                                                     </StyledTableCell>
                                                     <StyledTableCell align="center">
-                                                        {product.units}
+                                                        {product.accepted_units}
                                                     </StyledTableCell>
                                                     <StyledTableCell align={product.attributes !== "0" ? 'left' : 'center'}>
                                                         {product.attributes === "0" ? "Нет атрибутов" :

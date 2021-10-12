@@ -17,7 +17,26 @@ import LastPageIcon from "@material-ui/icons/LastPage";
 import { withStyles, makeStyles, useTheme } from "@material-ui/core/styles";
 import Paper from "@material-ui/core/Paper";
 import LinearProgress from '@material-ui/core/LinearProgress';
+import InputBase from '@material-ui/core/InputBase';
+import Axios from "axios";
+import Alert from "react-s-alert";
+import SaveIcon from '@material-ui/icons/Save';
 
+const PriceInput = withStyles((theme) => ({
+    input: {
+        borderRadius: 4,
+        position: 'relative',
+        backgroundColor: theme.palette.common.white,
+        border: '1px solid #ced4da',
+        fontSize: 16,
+        width: '150px',
+        padding: '5px',
+        transition: theme.transitions.create(['border-color', 'box-shadow']),
+        '&:focus': {
+            borderColor: "#17a2b8",
+        },
+    },
+}))(InputBase);
 
 const BorderLinearProgress = withStyles((theme) => ({
     root: {
@@ -131,7 +150,11 @@ const StyledTableCell = withStyles((theme) => ({
 
 export default function PurchasePricesList({
     priceList,
-    isLoading
+    setPriceList,
+    isLoading,
+    setLoading,
+    getPrices,
+    counterparty
 }) {
 
     const customStyles = {
@@ -150,9 +173,6 @@ export default function PurchasePricesList({
     const [page, setPage] = useState(0);
     const [rowsPerPage, setRowsPerPage] = useState(10);
 
-
-
-
     const handleChangePage = (event, newPage) => {
         setPage(newPage);
     };
@@ -160,6 +180,64 @@ export default function PurchasePricesList({
     const handleChangeRowsPerPage = (event) => {
         setRowsPerPage(+event.target.value);
         setPage(0);
+    };
+
+    const updatePrice = (product) => {
+        setLoading(true);
+        Axios.post("/api/prices", {
+            product: product.product,
+            price: product.price,
+            type: 0,
+            deleted: false,
+            point: product.point,
+            counterparty
+        })
+            .then((res) => res.data)
+            .then((res) => {
+                getPrices();
+            })
+            .catch((err) => {
+                console.log(err);
+                Alert.error(err, {
+                    position: "top-right",
+                    effect: "bouncyflip",
+                    timeout: 2000,
+                });
+                setLoading(false);
+            });
+    };
+
+    const deleteProduct = (product) => {
+        setLoading(true);
+        Axios.post("/api/prices", {
+            product: product.product,
+            price: product.price,
+            type: 0,
+            deleted: true,
+            point: 0,
+            counterparty
+        })
+            .then((res) => res.data)
+            .then((res) => {
+                getPrices();
+            })
+            .catch((err) => {
+                console.log(err);
+                Alert.error(err, {
+                    position: "top-right",
+                    effect: "bouncyflip",
+                    timeout: 2000,
+                });
+                setLoading(false);
+            });
+    };
+
+    const priceChange = (value, idx) => {
+        setPriceList(prevState => {
+            let obj = prevState[idx];
+            obj.price = value;
+            return [...prevState];
+        });
     };
 
     return (
@@ -173,7 +251,7 @@ export default function PurchasePricesList({
                         <BorderLinearProgress />
                     </Grid>
                 }
-                {priceList.length === 0 && !isLoading &&
+                {counterparty !== "" && priceList.length === 0 && !isLoading &&
                     <Grid item xs={12} style={{ textAlign: "center", color: '#6c757d' }}>
                         У Вас пока не установлены закупочные цены на товары
                     </Grid>
@@ -215,23 +293,28 @@ export default function PurchasePricesList({
                                                     {pc.name}
                                                 </StyledTableCell>
                                                 <StyledTableCell align="center">
-                                                    {pc.price} тг.
+                                                    <PriceInput
+                                                        variant="otlined"
+                                                        value={pc.price}
+                                                        onChange={(e) => priceChange(e.target.value, idx)}
+                                                    /> &nbsp;
+                                                    тг.
                                                 </StyledTableCell>
                                                 <StyledTableCell align="center">
-                                                {/* {product.units.toString() !== product.temp_units.toString() &&
+                                                    {pc.price.toString() !== pc.temp_price.toString() &&
                                                         <IconButton
                                                             size="small"
                                                             disabled={isLoading}
                                                             onClick={() => {
-                                                                updateProduct(product);
+                                                                updatePrice(pc);
                                                             }}>
                                                             <SaveIcon fontSize="small" />
-                                                        </IconButton>} */}
-                                                <IconButton
+                                                        </IconButton>}
+                                                    <IconButton
                                                         size="small"
                                                         disabled={isLoading}
                                                         onClick={() => {
-                                                            // deleteProduct(product);
+                                                            deleteProduct(pc);
                                                         }}>
                                                         <DeleteIcon fontSize="small" />
                                                     </IconButton>

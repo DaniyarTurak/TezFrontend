@@ -1,7 +1,5 @@
-
-import React, { useState, Fragment } from "react";
+import React, { useState, useEffect, Fragment } from "react";
 import Grid from '@material-ui/core/Grid';
-import Axios from "axios";
 import Table from "@material-ui/core/Table";
 import TableBody from "@material-ui/core/TableBody";
 import TableCell from "@material-ui/core/TableCell";
@@ -18,28 +16,13 @@ import KeyboardArrowRight from "@material-ui/icons/KeyboardArrowRight";
 import LastPageIcon from "@material-ui/icons/LastPage";
 import { withStyles, makeStyles, useTheme } from "@material-ui/core/styles";
 import Paper from "@material-ui/core/Paper";
-import InputBase from '@material-ui/core/InputBase';
-import SaveIcon from '@material-ui/icons/Save';
-import Alert from "react-s-alert";
-import SweetAlert from "react-bootstrap-sweetalert";
-import ErrorAlert from "../../ReusableComponents/ErrorAlert";
 import LinearProgress from '@material-ui/core/LinearProgress';
+import InputBase from '@material-ui/core/InputBase';
+import Axios from "axios";
+import Alert from "react-s-alert";
+import SaveIcon from '@material-ui/icons/Save';
 
-const BorderLinearProgress = withStyles((theme) => ({
-    root: {
-        height: 5,
-        borderRadius: 2,
-    },
-    colorPrimary: {
-        backgroundColor: theme.palette.grey[theme.palette.type === 'light' ? 200 : 700],
-    },
-    bar: {
-        borderRadius: 2,
-        backgroundColor: '#17a2b8',
-    },
-}))(LinearProgress);
-
-const UnitsInput = withStyles((theme) => ({
+const PriceInput = withStyles((theme) => ({
     input: {
         borderRadius: 4,
         position: 'relative',
@@ -54,6 +37,20 @@ const UnitsInput = withStyles((theme) => ({
         },
     },
 }))(InputBase);
+
+const BorderLinearProgress = withStyles((theme) => ({
+    root: {
+        height: 5,
+        borderRadius: 2,
+    },
+    colorPrimary: {
+        backgroundColor: theme.palette.grey[theme.palette.type === 'light' ? 200 : 700],
+    },
+    bar: {
+        borderRadius: 2,
+        backgroundColor: '#17a2b8',
+    },
+}))(LinearProgress);
 
 const useStyles1 = makeStyles((theme) => ({
     root: {
@@ -151,21 +148,30 @@ const StyledTableCell = withStyles((theme) => ({
     },
 }))(TableCell);
 
-export default function WorkorderTable({
-    workorderId,
-    workorderProducts,
-    setWorkorderProducts,
-    getWorkorderProducts,
-    clearOptions,
-    onlyView
+export default function SellPricesList({
+    priceList,
+    setPriceList,
+    isLoading,
+    setLoading,
+    getPrices,
+    point
 }) {
 
+    const customStyles = {
+        control: (base, state) => ({
+            ...base,
+            backgroundColor: "white",
+            border: '2px solid #17a2b8',
+            boxShadow: state.isFocused ? null : null,
+            "&:hover": {
+                border: '2px solid #17a2b8',
+
+            }
+        })
+    };
 
     const [page, setPage] = useState(0);
     const [rowsPerPage, setRowsPerPage] = useState(10);
-    const [isLoading, setLoading] = useState(false);
-    const [isCreated, setCreated] = useState(false);
-    const [sweetAlert, setSweetAlert] = useState(null);
 
     const handleChangePage = (event, newPage) => {
         setPage(newPage);
@@ -176,137 +182,64 @@ export default function WorkorderTable({
         setPage(0);
     };
 
-    const unitsChange = (value, idx) => {
-        setWorkorderProducts(prevState => {
+    const updatePrice = (product) => {
+        setLoading(true);
+        Axios.post("/api/prices", {
+            product: product.product,
+            price: product.price,
+            type: 1,
+            deleted: false,
+            point: product.point,
+        })
+            .then((res) => res.data)
+            .then((res) => {
+                getPrices();
+            })
+            .catch((err) => {
+                console.log(err);
+                Alert.error(err, {
+                    position: "top-right",
+                    effect: "bouncyflip",
+                    timeout: 2000,
+                });
+                setLoading(false);
+            });
+    };
+
+    const deleteProduct = (product) => {
+        setLoading(true);
+        Axios.post("/api/prices", {
+            product: product.product,
+            price: product.price,
+            type: 1,
+            deleted: true,
+            point: product.point
+        })
+            .then((res) => res.data)
+            .then((res) => {
+                getPrices();
+            })
+            .catch((err) => {
+                console.log(err);
+                Alert.error(err, {
+                    position: "top-right",
+                    effect: "bouncyflip",
+                    timeout: 2000,
+                });
+                setLoading(false);
+            });
+    };
+
+    const priceChange = (value, idx) => {
+        setPriceList(prevState => {
             let obj = prevState[idx];
-            obj.units = value;
+            obj.price = value;
             return [...prevState];
         });
     };
 
-    const updateProduct = (product) => {
-        setLoading(true);
-        Axios.post("/api/workorder/details/update", {
-            units: product.units,
-            product: product.product,
-            workorder_id: product.workorder_id,
-            attributes: product.attributes
-        })
-            .then((res) => res.data)
-            .then((res) => {
-                setLoading(false);
-                getWorkorderProducts();
-            })
-            .catch((err) => {
-                console.log(err);
-                Alert.error(err, {
-                    position: "top-right",
-                    effect: "bouncyflip",
-                    timeout: 2000,
-                });
-                setLoading(false);
-            });
-    }
-
-    const deleteProduct = (product) => {
-        setLoading(true);
-        Axios.post("/api/workorder/details/delete", {
-            product: product.product,
-            workorder_id: product.workorder_id,
-            attributes: product.attributes
-        })
-            .then((res) => res.data)
-            .then((res) => {
-                getWorkorderProducts();
-                setLoading(false);
-            })
-            .catch((err) => {
-                console.log(err);
-                Alert.error(err, {
-                    position: "top-right",
-                    effect: "bouncyflip",
-                    timeout: 2000,
-                });
-                setLoading(false);
-            });
-    };
-
-    const saveWorkorder = () => {
-        setLoading(true);
-        Axios.post("/api/workorder/manage", {
-            workorder_id: workorderId,
-            status: 'CREATED'
-        })
-            .then((res) => res.data)
-            .then((res) => {
-                if (res[0].workorder_management.code === 'success') {
-                    setCreated(true);
-                    setSweetAlert(
-                        <SweetAlert
-                            success
-                            showCancel
-                            confirmBtnText={"Закрыть"}
-                            cancelBtnText={"Выгрузить в Excel"}
-                            confirmBtnBsStyle="default"
-                            cancelBtnBsStyle="success"
-                            title={""}
-                            allowEscape={false}
-                            closeOnClickOutside={false}
-                            onConfirm={() => clearOptions()}
-                            onCancel={workOrderToExcel}
-                        >
-                            Заказ-наряд успешно создан
-                        </SweetAlert>)
-                    setLoading(false);
-                }
-                else {
-                    Alert.error(res[0].workorder_management.text, {
-                        position: "top-right",
-                        effect: "bouncyflip",
-                        timeout: 2000,
-                    });
-                    setLoading(false);
-                }
-            })
-            .catch((err) => {
-                console.log(err);
-                Alert.error(err, {
-                    position: "top-right",
-                    effect: "bouncyflip",
-                    timeout: 2000,
-                });
-                setLoading(false);
-            });
-    };
-
-    const workOrderToExcel = () => {
-        setLoading(true);
-        Axios({
-            method: "POST",
-            url: "/api/workorder/createdtoexcel",
-            data: { workorderProducts },
-            responseType: "blob",
-        })
-            .then((res) => res.data)
-            .then((res) => {
-                const url = window.URL.createObjectURL(new Blob([res]));
-                const link = document.createElement("a");
-                link.href = url;
-                link.setAttribute("download", `Заказ-наряд.xlsx`);
-                document.body.appendChild(link);
-                link.click();
-                setLoading(false);
-                clearOptions();
-            })
-            .catch((err) => {
-                ErrorAlert(err);
-                setLoading(false);
-            });
-    };
-
     return (
         <Fragment>
-            {sweetAlert}
             <Grid
                 container
                 spacing={2}
@@ -316,12 +249,12 @@ export default function WorkorderTable({
                         <BorderLinearProgress />
                     </Grid>
                 }
-                {workorderProducts.length === 0 && !isLoading &&
+                {point !== "" && priceList.length === 0 && !isLoading &&
                     <Grid item xs={12} style={{ textAlign: "center", color: '#6c757d' }}>
-                        В заказ-наряде пока нет товаров
+                        У Вас пока нет установленных цен реализации
                     </Grid>
                 }
-                {workorderProducts.length > 0 && !isLoading && <Fragment>
+                {priceList.length > 0 && !isLoading &&
                     <Grid item xs={12}>
                         <TableContainer
                             component={Paper}
@@ -330,44 +263,48 @@ export default function WorkorderTable({
                             <Table id="table-to-xls">
                                 <TableHead>
                                     <TableRow style={{ fontWeight: "bold" }} >
+                                        <StyledTableCell />
                                         <StyledTableCell align="center">
                                             Штрих-код
                                         </StyledTableCell>
                                         <StyledTableCell align="center">
-                                            Наименование
+                                            Наименование товара
                                         </StyledTableCell>
                                         <StyledTableCell align="center">
-                                            Количество
+                                            Цена реализации
                                         </StyledTableCell>
-                                        {!onlyView && <StyledTableCell />}
+                                        <StyledTableCell />
                                     </TableRow>
                                 </TableHead>
                                 <TableBody>
-                                    {workorderProducts
+                                    {priceList
                                         .slice(page * rowsPerPage, page * rowsPerPage + rowsPerPage)
-                                        .map((product, idx) => (
+                                        .map((pc, idx) => (
                                             <TableRow key={idx}>
-                                                <StyledTableCell>
-                                                    {product.code}
-                                                </StyledTableCell>
-                                                <StyledTableCell>
-                                                    {product.name}
+                                                <StyledTableCell align="center">
+                                                    {pc.num}
                                                 </StyledTableCell>
                                                 <StyledTableCell align="center">
-                                                    {!onlyView ? <UnitsInput
-                                                        variant="outlined"
-                                                        value={product.units}
-                                                        onChange={(e) => unitsChange(e.target.value, idx)}
-                                                    /> : product.units
-                                                    }
+                                                    {pc.code}
                                                 </StyledTableCell>
-                                                {!onlyView && <StyledTableCell align="right">
-                                                    {product.units.toString() !== product.temp_units.toString() &&
+                                                <StyledTableCell align="center">
+                                                    {pc.name}
+                                                </StyledTableCell>
+                                                <StyledTableCell align="center">
+                                                    <PriceInput
+                                                        variant="otlined"
+                                                        value={pc.price}
+                                                        onChange={(e) => priceChange(e.target.value, idx)}
+                                                    /> &nbsp;
+                                                    тг.
+                                                </StyledTableCell>
+                                                <StyledTableCell align="right">
+                                                    {pc.price.toString() !== pc.temp_price.toString() &&
                                                         <IconButton
                                                             size="small"
                                                             disabled={isLoading}
                                                             onClick={() => {
-                                                                updateProduct(product);
+                                                                updatePrice(pc);
                                                             }}>
                                                             <SaveIcon fontSize="small" />
                                                         </IconButton>}
@@ -375,11 +312,11 @@ export default function WorkorderTable({
                                                         size="small"
                                                         disabled={isLoading}
                                                         onClick={() => {
-                                                            deleteProduct(product);
+                                                            deleteProduct(pc);
                                                         }}>
                                                         <DeleteIcon fontSize="small" />
                                                     </IconButton>
-                                                </StyledTableCell>}
+                                                </StyledTableCell>
                                             </TableRow>
                                         ))}
                                 </TableBody>
@@ -388,7 +325,7 @@ export default function WorkorderTable({
                         <TablePagination
                             rowsPerPageOptions={[10, 20, 50]}
                             component="div"
-                            count={workorderProducts.length}
+                            count={priceList.length}
                             backIconButtonText="Предыдущая страница"
                             labelRowsPerPage="Строк в странице"
                             nextIconButtonText="Следующая страница"
@@ -398,20 +335,8 @@ export default function WorkorderTable({
                             onChangeRowsPerPage={handleChangeRowsPerPage}
                             ActionsComponent={TablePaginationActions}
                         />
-                    </Grid>
-                </Fragment>}
-                {!onlyView && workorderProducts.length !== 0 &&
-                    <Grid item xs={12} style={{ textAlign: "center" }}>
-                        <button
-                            className="btn btn-success"
-                            onClick={saveWorkorder}
-                            disabled={isLoading}
-                        >
-                            Сохранить заказ-наряд
-                        </button>
-                    </Grid>
-                }
+                    </Grid>}
             </Grid>
-        </Fragment>
+        </Fragment >
     )
-}
+};

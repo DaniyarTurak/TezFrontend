@@ -1,18 +1,19 @@
 
 import React, { useState, useEffect, Fragment } from "react";
 import Grid from '@material-ui/core/Grid';
-import PurchasePricesList from "./PurchasePricesList"
-import PurchasePriceAdd from "./PurchasePriceAdd";
+import SellPricesList from "./SellPricesList"
+import SellPriceAdd from "./SellPriceAdd";
 import Axios from "axios";
 import Select from "react-select";
 
-export default function PurchasePrices() {
+
+export default function SellPrices() {
 
   const customStyles = {
     control: (base, state) => ({
       ...base,
       backgroundColor: "white",
-      border: '2px solid #17a2b8',
+      // border: '2px solid #17a2b8',
       boxShadow: state.isFocused ? null : null,
       "&:hover": {
         border: '2px solid #17a2b8',
@@ -21,41 +22,41 @@ export default function PurchasePrices() {
     })
   };
 
-  const [counterparty, setCounterparty] = useState("");
+  const [point, setPoint] = useState("");
   const [priceList, setPriceList] = useState([]);
   const [isLoading, setLoading] = useState(false);
-  const [counterparties, setCounterparties] = useState([]);
+  const [points, setPoints] = useState([]);
 
   useEffect(() => {
-    getCounterparties();
+    getPoints();
   }, []);
 
   useEffect(() => {
-    if (counterparty !== "") {
+    if (point !== "") {
       getPrices();
     }
-  }, [counterparty]);
+  }, [point]);
 
-  const getCounterparties = () => {
-    Axios.get("/api/counterparties")
+  const getPoints = () => {
+    Axios.get("/api/point")
       .then((res) => res.data)
-      .then((counterparties) => {
+      .then((points) => {
         let temp = [];
-        counterparties.forEach(ct => {
-          temp.push({ label: ct.name + " | " + ct.bin, value: ct.id })
+        points.forEach(pt => {
+          temp.push({ label: pt.name, value: pt.id })
         });
-        setCounterparties(temp);
+        setPoints(temp);
       })
       .catch((err) => console.log(err));
   };
 
-  const counterpartyChange = (e) => {
-    setCounterparty(e.value)
+  const pointChange = (e) => {
+    setPoint(e.value)
   };
 
   const getPrices = () => {
     setLoading(true);
-    Axios.get("/api/prices/list", { params: { counterparty } })
+    Axios.get("/api/prices/list", { params: { point } })
       .then((res) => res.data)
       .then((prices) => {
         let temp = [];
@@ -80,19 +81,19 @@ export default function PurchasePrices() {
         spacing={2}
       >
         <Grid item xs={10}>
-          <label style={{ fontSize: "12px", color: counterparty === "" || !counterparty ? "red" : "black" }}>*Контрагент</label>
+          <label style={{ fontSize: "12px", color: point === "" || !point ? "red" : "black" }}>*Торговая точка</label>
           <Select
             styles={customStyles}
-            options={counterparties}
-            onChange={counterpartyChange}
-            placeholder="Контрагент"
+            options={points}
+            onChange={pointChange}
+            placeholder="Торговая точка"
           />
         </Grid>
         <Grid item xs={2} style={{ marginTop: "24px" }}>
           <button
             className="btn btn-success"
             onClick={getPrices}
-            disabled={counterparty === "" || isLoading ? true : false}
+            disabled={point === "" || isLoading ? true : false}
           >
             Показать
           </button>
@@ -100,27 +101,27 @@ export default function PurchasePrices() {
         <Grid item xs={12}>
           <hr style={{ margin: "0px" }} />
         </Grid>
-        {counterparty !== "" && !isLoading &&
+        {point !== "" && !isLoading &&
           <Fragment>
             <Grid item xs={12} style={{ textAlign: 'center', color: '#6c757d' }}>
-              Добавление закупочной цены
+              Добавление цены реализации
             </Grid>
             <Grid item xs={12}>
-              <PurchasePriceAdd
-                counterparty={counterparty}
+              <SellPriceAdd
+                point={point}
                 getPrices={getPrices}
               />
             </Grid>
           </Fragment>
         }
         <Grid item xs={12}>
-          <PurchasePricesList
-            counterparty={counterparty}
+          <SellPricesList
             priceList={priceList}
             setPriceList={setPriceList}
             isLoading={isLoading}
             setLoading={setLoading}
             getPrices={getPrices}
+            point={point}
           />
         </Grid>
 

@@ -90,18 +90,11 @@ let AddSalesPlanForm = ({
     console.log(reqdata);
     Axios.post("/api/salesplan/manage", reqdata)
       .then(() => {
-        salesPlanData
-          ? history.push({
-            pathname: "/usercabinet/salesplan",
-            state: {
-              fromEdit: true,
-            },
-          })
-          : Alert.success("План продаж успешно сохранен", {
-            position: "top-right",
-            effect: "bouncyflip",
-            timeout: 2000,
-          });
+        Alert.success("План продаж успешно сохранен", {
+          position: "top-right",
+          effect: "bouncyflip",
+          timeout: 2000,
+        });
         setSubmitting(false);
         dispatch(reset("AddSalesPlanForm"));
       })
