@@ -34,9 +34,12 @@ export default function ShelfLife() {
       from: 0,
       to: 0,
       type: 1,
+      category: 0,
       discount: 0,
       fromPicker: day,
       toPicker: day,
+      object: 0,
+      objectid: 0
     },
   ]);
   const [isSubmitting, setSubmitting] = useState(false);

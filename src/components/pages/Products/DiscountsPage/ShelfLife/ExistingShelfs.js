@@ -93,10 +93,11 @@ export default function ExistingShelfs({ isSubmitting }) {
       <Table className={classes.table} aria-label="customized table">
         <TableHead>
           <TableRow>
+            <StyledTableCell align="center">Тип</StyledTableCell>
+            <StyledTableCell align="center">Категория</StyledTableCell>
             <StyledTableCell colSpan={2} align="center">
               Срок годности товара в диапазоне:
             </StyledTableCell>
-            <StyledTableCell align="center">Тип</StyledTableCell>
             <StyledTableCell align="center">
               Скидки по срокам годности [%]
             </StyledTableCell>
@@ -107,15 +108,18 @@ export default function ExistingShelfs({ isSubmitting }) {
           {oldShelfs.map((row, idx) => (
             <StyledTableRow key={row.id}>
               <StyledTableCell align="center">
+                {row.type === 1 ? "День" : "Месяц"}
+              </StyledTableCell>
+              <StyledTableCell align="center">
+                {row.category}
+              </StyledTableCell>
+              <StyledTableCell align="center">
                 <label style={{ marginRight: "0.5rem" }}>От:</label>
                 {row.from}
               </StyledTableCell>
               <StyledTableCell align="center">
                 <label style={{ marginRight: "0.5rem" }}>До:</label>
                 {row.to}
-              </StyledTableCell>
-              <StyledTableCell align="center">
-                {row.type === 1 ? "День" : "Месяц"}
               </StyledTableCell>
               <StyledTableCell align="center">{row.discount} %</StyledTableCell>
               <StyledTableCell align="center">

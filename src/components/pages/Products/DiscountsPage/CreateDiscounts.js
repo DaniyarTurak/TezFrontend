@@ -51,10 +51,10 @@ const useStyles = makeStyles({
 
 const GreenCheckbox = withStyles({
   root: {
+    color: 'green',
+    '&$checked': {
       color: 'green',
-      '&$checked': {
-          color: 'green',
-      },
+    },
   },
   checked: {},
 })((props) => <Checkbox color="default" {...props} />);
@@ -764,7 +764,16 @@ export default function CreateDiscounts() {
                       <ReactTooltip />
                     </StyledTableCell>
                     <StyledTableCell align="center">
-                      Период действия
+                      Дата начала
+                    </StyledTableCell>
+                    <StyledTableCell align="center">
+                      Время начала
+                    </StyledTableCell>
+                    <StyledTableCell align="center">
+                      Дата завершения
+                    </StyledTableCell>
+                    <StyledTableCell align="center">
+                      Время завершения
                     </StyledTableCell>
                     <StyledTableCell />
                   </TableRow>
@@ -782,8 +791,16 @@ export default function CreateDiscounts() {
                         {disc.discountsum ? "Да" : "Нет"}
                       </StyledTableCell>
                       <StyledTableCell align="center">
-                        {Moment(disc.startdate).format("DD.MM.YYYY")} -{" "}
+                        {Moment(disc.startdate).format("DD.MM.YYYY")}
+                      </StyledTableCell>
+                      <StyledTableCell align="center">
+                        {disc.fromtime}
+                      </StyledTableCell>
+                      <StyledTableCell align="center">
                         {Moment(disc.expirationdate).format("DD.MM.YYYY")}
+                      </StyledTableCell>
+                      <StyledTableCell align="center">
+                        {disc.totime}
                       </StyledTableCell>
                       <StyledTableCell align="center">
                         <button

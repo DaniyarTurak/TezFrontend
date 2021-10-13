@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useEffect, useState } from "react";
 import { withStyles, makeStyles } from "@material-ui/core/styles";
 import Table from "@material-ui/core/Table";
 import TableBody from "@material-ui/core/TableBody";
@@ -13,6 +13,7 @@ import TextField from "@material-ui/core/TextField";
 import MenuItem from "@material-ui/core/MenuItem";
 import Alert from "react-s-alert";
 import IndeterminateCheckBoxIcon from "@material-ui/icons/IndeterminateCheckBox";
+import Axios from "axios";
 
 const StyledTableCell = withStyles((theme) => ({
   head: {
@@ -90,7 +91,12 @@ export default function CreateShelfs({ shelf, setShelf }) {
       if (key === "from" && newValue > row.to) {
         q.to = q.displayID === row.displayID ? newValue : q.to;
       }
+      if (key === "objectid" && newValue > row.to) {
+        q.objectid = q.displayID === row.displayID ? newValue : 0;
+        q.object = q.displayID === row.displayID ? (newValue.toString() === "0" ? null : 2) : null;
+      }
       q[key] = q.displayID === row.displayID ? newValue : q[key];
+
       if (key === "type" && value === 1) {
         q.fromPicker = q.displayID === row.displayID ? day : q.fromPicker;
         q.from = q.displayID === row.displayID ? 0 : q.from;
@@ -101,6 +107,7 @@ export default function CreateShelfs({ shelf, setShelf }) {
         q.toPicker = q.displayID === row.displayID ? month : q.toPicker;
         q.from = q.displayID === row.displayID ? 0 : q.from;
         q.to = q.displayID === row.displayID ? 0 : q.to;
+
       }
     });
     setShelf([...shelf]);
@@ -125,16 +132,41 @@ export default function CreateShelfs({ shelf, setShelf }) {
     setShelf([...newArray]);
   };
 
+  const [categories, setCategories] = useState([]);
+
+  useEffect(() => {
+    getCategories();
+  }, [])
+
+  const getCategories = () => {
+    Axios.get("/api/categories/getcategories")
+      .then((res) => res.data)
+      .then((data) => {
+        let c = [];
+        data.forEach(category => {
+          if (!category.deleted) {
+            c.push(category);
+          }
+
+        })
+        c.unshift({ id: 0, name: "Все категории" });
+        setCategories(c);
+      })
+      .catch((err) => {
+        console.log(err);
+      });
+  };
+
   return (
     <TableContainer style={{ marginTop: "1rem" }} component={Paper}>
       <Table className={classes.table} aria-label="customized table">
         <TableHead>
           <TableRow>
             <StyledTableCell align="center">Тип</StyledTableCell>
+            <StyledTableCell align="center">Категория</StyledTableCell>
             <StyledTableCell colSpan={2} align="center">
               Срок годности товара в диапазоне:
             </StyledTableCell>
-
             <StyledTableCell align="center">
               Скидки по срокам годности [%]
             </StyledTableCell>
@@ -155,6 +187,21 @@ export default function CreateShelfs({ shelf, setShelf }) {
                   {types.map((option) => (
                     <MenuItem key={option.value} value={option.value}>
                       {option.label}
+                    </MenuItem>
+                  ))}
+                </TextField>
+              </StyledTableCell>
+              <StyledTableCell align="center">
+                <TextField
+                  id="objectid"
+                  select
+                  label="Категория"
+                  value={row.objectid}
+                  onChange={(e) => handleAllChange(row, "objectid", e)}
+                >
+                  {categories.map((option) => (
+                    <MenuItem key={option.id} value={option.id}>
+                      {option.name}
                     </MenuItem>
                   ))}
                 </TextField>
