@@ -23,6 +23,8 @@ import Checkbox from '@material-ui/core/Checkbox';
 import Moment from "moment";
 import Breadcrumb from "../../../Breadcrumb";
 import LinearProgress from '@material-ui/core/LinearProgress';
+import ErrorAlert from "../../../ReusableComponents/ErrorAlert";
+import ReactHTMLTableToExcel from "react-html-table-to-excel";
 
 const BorderLinearProgress = withStyles((theme) => ({
     root: {
@@ -236,30 +238,6 @@ export default function WorkorderDetails({
             });
     };
 
-    // const workOrderToExcel = () => {
-    //     setLoading(true);
-    //     Axios({
-    //         method: "POST",
-    //         url: "/api/workorder/createdtoexcel",
-    //         data: { workorderProducts },
-    //         responseType: "blob",
-    //     })
-    //         .then((res) => res.data)
-    //         .then((res) => {
-    //             const url = window.URL.createObjectURL(new Blob([res]));
-    //             const link = document.createElement("a");
-    //             link.href = url;
-    //             link.setAttribute("download", `Заказ-наряд.xlsx`);
-    //             document.body.appendChild(link);
-    //             link.click();
-    //             setLoading(false);
-    //         })
-    //         .catch((err) => {
-    //             ErrorAlert(err);
-    //             setLoading(false);
-    //         });
-    // };
-
     const unitsChange = (value, idx) => {
         setWorkorderProducts(prevState => {
             let obj = prevState[idx];
@@ -326,40 +304,6 @@ export default function WorkorderDetails({
         setLoading(false);
     };
 
-    // const receiveWorkorder = () => {
-    //     setLoading(true);
-    //     Axios.post("/api/workorder/invoice", { workorder_id: workorderId })
-    //         .then((res) => res.data)
-    //         .then((res) => {
-    //             setSweetAlert(
-    //                 <SweetAlert
-    //                     success
-    //                     showCancel
-    //                     confirmBtnText={"Закрыть"}
-    //                     // cancelBtnText={"Выгрузить в Excel"}
-    //                     // confirmBtnBsStyle="default"
-    //                     cancelBtnBsStyle="default"
-    //                     title={""}
-    //                     allowEscape={false}
-    //                     closeOnClickOutside={false}
-    //                     // onConfirm={() => clearOptions()}
-    //                     onCancel={() => { setWorkorderId(""); setLoading(false); }}
-    //                 >
-    //                     Товары по заказ-наряду успешно приняты на склад
-    //                 </SweetAlert>)
-
-    //         })
-    //         .catch((err) => {
-    //             console.log(err);
-    //             Alert.error(err, {
-    //                 position: "top-right",
-    //                 effect: "bouncyflip",
-    //                 timeout: 2000,
-    //             });
-    //             setLoading(false);
-    //         });
-    // };
-
     const nextPage = () => {
         let flag = true;
         workorderProducts.forEach(el => {
@@ -378,7 +322,31 @@ export default function WorkorderDetails({
                 timeout: 3000,
             });
         }
-    }
+    };
+
+    const workOrderToExcel = () => {
+        setLoading(true);
+        Axios({
+            method: "POST",
+            url: "/api/workorder/receivingtoexcel",
+            data: { workorderProducts },
+            responseType: "blob",
+        })
+            .then((res) => res.data)
+            .then((res) => {
+                const url = window.URL.createObjectURL(new Blob([res]));
+                const link = document.createElement("a");
+                link.href = url;
+                link.setAttribute("download", `Заказ-наряд.xlsx`);
+                document.body.appendChild(link);
+                link.click();
+                setLoading(false);
+            })
+            .catch((err) => {
+                ErrorAlert(err);
+                setLoading(false);
+            });
+    };
 
     return (
         <Fragment>
@@ -518,15 +486,26 @@ export default function WorkorderDetails({
                                 ActionsComponent={TablePaginationActions}
                             />
                         </Grid>
-                        {!onlyView && <Grid item xs={12} style={{ textAlign: 'right' }}>
-                            <button
-                                className="btn btn-success"
-                                onClick={nextPage}
-                                disabled={isLoading}
-                            >
-                                Далее
-                            </button>
-                        </Grid>}
+                        {workorderProducts.length !== 0 &&
+                            <Grid item xs={6} style={{ textAlign: 'left' }}>
+                                <ReactHTMLTableToExcel
+                                    className="btn btn-sm btn-outline-success"
+                                    table="table-to-xls"
+                                    filename={`Заказа-наряд`}
+                                    sheet="tablexls"
+                                    buttonText="Выгрузить в Excel"
+                                />
+                            </Grid>}
+                        {!onlyView &&
+                            <Grid item xs={6} style={{ textAlign: 'right' }}>
+                                <button
+                                    className="btn btn-success"
+                                    onClick={nextPage}
+                                    disabled={isLoading}
+                                >
+                                    Далее
+                                </button>
+                            </Grid>}
                     </Fragment>}
             </Grid >
         </Fragment >

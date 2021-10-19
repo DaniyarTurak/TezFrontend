@@ -20,7 +20,8 @@ export default function WorkorderOptions({
     workorderNumber,
     setWorkorderNumber,
     setWorkorderProducts,
-    getWorkorderProducts
+    getWorkorderProducts,
+    getWorkorders
 }) {
     const customStyles = {
         control: (base, state) => ({
@@ -166,21 +167,11 @@ export default function WorkorderOptions({
         Axios.post("/api/workorder/delete", { workorderId: workorder.id })
             .then((res) => res.data)
             .then((res) => {
-                console.log(res);
-                if (res.code === "success") {
-                    setWorkorderId(res.workorder_id);
-                    setSweetAlert(null);
-                    setLoading(false);
-                }
-                else {
-                    Alert.error(res.text, {
-                        position: "top-right",
-                        effect: "bouncyflip",
-                        timeout: 2000,
-                    });
-                    setSweetAlert(null);
-                    setLoading(false);
-                }
+                setWorkorderId(res.workorder_id);
+                setSweetAlert(null);
+                setLoading(false);
+                getWorkorders();
+
             })
             .catch((err) => {
                 console.log(err);

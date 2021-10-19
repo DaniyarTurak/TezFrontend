@@ -7,6 +7,10 @@ import Autocomplete from "@material-ui/lab/Autocomplete";
 import TextField from "@material-ui/core/TextField";
 import Alert from "react-s-alert";
 import Modal from 'react-modal';
+import Paper from '@material-ui/core/Paper';
+import Divider from '@material-ui/core/Divider';
+import SearchIcon from '@material-ui/icons/Search';
+import IconButton from '@material-ui/core/IconButton';
 
 export default function PurchasePriceAdd({
     getPrices,
@@ -53,6 +57,28 @@ export default function PurchasePriceAdd({
         overlay: { zIndex: 10 },
     };
 
+    const useStyles = makeStyles((theme) => ({
+        root: {
+            padding: '2px 4px',
+            display: 'flex',
+            alignItems: 'center',
+            width: "100%",
+        },
+        input: {
+            marginLeft: theme.spacing(1),
+            flex: 1,
+        },
+        iconButton: {
+            padding: 10,
+        },
+        divider: {
+            height: 28,
+            margin: 4,
+        },
+    }));
+
+    const classes = useStyles();
+
     const [prodName, setProdName] = useState("");
     const [barcode, setBarcode] = useState("");
     const [price, setPrice] = useState("");
@@ -86,8 +112,8 @@ export default function PurchasePriceAdd({
                 setSearchedProducts(products);
                 if (products.length === 1) {
                     setSelectedProd(products[0]);
-                    setProdName("");
-                    setBarcode("");
+                    setProdName(products[0].name);
+                    setBarcode(products[0].code);
                 }
                 if (products.length > 1) {
                     setSweetAlert(
@@ -158,30 +184,39 @@ export default function PurchasePriceAdd({
     };
 
     const addProduct = () => {
-        setLoading(true);
-        Axios.post("/api/prices", {
-            product: selectedProd.id,
-            price: price,
-            type: 0,
-            deleted: false,
-            counterparty
-        })
-            .then((res) => res.data)
-            .then((res) => {
-                setPrice("");
-                setSelectedProd(null);
-                getPrices();
-                setLoading(false);
-            })
-            .catch((err) => {
-                console.log(err);
-                Alert.error(err, {
-                    position: "top-right",
-                    effect: "bouncyflip",
-                    timeout: 2000,
-                });
-                setLoading(false);
+        if (!price || price === "") {
+            Alert.warning("Введите цену закупки", {
+                position: "top-right",
+                effect: "bouncyflip",
+                timeout: 2000,
             });
+        }
+        else {
+            setLoading(true);
+            Axios.post("/api/prices", {
+                product: selectedProd.id,
+                price: price,
+                type: 0,
+                deleted: false,
+                counterparty
+            })
+                .then((res) => res.data)
+                .then((res) => {
+                    setPrice("");
+                    setSelectedProd(null);
+                    getPrices();
+                    setLoading(false);
+                })
+                .catch((err) => {
+                    console.log(err);
+                    Alert.error(err, {
+                        position: "top-right",
+                        effect: "bouncyflip",
+                        timeout: 2000,
+                    });
+                    setLoading(false);
+                });
+        }
     };
 
     return (
@@ -192,113 +227,80 @@ export default function PurchasePriceAdd({
                 spacing={2}
             >
                 <Fragment>
-                    <Grid item xs={5}>
-                        <Autocomplete
-                            value={barcode}
-                            defaultValue={barcode}
-                            fullWidth
-                            disabled={isLoading}
-                            options={productList.map((option) => option.code)}
-                            onChange={(e, value) => { setBarcode(value) }}
-                            onInputChange={(e, value) => { setBarcode(value) }}
-                            noOptionsText="Товар не найден"
-                            renderInput={(params) => (
-                                <TextField
-                                    classes={{
-                                        root: classesAC.root,
-                                    }}
-                                    {...params}
-                                    placeholder="Штрих-код"
-                                    variant="outlined"
-                                    size="small"
-                                />
-                            )}
-                        />
-                    </Grid>
-                    <Grid item xs={5}>
-                        <Autocomplete
-                            value={prodName}
-                            fullWidth
-                            disabled={isLoading}
-                            options={productList.map((option) => option.name)}
-                            onChange={(e, value) => { setProdName(value) }}
-                            onInputChange={(e, value) => { setProdName(value) }}
-                            noOptionsText="Товар не найден"
-                            renderInput={(params) => (
-                                <TextField
-                                    classes={{
-                                        root: classesAC.root,
-                                    }}
-                                    {...params}
-                                    placeholder="Наименование товара"
-                                    variant="outlined"
-                                    size="small"
-                                />
-                            )}
-                        />
-                    </Grid>
-                    <Grid item xs={2}>
-                        <button
-                            className="btn btn-success"
-                            onClick={searchProduct}
-                            style={{ minWidth: "99.46px" }}
-                        // disabled={point === "" || counterparty === "" || isLoading ? true : false}
-                        >
-                            Найти
-                        </button>
+                    <Grid item xs={12}>
+                        <Paper className={classes.root}>
+                            <Autocomplete
+                                value={barcode}
+                                defaultValue={barcode}
+                                fullWidth
+                                disabled={isLoading}
+                                options={productList.map((option) => option.code)}
+                                onChange={(e, value) => { setBarcode(value); setProdName(""); setSelectedProd(null) }}
+                                onInputChange={(e, value) => { setBarcode(value) }}
+                                noOptionsText="Товар не найден"
+                                renderInput={(params) => (
+                                    <TextField
+                                        classes={{
+                                            root: classesAC.root,
+                                        }}
+                                        {...params}
+                                        placeholder="Штрих-код"
+                                        variant="outlined"
+                                        size="small"
+                                    />
+                                )}
+                            />
+                            <Divider className={classes.divider} orientation="vertical" />
+                            <Autocomplete
+                                value={prodName}
+                                fullWidth
+                                disabled={isLoading}
+                                options={productList.map((option) => option.name)}
+                                onChange={(e, value) => { setProdName(value); setBarcode(""); setSelectedProd(null) }}
+                                onInputChange={(e, value) => { setProdName(value) }}
+                                noOptionsText="Товар не найден"
+                                renderInput={(params) => (
+                                    <TextField
+                                        classes={{
+                                            root: classesAC.root,
+                                        }}
+                                        {...params}
+                                        placeholder="Наименование товара"
+                                        variant="outlined"
+                                        size="small"
+                                    />
+                                )}
+                            />
+                            <IconButton onClick={searchProduct} className={classes.iconButton} aria-label="search">
+                                <SearchIcon />
+                            </IconButton>
+                        </Paper>
                     </Grid>
                 </Fragment>
                 {selectedProd &&
-                    <Fragment>
-                        <Grid item xs={3}>
+                    <Grid item xs={6}>
+                        <Paper className={classes.root}>
                             <TextField
                                 classes={{
                                     root: classesAC.root,
                                 }}
-                                placeholder="Штрих-код"
-                                label="Штрих-код"
-                                variant="outlined"
-                                size="small"
-                                value={selectedProd.code}
-                                fullWidth
-                            />
-                        </Grid>
-                        <Grid item xs={4}>
-                            <TextField
-                                classes={{
-                                    root: classesAC.root,
-                                }}
-                                placeholder="Наименование"
-                                label="Наименование"
-                                variant="outlined"
-                                size="small"
-                                value={selectedProd.name}
-                                fullWidth
-                            />
-                        </Grid>
-                        <Grid item xs={3}>
-                            <TextField
-                                classes={{
-                                    root: classesAC.root,
-                                }}
-                                placeholder="Цена закупки"
-                                label="Цена закупки"
+                                placeholder="Цена закупки (тг.)"
+                                label="Цена закупки (тг.)"
                                 variant="outlined"
                                 size="small"
                                 value={price}
                                 onChange={(e) => setPrice(e.target.value)}
                                 fullWidth
                             />
-                        </Grid>
-                        <Grid item xs={2}>
+                            <Divider className={classes.divider} orientation="vertical" />
                             <button
                                 className="btn btn-success"
                                 onClick={addProduct}
                             >
                                 Добавить
                             </button>
-                        </Grid>
-                    </Fragment>
+                        </Paper>
+                    </Grid>
                 }
                 <Grid item xs={12}>
                     <hr style={{ margin: "0px" }} />

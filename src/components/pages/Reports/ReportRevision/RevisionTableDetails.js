@@ -108,8 +108,16 @@ export default function RevisionTableDetails({
                   <StyledTableCell>{idx + 1}</StyledTableCell>
                   <StyledTableCell>{detail.code}</StyledTableCell>
                   <StyledTableCell>{detail.name + " " + detail.attributescaption}</StyledTableCell>
-                  <StyledTableCell>{detail.unitswas}</StyledTableCell>
-                  <StyledTableCell>{detail.units}</StyledTableCell>
+                  <StyledTableCell>
+                    {parseFloat(detail.unitswas).toLocaleString("ru", {
+                      minimumFractionDigits: 1,
+                    })}
+                  </StyledTableCell>
+                  <StyledTableCell>
+                    {parseFloat(detail.units).toLocaleString("ru", {
+                      minimumFractionDigits: 1,
+                    })}
+                  </StyledTableCell>
                   <StyledTableCell className="tenge">
                     {parseFloat(detail.price).toLocaleString("ru", {
                       minimumFractionDigits: 1,
@@ -123,7 +131,9 @@ export default function RevisionTableDetails({
                     })}
                   </StyledTableCell>
                   <StyledTableCell>
-                    {detail.units - detail.unitswas}
+                    {(parseFloat(detail.units) - parseFloat(detail.unitswas)).toLocaleString("ru", {
+                      minimumFractionDigits: 1,
+                    })}
                   </StyledTableCell>
                   <StyledTableCell className="tenge">
                     {parseFloat(

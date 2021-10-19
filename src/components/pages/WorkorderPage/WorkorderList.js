@@ -28,30 +28,18 @@ export default function WorkorderList({
     setWorkorderNumber,
     getWorkorderProducts,
     setWorkorderId,
-    setOnlyView
+    setOnlyView,
+    getWorkorders,
+    workorderList
 }) {
 
-    const [workorderList, setWorkorderList] = useState([]);
     const [isLoading, setLoading] = useState(false);
 
     useEffect(() => {
         getWorkorders();
     }, [])
 
-    const getWorkorders = () => {
-        setLoading(true);
-        Axios.get("/api/workorder/list")
-            .then((res) => res.data)
-            .then((list) => {
-                setWorkorderList(list);
-                setLoading(false);
-                console.log(list);
-            })
-            .catch((err) => {
-                setLoading(false);
-                ErrorAlert(err);
-            });
-    };
+
 
     return (
         <Fragment>

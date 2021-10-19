@@ -176,8 +176,7 @@ export default function getBody({
             return <PricingMasterPage history={history} location={location} />;
           case "createprefix":
             return <CreatePrefix history={history} location={location} />;
-          case "workorder":
-            return <WorkorderPage history={history} location={location} />;
+
           default:
             return <ReferencesListPage history={history} location={location} />;
         }
@@ -187,6 +186,8 @@ export default function getBody({
             return (
               <CreateReceiveInvoice history={history} location={location} />
             );
+            case "workorder":
+              return <WorkorderPage history={history} location={location} />;
             case "recievebyworkorder":
               return <RecieveByWorkorder history={history} location={location} />;
           case "changeprice":

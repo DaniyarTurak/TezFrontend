@@ -164,7 +164,6 @@ export default function WorkorderTable({
     const [page, setPage] = useState(0);
     const [rowsPerPage, setRowsPerPage] = useState(10);
     const [isLoading, setLoading] = useState(false);
-    const [isCreated, setCreated] = useState(false);
     const [sweetAlert, setSweetAlert] = useState(null);
 
     const handleChangePage = (event, newPage) => {
@@ -180,6 +179,14 @@ export default function WorkorderTable({
         setWorkorderProducts(prevState => {
             let obj = prevState[idx];
             obj.units = value;
+            return [...prevState];
+        });
+    };
+
+    const priceChange = (value, idx) => {
+        setWorkorderProducts(prevState => {
+            let obj = prevState[idx];
+            obj.price = value;
             return [...prevState];
         });
     };
@@ -240,7 +247,6 @@ export default function WorkorderTable({
             .then((res) => res.data)
             .then((res) => {
                 if (res[0].workorder_management.code === 'success') {
-                    setCreated(true);
                     setSweetAlert(
                         <SweetAlert
                             success
@@ -296,7 +302,6 @@ export default function WorkorderTable({
                 document.body.appendChild(link);
                 link.click();
                 setLoading(false);
-                clearOptions();
             })
             .catch((err) => {
                 ErrorAlert(err);
@@ -339,6 +344,9 @@ export default function WorkorderTable({
                                         <StyledTableCell align="center">
                                             Количество
                                         </StyledTableCell>
+                                        <StyledTableCell align="center">
+                                            Цена закупки
+                                        </StyledTableCell>
                                         {!onlyView && <StyledTableCell />}
                                     </TableRow>
                                 </TableHead>
@@ -360,6 +368,9 @@ export default function WorkorderTable({
                                                         onChange={(e) => unitsChange(e.target.value, idx)}
                                                     /> : product.units
                                                     }
+                                                </StyledTableCell>
+                                                <StyledTableCell align="center">
+                                                    {product.purchaseprice} тг.
                                                 </StyledTableCell>
                                                 {!onlyView && <StyledTableCell align="right">
                                                     {product.units.toString() !== product.temp_units.toString() &&
@@ -400,6 +411,15 @@ export default function WorkorderTable({
                         />
                     </Grid>
                 </Fragment>}
+                {workorderProducts.length !== 0 &&
+                    <Grid item xs={12} style={{ paddingTop: "10px" }}>
+                        <button
+                            className="btn btn-sm btn-outline-success"
+                            onClick={workOrderToExcel}
+                        >
+                            Выгрузить в Excel
+                        </button>
+                    </Grid>}
                 {!onlyView && workorderProducts.length !== 0 &&
                     <Grid item xs={12} style={{ textAlign: "center" }}>
                         <button
@@ -414,4 +434,4 @@ export default function WorkorderTable({
             </Grid>
         </Fragment>
     )
-}
+};

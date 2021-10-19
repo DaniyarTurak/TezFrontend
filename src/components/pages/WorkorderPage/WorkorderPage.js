@@ -5,6 +5,7 @@ import WorkorderOptions from "./WorkorderOptions";
 import WorkorderAddProducts from "./WorkorderAddProducts";
 import WorkorderTable from "./WorkorderTable";
 import WorkorderList from "./WorkorderList";
+import ErrorAlert from "../../ReusableComponents/ErrorAlert";
 
 export default function WorkorderPage() {
 
@@ -14,6 +15,7 @@ export default function WorkorderPage() {
   const [workorderId, setWorkorderId] = useState("");
   const [workorderNumber, setWorkorderNumber] = useState("");
   const [workorderProducts, setWorkorderProducts] = useState([]);
+  const [workorderList, setWorkorderList] = useState([]);
 
   const getWorkorderProducts = (workorder_id) => {
     Axios.get("/api/workorder/details", { params: { workorder_id: workorderId || workorder_id } })
@@ -34,11 +36,23 @@ export default function WorkorderPage() {
     setWorkorderId("");
   }
 
+  const getWorkorders = () => {
+    Axios.get("/api/workorder/list")
+      .then((res) => res.data)
+      .then((list) => {
+        setWorkorderList(list);
+      })
+      .catch((err) => {
+        ErrorAlert(err);
+      });
+  };
+
   return (
     <Fragment>
       {workorderId === "" ?
         <Fragment>
           <WorkorderOptions
+            getWorkorders={getWorkorders}
             point={point}
             setPoint={setPoint}
             counterparty={counterparty}
@@ -52,12 +66,15 @@ export default function WorkorderPage() {
           />
           <hr />
           <WorkorderList
+            getWorkorders={getWorkorders}
             setOnlyView={setOnlyView}
             setPoint={setPoint}
             setCounterparty={setCounterparty}
             setWorkorderId={setWorkorderId}
             getWorkorderProducts={getWorkorderProducts}
             setWorkorderNumber={setWorkorderNumber}
+            workorderList={workorderList}
+            setWorkorderList={setWorkorderList}
           />
         </Fragment>
         :
