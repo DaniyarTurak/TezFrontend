@@ -727,6 +727,7 @@ export default function ReportStockBalance({ companyProps }) {
               getStockbalanceExcel={getStockbalanceExcel}
               classes={classes}
               handleChangeRowsPerPage={handleChangeRowsPerPage}
+              stock={selectedStock.label}
             />
           </Grid>
 

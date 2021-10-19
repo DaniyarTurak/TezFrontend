@@ -170,6 +170,14 @@ export default function IncomeTable({
                 )}
               </StyledTableCell>
               <StyledTableCell align="center">
+                <span className="hand" onClick={() => orderByFunction("cost")}>
+                  Себестоимость проданного товара
+                </span>
+                {orderBy === "cost" && (
+                  <OrderArrowMaterial ascending={ascending} />
+                )}
+              </StyledTableCell>
+              <StyledTableCell align="center">
                 <span
                   className="hand"
                   onClick={() => orderByFunction("salesamount")}
@@ -181,12 +189,7 @@ export default function IncomeTable({
                 )}
               </StyledTableCell>
               <StyledTableCell align="center">
-                <span className="hand" onClick={() => orderByFunction("cost")}>
-                  Себестоимость проданного товара
-                </span>
-                {orderBy === "cost" && (
-                  <OrderArrowMaterial ascending={ascending} />
-                )}
+                Наценка
               </StyledTableCell>
               <StyledTableCell align="center">
                 <span
@@ -248,14 +251,20 @@ export default function IncomeTable({
                     })}
                   </StyledTableCell>
                   <StyledTableCell align="center">
-                    {parseFloat(product.salesamount).toLocaleString("ru", {
+                    {parseFloat(product.cost).toLocaleString("ru", {
                       minimumFractionDigits: 2,
                     })}
                   </StyledTableCell>
                   <StyledTableCell align="center">
-                    {parseFloat(product.cost).toLocaleString("ru", {
+                    {parseFloat(product.salesamount).toLocaleString("ru", {
                       minimumFractionDigits: 2,
                     })}
+                  </StyledTableCell>
+
+                  <StyledTableCell align="center">
+                    {parseFloat((product.salesamount - product.cost) / (product.salesamount == 0 ? 1 : product.salesamount) * 100).toLocaleString("ru", {
+                      minimumFractionDigits: 1, maximumFractionDigits: 2
+                    })} %
                   </StyledTableCell>
                   <StyledTableCell align="center">
                     {parseFloat(product.gross_profit).toLocaleString("ru", {
@@ -298,6 +307,7 @@ export default function IncomeTable({
                   }, 0)
                   .toLocaleString("ru", { minimumFractionDigits: 2 })}
               </StyledTableCell>
+              <StyledTableCell />
               <StyledTableCell align="center">
                 {sales
                   .reduce((prev, cur) => {

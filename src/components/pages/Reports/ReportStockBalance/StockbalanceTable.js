@@ -15,6 +15,7 @@ import KeyboardArrowLeft from "@material-ui/icons/KeyboardArrowLeft";
 import KeyboardArrowRight from "@material-ui/icons/KeyboardArrowRight";
 import LastPageIcon from "@material-ui/icons/LastPage";
 import IconButton from "@material-ui/core/IconButton";
+import ReactHTMLTableToExcel from "react-html-table-to-excel";
 
 const useStyles1 = makeStyles((theme) => ({
   root: {
@@ -123,11 +124,12 @@ export default function StockbalanceTable({
   handlePageChange,
   classes,
   handleChangeRowsPerPage,
+  stock
 }) {
   return (
     <Fragment>
       <TableContainer component={Paper} className={classes.container}>
-        <Table className={classes.table}>
+        <Table className={classes.table} id="table-to-xls">
           <TableHead>
             <TableRow>
               <StyledTableCell />
@@ -141,6 +143,9 @@ export default function StockbalanceTable({
               </StyledTableCell>
               <StyledTableCell align="center">
                 Остаток в ценах реализации
+              </StyledTableCell>
+              <StyledTableCell align="center">
+                Наценка
               </StyledTableCell>
               <StyledTableCell align="center">Количество</StyledTableCell>
               <StyledTableCell align="center">Бренд</StyledTableCell>
@@ -183,6 +188,11 @@ export default function StockbalanceTable({
                   })}
                 </StyledTableCell>
                 <StyledTableCell align="center">
+                  {isFinite(parseFloat((product.price - product.cost) / product.cost * 100)) ? parseFloat((product.price - product.cost) / product.cost * 100).toLocaleString("ru", {
+                    minimumFractionDigits: 1, maximumFractionDigits: 2
+                  }) + " %": "n/a"}
+                </StyledTableCell>
+                <StyledTableCell align="center">
                   {Number(product.units ? product.units : 0)}
                 </StyledTableCell>
                 <StyledTableCell align="center">
@@ -208,6 +218,7 @@ export default function StockbalanceTable({
                   maximumFractionDigits: 2,
                 })}
               </StyledTableCell>
+              <StyledTableCell />
               <StyledTableCell align="center">
                 {parseFloat(totalunits).toLocaleString("ru", {
                   maximumFractionDigits: 2,
