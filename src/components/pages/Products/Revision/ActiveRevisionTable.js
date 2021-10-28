@@ -1,4 +1,4 @@
-import React, { useState, useEffect, Fragment } from "react";
+import React, { useState, Fragment } from "react";
 import Table from "@material-ui/core/Table";
 import TableBody from "@material-ui/core/TableBody";
 import TableCell from "@material-ui/core/TableCell";
@@ -17,6 +17,7 @@ import LastPageIcon from "@material-ui/icons/LastPage";
 import PropTypes from "prop-types";
 import Moment from "moment";
 import SweetAlert from "react-bootstrap-sweetalert";
+import ForwardIcon from '@material-ui/icons/Forward';
 
 const useStyles1 = makeStyles((theme) => ({
     root: {
@@ -117,7 +118,8 @@ export default function ActiveRevisionTable({
     revisionList,
     setRevisionList,
     deleteRevision,
-    setSweetAlert
+    setSweetAlert,
+    continueRevision
 }) {
 
     const [page, setPage] = useState(0);
@@ -148,6 +150,9 @@ export default function ActiveRevisionTable({
                                 Торговая точка
                             </StyledTableCell>
                             <StyledTableCell align="center">
+                                Тип
+                            </StyledTableCell>
+                            <StyledTableCell align="center">
                                 Дата начала
                             </StyledTableCell>
                             <StyledTableCell align="center">
@@ -164,8 +169,11 @@ export default function ActiveRevisionTable({
                                     <StyledTableCell align="center">
                                         {rev.revisionnumber}
                                     </StyledTableCell>
-                                    <StyledTableCell>
+                                    <StyledTableCell align="center">
                                         {rev.point_name}
+                                    </StyledTableCell>
+                                    <StyledTableCell align="center">
+                                        {rev.type === 2 ? `По бренду (${rev.type_name})` : rev.type === 3 ? `По категории (${rev.type_name})` : "По всем товарам"}
                                     </StyledTableCell>
                                     <StyledTableCell align="center">
                                         {Moment(rev.createdate).format("DD.MM.YYYY HH:mm:ss")}
@@ -174,6 +182,10 @@ export default function ActiveRevisionTable({
                                         {rev.name}
                                     </StyledTableCell>
                                     <StyledTableCell align="center">
+                                        <IconButton size="small" onClick={() => continueRevision(rev)} title="Продолжить ревизию">
+                                            <ForwardIcon  style={{color: "#28a745"}} />
+                                        </IconButton>
+                                        &emsp;
                                         <IconButton size="small"
                                             onClick={() => {
                                                 setSweetAlert(
@@ -192,8 +204,10 @@ export default function ActiveRevisionTable({
                                                     >
                                                         Вы действительно хотите удалить ревизию?
                                                     </SweetAlert>)
-                                            }}>
-                                            <DeleteIcon fontSize="small" />
+                                            }}
+                                            title="Удалить ревизию"
+                                            >
+                                            <DeleteIcon fontSize="small" style={{color: "#dc3545"}}/>
                                         </IconButton>
                                     </StyledTableCell>
                                 </TableRow>

@@ -54,10 +54,13 @@ export default function RevisonProducts({
     hardware,
     setHardware,
     point,
+    type,
+    object,
     revNumber,
     setActiveStep,
     revisionProducts,
-    setRevisionProducts
+    setRevisionProducts, 
+    admin
 }) {
 
     const customStyles = {
@@ -145,7 +148,9 @@ export default function RevisonProducts({
     const searchByBarcode = () => {
         const params = {
             barcode,
-            point
+            point,
+            type,
+            object: object ? object.value : null
         };
         setLoading(true);
         Axios.get("/api/revision/unitsbybarcode", {
@@ -165,7 +170,7 @@ export default function RevisonProducts({
                     }
                 }
                 else {
-                    Alert.warning(`Товар со штрих-кодом ${barcode} отсутствует на складе`, {
+                    Alert.warning(`Товар со штрих-кодом ${barcode} отсутствует на складе ${type === 2 ? `под брендом "${object.label}"` : type === 3 ? `под категорией "${object.label}"` : ""}`, {
                         position: "top-right",
                         effect: "bouncyflip",
                         timeout: 2000,
@@ -381,7 +386,7 @@ export default function RevisonProducts({
                             onClick={() => setActiveStep(2)}
                             style={{ width: "100%" }}
                             className="btn btn-success"
-                            disabled={revisionProducts.length > 0 ? false : true}
+                            disabled={revisionProducts.length > 0 && admin === JSON.parse(sessionStorage.getItem("isme-user-data")).id ? false : true}
                         >
                             Далее
                         </button>

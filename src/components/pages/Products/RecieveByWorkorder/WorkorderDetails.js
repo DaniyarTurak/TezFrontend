@@ -25,6 +25,10 @@ import Breadcrumb from "../../../Breadcrumb";
 import LinearProgress from '@material-ui/core/LinearProgress';
 import ErrorAlert from "../../../ReusableComponents/ErrorAlert";
 import ReactHTMLTableToExcel from "react-html-table-to-excel";
+import FormGroup from '@material-ui/core/FormGroup';
+import FormControlLabel from '@material-ui/core/FormControlLabel';
+import FormControl from '@material-ui/core/FormControl';
+import FormLabel from '@material-ui/core/FormLabel';
 
 const BorderLinearProgress = withStyles((theme) => ({
     root: {
@@ -427,11 +431,19 @@ export default function WorkorderDetails({
                                                     Принятое количество
                                                 </StyledTableCell>}
                                             {!onlyView &&
-                                                <StyledTableCell align="center">
-                                                    <WhiteCheckbox
-                                                        disabled={isLoading}
-                                                        color="default"
-                                                        onChange={(e) => checkAll(e)}
+                                                <StyledTableCell align="right">
+                                                    <FormControlLabel
+                                                    style={{margin: "0px"}}
+                                                        value="bottom"
+                                                        control={
+                                                            <WhiteCheckbox
+                                                                disabled={isLoading}
+                                                                color="default"
+                                                                onChange={(e) => checkAll(e)}
+                                                            />
+                                                        }
+                                                        label="Выбрать все"
+                                                        labelPlacement="left"
                                                     />
                                                 </StyledTableCell>}
                                         </TableRow>
@@ -460,7 +472,7 @@ export default function WorkorderDetails({
                                                                 />}
                                                         </StyledTableCell>}
                                                     {!onlyView &&
-                                                        <StyledTableCell align="center">
+                                                        <StyledTableCell align="right">
                                                             <GreenCheckbox
                                                                 disabled={isLoading}
                                                                 checked={product.isChecked}

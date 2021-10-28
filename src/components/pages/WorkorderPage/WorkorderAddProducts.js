@@ -267,7 +267,9 @@ export default function PurchasePriceAdd({
             .then((res) => res.data)
             .then((res) => {
                 setPrice("");
-                setUnits("")
+                setUnits("");
+                setProdName("");
+                setBarcode("");
                 setSelectedProd(null);
                 getWorkorderProducts();
                 setLoading(false);

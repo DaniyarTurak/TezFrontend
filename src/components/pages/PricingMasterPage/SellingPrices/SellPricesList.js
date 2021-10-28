@@ -230,7 +230,13 @@ export default function SellPricesList({
             });
     };
 
-    const priceChange = (value, idx) => {
+    const priceChange = (value, pc) => {
+        let idx = null;
+        priceList.forEach((el, id) => {
+            if (el.product === pc.product) {
+                idx = id;
+            }
+        });
         setPriceList(prevState => {
             let obj = prevState[idx];
             obj.price = value;
@@ -294,7 +300,7 @@ export default function SellPricesList({
                                                     <PriceInput
                                                         variant="otlined"
                                                         value={pc.price}
-                                                        onChange={(e) => priceChange(e.target.value, idx)}
+                                                        onChange={(e) => priceChange(e.target.value, pc)}
                                                     /> &nbsp;
                                                     тг.
                                                 </StyledTableCell>

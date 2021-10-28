@@ -248,13 +248,13 @@ export default function RevisonProducts({
                                                 onClick={() => {
                                                     editUnits(product);
                                                 }}>
-                                                {product.isChanging ? <SaveIcon fontSize="small" /> : <EditIcon fontSize="small" />}
+                                                {product.isChanging ? <SaveIcon fontSize="small" title="Сохранить" /> : <EditIcon fontSize="small" title="Редактировать" />}
                                             </IconButton>
                                             <IconButton size="small"
                                                 onClick={() => {
                                                     deleteProduct(product);
                                                 }}>
-                                                <DeleteIcon fontSize="small" />
+                                                <DeleteIcon fontSize="small" title="Удалить товар" style={{color: "#dc3545"}}/>
                                             </IconButton>
                                         </StyledTableCell>}
                                 </TableRow>

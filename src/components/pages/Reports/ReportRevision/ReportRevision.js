@@ -41,7 +41,6 @@ const useStyles = makeStyles((theme) => ({
 export default function ReportRevision({ companyProps }) {
   const classes = useStyles();
   const [ascending, setAscending] = useState(true);
-  const [condition, setCondition] = useState(1);
   const [dateRev, setDateRev] = useState("");
   const [isLoading, setLoading] = useState(false);
   const [orderBy, setOrderBy] = useState("");
@@ -49,12 +48,11 @@ export default function ReportRevision({ companyProps }) {
   const [points, setPoints] = useState([]);
   const [revisions, setRevisions] = useState([]);
   const [revisionDetails, setRevisionDetails] = useState({});
-  const [userid, setUserid] = useState("");
   const [username, setUsername] = useState("");
-
   const [onlyDiff, setOnlyDiff] = useState(false);
-  const [onlyInRev, setOnlyInRev] = useState(false);
-
+  const [parametr, setParametr] = useState(1);
+  const [revtype, setRevtype] = useState(1);
+  const [revtypeName, setRevtypeName] = useState("По всем товарам");
   const [revnumber, setRevnumber] = useState("");
 
   const company = companyProps ? companyProps.value : "";
@@ -72,7 +70,7 @@ export default function ReportRevision({ companyProps }) {
     if (revnumber !== "") {
       getRevisionDetails(revnumber);
     }
-  }, [onlyDiff, onlyInRev]);
+  }, [onlyDiff, parametr]);
 
   const clean = () => {
     setPoint("");
@@ -188,7 +186,7 @@ export default function ReportRevision({ companyProps }) {
 
   const getRevisionDetails = (revisionnumber) => {
     Axios.get("/api/report/revision/details", {
-      params: { revisionnumber: revisionnumber, onlyInRev: onlyInRev ? 1 : 0 , onlyDiff: onlyDiff ? 1 : 0 }
+      params: { revisionnumber: revisionnumber, parametr , onlyDiff: onlyDiff ? 1 : 0 }
     })
       .then((res) => res.data)
       .then((res) => {
@@ -248,7 +246,7 @@ export default function ReportRevision({ companyProps }) {
   const getDifferenceExcel = () => {
     Axios.get("/api/report/revision/excel_difference", {
       responseType: "blob",
-      params: { userid, point: point.value, dateRev, company },
+      params: { point: point.value, dateRev, company },
     })
       .then((res) => res.data)
       .then((differenceList) => {
@@ -325,24 +323,27 @@ export default function ReportRevision({ companyProps }) {
             revisions={revisions}
             handleDetails={handleDetails}
             getReportExcel={getReportExcel}
+            setRevtype={setRevtype}
+            setRevtypeName={setRevtypeName}
           />
         )}
 
-      {!isLoading && revisionDetails.length > 0 && (
+      {!isLoading && revisionDetails.length >= 0 && (
         <RevisionTableDetails
           classes={classes}
           username={username}
           dateRev={dateRev}
           backToList={backToList}
           revisionDetails={revisionDetails}
-          condition={condition}
           getDifferenceExcel={getDifferenceExcel}
           revnumber={revnumber}
-          onlyInRev={onlyInRev}
-          setOnlyInRev={setOnlyInRev}
+          parametr={parametr}
+          setParametr={setParametr}
           onlyDiff={onlyDiff}
           setOnlyDiff={setOnlyDiff}
           getRevisionDetails={getRevisionDetails}
+          revtype={revtype}
+          revtypeName={revtypeName}
         />
       )}
     </Grid>

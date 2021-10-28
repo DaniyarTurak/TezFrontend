@@ -1,4 +1,4 @@
-import React, { useState, useEffect, Fragment } from "react";
+import React, { useState, Fragment } from "react";
 import Grid from '@material-ui/core/Grid';
 import Table from "@material-ui/core/Table";
 import TableBody from "@material-ui/core/TableBody";
@@ -157,19 +157,6 @@ export default function PurchasePricesList({
     counterparty
 }) {
 
-    const customStyles = {
-        control: (base, state) => ({
-            ...base,
-            backgroundColor: "white",
-            border: '2px solid #17a2b8',
-            boxShadow: state.isFocused ? null : null,
-            "&:hover": {
-                border: '2px solid #17a2b8',
-
-            }
-        })
-    };
-
     const [page, setPage] = useState(0);
     const [rowsPerPage, setRowsPerPage] = useState(10);
 
@@ -232,7 +219,13 @@ export default function PurchasePricesList({
             });
     };
 
-    const priceChange = (value, idx) => {
+    const priceChange = (value, pc) => {
+        let idx = null;
+        priceList.forEach((el, id) => {
+            if (el.product === pc.product) {
+                idx = id;
+            }
+        });
         setPriceList(prevState => {
             let obj = prevState[idx];
             obj.price = value;
@@ -296,7 +289,7 @@ export default function PurchasePricesList({
                                                     <PriceInput
                                                         variant="otlined"
                                                         value={pc.price}
-                                                        onChange={(e) => priceChange(e.target.value, idx)}
+                                                        onChange={(e) => priceChange(e.target.value, pc)}
                                                     /> &nbsp;
                                                     тг.
                                                 </StyledTableCell>

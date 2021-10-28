@@ -150,6 +150,8 @@ export default function Revison() {
 
   const [revNumber, setRevNumber] = useState(null);
   const [point, setPoint] = useState("");
+  const [type, setType] = useState(1);
+  const [object, setObject] = useState(null);
   const [hardware, setHardware] = useState("scanner");
   const [barcode, setBarcode] = useState("");
   const [revisionProducts, setRevisionProducts] = useState([]);
@@ -168,6 +170,8 @@ export default function Revison() {
     setRevNumber(null);
   }, []);
 
+
+
   return (
     <Fragment>
       <Grid container>
@@ -185,6 +189,10 @@ export default function Revison() {
         <Grid item xs={12}>
           {activeStep === 0 &&
             <RevisionSettings
+              type={type}
+              setType={setType}
+              object={object}
+              setObject={setObject}
               setRevNumber={setRevNumber}
               point={point}
               setPoint={setPoint}
@@ -204,9 +212,12 @@ export default function Revison() {
               hardware={hardware}
               setHardware={setHardware}
               point={point}
+              type={type}
+              object={object}
               setActiveStep={setActiveStep}
               revisionProducts={revisionProducts}
               setRevisionProducts={setRevisionProducts}
+              admin = {admin}
             />
           }
         </Grid>
@@ -215,6 +226,8 @@ export default function Revison() {
             <RevisonFinish
               revNumber={revNumber}
               point={point}
+              type={type}
+              object={object}
               activeStep={activeStep}
               setActiveStep={setActiveStep}
               revisionProducts={revisionProducts}

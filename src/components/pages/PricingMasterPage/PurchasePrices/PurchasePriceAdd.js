@@ -84,7 +84,6 @@ export default function PurchasePriceAdd({
     const [price, setPrice] = useState("");
     const [isLoading, setLoading] = useState(false);
     const [productList, setProductList] = useState([]);
-    const [searchedProducts, setSearchedProducts] = useState([]);
     const [selectedProd, setSelectedProd] = useState(null);
     const [sweetalert, setSweetAlert] = useState(null);
 
@@ -109,7 +108,6 @@ export default function PurchasePriceAdd({
         Axios.get("/api/products", { params: { productName: prodName, barcode: barcode } })
             .then((res) => res.data)
             .then((products) => {
-                setSearchedProducts(products);
                 if (products.length === 1) {
                     setSelectedProd(products[0]);
                     setProdName(products[0].name);

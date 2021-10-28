@@ -249,16 +249,12 @@ export default function WorkorderAddAttributes({
                 setSweetAlert(
                     <SweetAlert
                         success
-                        showCancel
-                        confirmBtnText={"Закрыть"}
-                        cancelBtnText={"Выгрузить в Excel"}
+                        confirmBtnText={"OK"}
                         confirmBtnBsStyle="success"
-                        cancelBtnBsStyle="success"
                         title={""}
                         allowEscape={false}
                         closeOnClickOutside={false}
                         onConfirm={() => { setWorkorderId(""); setLoading(false); setSweetAlert(null); setActivePage(1) }}
-                        onCancel={() => { setWorkorderId(""); setLoading(false); setSweetAlert(null); setActivePage(1) }}
                     >
                         Товары по заказ-наряду успешно приняты на склад
                     </SweetAlert>);
@@ -283,7 +279,6 @@ export default function WorkorderAddAttributes({
         })
             .then((res) => res.data)
             .then((res) => {
-                console.log(res);
                 receiveWorkorder();
             })
             .catch((err) => {

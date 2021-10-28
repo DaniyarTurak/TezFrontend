@@ -7,14 +7,21 @@ import Grid from '@material-ui/core/Grid';
 import Alert from "react-s-alert";
 import SweetAlert from "react-bootstrap-sweetalert";
 import ActiveRevisionTable from "./ActiveRevisionTable";
+import Radio from '@material-ui/core/Radio';
+import RadioGroup from '@material-ui/core/RadioGroup';
+import FormControlLabel from '@material-ui/core/FormControlLabel';
+import { withStyles } from '@material-ui/core/styles';
 
 export default function RevisionSettings({
     setRevNumber,
     point,
     setPoint,
-    hardware,
     setActiveStep,
-    setAdmin
+    setAdmin,
+    type,
+    setType,
+    object,
+    setObject
 }) {
 
     const customStyles = {
@@ -30,15 +37,30 @@ export default function RevisionSettings({
         })
     };
 
+    const CustomRadio = withStyles({
+        root: {
+            color: "#17a2b8",
+            '&$checked': {
+                color: "#28a745",
+            },
+        },
+        checked: {},
+    })((props) => <Radio color="default" {...props} />);
+
     const [points, setPoints] = useState([]);
     const [haveActive, setHaveActive] = useState(false);
     const [sweetAlert, setSweetAlert] = useState(null);
     const [isLoading, setLoading] = useState(false);
     const [revisionList, setRevisionList] = useState([]);
+    const [brands, setBrands] = useState([]);
+    const [categories, setCategories] = useState([]);
 
     useEffect(() => {
         setPoint("");
+        setType(1);
         getPoints();
+        getBrands();
+        getCategories();
         getActiveRevision();
     }, []);
 
@@ -69,8 +91,46 @@ export default function RevisionSettings({
             });
     };
 
+    const getBrands = (e) => {
+        Axios.get("/api/brand/search", {
+            params: { deleted: false, brand: e ? e : "" },
+        })
+            .then((res) => res.data)
+            .then((list) => {
+                let temp = [];
+                list.forEach(br => {
+                    temp.push({ label: br.brand, value: br.id })
+                });
+                temp.unshift({ label: "Без бренда", value: 0 });
+                setBrands(temp);
+            })
+            .catch((err) => {
+                ErrorAlert(err);
+            });
+    };
+
+    const getCategories = (e) => {
+        Axios.get("/api/categories/search", {
+            params: { category: e ? e : "" },
+        })
+            .then((res) => res.data)
+            .then((res) => {
+                let temp = [];
+                res.forEach(cat => {
+                    temp.push({ label: cat.name, value: cat.id })
+                });
+                temp.unshift({ label: "Без категории", value: 0 });
+                setCategories(temp);
+            })
+            .catch((err) => {
+                console.log(err);
+            });
+    };
+
     //при выборе точки проверить наличие открытой на ней ревизии 
     const pointChange = (e) => {
+        setType(1);
+        setObject(null);
         let point = e.value;
         setPoint(point);
         setLoading(true);
@@ -91,7 +151,7 @@ export default function RevisionSettings({
                             title={"Внимание"}
                             allowEscape={false}
                             closeOnClickOutside={false}
-                            onConfirm={() => continueRevision(revision[0].revisionnumber)}
+                            onConfirm={() => continueRevision(revision[0])}
                             onCancel={() => deleteRevision(revision[0].revisionnumber)}
                         >
                             У Вас имеется незавершенная ревизия, хотите продолжить заполнение?
@@ -119,40 +179,49 @@ export default function RevisionSettings({
             });
         }
         else {
-            Axios.post("/api/revision/revisionlist/add", { point })
-                .then((res) => res.data)
-                .then((res) => {
-                    let response = res[0].revisionlist_add;
-                    if (response.code === "success") {
-                        setAdmin(JSON.parse(sessionStorage.getItem("isme-user-data")).id);
-                        setRevNumber(response.revisionnumber);
-                        setActiveStep(1);
-                        setSweetAlert(null);
-                        Alert.success("Ревизия успешно начата", {
-                            position: "top-right",
-                            effect: "bouncyflip",
-                            timeout: 2000,
-                        });
-                        setLoading(false);
-
-                    } else {
-                        Alert.error("Возникла непредвиденная ошибка", {
-                            position: "top-right",
-                            effect: "bouncyflip",
-                            timeout: 2000,
-                        });
-                        setLoading(false);
-                    }
-                })
-                .catch((err) => {
-                    console.log(err);
-                    Alert.error(err, {
-                        position: "top-right",
-                        effect: "bouncyflip",
-                        timeout: 2000,
-                    });
-                    setLoading(false);
+            if ((type === 2 && (!object || Array.isArray(object))) || (type === 3 && (!object || Array.isArray(object)))) {
+                Alert.warning(`Выберите ${type === 2 ? "бренд" : type === 3 ? "категорию" : ""}`, {
+                    position: "top-right",
+                    effect: "bouncyflip",
+                    timeout: 3000,
                 });
+            }
+            else {
+                Axios.post("/api/revision/revisionlist/add", { point, type, object: object ? object.value : null })
+                    .then((res) => res.data)
+                    .then((res) => {
+                        let response = res[0].revisionlist_add;
+                        if (response.code === "success") {
+                            setAdmin(JSON.parse(sessionStorage.getItem("isme-user-data")).id);
+                            setRevNumber(response.revisionnumber);
+                            setActiveStep(1);
+                            setSweetAlert(null);
+                            Alert.success("Ревизия успешно начата", {
+                                position: "top-right",
+                                effect: "bouncyflip",
+                                timeout: 2000,
+                            });
+                            setLoading(false);
+
+                        } else {
+                            Alert.error("Возникла непредвиденная ошибка", {
+                                position: "top-right",
+                                effect: "bouncyflip",
+                                timeout: 2000,
+                            });
+                            setLoading(false);
+                        }
+                    })
+                    .catch((err) => {
+                        console.log(err);
+                        Alert.error(err, {
+                            position: "top-right",
+                            effect: "bouncyflip",
+                            timeout: 2000,
+                        });
+                        setLoading(false);
+                    });
+            }
         }
     };
 
@@ -173,7 +242,7 @@ export default function RevisionSettings({
                     getActiveRevision();
                     setLoading(false);
                 } else {
-                    Alert.error("Возникла непредвиденная ошибка", {
+                    Alert.error(res.revisionlist_delete.text, {
                         position: "top-right",
                         effect: "bouncyflip",
                         timeout: 2000,
@@ -194,11 +263,15 @@ export default function RevisionSettings({
     };
 
     //продолжение активной ревизии на точке
-    const continueRevision = (revisionnumber) => {
-        setRevNumber(revisionnumber);
+    const continueRevision = (revision) => {
+        console.log(revision);
+        setRevNumber(revision.revisionnumber);
+        setPoint(revision.point);
+        setType(revision.type);
+        setObject({ value: revision.type_id, label: revision.type_name });
         setActiveStep(1);
-        setLoading(false);
     };
+
 
     return (
         <Fragment>
@@ -220,6 +293,55 @@ export default function RevisionSettings({
                         />
                     </FormControl>
                 </Grid>
+
+                {point !== "" && <Grid item xs={12}>
+                    <FormControl component="fieldset">
+                        <RadioGroup row name="type"
+                            value={type}
+                            onChange={(e) => { setType(Number(e.target.value)); setObject(null) }}
+                        >
+                            <FormControlLabel
+                                value={1}
+                                control={<CustomRadio />}
+                                label="Все товары"
+                                labelPlacement="bottom"
+                            />
+                            <FormControlLabel
+                                value={2}
+                                control={<CustomRadio />}
+                                label="По бренду"
+                                labelPlacement="bottom"
+                            />
+                            <FormControlLabel
+                                value={3}
+                                control={<CustomRadio />}
+                                label="По категории"
+                                labelPlacement="bottom"
+                            />
+                        </RadioGroup>
+                    </FormControl>
+                </Grid>}
+                {type !== 1 && <Grid item xs={12}>
+                    <FormControl variant="outlined" size="small" style={{ width: "200px" }}>
+                        <Select
+                            styles={customStyles}
+                            options={type === 2 ? brands : (type === 3 ? categories : [])}
+                            onChange={(e) => { setObject(e) }}
+                            onInputChange={(e) => {
+                                if (type === 2) {
+                                    getBrands(e);
+                                }
+                                else {
+                                    if (type === 3) {
+                                        getCategories(e);
+                                    }
+                                }
+                            }
+                            }
+                            placeholder={type === 2 ? "Бренд" : type === 3 ? "Категория" : ""}
+                        />
+                    </FormControl>
+                </Grid>}
                 <Grid item xs={12}>
                     <button
                         className="btn btn-success"
@@ -244,6 +366,7 @@ export default function RevisionSettings({
                             setRevisionList={setRevisionList}
                             deleteRevision={deleteRevision}
                             setSweetAlert={setSweetAlert}
+                            continueRevision={continueRevision}
                         />
                     </Grid>}
             </Grid>

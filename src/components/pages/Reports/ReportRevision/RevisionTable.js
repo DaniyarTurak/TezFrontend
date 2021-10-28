@@ -36,6 +36,8 @@ export default function RevisionTable({
   revisions,
   handleDetails,
   getReportExcel,
+  setRevtype,
+  setRevtypeName
 }) {
   return (
     <Fragment>
@@ -44,7 +46,8 @@ export default function RevisionTable({
           <Table>
             <TableHead>
               <TableRow>
-                <StyledTableCell>
+                <StyledTableCell align="center">Номер ревизии</StyledTableCell>
+                <StyledTableCell align="center">
                   <span
                     className="hand"
                     onClick={() => orderByFunction("username")}
@@ -55,9 +58,9 @@ export default function RevisionTable({
                     <OrderArrowMaterial ascending={ascending} />
                   )}
                 </StyledTableCell>
+                <StyledTableCell align="center">Тип</StyledTableCell>
                 <StyledTableCell align="center">Дата начала</StyledTableCell>
                 <StyledTableCell align="center">Дата завершения</StyledTableCell>
-
               </TableRow>
             </TableHead>
             <TableBody style={{ cursor: "pointer" }}>
@@ -69,10 +72,14 @@ export default function RevisionTable({
                   onClick={() => {
                     handleDetails(
                       revision.revisionnumber
-                    );
+                    ); setRevtype(revision.type); setRevtypeName(revision.type_name)
                   }}
                 >
+                  <StyledTableCell align="center" >{revision.revisionnumber}</StyledTableCell>
                   <StyledTableCell>{revision.username}</StyledTableCell>
+                  <StyledTableCell> {revision.type === 2 ? `По бренду (${revision.type_name})` :
+                    revision.type === 3 ? `По категории (${revision.type_name})` : revision.type_name}
+                  </StyledTableCell>
                   <StyledTableCell align="center">
                     {Moment(revision.createdate).format("DD.MM.YYYY HH:mm:ss")}
                   </StyledTableCell>
