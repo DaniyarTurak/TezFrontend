@@ -29,7 +29,6 @@
         "route": "options/stock",
         "name": "Склад"
       },
-
       {
         "id": 3,
         "route": "options/cashbox",
@@ -66,11 +65,6 @@
         "name": "Весы"
       },
       {
-        "id": 11,
-        "route": "options/pricingmaster",
-        "name": "Мастер ценообразования"
-      },
-      {
         "id": 12,
         "route": "options/createprefix",
         "name": "Префикс весов"
@@ -99,63 +93,97 @@
       },
       {
         "id": 2,
-        "name": "Изменение цен",
-        "route": "product/changeprice"
-      },
-      {
-        "id": 3,
         "name": "Списание товара со склада",
         "route": "product/writeoff"
       },
       {
-        "id": 5,
-        "name": "Создание скидок",
-        "route": "product/creatediscounts"
-      },
-      {
-        "id": 6,
+        "id": 3,
         "name": "Печать штрих кода",
         "route": "product/printbarcode"
       },
       {
-        "id": 7,
+        "id": 4,
         "name": "Ревизия",
         "route": "product/revision"
       },
       {
-        "id": 8,
-        "name": "Подарочные сертификаты",
-        "route": "product/certificates"
-      },
-      {
-        "id": 9,
-        "name": "Бонусы",
-        "route": "product/bonus"
-      },
-      {
-        "id": 10,
-        "name": "Акции",
-        "route": "product/promotionspage"
-      },
-      {
-        "id": 11,
-        "name": "Предельные цены",
-        "route": "product/marginalpricepage"
-      },
-      {
-        "id": 12,
+        "id": 5,
         "name": "Весовые товары",
         "route": "product/productsweight"
       },
       {
-        "id": 13,
-        "name": "Купоны",
-        "route": "product/couponspage"
-      },
-      {
-        "id": 14,
+        "id": 6,
         "name": "Номенклатура",
         "route": "product/productreference"
+      },
+      {
+        "id": 7,
+        "name": "Сверка",
+        "route": "product/reconciliationpage"
+      },
+      {
+        "id": 8,
+        "name": "Создание заказ-наряда",
+        "route": "product/workorder"
+      },
+      {
+        "id": 9,
+        "name": "Прием по заказ-наряду",
+        "route": "product/recievebyworkorder"
+      }
+    ]
+  },
+  {
+    "id": 4,
+    "groupName": "Ценообразование",
+    "status": "close",
+    "group": [
+      {
+        "id": 1,
+        "name": "Изменение цен",
+        "route": "prices/changeprice"
+      },
+      {
+        "id": 2,
+        "route": "prices/pricingmaster",
+        "name": "Мастер ценообразования"
+      },
+      {
+        "id": 3,
+        "name": "Предельные цены",
+        "route": "prices/marginalpricepage"
+      }
+    ]
+  },
+  {
+    "id": 5,
+    "groupName": "Маркетинг и продвижение",
+    "status": "close",
+    "group": [
+      {
+        "id": 1,
+        "name": "Купоны",
+        "route": "marketing/couponspage"
+      },
+      {
+        "id": 2,
+        "name": "Подарочные сертификаты",
+        "route": "marketing/certificates"
+      },
+      {
+        "id": 3,
+        "name": "Бонусы",
+        "route": "marketing/bonus"
+      },
+      {
+        "id": 4,
+        "name": "Создание скидок",
+        "route": "marketing/creatediscounts"
+      },
+      {
+        "id": 5,
+        "name": "Акции",
+        "route": "marketing/promotionspage"
       }
     ]
   }

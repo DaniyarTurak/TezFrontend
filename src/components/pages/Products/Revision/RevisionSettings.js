@@ -265,6 +265,7 @@ export default function RevisionSettings({
     //продолжение активной ревизии на точке
     const continueRevision = (revision) => {
         console.log(revision);
+        setAdmin(revision.admin)
         setRevNumber(revision.revisionnumber);
         setPoint(revision.point);
         setType(revision.type);

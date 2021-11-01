@@ -172,13 +172,35 @@ export default function getBody({
           //   return <UpdateCategoryPage history={history} location={location} />;
           case "scales":
             return <UpdateScalesPage history={history} location={location} />;
-          case "pricingmaster":
-            return <PricingMasterPage history={history} location={location} />;
           case "createprefix":
             return <CreatePrefix history={history} location={location} />;
 
           default:
             return <ReferencesListPage history={history} location={location} />;
+        }
+      case "prices":
+        switch (action) {
+          case "changeprice":
+            return <ChangePrice history={history} location={location} />;
+          case "marginalpricepage":
+            return <MarginalPricePage history={history} location={location} />;
+          case "pricingmaster":
+            return <PricingMasterPage history={history} location={location} />;
+          default: return <ChangePrice history={history} location={location} />;
+        }
+      case "marketing":
+        switch (action) {
+          case "couponspage":
+            return <CouponsPage history={history} location={location} />;
+          case "certificates":
+            return <CreateCertificates history={history} location={location} />;
+          case "bonus":
+            return <UpdateBonusPage history={history} location={location} />;
+          case "creatediscounts":
+            return <DiscountsPage history={history} location={location} />;
+          case "promotionspage":
+            return <PromotionsPage history={history} location={location} />;
+          default: return <CouponsPage history={history} location={location} />;
         }
       case "product":
         switch (action) {
@@ -186,12 +208,11 @@ export default function getBody({
             return (
               <CreateReceiveInvoice history={history} location={location} />
             );
-            case "workorder":
-              return <WorkorderPage history={history} location={location} />;
-            case "recievebyworkorder":
-              return <RecieveByWorkorder history={history} location={location} />;
-          case "changeprice":
-            return <ChangePrice history={history} location={location} />;
+          case "workorder":
+            return <WorkorderPage history={history} location={location} />;
+          case "recievebyworkorder":
+            return <RecieveByWorkorder history={history} location={location} />;
+
           case "invoice":
             return <ManageInvoice history={history} location={location} />;
           case "transfer":
@@ -210,8 +231,6 @@ export default function getBody({
           //   return <ProductAddBrand history={history} location={location} />;
           // case "addcategory":
           //   return <ProductAddCategory history={history} location={location} />;
-          case "creatediscounts":
-            return <DiscountsPage history={history} location={location} />;
           case "couponspage":
             return <CouponsPage history={history} location={location} />;
           case "printbarcode":
@@ -227,17 +246,8 @@ export default function getBody({
           //   return <NavBar history={history} location={location} />;
           case "productsweight":
             return <ProductsWeight history={history} location={location} />;
-          case "certificates":
-            return <CreateCertificates history={history} location={location} />;
-          case "bonus":
-            return <UpdateBonusPage history={history} location={location} />;
-          case "promotionspage":
-            return <PromotionsPage history={history} location={location} />;
-          case "marginalpricepage":
-            return <MarginalPricePage history={history} location={location} />;
           case "reconciliationpage":
             return <ReconciliationPage history={history} location={location} />;
-            
           case "stockmonitoring":
             return <StockMonitoringPage history={history} location={location} />;
           default:

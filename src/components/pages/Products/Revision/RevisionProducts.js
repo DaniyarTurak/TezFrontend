@@ -59,7 +59,7 @@ export default function RevisonProducts({
     revNumber,
     setActiveStep,
     revisionProducts,
-    setRevisionProducts, 
+    setRevisionProducts,
     admin
 }) {
 
@@ -100,9 +100,11 @@ export default function RevisonProducts({
     const [isSelectProduct, setSelectProduct] = useState(false);
     const [fewProducts, setFewProducts] = useState([]);
     const [isLoading, setLoading] = useState(false);
+    const [user, setUser] = useState(null);
     const debouncedRestartScanner = useDebounce(restartScanner, 200);
     useEffect(() => {
         getRevisionProducts();
+        setUser(JSON.parse(sessionStorage.getItem("isme-user-data")).id);
     }, []);
 
     useEffect(() => {
@@ -352,6 +354,8 @@ export default function RevisonProducts({
                     point={point}
                     revNumber={revNumber}
                     getRevisionProducts={getRevisionProducts}
+                    type={type}
+                    object={object}
                 />
             }
             {
@@ -386,7 +390,7 @@ export default function RevisonProducts({
                             onClick={() => setActiveStep(2)}
                             style={{ width: "100%" }}
                             className="btn btn-success"
-                            disabled={revisionProducts.length > 0 && admin === JSON.parse(sessionStorage.getItem("isme-user-data")).id ? false : true}
+                            disabled={revisionProducts.length > 0 && admin === user ? false : true}
                         >
                             Далее
                         </button>

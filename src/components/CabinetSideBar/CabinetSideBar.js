@@ -1,7 +1,7 @@
 import React, { Component, Fragment } from "react";
 import { NavLink } from "react-router-dom";
 import Axios from "axios";
-import topics from "../../data/sidebar_recon";
+import topics from "../../data/sidebar";
 import rules from "../../rbacRules";
 import Navigation from "./Navigation";
 

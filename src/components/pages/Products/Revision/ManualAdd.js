@@ -3,7 +3,7 @@ import Axios from "axios";
 import ErrorAlert from "../../../ReusableComponents/ErrorAlert";
 import Grid from '@material-ui/core/Grid';
 import Alert from "react-s-alert";
-import { makeStyles, withStyles, createStyles } from '@material-ui/core/styles';
+import { makeStyles, createStyles } from '@material-ui/core/styles';
 import Paper from '@material-ui/core/Paper';
 import TextField from "@material-ui/core/TextField";
 import Autocomplete from "@material-ui/lab/Autocomplete";
@@ -13,6 +13,8 @@ export default function ManualAdd({
     point,
     revNumber,
     getRevisionProducts,
+    object,
+    type
 }) {
 
     const useStyles = makeStyles((theme) => ({
@@ -81,11 +83,19 @@ export default function ManualAdd({
     const [isSelectProduct, setSelectProduct] = useState(false);
 
     useEffect(() => {
+        console.log(object)
         getProducts();
     }, []);
 
-    const getProducts = () => {
-        Axios.get("/api/products/stockcurrent/stock", { params: { stockid: point } })
+    const getProducts = (name) => {
+
+        Axios.get("/api/products/stockcurrent/stock", {
+            params: {
+                stockid: point,
+                [type === 2 ? 'brand' : type === 3 ? 'category' : 'none']: object ? object.value : null,
+                productName: name ? name : null
+            }
+        })
             .then((res) => res.data)
             .then((list) => {
                 setListProducts(list);
@@ -360,7 +370,7 @@ export default function ManualAdd({
                             onKeyDown={(e) => searchProduct({ e, param: "name" })}
                             options={listProducts.map((option) => option.name + " " + option.attributescaption)}
                             onChange={(e, value) => { selectProduct({ value, param: "name" }) }}
-                            onInputChange={(e, value) => { setName(value) }}
+                            onInputChange={(e, value) => { setName(value); getProducts(value) }}
                             noOptionsText="Товар не найден"
                             renderInput={(params) => (
                                 <TextField
