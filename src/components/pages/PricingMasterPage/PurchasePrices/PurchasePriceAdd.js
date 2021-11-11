@@ -49,22 +49,6 @@ export default function PurchasePriceAdd({
     );
     const classesAC = useStylesAC();
 
-    const customStyles = {
-        content: {
-            top: "50%",
-            left: "50%",
-            right: "auto",
-            bottom: "auto",
-            marginRight: "-50%",
-            transform: "translate(-50%, -50%)",
-            maxWidth: "500px",
-            maxHeight: "700px",
-            overlfow: "scroll",
-            zIndex: 11,
-        },
-        overlay: { zIndex: 10 },
-    };
-
     const useStyles = makeStyles((theme) => ({
         root: {
             padding: '2px 4px',
@@ -94,7 +78,6 @@ export default function PurchasePriceAdd({
     const [isLoading, setLoading] = useState(false);
     const [productList, setProductList] = useState([]);
     const [selectedProd, setSelectedProd] = useState(null);
-    const [sweetalert, setSweetAlert] = useState(null);
 
     useEffect(() => {
         getProducts();
@@ -145,6 +128,7 @@ export default function PurchasePriceAdd({
         }
         else {
             setLoading(true);
+
             Axios.post("/api/prices", {
                 deleted: false,
                 sell: [
@@ -164,18 +148,25 @@ export default function PurchasePriceAdd({
             })
                 .then((res) => res.data)
                 .then((res) => {
-                    if (res.prices_management.code = "exception") {
+                    if (res.prices_management.code === "exception" || res.prices_management.code === "error") {
                         Alert.error(res.prices_management.text, {
                             position: "top-right",
                             effect: "bouncyflip",
                             timeout: 2000,
                         });
                     }
-
+                    else {
+                        Alert.success("Цены успешно сохранены", {
+                            position: "top-right",
+                            effect: "bouncyflip",
+                            timeout: 2000,
+                        });
+                    }
                     setPurchasePrice("");
                     setSellPrice("");
                     setSelectedProd(null);
-                    getPrices();
+                    setBarcode(null);
+                    setProdName(null);
                     setLoading(false);
                 })
                 .catch((err) => {
@@ -192,7 +183,6 @@ export default function PurchasePriceAdd({
 
     return (
         <Fragment>
-            {sweetalert}
             <Grid
                 container
                 spacing={2}
