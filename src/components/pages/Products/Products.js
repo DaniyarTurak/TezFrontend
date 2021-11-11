@@ -14,7 +14,6 @@ class Products extends Component {
 		label: {
 			receive: 'Прием нового товара на склад',
 			transfer: 'Перемещение между складами',
-			changePrice: 'Изменение цен',
 			writeoff: 'Списание товара со склада',
 			pleaseWait: 'Пожалуйста подождите...'
 		},
@@ -96,11 +95,6 @@ class Products extends Component {
 					<div className="col-md-3">
 						<button className="btn btn-block btn-outline-success" disabled={(isLoading && clickedBtn === "transfer")} name="transfer" onClick={this.handlePath}>
 							{(isLoading && clickedBtn === "transfer") ? label.pleaseWait : label.transfer}
-						</button>
-					</div>
-					<div className="col-md-3">
-						<button className="btn btn-block btn-outline-success" disabled={(isLoading && clickedBtn === "changeprice")} name="changeprice" onClick={this.handlePath}>
-							{(isLoading && clickedBtn === "changeprice") ? label.pleaseWait : label.changePrice}
 						</button>
 					</div>
 					<div className="col-md-3">

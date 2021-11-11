@@ -1,8 +1,8 @@
 import rules from "../rbacRules";
 
-const ConvertRoles = roles => {
+const ConvertRoles = (roles) => {
   try {
-    return roles.map(role => {
+    return roles.map((role) => {
       let caption = "";
       // eslint-disable-next-line
       switch (role) {
@@ -34,10 +34,6 @@ const ConvertRoles = roles => {
           caption = "revisor";
           break;
         }
-        case "7": {
-          caption = "holder";
-          break;
-        }
         default: {
           caption = "undefined";
           break;
@@ -46,7 +42,7 @@ const ConvertRoles = roles => {
       return {
         id: role,
         name: role.name,
-        caption
+        caption,
       };
     });
   } catch (e) {
@@ -57,11 +53,12 @@ const ConvertRoles = roles => {
 const Can = (mode, userRoles, action) => {
   // return true
   if (mode === "changepass" || mode === undefined) return true;
+
   try {
     userRoles = ConvertRoles(userRoles);
     let access = false;
 
-    userRoles.forEach(role => {
+    userRoles.forEach((role) => {
       const permissions = rules[role.caption];
       if (!permissions) {
         // return false;
@@ -82,9 +79,7 @@ const Can = (mode, userRoles, action) => {
       } else {
         if (
           staticPermissions &&
-          ((staticPermissions.includes(mode) &&
-            staticPermissions.includes(action)) ||
-            staticPermissions.includes("*"))
+          (staticPermissions.includes(mode) || staticPermissions.includes("*"))
         ) {
           // return true;
           access = true;

@@ -21,6 +21,7 @@ import InputBase from '@material-ui/core/InputBase';
 import Axios from "axios";
 import Alert from "react-s-alert";
 import SaveIcon from '@material-ui/icons/Save';
+import SweetAlert from "react-bootstrap-sweetalert";
 
 const PriceInput = withStyles((theme) => ({
     input: {
@@ -154,11 +155,16 @@ export default function PurchasePricesList({
     isLoading,
     setLoading,
     getPrices,
-    counterparty
+    counterparty,
+    isWholesale,
+    byCounterparty,
+    setBarcode,
+    setProdName
 }) {
 
     const [page, setPage] = useState(0);
     const [rowsPerPage, setRowsPerPage] = useState(10);
+    const [sweetAlert, setSweetAlert] = useState(null);
 
     const handleChangePage = (event, newPage) => {
         setPage(newPage);
@@ -169,40 +175,12 @@ export default function PurchasePricesList({
         setPage(0);
     };
 
-    const updatePrice = (product) => {
-        setLoading(true);
-        Axios.post("/api/prices", {
-            product: product.product,
-            price: product.price,
-            type: 0,
-            deleted: false,
-            point: product.point,
-            counterparty
-        })
-            .then((res) => res.data)
-            .then((res) => {
-                getPrices();
-            })
-            .catch((err) => {
-                console.log(err);
-                Alert.error(err, {
-                    position: "top-right",
-                    effect: "bouncyflip",
-                    timeout: 2000,
-                });
-                setLoading(false);
-            });
-    };
-
     const deleteProduct = (product) => {
         setLoading(true);
         Axios.post("/api/prices", {
             product: product.product,
-            price: product.price,
-            type: 0,
             deleted: true,
-            point: 0,
-            counterparty
+            counterparty: counterparty.value
         })
             .then((res) => res.data)
             .then((res) => {
@@ -219,7 +197,7 @@ export default function PurchasePricesList({
             });
     };
 
-    const priceChange = (value, pc) => {
+    const purchase_priceChange = (value, pc) => {
         let idx = null;
         priceList.forEach((el, id) => {
             if (el.product === pc.product) {
@@ -228,13 +206,121 @@ export default function PurchasePricesList({
         });
         setPriceList(prevState => {
             let obj = prevState[idx];
-            obj.price = value;
+            obj.purchase_price = value;
+            obj.sell_price = obj.rate ? value !== "" ? Number(value) * obj.rate / 100 + Number(value) : "" : obj.sell_price;
             return [...prevState];
         });
     };
 
+    const sell_priceChange = (value, pc) => {
+        let idx = null;
+        priceList.forEach((el, id) => {
+            if (el.product === pc.product) {
+                idx = id;
+            }
+        });
+        setPriceList(prevState => {
+            let obj = prevState[idx];
+            obj.sell_price = value;
+            return [...prevState];
+        });
+    };
+
+    const wholesale_priceChange = (value, pc) => {
+        let idx = null;
+        priceList.forEach((el, id) => {
+            if (el.product === pc.product) {
+                idx = id;
+            }
+        });
+        setPriceList(prevState => {
+            let obj = prevState[idx];
+            obj.wholesale_price = value;
+            return [...prevState];
+        });
+    };
+
+    const savePrices = () => {
+        let sell = [];
+        let buy = [];
+        priceList.forEach(el => {
+            if (((el.purchase_price.toString() !== el.temp_purchase_price.toString())
+                || (el.sell_price.toString() !== el.temp_sell_price.toString())
+                || (el.wholesale_price.toString() !== el.temp_wholesale_price.toString()))) {
+                sell.push(
+                    {
+                        id: el.product,
+                        price: el.sell_price,
+                        counterparty: el.counterparty,
+                        wholesale_price: el.wholesale_price
+                    }
+                );
+                buy.push({
+                    id: el.product,
+                    price: el.purchase_price,
+                    counterparty: el.counterparty,
+                })
+            }
+        });
+        const data = {
+            deleted: false,
+            sell,
+            buy
+        };
+        Axios.post("/api/prices", data)
+            .then((res) => res.data)
+            .then((res) => {
+                setBarcode(null);
+                setProdName(null);
+                setSweetAlert(null);
+                if (res.prices_management.code === "exception" || res.prices_management.code === "error") {
+                    Alert.error(res.prices_management.text, {
+                        position: "top-right",
+                        effect: "bouncyflip",
+                        timeout: 2000,
+                    }); 
+                }
+                else {
+                    Alert.success("Цены успешно сохранены", {
+                        position: "top-right",
+                        effect: "bouncyflip",
+                        timeout: 2000,
+                    }); 
+                }
+            })
+            .catch((err) => {
+                console.log(err);
+                Alert.error(err, {
+                    position: "top-right",
+                    effect: "bouncyflip",
+                    timeout: 2000,
+                });
+                setLoading(false);
+            });
+    };
+
+    const showConfiramtion = () => {
+        setSweetAlert(
+            <SweetAlert
+                warning
+                showCancel
+                confirmBtnText={"Сохранить"}
+                cancelBtnText={"Отмена"}
+                confirmBtnBsStyle="success"
+                cancelBtnBsStyle="default"
+                title={"Внимание"}
+                allowEscape={false}
+                closeOnClickOutside={false}
+                onConfirm={() => savePrices()}
+                onCancel={() => setSweetAlert(null)}
+            >
+                Измененные цены будут отправлены на кассы. Сохранить изменения?
+            </SweetAlert>)
+    }
+
     return (
         <Fragment>
+            {sweetAlert}
             <Grid
                 container
                 spacing={2}
@@ -268,6 +354,16 @@ export default function PurchasePricesList({
                                         <StyledTableCell align="center">
                                             Закупочная цена
                                         </StyledTableCell>
+                                        <StyledTableCell align="center">
+                                            Маржа
+                                        </StyledTableCell>
+                                        <StyledTableCell align="center">
+                                            Цена реализации
+                                        </StyledTableCell>
+                                        {isWholesale &&
+                                            <StyledTableCell align="center">
+                                                Оптовая цена реализации
+                                            </StyledTableCell>}
                                         <StyledTableCell />
                                     </TableRow>
                                 </TableHead>
@@ -275,7 +371,13 @@ export default function PurchasePricesList({
                                     {priceList
                                         .slice(page * rowsPerPage, page * rowsPerPage + rowsPerPage)
                                         .map((pc, idx) => (
-                                            <TableRow key={idx}>
+                                            <TableRow key={idx} style={{
+                                                backgroundColor:
+                                                    ((pc.purchase_price.toString() !== pc.temp_purchase_price.toString())
+                                                        || (pc.sell_price.toString() !== pc.temp_sell_price.toString())
+                                                        || (pc.wholesale_price.toString() !== pc.temp_wholesale_price.toString())) ?
+                                                        '#EBFFE9' : 'white'
+                                            }}>
                                                 <StyledTableCell align="center">
                                                     {pc.num}
                                                 </StyledTableCell>
@@ -287,14 +389,34 @@ export default function PurchasePricesList({
                                                 </StyledTableCell>
                                                 <StyledTableCell align="center">
                                                     <PriceInput
-                                                        variant="otlined"
-                                                        value={pc.price}
-                                                        onChange={(e) => priceChange(e.target.value, pc)}
+                                                        value={pc.purchase_price}
+                                                        onChange={(e) => purchase_priceChange(e.target.value, pc)}
                                                     /> &nbsp;
                                                     тг.
                                                 </StyledTableCell>
+                                                <StyledTableCell align="center" >
+                                                    {pc.rate ? <span> <span style={{ fontSize: 16 }}> {pc.rate}  </span> % </span> : '-'}
+                                                </StyledTableCell>
                                                 <StyledTableCell align="center">
-                                                    {pc.price.toString() !== pc.temp_price.toString() &&
+                                                    <PriceInput
+                                                        value={pc.sell_price}
+                                                        onChange={(e) => sell_priceChange(e.target.value, pc)}
+                                                    /> &nbsp;
+                                                    тг.
+                                                </StyledTableCell>
+                                                {isWholesale &&
+                                                    <StyledTableCell align="center">
+                                                        <PriceInput
+                                                            value={pc.wholesale_price}
+                                                            onChange={(e) => wholesale_priceChange(e.target.value, pc)}
+                                                        /> &nbsp;
+                                                        тг.
+                                                    </StyledTableCell>}
+                                                <StyledTableCell align="center">
+                                                    {/* {((pc.purchase_price.toString() !== pc.temp_purchase_price.toString())
+                                                        || (pc.sell_price.toString() !== pc.temp_sell_price.toString())
+                                                        || (pc.wholesale_price.toString() !== pc.temp_wholesale_price.toString()))
+                                                        &&
                                                         <IconButton
                                                             size="small"
                                                             disabled={isLoading}
@@ -302,15 +424,15 @@ export default function PurchasePricesList({
                                                                 updatePrice(pc);
                                                             }}>
                                                             <SaveIcon fontSize="small" />
-                                                        </IconButton>}
-                                                    <IconButton
+                                                        </IconButton>} */}
+                                                    {byCounterparty && <IconButton
                                                         size="small"
                                                         disabled={isLoading}
                                                         onClick={() => {
                                                             deleteProduct(pc);
                                                         }}>
                                                         <DeleteIcon fontSize="small" />
-                                                    </IconButton>
+                                                    </IconButton>}
                                                 </StyledTableCell>
                                             </TableRow>
                                         ))}
@@ -331,6 +453,14 @@ export default function PurchasePricesList({
                             ActionsComponent={TablePaginationActions}
                         />
                     </Grid>}
+                <Grid item xs={12} style={{ textAlign: 'right' }}>
+                    <button
+                        className="btn btn-success"
+                        onClick={showConfiramtion}
+                    >
+                        Сохранить изменения
+                    </button>
+                </Grid>
             </Grid>
         </Fragment >
     )

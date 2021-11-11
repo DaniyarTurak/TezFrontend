@@ -12,11 +12,6 @@
   {
     "id": 3,
     "route": "PurchasePrices",
-    "caption": "Закупочные цены"
-  },
-  {
-    "id": 4,
-    "route": "SellingPrices",
-    "caption": "Цены реализации"
+    "caption": "Цены закупки и реализации"
   }
 ]

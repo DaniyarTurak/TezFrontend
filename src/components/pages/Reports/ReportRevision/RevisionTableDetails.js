@@ -99,7 +99,7 @@ export default function RevisionTableDetails({
           Ревизор: {username} <br />
           Дата ревизии: {dateRev} <br />
           Тип ревизии: {revtype === 2 ? `По бренду (${revtypeName})` :
-                    revtype === 3 ? `По категории (${revtypeName})` : revtypeName} <br />
+            revtype === 3 ? `По категории (${revtypeName})` : revtypeName} <br />
         </Typography>
       </Grid>
       <Grid item xs={4} style={{ textAlign: "right" }}>
@@ -203,7 +203,7 @@ export default function RevisionTableDetails({
                       </StyledTableCell>
                       <StyledTableCell className="tenge">
                         {parseFloat(
-                          (detail.units - detail.unitswas) * detail.price
+                          (detail.units - Math.abs(detail.unitswas)) * detail.price
                         ).toLocaleString("ru", {
                           minimumFractionDigits: 1,
                         })}

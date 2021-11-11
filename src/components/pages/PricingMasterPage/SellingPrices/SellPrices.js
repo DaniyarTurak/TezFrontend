@@ -4,7 +4,7 @@ import Grid from '@material-ui/core/Grid';
 import SellPricesList from "./SellPricesList"
 import SellPriceAdd from "./SellPriceAdd";
 import Axios from "axios";
-import Select from "react-select";
+import CustomSelect from "../../../ReusableComponents/CustomSelect";
 
 
 export default function SellPrices() {
@@ -82,11 +82,11 @@ export default function SellPrices() {
       >
         <Grid item xs={10}>
           <label style={{ fontSize: "12px", color: point === "" || !point ? "red" : "black" }}>*Торговая точка</label>
-          <Select
+          <CustomSelect
             styles={customStyles}
             options={points}
             onChange={pointChange}
-            placeholder="Торговая точка"
+            placeholder={"Торговая точка"}
           />
         </Grid>
         <Grid item xs={2} style={{ marginTop: "24px" }}>

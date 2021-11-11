@@ -1257,7 +1257,7 @@ let AddProductForm = ({
                   onWheel={(event) => event.currentTarget.blur()}
                   appendItem={<span className="input-group-text">&#8376;</span>}
                   validate={
-                    unitsprid !== "3" ? [RequiredField, LessThanZero] : []
+                    unitsprid !== "3" ? [LessThanZero] : []
                   }
                 />
                 {(newWSPrice === "" || newWSPrice.toString() === "0") &&

@@ -14,7 +14,15 @@ import IconButton from '@material-ui/core/IconButton';
 
 export default function PurchasePriceAdd({
     getPrices,
-    counterparty
+    counterparty,
+    brand,
+    category,
+    object,
+    isWholesale,
+    barcode,
+    setBarcode,
+    prodName,
+    setProdName
 }) {
     const useStylesAC = makeStyles(theme =>
         createStyles({
@@ -79,9 +87,10 @@ export default function PurchasePriceAdd({
 
     const classes = useStyles();
 
-    const [prodName, setProdName] = useState("");
-    const [barcode, setBarcode] = useState("");
-    const [price, setPrice] = useState("");
+
+    const [purchasePrice, setPurchasePrice] = useState("");
+    const [sellPrice, setSellPrice] = useState("");
+    const [wholesalePrice, setWholesalePrice] = useState("");
     const [isLoading, setLoading] = useState(false);
     const [productList, setProductList] = useState([]);
     const [selectedProd, setSelectedProd] = useState(null);
@@ -93,7 +102,15 @@ export default function PurchasePriceAdd({
 
 
     const getProducts = () => {
-        Axios.get("/api/products", { params: { productName: prodName, barcode: barcode } })
+        Axios.get("/api/products", {
+            params: {
+                productName: prodName,
+                barcode: barcode,
+                category: category ? category.value : null,
+                brand: brand ? brand.value : null,
+                counterparty: counterparty ? counterparty.value : null
+            }
+        })
             .then((res) => res.data)
             .then((products) => {
                 setProductList(products)
@@ -108,73 +125,10 @@ export default function PurchasePriceAdd({
         Axios.get("/api/products", { params: { productName: prodName, barcode: barcode } })
             .then((res) => res.data)
             .then((products) => {
-                if (products.length === 1) {
-                    setSelectedProd(products[0]);
-                    setProdName(products[0].name);
-                    setBarcode(products[0].code);
-                }
-                if (products.length > 1) {
-                    setSweetAlert(
-                        <Modal
-                            isOpen={true}
-                            style={customStyles}
-                        >
-                            <Grid container spacing={1}>
-                                <Grid item xs={12}>
-                                    Найдено несколько товаров {prodName !== "" ? `c наименованием "${prodName}"` : `со штрих-кодом "${barcode}"`}
-                                </Grid>
-                                <Grid item xs={4} style={{ textAlign: "center" }}>
-                                    <b>Штрих-код</b>
-                                </Grid>
-                                <Grid item xs={6} style={{ textAlign: "center" }}>
-                                    <b>Наименование</b>
-                                </Grid>
-                                <Grid item xs={2} />
-                                <Grid item xs={12}>
-                                    <hr style={{ margin: "0px" }} />
-                                </Grid>
-                                {products.map((product) => (
-                                    <Fragment>
-                                        <Grid item xs={4}>
-                                            {product.code}
-                                        </Grid>
-                                        <Grid item xs={5}>
-                                            {product.name}
-                                        </Grid>
-                                        <Grid item xs={3}>
-                                            <button
-                                                className="btn btn-success"
-                                                onClick={() => {
-                                                    setSelectedProd(product);
-                                                    setSweetAlert(null);
-                                                    setProdName("");
-                                                    setBarcode("");
-                                                }}
-                                            >
-                                                Выбрать
-                                            </button>
-                                        </Grid>
-                                        <Grid item xs={12}>
-                                            <hr style={{ margin: "0px" }} />
-                                        </Grid>
-                                    </Fragment>
+                setSelectedProd(products[0]);
+                setProdName(products[0].name);
+                setBarcode(products[0].code);
 
-                                ))}
-                                <Grid item xs={12} style={{ textAlign: "right" }}>
-                                    <button
-                                        className="btn btn-default"
-                                        onClick={() => {
-                                            setSweetAlert(null);
-                                            setProdName("");
-                                            setBarcode("");
-                                        }}
-                                    >
-                                        Отмена
-                                    </button>
-                                </Grid>
-                            </Grid>
-                        </Modal>)
-                }
             })
             .catch((err) => {
                 console.log(err);
@@ -182,7 +136,7 @@ export default function PurchasePriceAdd({
     };
 
     const addProduct = () => {
-        if (!price || price === "") {
+        if (!purchasePrice || purchasePrice === "") {
             Alert.warning("Введите цену закупки", {
                 position: "top-right",
                 effect: "bouncyflip",
@@ -192,15 +146,34 @@ export default function PurchasePriceAdd({
         else {
             setLoading(true);
             Axios.post("/api/prices", {
-                product: selectedProd.id,
-                price: price,
-                type: 0,
                 deleted: false,
-                counterparty
+                sell: [
+                    {
+                        id: selectedProd.id,
+                        price: sellPrice,
+                        counterparty: counterparty.value,
+                        wholesale_price: wholesalePrice !== "" ? wholesalePrice : null
+                    }
+                ],
+                buy:
+                    [{
+                        id: selectedProd.id,
+                        price: purchasePrice,
+                        counterparty: counterparty.value,
+                    }]
             })
                 .then((res) => res.data)
                 .then((res) => {
-                    setPrice("");
+                    if (res.prices_management.code = "exception") {
+                        Alert.error(res.prices_management.text, {
+                            position: "top-right",
+                            effect: "bouncyflip",
+                            timeout: 2000,
+                        });
+                    }
+
+                    setPurchasePrice("");
+                    setSellPrice("");
                     setSelectedProd(null);
                     getPrices();
                     setLoading(false);
@@ -233,7 +206,7 @@ export default function PurchasePriceAdd({
                                 fullWidth
                                 disabled={isLoading}
                                 options={productList.map((option) => option.code)}
-                                onChange={(e, value) => { setBarcode(value); setProdName(""); setSelectedProd(null) }}
+                                onChange={(e, value) => { setBarcode(value); setProdName(""); setSelectedProd(null); }}
                                 onInputChange={(e, value) => { setBarcode(value) }}
                                 noOptionsText="Товар не найден"
                                 renderInput={(params) => (
@@ -254,7 +227,7 @@ export default function PurchasePriceAdd({
                                 fullWidth
                                 disabled={isLoading}
                                 options={productList.map((option) => option.name)}
-                                onChange={(e, value) => { setProdName(value); setBarcode(""); setSelectedProd(null) }}
+                                onChange={(e, value) => { setProdName(value); setBarcode(""); setSelectedProd(null); }}
                                 onInputChange={(e, value) => { setProdName(value) }}
                                 noOptionsText="Товар не найден"
                                 renderInput={(params) => (
@@ -269,14 +242,14 @@ export default function PurchasePriceAdd({
                                     />
                                 )}
                             />
-                            <IconButton onClick={searchProduct} className={classes.iconButton} aria-label="search">
+                            <IconButton onClick={object === 1 ? searchProduct : getPrices} className={classes.iconButton} aria-label="search">
                                 <SearchIcon />
                             </IconButton>
                         </Paper>
                     </Grid>
                 </Fragment>
                 {selectedProd &&
-                    <Grid item xs={6}>
+                    <Grid item xs={12}>
                         <Paper className={classes.root}>
                             <TextField
                                 classes={{
@@ -286,11 +259,40 @@ export default function PurchasePriceAdd({
                                 label="Цена закупки (тг.)"
                                 variant="outlined"
                                 size="small"
-                                value={price}
-                                onChange={(e) => setPrice(e.target.value)}
+                                value={purchasePrice}
+                                onChange={(e) => setPurchasePrice(e.target.value)}
                                 fullWidth
                             />
                             <Divider className={classes.divider} orientation="vertical" />
+                            <TextField
+                                classes={{
+                                    root: classesAC.root,
+                                }}
+                                placeholder="Цена реализации (тг.)"
+                                label="Цена реализации (тг.)"
+                                variant="outlined"
+                                size="small"
+                                value={sellPrice}
+                                onChange={(e) => setSellPrice(e.target.value)}
+                                fullWidth
+                            />
+                            <Divider className={classes.divider} orientation="vertical" />
+                            {isWholesale &&
+                                <Fragment>
+                                    <TextField
+                                        classes={{
+                                            root: classesAC.root,
+                                        }}
+                                        placeholder="Оптовая цена реализации (тг.)"
+                                        label="Оптовая цена реализации (тг.)"
+                                        variant="outlined"
+                                        size="small"
+                                        value={wholesalePrice}
+                                        onChange={(e) => setWholesalePrice(e.target.value)}
+                                        fullWidth
+                                    />
+                                    <Divider className={classes.divider} orientation="vertical" />
+                                </Fragment>}
                             <button
                                 className="btn btn-success"
                                 onClick={addProduct}

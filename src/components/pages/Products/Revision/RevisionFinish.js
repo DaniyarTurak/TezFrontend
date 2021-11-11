@@ -185,6 +185,60 @@ export default function RevisonFinish({
                     setLoading(false);
                 }
             }
+            else {
+                setLoading(true);
+                Axios.post("/api/revision/revisiondiary/add", {
+                    outofrevision: 2,
+                    point: point,
+                    revnumber: revNumber,
+                })
+                    .then((data) => {
+                        return data.data;
+                    })
+                    .then((resp) => {
+                        if (resp[0].revisiondiary_add.code === "success") {
+                            setSweetAlert(
+                                <SweetAlert
+                                    success
+                                    showCancel
+                                    confirmBtnText={"Начать новую ревизию"}
+                                    cancelBtnText={"Посмотреть отчёт"}
+                                    confirmBtnBsStyle="success"
+                                    cancelBtnBsStyle="success"
+                                    title={""}
+                                    allowEscape={false}
+                                    closeOnClickOutside={false}
+                                    onConfirm={() => setActiveStep(0)}
+                                    onCancel={toReport}
+                                >
+                                    Ревизия успешно завершена
+                                </SweetAlert>)
+                            ReactAlert.success("Успешно", {
+                                position: "top-right",
+                                effect: "bouncyflip",
+                                timeout: 3000,
+                            });
+                            setLoading(false);
+                        }
+                        else {
+                            ReactAlert.error(resp[0].revisiondiary_add.text, {
+                                position: "top-right",
+                                effect: "bouncyflip",
+                                timeout: 3000,
+                            });
+                            setLoading(false);
+                        }
+                    })
+                    .catch((err) => {
+                        console.log(err);
+                        ReactAlert.error("Сервис временно не доступен", {
+                            position: "top-right",
+                            effect: "bouncyflip",
+                            timeout: 3000,
+                        });
+                        setLoading(false);
+                    });
+            }
         }
     };
 

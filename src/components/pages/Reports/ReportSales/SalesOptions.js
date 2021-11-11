@@ -47,7 +47,9 @@ export default function SalesOptions({
   setName,
   nameChange,
   products,
-  setBarcode
+  setBarcode,
+  withoutDate,
+  onWithoutDateChange
 }) {
 
   return (
@@ -197,6 +199,23 @@ export default function SalesOptions({
           label={
             <span style={{ fontSize: ".875rem" }}>
               Разбить по партийным характеристиками (Например: по цвету, размеру и т.д.)
+            </span>
+          }
+        />
+      </Grid>
+      <Grid item xs={3}>
+        <FormControlLabel
+          control={
+            <Checkbox
+              checked={withoutDate}
+              onChange={onWithoutDateChange}
+              name="grouping"
+              style={{ color: "#17a2b8" }}
+            />
+          }
+          label={
+            <span style={{ fontSize: ".875rem" }}>
+             Поиск с группировкой по товару
             </span>
           }
         />

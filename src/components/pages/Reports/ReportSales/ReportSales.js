@@ -9,6 +9,7 @@ import SalesOptions from "./SalesOptions";
 import SalesTable from "./SalesTable";
 import { makeStyles } from "@material-ui/core/styles";
 import useDebounce from "../../../ReusableComponents/useDebounce";
+import SalesWithoutDateTable from "./SalesWithoutDateTable";
 
 const useStyles = makeStyles((theme) => ({
   notFound: {
@@ -60,6 +61,7 @@ export default function ReportSales({ companyProps }) {
   const [dateFrom, setDateFrom] = useState(Moment().format("YYYY-MM-DD"));
   const [dateTo, setDateTo] = useState(Moment().format("YYYY-MM-DD"));
   const [grouping, setGrouping] = useState(false);
+  const [withoutDate, setWithoutDate] = useState(false);
   const [handleGrouping, setHandleGrouping] = useState(false);
   const [isDateChanging, setDateChanging] = useState(false);
   const [isLoading, setLoading] = useState(false);
@@ -111,7 +113,13 @@ export default function ReportSales({ companyProps }) {
 
   useEffect(() => {
     if (!isDateChanging) {
-      getSales();
+      if (withoutDate) {
+        getWithoutDate();
+      }
+      else {
+        getSales();
+
+      }
     }
     return () => {
       setDateChanging(false);
@@ -448,21 +456,26 @@ export default function ReportSales({ companyProps }) {
   };
 
   const handleSearch = () => {
-    if (!dateFrom || !dateTo) {
-      const text = !dateFrom ? "Дата с" : !dateTo ? "Дата по" : "Фильтр";
-      return Alert.warning(`Заполните поле  ${text}`, {
-        position: "top-right",
-        effect: "bouncyflip",
-        timeout: 3000,
-      });
-    } else if (dateFrom > dateTo) {
-      return Alert.warning(`Заполните дату правильно`, {
-        position: "top-right",
-        effect: "bouncyflip",
-        timeout: 3000,
-      });
+    if (withoutDate) {
+      getWithoutDate();
     }
-    getSales();
+    else {
+      if (!dateFrom || !dateTo) {
+        const text = !dateFrom ? "Дата с" : !dateTo ? "Дата по" : "Фильтр";
+        return Alert.warning(`Заполните поле  ${text}`, {
+          position: "top-right",
+          effect: "bouncyflip",
+          timeout: 3000,
+        });
+      } else if (dateFrom > dateTo) {
+        return Alert.warning(`Заполните дату правильно`, {
+          position: "top-right",
+          effect: "bouncyflip",
+          timeout: 3000,
+        });
+      }
+      getSales();
+    }
   };
 
   const getSales = () => {
@@ -508,6 +521,46 @@ export default function ReportSales({ companyProps }) {
       });
   };
 
+  const onWithoutDateChange = (e) => {
+    setWithoutDate(e.target.checked);
+    if (e.target.checked) {
+      getWithoutDate();
+    }
+  };
+
+  const getWithoutDate = () => {
+    setLoading(true);
+    setSubmitting(true);
+    Axios.get("/api/report/sales/withoutdate", {
+      params: {
+        barcode,
+        counterparty: counterparty.value,
+        point: point.value,
+        category: category.value,
+        brand: brand.value,
+        type: type.value,
+      },
+    })
+      .then((res) => res.data)
+      .then((salesList) => {
+        let temp = [];
+        salesList.forEach((el, idx) => {
+          temp.push({ ...el, num: idx + 1 })
+        });
+        setSales(temp);
+        setLoading(false);
+        setSubmitting(false);
+        setHandleGrouping(true);
+        setOrderBy("");
+      })
+      .catch((err) => {
+        console.log(err);
+        setSubmitting(false);
+        setLoading(false);
+        ErrorAlert(err);
+      });
+  }
+
   return (
     <Grid container spacing={3}>
       <SalesOptions
@@ -551,6 +604,8 @@ export default function ReportSales({ companyProps }) {
         setBarcode={setBarcode}
         nameChange={nameChange}
         products={products}
+        withoutDate={withoutDate}
+        onWithoutDateChange={onWithoutDateChange}
       />
 
       {isLoading && (
@@ -573,7 +628,7 @@ export default function ReportSales({ companyProps }) {
         </Grid>
       )}
 
-      {!isLoading && sales.length > 0 && (
+      {!isLoading && sales.length > 0 && !withoutDate && (
         <SalesTable
           ascending={ascending}
           companyData={companyData}
@@ -587,7 +642,24 @@ export default function ReportSales({ companyProps }) {
           point={point}
           sales={sales}
           name={name}
+          withoutDate={withoutDate}
 
+        />
+      )}
+      {!isLoading && sales.length > 0 && withoutDate && (
+        <SalesWithoutDateTable
+          ascending={ascending}
+          companyData={companyData}
+          dateFrom={dateFrom}
+          dateTo={dateTo}
+          grouping={grouping}
+          handleGrouping={handleGrouping}
+          now={now}
+          orderBy={orderBy}
+          orderByFunction={orderByFunction}
+          point={point}
+          sales={sales}
+          name={name}
         />
       )}
     </Grid>
