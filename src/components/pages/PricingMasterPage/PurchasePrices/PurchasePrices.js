@@ -26,6 +26,7 @@ export default function PurchasePrices() {
   const [isSearched, setSearched] = useState(false);
   const [isWholesale, setWholeSale] = useState(false);
   const [byCounterparty, setByCounterparty] = useState(false);
+  const [options, setOptions] = useState([]);
 
   const objects = [
     { value: 0, label: "Все товары" },
@@ -157,6 +158,7 @@ export default function PurchasePrices() {
 
   const objectChange = (e) => {
     setObject(e.value);
+    setOptions(e.value === 1 ? counterparties : e.value === 2 ? brands : e.value === 3 ? categories : []);
     setSearched(false);
     setBrand(null);
     setCategory(null);
@@ -185,7 +187,7 @@ export default function PurchasePrices() {
       default:
         break;
     }
-  }
+  };
 
   return (
     <Fragment>
@@ -194,7 +196,6 @@ export default function PurchasePrices() {
         spacing={2}
       >
         <Grid item xs={object === 0 ? 10 : 5}>
-          {/* <label style={{ fontSize: "12px", color: counterparty === "" || !counterparty ? "red" : "black" }}>*Контрагент</label> */}
           <CustomSelect
             options={objects}
             onChange={objectChange}
@@ -202,23 +203,12 @@ export default function PurchasePrices() {
           />
         </Grid>
         {object !== 0 && <Grid item xs={5}>
-          {/* <label style={{ fontSize: "12px", color: counterparty === "" || !counterparty ? "red" : "black" }}>*Контрагент</label> */}
           <Autocomplete
             value={object === 1 ? counterparty : object === 2 ? brand : object === 3 ? category : null}
             defaultValue={object === 1 ? counterparty : object === 2 ? brand : object === 3 ? category : null}
             fullWidth
             disabled={isLoading}
-            // options={object === 1 ? counterparties :
-            //   object === 2 ? brands :
-            //     object === 3 ? categories :
-            //       []}
-
-            options={[`${object === 1 ? 'counterparties' :
-              object === 2 ? 'brands' :
-                object === 3 ? 'categories' : 'counterparties'}
-            `].map((option) => option.label)}
-
-            // getOptionLabel={(option) => option.label}
+            options={options.map((option) => option.label)}
             onChange={(e, value) => {
               autocompleteChange(value);
             }}
@@ -233,7 +223,6 @@ export default function PurchasePrices() {
           />
         </Grid>}
         <Grid item xs={2}
-        // style={{ marginTop: "24px" }}
         >
           <button
             className="btn btn-success"
