@@ -208,17 +208,17 @@ export default function PurchasePrices() {
             defaultValue={object === 1 ? counterparty : object === 2 ? brand : object === 3 ? category : null}
             fullWidth
             disabled={isLoading}
-            options={object === 1 ? counterparties :
-              object === 2 ? brands :
-                object === 3 ? categories :
-                  []}
+            // options={object === 1 ? counterparties :
+            //   object === 2 ? brands :
+            //     object === 3 ? categories :
+            //       []}
 
-            // options={[`${object === 1 ? 'counterparties' :
-            //   object === 2 ? 'brands' :
-            //     object === 3 ? 'categories' : 'counterparties'}
-            // `].map((option) => option.label)}
+            options={[`${object === 1 ? 'counterparties' :
+              object === 2 ? 'brands' :
+                object === 3 ? 'categories' : 'counterparties'}
+            `].map((option) => option.label)}
 
-            getOptionLabel={(option) => option.label}
+            // getOptionLabel={(option) => option.label}
             onChange={(e, value) => {
               autocompleteChange(value);
             }}
