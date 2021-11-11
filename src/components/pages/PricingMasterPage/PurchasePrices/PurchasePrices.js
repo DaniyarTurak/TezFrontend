@@ -99,7 +99,7 @@ export default function PurchasePrices() {
       .then((counterparties) => {
         let temp = [];
         counterparties.forEach(ct => {
-          temp.push({ label: ct.name + " | " + ct.bin, value: ct.id })
+          temp.push({ label: ct.name, value: ct.id })
         });
         setCounterparties(temp);
       })
@@ -172,11 +172,13 @@ export default function PurchasePrices() {
         break;
       case 2:
         setBrand(value);
+        getBrands(value);
         setCounterparty(null);
         setCategory(null);
         break;
       case 3:
         setCategory(value);
+        getCategories(value);
         setBrand(null);
         setCounterparty(null);
         break;
@@ -210,6 +212,12 @@ export default function PurchasePrices() {
               object === 2 ? brands :
                 object === 3 ? categories :
                   []}
+
+            // options={[`${object === 1 ? 'counterparties' :
+            //   object === 2 ? 'brands' :
+            //     object === 3 ? 'categories' : 'counterparties'}
+            // `].map((option) => option.label)}
+
             getOptionLabel={(option) => option.label}
             onChange={(e, value) => {
               autocompleteChange(value);
