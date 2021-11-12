@@ -217,8 +217,11 @@ export default function RevisonProducts({
                                 Наименование
                             </StyledTableCell>
                             <StyledTableCell align="center">
-                                {isOutOfRevision ? "Количество" : " Отсканированное количество"}
+                                {isOutOfRevision ? "Количество на складе" : " Отсканированное количество"}
                             </StyledTableCell>
+                            {!isOutOfRevision && <StyledTableCell align="center">
+                                Количество на складе
+                            </StyledTableCell>}
                             {activeStep !== 2 && <StyledTableCell />}
                         </TableRow>
                     </TableHead>
@@ -241,6 +244,12 @@ export default function RevisonProducts({
                                             { minimumFractionDigits: 1 }
                                         )}
                                     </StyledTableCell>
+                                    {!isOutOfRevision && <StyledTableCell align="center">
+                                        {parseFloat(product.stock).toLocaleString(
+                                            "ru",
+                                            { minimumFractionDigits: 1 }
+                                        )}
+                                    </StyledTableCell>}
                                     {activeStep !== 2 &&
                                         <StyledTableCell align="center">
                                             <IconButton
