@@ -1,42 +1,10 @@
-import React, { Fragment, useEffect, useState } from "react";
-import { makeStyles, createStyles } from '@material-ui/core/styles';
+import React, { Fragment, useEffect } from "react";
 import Grid from '@material-ui/core/Grid';
-import TextField from '@material-ui/core/TextField';
-import DeleteIcon from '@material-ui/icons/Delete';
-import SaveIcon from '@material-ui/icons/Save';
-import IconButton from '@material-ui/core/IconButton';
-import ReplayIcon from '@material-ui/icons/Replay';
 import Axios from "axios";
 import Alert from "react-s-alert";
 import Button from '@material-ui/core/Button';
 
 export default function DeletedCategories({ deletedCategories, getCategories }) {
-
-
-    const useStylesAC = makeStyles(theme =>
-        createStyles({
-            root: {
-                '& label.Mui-focused': {
-                    color: '#17a2b8',
-                },
-                '& .MuiInput-underline:after': {
-                    borderBottomColor: '#17a2b8',
-                },
-                '& .MuiOutlinedInput-root': {
-                    '& fieldset': {
-                        borderColor: '#ced4da',
-                    },
-                    '&:hover fieldset': {
-                        borderColor: '#ced4da',
-                    },
-                    '&.Mui-focused fieldset': {
-                        borderColor: '#17a2b8',
-                    },
-                },
-            },
-        })
-    );
-    const classesAC = useStylesAC();
 
     useEffect(() => {
         console.log(deletedCategories);

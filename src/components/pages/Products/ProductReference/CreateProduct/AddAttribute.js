@@ -133,9 +133,9 @@ export default function AddAttribute({
 
   const onAttrNameChange = (attrNameChanged) => {
     if (attrNameChanged) {
-      const selectedAttrTypeChanged =
-        attrNameChanged.length === 0 ? "TEXT" : attrNameChanged.type;
-      const optionsToRenderSprChanged = attrNameChanged.sprvalues;
+      // const selectedAttrTypeChanged =
+      //   attrNameChanged.length === 0 ? "TEXT" : attrNameChanged.type;
+      // const optionsToRenderSprChanged = attrNameChanged.sprvalues;
       setAttrName(attrNameChanged);
       // setSelectedAttrType(selectedAttrTypeChanged);
       setAttrValue("");

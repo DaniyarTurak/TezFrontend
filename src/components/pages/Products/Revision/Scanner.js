@@ -1,5 +1,4 @@
 import React, { Fragment, useState, useEffect } from "react";
-import Grid from '@material-ui/core/Grid';
 import Quagga from 'quagga';
 import "../../../../sass/revision.sass";
 export default function Scanner({

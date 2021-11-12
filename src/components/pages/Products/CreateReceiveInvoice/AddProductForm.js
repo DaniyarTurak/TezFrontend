@@ -96,7 +96,6 @@ let AddProductForm = ({
   const [modalIsOpenAlert, setModalOpenAlert] = useState(false);
   const [newProductGenerating, setNewProductGenerating] = useState(false);
   const [newprice, setNewPrice] = useState(0);
-  const [newWholeprice, setNewWholePrice] = useState(0);
   const [productID, setProductID] = useState(null);
   const [productOptions, setProductOptions] = useState([]);
   const [productSelectValue, setProductSelectValue] = useState("");
@@ -588,7 +587,6 @@ let AddProductForm = ({
     numberValidation(e);
     setnewWSPrice(e.target.value);
     const newpriceTarget = isNaN(e.target.value) ? 0 : e.target.value;
-    const lpNum = +lastpurchaseprice;
     let isStatic = false;
 
     if (staticprice && newpriceTarget > staticprice) {
@@ -606,7 +604,6 @@ let AddProductForm = ({
       e.preventDefault();
     } else {
       dispatch(change("AddProductForm", "newwholeprice", newpriceTarget));
-      setNewWholePrice(newpriceTarget);
     }
   };
 

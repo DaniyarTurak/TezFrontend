@@ -23,7 +23,6 @@ import PlaylistAddCheckIcon from '@material-ui/icons/PlaylistAddCheck'
 import ErrorAlert from "../../../ReusableComponents/ErrorAlert";
 import Breadcrumb from "../../../Breadcrumb";
 import LinearProgress from '@material-ui/core/LinearProgress';
-import Divider from '@material-ui/core/Divider';
 
 const BorderLinearProgress = withStyles((theme) => ({
     root: {
@@ -283,9 +282,9 @@ export default function WorkorderListTable({
                                                 </IconButton>
                                                 {wo.status === 'CREATED' &&
                                                     <Fragment>
-                                                     <IconButton onClick={() => { setWorkorderId(wo.id); setActivePage(2) }}>
-                                                         <PlaylistAddCheckIcon size="small" />
-                                                     </IconButton>
+                                                        <IconButton onClick={() => { setWorkorderId(wo.id); setActivePage(2) }}>
+                                                            <PlaylistAddCheckIcon size="small" />
+                                                        </IconButton>
                                                     </Fragment>
                                                 }
                                             </StyledTableCell>

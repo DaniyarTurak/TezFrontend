@@ -24,7 +24,6 @@ export default function PageN1({ productListProps, isWholesale, setWholeSale }) 
   const [productsList, setproductsList] = useState([]);
   const [selectValue, setselectValue] = useState("");
   const [staticprice, setstaticprice] = useState("");
-  const [wholePrice, setWholePrice] = useState(0);
 
   useEffect(() => {
     setWholeSale(JSON.parse(sessionStorage.getItem("isme-company-data")).wholesale);
@@ -148,7 +147,6 @@ export default function PageN1({ productListProps, isWholesale, setWholeSale }) 
           let newisSelledByPieces = e.info[0].piece ? true : false;
           newisstaticprice = e.isstaticprice;
           setisSelledByPieces(newisSelledByPieces);
-          setWholePrice(e.info[0].wholesale_price)
         });
         if (newisstaticprice) {
           result.forEach((e) => {

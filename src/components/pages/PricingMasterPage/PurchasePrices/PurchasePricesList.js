@@ -20,7 +20,6 @@ import LinearProgress from '@material-ui/core/LinearProgress';
 import InputBase from '@material-ui/core/InputBase';
 import Axios from "axios";
 import Alert from "react-s-alert";
-import SaveIcon from '@material-ui/icons/Save';
 import SweetAlert from "react-bootstrap-sweetalert";
 
 const PriceInput = withStyles((theme) => ({

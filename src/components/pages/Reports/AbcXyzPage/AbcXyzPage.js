@@ -177,6 +177,7 @@ export default function AbcXyzPage() {
       case "1": { setPeriod("90"); break; }
       case "2": { setPeriod("13"); break; }
       case "3": { setPeriod("12"); break; }
+      default: { setPeriod("90"); break; }
     }
   };
 
@@ -407,7 +408,7 @@ export default function AbcXyzPage() {
           onClick={getAbcXyzReport}
         >
           Применить
-              </button>
+        </button>
       </Grid>
       <AccordionAlert
         classes={classes}

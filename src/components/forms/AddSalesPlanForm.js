@@ -1,6 +1,5 @@
 import React, { useState, useEffect } from "react";
 import { Field, reduxForm, initialize } from "redux-form";
-import Grid from "@material-ui/core/Grid";
 import { InputGroup, SelectField, InputField } from "../fields";
 import { RequiredField } from "../../validation";
 

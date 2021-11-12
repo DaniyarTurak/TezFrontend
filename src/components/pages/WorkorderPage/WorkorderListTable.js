@@ -1,5 +1,5 @@
 
-import React, { useState, useEffect, Fragment } from "react";
+import React, { useState, Fragment } from "react";
 import Grid from '@material-ui/core/Grid';
 import Axios from "axios";
 import Table from "@material-ui/core/Table";
@@ -297,14 +297,14 @@ export default function WorkorderListTable({
                                             </StyledTableCell>
                                             <StyledTableCell align="right">
                                                 {(wo.status === 'FORMATION' || wo.status === 'CREATED') &&
-                                                    <IconButton onClick={() => editWorkorder(wo)}>
+                                                    <IconButton disabled={isLoading} onClick={() => editWorkorder(wo)}>
                                                         <EditIcon size="small" />
                                                     </IconButton>}
                                                 <IconButton onClick={() => viewWorkorder(wo)}>
                                                     <VisibilityIcon size="small" />
                                                 </IconButton>
                                                 {wo.status === 'FORMATION' &&
-                                                    <IconButton onClick={() => showConfiramtion(wo)}>
+                                                    <IconButton disabled={isLoading} onClick={() => showConfiramtion(wo)}>
                                                         <DeleteIcon size="small" />
                                                     </IconButton>}
                                             </StyledTableCell>

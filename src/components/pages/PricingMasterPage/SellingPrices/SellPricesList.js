@@ -1,4 +1,4 @@
-import React, { useState, useEffect, Fragment } from "react";
+import React, { useState, Fragment } from "react";
 import Grid from '@material-ui/core/Grid';
 import Table from "@material-ui/core/Table";
 import TableBody from "@material-ui/core/TableBody";
@@ -156,19 +156,6 @@ export default function SellPricesList({
     getPrices,
     point
 }) {
-
-    const customStyles = {
-        control: (base, state) => ({
-            ...base,
-            backgroundColor: "white",
-            border: '2px solid #17a2b8',
-            boxShadow: state.isFocused ? null : null,
-            "&:hover": {
-                border: '2px solid #17a2b8',
-
-            }
-        })
-    };
 
     const [page, setPage] = useState(0);
     const [rowsPerPage, setRowsPerPage] = useState(10);

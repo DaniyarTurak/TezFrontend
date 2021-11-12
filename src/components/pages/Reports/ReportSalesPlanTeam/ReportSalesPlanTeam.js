@@ -57,7 +57,6 @@ export default function ReportSalesPlanTeam({ companyProps, holding }) {
   const [point, setPoint] = useState("");
   const [totalAward, setTotalAward] = useState(0);
   const [uniqueSold, setUniqueSold] = useState([]);
-  const [type, setType] = useState(1);
   const [planType, setPlanType] = useState({ value: 1, label: "Ежедневный" });
 
   const company = JSON.parse(sessionStorage.getItem("isme-user-data"))
@@ -187,7 +186,6 @@ export default function ReportSalesPlanTeam({ companyProps, holding }) {
       setDateFrom(Moment().startOf("year").format("YYYY-MM-DD"));
       setDateTo(Moment().startOf("year").add(12, "M").format("YYYY-MM-DD"));
     }
-    setType(t);
   };
 
   const handleSearch = () => {
@@ -206,19 +204,6 @@ export default function ReportSalesPlanTeam({ companyProps, holding }) {
           timeout: 3000,
         });
       } else 
-      // if (
-      //   planType.value === 2 &&
-      //   ((Moment().month() !== Moment(dateTo).month() &&
-      //     dateTo !== Moment(dateTo).startOf("month").format("YYYY-MM-DD")) ||
-      //     (Moment().month() !== Moment(dateFrom).month() &&
-      //       dateFrom !== Moment(dateFrom).startOf("month").format("YYYY-MM-DD")))
-      // ) {
-      //   return Alert.warning("Выберите 1-ое число месяца", {
-      //     position: "top-right",
-      //     effect: "bouncyflip",
-      //     timeout: 3000,
-      //   });
-      // }
       setLoading(true);
       let path = "";
       switch (planType.value) {

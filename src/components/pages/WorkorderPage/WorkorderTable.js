@@ -183,14 +183,6 @@ export default function WorkorderTable({
         });
     };
 
-    const priceChange = (value, idx) => {
-        setWorkorderProducts(prevState => {
-            let obj = prevState[idx];
-            obj.price = value;
-            return [...prevState];
-        });
-    };
-
     const updateProduct = (product) => {
         setLoading(true);
         Axios.post("/api/workorder/details/update", {

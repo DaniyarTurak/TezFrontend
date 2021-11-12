@@ -1,4 +1,4 @@
-import React, { useState, useEffect, Fragment } from "react";
+import React, { useState, Fragment } from "react";
 import Table from "@material-ui/core/Table";
 import TableBody from "@material-ui/core/TableBody";
 import TableCell from "@material-ui/core/TableCell";
@@ -244,6 +244,7 @@ export default function RevisonProducts({
                                     {activeStep !== 2 &&
                                         <StyledTableCell align="center">
                                             <IconButton
+                                                disabled={isLoading}
                                                 size="small"
                                                 onClick={() => {
                                                     editUnits(product);
@@ -251,10 +252,11 @@ export default function RevisonProducts({
                                                 {product.isChanging ? <SaveIcon fontSize="small" title="Сохранить" /> : <EditIcon fontSize="small" title="Редактировать" />}
                                             </IconButton>
                                             <IconButton size="small"
+                                                disabled={isLoading}
                                                 onClick={() => {
                                                     deleteProduct(product);
                                                 }}>
-                                                <DeleteIcon fontSize="small" title="Удалить товар" style={{color: "#dc3545"}}/>
+                                                <DeleteIcon fontSize="small" title="Удалить товар" style={{ color: "#dc3545" }} />
                                             </IconButton>
                                         </StyledTableCell>}
                                 </TableRow>

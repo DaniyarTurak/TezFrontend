@@ -16,7 +16,6 @@ import IconButton from "@material-ui/core/IconButton";
 import SweetAlert from "react-bootstrap-sweetalert";
 import ErrorAlert from "../../../../ReusableComponents/ErrorAlert";
 import Moment from "moment";
-import { ConstantLine } from "../../../../../../node_modules/devextreme-react/chart";
 
 export default function EditProduct({
   productDetails,

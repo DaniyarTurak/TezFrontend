@@ -2,10 +2,6 @@ import React, { Fragment } from "react";
 import Grid from "@material-ui/core/Grid";
 import MaterialDateDefault from "../../../ReusableComponents/MaterialDateDefault";
 import AutocompleteSelect from "../../../ReusableComponents/AutocompleteSelect";
-import FormControl from '@material-ui/core/FormControl';
-import Select from '@material-ui/core/Select';
-import InputLabel from '@material-ui/core/InputLabel';
-import MenuItem from '@material-ui/core/MenuItem';
 
 export default function SalesPlanOptions({
   cashboxuser,

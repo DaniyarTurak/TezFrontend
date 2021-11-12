@@ -6,7 +6,6 @@ import Axios from "axios";
 import Autocomplete from "@material-ui/lab/Autocomplete";
 import TextField from "@material-ui/core/TextField";
 import Alert from "react-s-alert";
-import Modal from 'react-modal';
 import Paper from '@material-ui/core/Paper';
 import Divider from '@material-ui/core/Divider';
 import SearchIcon from '@material-ui/icons/Search';

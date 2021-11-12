@@ -202,7 +202,7 @@ export default function RevisonProducts({
             point,
             id: product.product,
             attribute: product.attributes,
-            unitswas: parseInt(product.units)
+            unitswas: Number(product.units)
         })
             .then((res) => res.data)
             .then((res) => {

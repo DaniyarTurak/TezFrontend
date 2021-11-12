@@ -23,12 +23,8 @@ import Checkbox from '@material-ui/core/Checkbox';
 import Moment from "moment";
 import Breadcrumb from "../../../Breadcrumb";
 import LinearProgress from '@material-ui/core/LinearProgress';
-import ErrorAlert from "../../../ReusableComponents/ErrorAlert";
 import ReactHTMLTableToExcel from "react-html-table-to-excel";
-import FormGroup from '@material-ui/core/FormGroup';
 import FormControlLabel from '@material-ui/core/FormControlLabel';
-import FormControl from '@material-ui/core/FormControl';
-import FormLabel from '@material-ui/core/FormLabel';
 
 const BorderLinearProgress = withStyles((theme) => ({
     root: {
@@ -326,30 +322,6 @@ export default function WorkorderDetails({
                 timeout: 3000,
             });
         }
-    };
-
-    const workOrderToExcel = () => {
-        setLoading(true);
-        Axios({
-            method: "POST",
-            url: "/api/workorder/receivingtoexcel",
-            data: { workorderProducts },
-            responseType: "blob",
-        })
-            .then((res) => res.data)
-            .then((res) => {
-                const url = window.URL.createObjectURL(new Blob([res]));
-                const link = document.createElement("a");
-                link.href = url;
-                link.setAttribute("download", `Заказ-наряд.xlsx`);
-                document.body.appendChild(link);
-                link.click();
-                setLoading(false);
-            })
-            .catch((err) => {
-                ErrorAlert(err);
-                setLoading(false);
-            });
     };
 
     return (

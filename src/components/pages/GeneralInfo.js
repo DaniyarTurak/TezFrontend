@@ -9,8 +9,6 @@ import ReactModal from "react-modal";
 import { withStyles } from '@material-ui/core/styles';
 
 import GeneralDetails from "./GeneralDetails";
-import ToggleButton from '@material-ui/lab/ToggleButton';
-import ToggleButtonGroup from '@material-ui/lab/ToggleButtonGroup';
 import Switch from '@material-ui/core/Switch';
 import FormGroup from '@material-ui/core/FormGroup';
 import FormControlLabel from '@material-ui/core/FormControlLabel';
@@ -265,7 +263,7 @@ class GeneralInfo extends Component {
   }
 
   render() {
-    const { handleSubmit, pristine, submitting, wholeSalesChange } = this.props;
+    const { handleSubmit, submitting } = this.props;
     const {
       companyData,
       isEdit,

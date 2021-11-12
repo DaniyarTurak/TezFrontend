@@ -1,5 +1,5 @@
 
-import React, { useState, useEffect, Fragment } from "react";
+import React, { useState, Fragment } from "react";
 import Axios from "axios";
 import WorkorderOptions from "./WorkorderOptions";
 import WorkorderAddProducts from "./WorkorderAddProducts";

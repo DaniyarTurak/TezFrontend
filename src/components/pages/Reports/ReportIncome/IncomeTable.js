@@ -262,7 +262,7 @@ export default function IncomeTable({
                   </StyledTableCell>
 
                   <StyledTableCell align="center">
-                    {parseFloat((product.salesamount - product.cost) / (product.salesamount == 0 ? 1 : product.salesamount) * 100).toLocaleString("ru", {
+                    {parseFloat((product.salesamount - product.cost) / (Number(product.salesamount) === 0 ? 1 : product.salesamount) * 100).toLocaleString("ru", {
                       minimumFractionDigits: 1, maximumFractionDigits: 2
                     })} %
                   </StyledTableCell>

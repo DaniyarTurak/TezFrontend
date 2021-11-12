@@ -44,7 +44,7 @@ export default function EditUnits({
     }, [])
 
     const sendUnits = () => {
-        if (tempUnits !== "" && parseInt(tempUnits) > 0) {
+        if (tempUnits !== "" && Number(tempUnits) > 0) {
             setLoading(true);
             Axios.post("/api/revision/revisiontemp/edit", { revnumber: revNumber, units: tempUnits, product: product.product, attributes: product.attributes })
                 .then((res) => res.data)

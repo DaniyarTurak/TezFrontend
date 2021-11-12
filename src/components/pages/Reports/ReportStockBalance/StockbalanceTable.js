@@ -15,7 +15,6 @@ import KeyboardArrowLeft from "@material-ui/icons/KeyboardArrowLeft";
 import KeyboardArrowRight from "@material-ui/icons/KeyboardArrowRight";
 import LastPageIcon from "@material-ui/icons/LastPage";
 import IconButton from "@material-ui/core/IconButton";
-import ReactHTMLTableToExcel from "react-html-table-to-excel";
 
 const useStyles1 = makeStyles((theme) => ({
   root: {

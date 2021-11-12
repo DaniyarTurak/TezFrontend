@@ -9,12 +9,11 @@ import ErrorAlert from "../../../ReusableComponents/ErrorAlert";
 import CustomAutocomplete from "../../../ReusableComponents/CustomAutocomplete";
 import Autocomplete from "@material-ui/lab/Autocomplete";
 
-
 export default function PurchasePrices() {
 
-  const [counterparty, setCounterparty] = useState(null);
-  const [brand, setBrand] = useState(null);
-  const [category, setCategory] = useState(null);
+  const [counterparty, setCounterparty] = useState({ label: "", value: -1 });
+  const [brand, setBrand] = useState({ label: "Без бренда", value: 0 });
+  const [category, setCategory] = useState({ label: "Без категории", value: 0 });
   const [prodName, setProdName] = useState("");
   const [barcode, setBarcode] = useState("");
   const [priceList, setPriceList] = useState([]);
@@ -43,14 +42,12 @@ export default function PurchasePrices() {
   }, []);
 
   useEffect(() => {
-    console.log(barcode);
     if (barcode === null) {
       getPrices();
     }
   }, [barcode])
 
   useEffect(() => {
-    console.log(prodName);
     if (prodName === null) {
       getPrices();
     }
@@ -58,7 +55,7 @@ export default function PurchasePrices() {
 
   const getBrands = (e) => {
     Axios.get("/api/brand/search", {
-      params: { deleted: false, brand: e ? e : "" },
+      params: { deleted: false, brand: e ? e.label : "" },
     })
       .then((res) => res.data)
       .then((list) => {
@@ -68,6 +65,8 @@ export default function PurchasePrices() {
         });
         temp.unshift({ label: "Без бренда", value: 0 });
         setBrands(temp);
+        setOptions(temp);
+
       })
       .catch((err) => {
         ErrorAlert(err);
@@ -76,7 +75,7 @@ export default function PurchasePrices() {
 
   const getCategories = (c) => {
     Axios.get("/api/categories/margin", {
-      params: { category: c },
+      params: { category: c ? c.label : null },
     })
       .then((res) => res.data)
       .then((list) => {
@@ -88,6 +87,8 @@ export default function PurchasePrices() {
           };
         });
         setCategories([...categoriesList]);
+        setOptions([...categoriesList]);
+
       })
       .catch((err) => {
         ErrorAlert(err);
@@ -103,6 +104,7 @@ export default function PurchasePrices() {
           temp.push({ label: ct.name, value: ct.id })
         });
         setCounterparties(temp);
+        setOptions(temp);
       })
       .catch((err) => console.log(err));
   };
@@ -126,7 +128,7 @@ export default function PurchasePrices() {
         prodName: prodName && prodName !== "" ? prodName : null,
         object,
         object_id: object === 1 ? counterparty.value :
-          object === 2 ? brand.value : object === 3 ? category.value : null
+          object === 2 ? brand.value : object === 3 ? category.id : null
       }
     })
       .then((res) => res.data)
@@ -165,29 +167,50 @@ export default function PurchasePrices() {
     setCounterparty(null);
   };
 
-  const autocompleteChange = (value) => {
+  const autocompleteOnChange = (value) => {
     switch (object) {
       case 1:
         setCounterparty(value);
-        setBrand(null);
-        setCategory(null);
+        getCounterparties({ label: value ? value.label : "" });
+        // setBrand(null);
+        // setCategory(null);
         break;
       case 2:
         setBrand(value);
-        getBrands(value);
-        setCounterparty(null);
-        setCategory(null);
+        getBrands({ label: value ? value.label : "" });
+        // setCounterparty(null);
+        // setCategory(null);
         break;
       case 3:
         setCategory(value);
-        getCategories(value);
-        setBrand(null);
-        setCounterparty(null);
+        getCategories({ label: value ? value.label : "" });
+        // setBrand(null);
+        // setCounterparty(null);
         break;
       default:
         break;
     }
   };
+
+  const autocompleteOnInputChange = (label) => {
+    switch (object) {
+      case 1:
+        setCounterparty({ value: -1, label: label ? label : "" });
+        getCounterparties({ label: label ? label : "" });
+        break;
+      case 2:
+        setBrand({ value: -1, label: label ? label : "" });
+        getBrands({ label: label ? label : "" });
+        break;
+      case 3:
+        setCategory({ value: -1, label: label ? label : "" });
+        getCategories({ label: label ? label : "" });
+        break;
+      default:
+        break;
+    }
+  };
+
 
   return (
     <Fragment>
@@ -208,11 +231,14 @@ export default function PurchasePrices() {
             defaultValue={object === 1 ? counterparty : object === 2 ? brand : object === 3 ? category : null}
             fullWidth
             disabled={isLoading}
-            options={options.map((option) => option.label)}
+            options={options.map((option) => option)}
+            getOptionLabel={(option) => option.label}
             onChange={(e, value) => {
-              autocompleteChange(value);
+              autocompleteOnChange(value);
             }}
-            // onInputChange={(e, value) => { setBarcode(value) }}
+            onInputChange={(e, label) => {
+              autocompleteOnInputChange(label);
+            }}
             noOptionsText="Товар не найден"
             renderInput={(params) => (
               <CustomAutocomplete

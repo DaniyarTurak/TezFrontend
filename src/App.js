@@ -3,7 +3,6 @@ import { BrowserRouter as Router, Route, Switch } from "react-router-dom";
 
 import requireAuth from "./hoc/requireAuth";
 import requireAdminAuth from "./hoc/requireAdminAuth";
-import requireRevisionAuth from "./hoc/requireRevisionAuth";
 import Content from "./components/Content";
 //import SignInPage from './components/pages/SignInPage';
 import NotFoundPage from "./components/pages/NotFoundPage";

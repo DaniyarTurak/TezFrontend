@@ -91,7 +91,7 @@ export default function MarginalPricePage() {
       .then((list) => {
         let stat = [];
         let listTemp = [];
-        list.map((product) => {
+        list.forEach((product) => {
           if (product.staticprice !== null) {
             stat.push(product);
             listTemp.push({ id: product.id, name: product.name, code: product.code })
