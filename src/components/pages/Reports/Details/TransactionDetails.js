@@ -133,6 +133,8 @@ export default function TransactionDetails({
               </span>
               {(parentDetail === 1 || parentDetail === "consignment") && (
                 <div>
+                  <span>{`Клиент: ${!details.customerid || details.customerid === "0" ? 'Физ. лицо':'Юр. лицо' }`}</span>
+                  <br />
                   <span>{`Кассир: ${details.cashier}`}</span>
                   <br />
                   <span>{`Точка: ${details.pointname}`}</span>
@@ -176,38 +178,38 @@ export default function TransactionDetails({
                 <tbody>
                   {Object.keys(details).length > 0 &&
                     products.map((detail, idx) => (
-                        <tr key={idx}>
-                          <td
-                            className="link-row"
-                            onClick={() => {
-                              handleProductDtl(detail, transaction.pointid);
-                            }}
-                          >
-                            {detail.name} [{detail.unitspr_shortname}]
-                            {detail.discount !== 0 &&
-                              <Fragment >
-                                <br />
-                                &#10551; Скидка
-                              </Fragment>
-                            }
-                          </td>
-                          <td className="tenge">{`${detail.units} x ${parseFloat(
-                            detail.price
-                          ).toLocaleString("ru", {
+                      <tr key={idx}>
+                        <td
+                          className="link-row"
+                          onClick={() => {
+                            handleProductDtl(detail, transaction.pointid);
+                          }}
+                        >
+                          {detail.name} [{detail.unitspr_shortname}]
+                          {detail.discount !== 0 &&
+                            <Fragment >
+                              <br />
+                              &#10551; Скидка
+                            </Fragment>
+                          }
+                        </td>
+                        <td className="tenge">{`${detail.units} x ${parseFloat(
+                          detail.price
+                        ).toLocaleString("ru", {
+                          minimumFractionDigits: 2,
+                        })}`}</td>
+                        <td>
+                          {parseFloat(detail.totalprice).toLocaleString("ru", {
                             minimumFractionDigits: 2,
-                          })}`}</td>
-                          <td>
-                            {parseFloat(detail.totalprice).toLocaleString("ru", {
-                              minimumFractionDigits: 2,
-                            })} &#8376;
-                            {detail.discount !== 0 &&
-                              <Fragment >
-                                <br />
-                                {detail.discount} &#8376;
-                              </Fragment>
-                            }
-                          </td>
-                        </tr>
+                          })} &#8376;
+                          {detail.discount !== 0 &&
+                            <Fragment >
+                              <br />
+                              {detail.discount} &#8376;
+                            </Fragment>
+                          }
+                        </td>
+                      </tr>
                     ))}
                 </tbody>
               </table>
