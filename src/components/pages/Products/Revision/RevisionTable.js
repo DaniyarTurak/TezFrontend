@@ -245,7 +245,7 @@ export default function RevisonProducts({
                                         )}
                                     </StyledTableCell>
                                     {!isOutOfRevision && <StyledTableCell align="center">
-                                        {parseFloat(product.stock).toLocaleString(
+                                        {parseFloat(product.current_stock).toLocaleString(
                                             "ru",
                                             { minimumFractionDigits: 1 }
                                         )}

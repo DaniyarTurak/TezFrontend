@@ -49,7 +49,13 @@ export default function SalesOptions({
   products,
   setBarcode,
   withoutDate,
-  onWithoutDateChange
+  onWithoutDateChange,
+  clientType,
+  setClientType,
+  sellType,
+  setSellType,
+  clientTypes,
+  sellTypes
 }) {
 
   return (
@@ -147,7 +153,27 @@ export default function SalesOptions({
           onChange={onTypeChange}
           options={types}
           noOptions="Тип не найден"
-          label="Тип (Продажа, Возврат)"
+          label="Тип транзакции"
+        />
+      </Grid>
+
+      <Grid item xs={3}>
+        <AutocompleteSelect
+          value={clientType}
+          onChange={(e, value) => setClientType(value)}
+          options={clientTypes}
+          noOptions="Тип не найден"
+          label="Тип клиента"
+        />
+      </Grid>
+
+      <Grid item xs={3}>
+        <AutocompleteSelect
+          value={sellType}
+          onChange={(e, value) => setSellType(value)}
+          options={sellTypes}
+          noOptions="Тип не найден"
+          label="Тип продажи"
         />
       </Grid>
 
@@ -215,7 +241,7 @@ export default function SalesOptions({
           }
           label={
             <span style={{ fontSize: ".875rem" }}>
-             Поиск с группировкой по товару
+              Поиск с группировкой по товару
             </span>
           }
         />

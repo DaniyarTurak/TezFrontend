@@ -74,6 +74,34 @@ export default function ReportSales({ companyProps }) {
   const [name, setName] = useState("");
   const [barcode, setBarcode] = useState("");
   const [products, setProducts] = useState([]);
+
+  const [sellType, setSellType] = useState({ value: "0", label: "Все" });
+  const sellTypes = [
+    {
+      value: "0", label: 'Все'
+    },
+    {
+      value: "1", label: 'Розничная'
+    },
+    {
+      value: "2", label: 'Оптовая'
+    },
+  ];
+
+  const [clientType, setClientType] = useState({ value: "0", label: "Все" });
+
+  const clientTypes = [
+    {
+      value: "0", label: 'Все'
+    },
+    {
+      value: "1", label: 'Физ. лицо'
+    },
+    {
+      value: "2", label: 'Юр. лицо'
+    },
+  ]
+
   const debouncedName = useDebounce(name, 500);
   const debouncedBarcode = useDebounce(barcode, 500);
 
@@ -539,6 +567,8 @@ export default function ReportSales({ companyProps }) {
         category: category.value,
         brand: brand.value,
         type: type.value,
+        dateFrom, 
+        dateTo
       },
     })
       .then((res) => res.data)
@@ -606,6 +636,12 @@ export default function ReportSales({ companyProps }) {
         products={products}
         withoutDate={withoutDate}
         onWithoutDateChange={onWithoutDateChange}
+        clientType={clientType}
+        setClientType={setClientType}
+        sellType={sellType}
+        setSellType={setSellType}
+        clientTypes={clientTypes}
+        sellTypes={sellTypes}
       />
 
       {isLoading && (
