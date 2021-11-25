@@ -163,6 +163,7 @@ export default function PurchasePriceAdd({
                     }
                     setPurchasePrice("");
                     setSellPrice("");
+                    setWholesalePrice("");
                     setSelectedProd(null);
                     setBarcode(null);
                     setProdName(null);

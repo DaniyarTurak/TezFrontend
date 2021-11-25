@@ -57,7 +57,9 @@ import PromotionsPage from "../pages/Products/PromotionsPage";
 import MarginalPricePage from "../pages/Products/MarginalPricePage";
 import ProductReference from "../pages/Products/ProductReference";
 import ReconciliationPage from "../pages/Products/ReconciliationPage";
+import AcceptWorkorder from "../pages/Products/AcceptWorkorder";
 import RecieveByWorkorder from "../pages/Products/RecieveByWorkorder";
+
 import StockMonitoringPage from '../pages/StockMonitoringPage';
 import Revision from '../pages/Products/Revision';
 
@@ -210,6 +212,8 @@ export default function getBody({
             );
           case "workorder":
             return <WorkorderPage history={history} location={location} />;
+          case "acceptworkorder":
+            return <AcceptWorkorder history={history} location={location} />;
           case "recievebyworkorder":
             return <RecieveByWorkorder history={history} location={location} />;
 

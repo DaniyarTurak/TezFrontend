@@ -104,6 +104,34 @@ export default function PurchasePriceAdd({
         getProducts();
     }, []);
 
+    useEffect(() => {
+        if (selectedProd) {
+            if (!selectedProd.counterparty || selectedProd.counterparty === "0") {
+                Alert.warning("Не указан контрагент", {
+                    position: "top-right",
+                    effect: "bouncyflip",
+                    timeout: 2000,
+                });
+                setSelectedProd(null);
+            }
+            else {
+                if (!selectedProd.price || selectedProd.price === "0") {
+                    Alert.warning("Не установлена закупочная цена", {
+                        position: "top-right",
+                        effect: "bouncyflip",
+                        timeout: 2000,
+                    });
+                    setSelectedProd(null);
+                }
+                else {
+                    setSweetAlert(null);
+                    setProdName(selectedProd.name);
+                    setBarcode(selectedProd.code);
+                }
+            }
+        }
+    }, [selectedProd])
+
     const getInfo = () => {
         Axios.get("/api/workorder/info", { params: { workorder_id: workorderId } })
             .then((res) => res.data)
@@ -126,12 +154,15 @@ export default function PurchasePriceAdd({
             });
     };
 
+
+
     const searchProduct = () => {
         setSelectedProd(null);
         Axios.get("/api/workorder/searchproduct", { params: { productName: prodName, barcode: barcode } })
             .then((res) => res.data)
             .then((products) => {
                 if (products.length === 1) {
+
                     setSelectedProd(products[0]);
                     setProdName(products[0].name);
                     setBarcode(products[0].code);
@@ -170,9 +201,6 @@ export default function PurchasePriceAdd({
                                                 className="btn btn-success"
                                                 onClick={() => {
                                                     setSelectedProd(product);
-                                                    setSweetAlert(null);
-                                                    setProdName("");
-                                                    setBarcode("");
                                                 }}
                                             >
                                                 Выбрать
@@ -214,43 +242,10 @@ export default function PurchasePriceAdd({
             });
         }
         else {
-            if (!price || price === "") {
-                Alert.warning("Введите цену закупки", {
-                    position: "top-right",
-                    effect: "bouncyflip",
-                    timeout: 2000,
-                });
-            }
-            else {
-                setLoading(true);
-                updatePrice();
+            setLoading(true);
+            insertProduct();
 
-            }
         }
-
-    };
-
-    const updatePrice = () => {
-        Axios.post("/api/prices", {
-            product: selectedProd.id,
-            price: price,
-            type: 0,
-            deleted: false,
-            counterparty
-        })
-            .then((res) => res.data)
-            .then((res) => {
-                insertProduct();
-            })
-            .catch((err) => {
-                console.log(err);
-                Alert.error(err, {
-                    position: "top-right",
-                    effect: "bouncyflip",
-                    timeout: 2000,
-                });
-                setLoading(false);
-            });
     };
 
     const insertProduct = () => {
@@ -259,7 +254,8 @@ export default function PurchasePriceAdd({
                 product: selectedProd.id,
                 workorder_id: workorderId,
                 units: units,
-                price: price,
+                price: selectedProd.price,
+                counterparty: selectedProd.counterparty,
                 point: point
             })
             .then((res) => res.data)
@@ -373,19 +369,6 @@ export default function PurchasePriceAdd({
                                         size="small"
                                         value={units}
                                         onChange={(e) => setUnits(e.target.value)}
-                                        fullWidth
-                                    />
-                                    <Divider className={classes.divider} orientation="vertical" />
-                                    <TextField
-                                        classes={{
-                                            root: classesAC.root,
-                                        }}
-                                        placeholder="Цена закупки (тг.)"
-                                        label="Цена закупки (тг.)"
-                                        variant="outlined"
-                                        size="small"
-                                        value={price}
-                                        onChange={(e) => setPrice(e.target.value)}
                                         fullWidth
                                     />
                                     <Divider className={classes.divider} orientation="vertical" />

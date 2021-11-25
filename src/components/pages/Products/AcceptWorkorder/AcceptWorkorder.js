@@ -1,16 +1,16 @@
 import React, { useState, Fragment, useEffect } from "react";
 import AcceptedListTable from "./AcceptedListTable";
+import CreatedListTable from "./CreatedListTable";
 import WorkorderDetails from "./WorkorderDetails";
-import WorkorderAddAttributes from "./WorkorderAddAttributes";
 import Axios from "axios";
 import ErrorAlert from "../../../ReusableComponents/ErrorAlert";
 import Grid from '@material-ui/core/Grid';
 import Breadcrumb from "../../../Breadcrumb";
 
-export default function RecieveByWorkorder() {
+export default function AcceptWorkorder() {
     const [workorderId, setWorkorderId] = useState("")
-    const [acceptedList, setAcceptedList] = useState([]);
-    const [createdList, setCreatedList] = useState([]);
+    const [acceptedList, setAcceptedList] = useState([]); //только принятые заказ-наряды
+    const [createdList, setCreatedList] = useState([]); //только  созданные заказ-наряды
     const [onlyView, setOnlyView] = useState(false);
     const [activePage, setActivePage] = useState(1);
     const [isLoading, setLoading] = useState(false);
@@ -55,9 +55,21 @@ export default function RecieveByWorkorder() {
                         <Grid item xs={12} style={{ paddingBottom: "0px" }}>
                             <Breadcrumb content={[
                                 { caption: "Управление товарами" },
-                                { caption: "Прием товара по заказ-наряду" },
+                                { caption: "Обработка заказ-нарядов" },
                                 { caption: "Список заказ-нарядов", active: true },
                             ]} />
+                        </Grid>
+                        <Grid item xs={12}>
+                            <CreatedListTable
+                                workorderId={workorderId}
+                                isLoading={isLoading}
+                                setLoading={setLoading}
+                                workorderList={createdList}
+                                setOnlyView={setOnlyView}
+                                setWorkorderList={setCreatedList}
+                                setWorkorderId={setWorkorderId}
+                                setActivePage={setActivePage}
+                            />
                         </Grid>
                         <Grid item xs={12}>
                             <AcceptedListTable
@@ -74,20 +86,13 @@ export default function RecieveByWorkorder() {
                 </Fragment>
             }
             {activePage === 2 && <WorkorderDetails
-                is={isLoading}
-                setLoading={setLoading}
+                isLoading={isLoading}
                 workorderId={workorderId}
+                setLoading={setLoading}
                 workorderProducts={createdList}
                 setWorkorderId={setWorkorderId}
                 onlyView={onlyView}
                 setOnlyView={setOnlyView}
-                setActivePage={setActivePage}
-            />}
-            {activePage === 3 && <WorkorderAddAttributes
-                is={isLoading}
-                setLoading={setLoading}
-                workorderId={workorderId}
-                setWorkorderId={setWorkorderId}
                 setActivePage={setActivePage}
             />}
         </Fragment>

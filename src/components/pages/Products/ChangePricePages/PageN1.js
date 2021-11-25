@@ -26,7 +26,7 @@ export default function PageN1({ productListProps, isWholesale, setWholeSale }) 
   const [staticprice, setstaticprice] = useState("");
 
   useEffect(() => {
-    setWholeSale(JSON.parse(sessionStorage.getItem("isme-company-data")).wholesale);
+    setWholeSale( JSON.parse(sessionStorage.getItem("isme-company-data")) && JSON.parse(sessionStorage.getItem("isme-company-data")).wholesale ? JSON.parse(sessionStorage.getItem("isme-company-data")).wholesale : false);
     getProducts();
   }, []);
 

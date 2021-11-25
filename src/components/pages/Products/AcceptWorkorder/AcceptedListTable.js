@@ -1,7 +1,6 @@
 
-import React, { useState, useEffect, Fragment } from "react";
+import React, { useState, Fragment } from "react";
 import Grid from '@material-ui/core/Grid';
-import Axios from "axios";
 import Table from "@material-ui/core/Table";
 import TableBody from "@material-ui/core/TableBody";
 import TableCell from "@material-ui/core/TableCell";
@@ -20,8 +19,6 @@ import Paper from "@material-ui/core/Paper";
 import Moment from "moment";
 import VisibilityIcon from '@material-ui/icons/Visibility';
 import PlaylistAddCheckIcon from '@material-ui/icons/PlaylistAddCheck'
-import ErrorAlert from "../../../ReusableComponents/ErrorAlert";
-import Breadcrumb from "../../../Breadcrumb";
 import LinearProgress from '@material-ui/core/LinearProgress';
 
 const BorderLinearProgress = withStyles((theme) => ({
@@ -134,17 +131,16 @@ const StyledTableCell = withStyles((theme) => ({
     },
 }))(TableCell);
 
-export default function WorkorderListTable({
+export default function AcceptedListTable({
     workorderList,
-    setWorkorderList,
     setWorkorderId,
     setOnlyView,
-    setActivePage
+    setActivePage,
+    isLoading,
 }) {
 
     const [page, setPage] = useState(0);
     const [rowsPerPage, setRowsPerPage] = useState(10);
-    const [isLoading, setLoading] = useState(false);
 
     const handleChangePage = (event, newPage) => {
         setPage(newPage);
@@ -155,48 +151,11 @@ export default function WorkorderListTable({
         setPage(0);
     };
 
-    useEffect(() => {
-        getWorkorders();
-    }, [])
-
-    const getWorkorders = () => {
-        setLoading(true);
-        Axios.get("/api/workorder/list", { params: { rec: true } })
-            .then((res) => res.data)
-            .then((list) => {
-                setWorkorderList(list);
-                setLoading(false);
-            })
-            .catch((err) => {
-                setLoading(false);
-                ErrorAlert(err);
-            });
-    };
-
-    // const workOrderToExcel = () => {
-    //     setLoading(true);
-    //     Axios({
-    //         method: "POST",
-    //         url: "/api/workorder/createdtoexcel",
-    //         data: { workorderList },
-    //         responseType: "blob",
-    //     })
-    //         .then((res) => res.data)
-    //         .then((res) => {
-    //             const url = window.URL.createObjectURL(new Blob([res]));
-    //             const link = document.createElement("a");
-    //             link.href = url;
-    //             link.setAttribute("download", `Заказ-наряд.xlsx`);
-    //             document.body.appendChild(link);
-    //             link.click();
-    //             setLoading(false);
-    //             clearOptions();
-    //         })
-    //         .catch((err) => {
-    //             ErrorAlert(err);
-    //             setLoading(false);
-    //         });
-    // }
+    const viewWorkorder = (workorder_id) => {
+        setWorkorderId(workorder_id);
+        setOnlyView(true);
+        setActivePage(2);
+    }
 
     return (
         <Fragment>
@@ -204,22 +163,18 @@ export default function WorkorderListTable({
                 container
                 spacing={2}
             >
-                <Grid item xs={12} style={{ paddingBottom: "0px" }}>
-
-                    <Breadcrumb content={[
-                        { caption: "Управление товарами" },
-                        { caption: "Прием товара по заказ-наряду" },
-                        { caption: "Список заказ-нарядов", active: true },
-                    ]} />
-                </Grid>
                 {isLoading &&
                     <Grid item xs={12}>
                         <BorderLinearProgress />
                     </Grid>
                 }
-                {workorderList.length === 0 && !isLoading &&
+                {workorderList.length === 0 && !isLoading ?
                     <Grid item xs={12}>
-                        У Вас пока нет заказ-нарядов
+                        У Вас пока нет обработанных заказ-нарядов
+                    </Grid>
+                    :
+                    <Grid item xs={12}>
+                        Обработанные заказ-наряды
                     </Grid>
                 }
                 {!isLoading && workorderList.length > 0 && <Grid item xs={12}>
@@ -243,10 +198,7 @@ export default function WorkorderListTable({
                                         Дата создания
                                     </StyledTableCell>
                                     <StyledTableCell align="center">
-                                        Дата принятия
-                                    </StyledTableCell>
-                                    <StyledTableCell align="center">
-                                        Статус
+                                        Дата обработки
                                     </StyledTableCell>
                                     <StyledTableCell />
                                 </TableRow>
@@ -271,13 +223,13 @@ export default function WorkorderListTable({
                                             <StyledTableCell align="center">
                                                 {wo.accept_date ? Moment(wo.accept_date).format("DD.MM.YYYY HH:mm:ss") : "-"}
                                             </StyledTableCell>
-                                            <StyledTableCell align="center">
+                                            {/* <StyledTableCell align="center">
                                                 {wo.status === 'CREATED' ? <span style={{ color: "#17a2b8" }}>Создан</span>
                                                     : wo.status === 'FORMATION' ? <span style={{ color: "#ffc107" }}>Формирование</span>
                                                         : wo.status === 'ACCEPTED' ? <span style={{ color: "#28a745" }}>Принят</span> : ''}
-                                            </StyledTableCell>
+                                            </StyledTableCell> */}
                                             <StyledTableCell align="right">
-                                                <IconButton onClick={() => { setWorkorderId(wo.id); setOnlyView(true); setActivePage(2) }}>
+                                                <IconButton onClick={() => viewWorkorder(wo.id)}>
                                                     <VisibilityIcon size="small" />
                                                 </IconButton>
                                                 {wo.status === 'CREATED' &&

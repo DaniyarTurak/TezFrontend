@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useState, useEffect } from "react";
 import TableContainer from "@material-ui/core/TableContainer";
 import TableHead from "@material-ui/core/TableHead";
 import TableRow from "@material-ui/core/TableRow";
@@ -24,7 +24,18 @@ const StyledTableCell = withStyles((theme) => ({
   },
 }))(TableCell);
 
+
+
 export default function PageN2({ productList }) {
+
+  const [isWholesale, setWholeSale] = useState(false);
+
+  useEffect(() => {
+    if ( JSON.parse(sessionStorage.getItem("isme-company-data")) && JSON.parse(sessionStorage.getItem("isme-company-data")).wholesale) {
+      setWholeSale(true);
+    }
+  }, [])
+
   return (
     <div>
       <label style={{ marginTop: "1rem" }}>
@@ -36,7 +47,8 @@ export default function PageN2({ productList }) {
             <TableRow>
               <StyledTableCell>Продукт</StyledTableCell>
               <StyledTableCell>Штрих код</StyledTableCell>
-              <StyledTableCell>Новая цена</StyledTableCell>
+              <StyledTableCell>Новая розничная цена</StyledTableCell>
+              {isWholesale && <StyledTableCell>Оптовая цена</StyledTableCell>}
               <StyledTableCell>Количество</StyledTableCell>
             </TableRow>
           </TableHead>
@@ -51,6 +63,12 @@ export default function PageN2({ productList }) {
                     className={product.price && "tenge"}
                   >
                     {product.price}
+                  </StyledTableCell>
+                  <StyledTableCell
+                    align="center"
+                    className={product.price && "tenge"}
+                  >
+                    {product.wholesale_price}
                   </StyledTableCell>
                   <StyledTableCell align="center">
                     {product.amount}

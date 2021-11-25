@@ -8,23 +8,15 @@ import TableCell from "@material-ui/core/TableCell";
 import TableContainer from "@material-ui/core/TableContainer";
 import TableRow from "@material-ui/core/TableRow";
 import TableHead from "@material-ui/core/TableHead";
-import IconButton from "@material-ui/core/IconButton";
-import PropTypes from "prop-types";
-import TablePagination from "@material-ui/core/TablePagination";
-import FirstPageIcon from "@material-ui/icons/FirstPage";
-import KeyboardArrowLeft from "@material-ui/icons/KeyboardArrowLeft";
-import KeyboardArrowRight from "@material-ui/icons/KeyboardArrowRight";
-import LastPageIcon from "@material-ui/icons/LastPage";
-import { withStyles, makeStyles, useTheme } from "@material-ui/core/styles";
+import { withStyles } from "@material-ui/core/styles";
 import Paper from "@material-ui/core/Paper";
-import InputBase from '@material-ui/core/InputBase';
-import Alert from "react-s-alert";
-import Checkbox from '@material-ui/core/Checkbox';
-import Moment from "moment";
 import Breadcrumb from "../../../Breadcrumb";
 import LinearProgress from '@material-ui/core/LinearProgress';
 import ReactHTMLTableToExcel from "react-html-table-to-excel";
-import FormControlLabel from '@material-ui/core/FormControlLabel';
+import ErrorAlert from "../../../ReusableComponents/ErrorAlert";
+import Modal from 'react-modal';
+import AttributeWindow from "./AttributeWindow";
+import Alert from "react-s-alert";
 
 const BorderLinearProgress = withStyles((theme) => ({
     root: {
@@ -39,124 +31,6 @@ const BorderLinearProgress = withStyles((theme) => ({
         backgroundColor: '#17a2b8',
     },
 }))(LinearProgress);
-
-const GreenCheckbox = withStyles({
-    root: {
-        color: 'green',
-        '&$checked': {
-            color: 'green',
-        },
-    },
-    checked: {},
-})((props) => <Checkbox color="default" {...props} />);
-
-const WhiteCheckbox = withStyles({
-    root: {
-        color: 'white',
-        '&$checked': {
-            color: 'white',
-        },
-    },
-    checked: {},
-})((props) => <Checkbox color="default" {...props} />);
-
-const UnitsInput = withStyles((theme) => ({
-    input: {
-        borderRadius: 4,
-        position: 'relative',
-        backgroundColor: theme.palette.common.white,
-        border: '1px solid #ced4da',
-        fontSize: 16,
-        width: '150px',
-        padding: '5px',
-        transition: theme.transitions.create(['border-color', 'box-shadow']),
-        '&:focus': {
-            borderColor: "#17a2b8",
-        },
-    },
-}))(InputBase);
-
-
-const useStyles1 = makeStyles((theme) => ({
-    root: {
-        flexShrink: 0,
-        marginLeft: theme.spacing(2.5),
-    },
-}));
-
-//вся эта функция TablePaginationActions используется исключительно для того чтобы иметь возможность
-//перепригивать между последней и первой страницей в пагинации. Ridiculous.
-function TablePaginationActions(props) {
-    const classes = useStyles1();
-    const theme = useTheme();
-    const { count, page, rowsPerPage, onChangePage } = props;
-
-    const handleFirstPageButtonClick = (event) => {
-        onChangePage(event, 0);
-    };
-
-    const handleBackButtonClick = (event) => {
-        onChangePage(event, page - 1);
-    };
-
-    const handleNextButtonClick = (event) => {
-        onChangePage(event, page + 1);
-    };
-
-    const handleLastPageButtonClick = (event) => {
-        onChangePage(event, Math.max(0, Math.ceil(count / rowsPerPage) - 1));
-    };
-
-    return (
-        <div
-            className={classes.root}
-        >
-            <IconButton
-                onClick={handleFirstPageButtonClick}
-                disabled={page === 0}
-                aria-label="first page"
-            >
-                {theme.direction === "rtl" ? <LastPageIcon /> : <FirstPageIcon />}
-            </IconButton>
-            <IconButton
-                onClick={handleBackButtonClick}
-                disabled={page === 0}
-                aria-label="previous page"
-            >
-                {theme.direction === "rtl" ? (
-                    <KeyboardArrowRight />
-                ) : (
-                    <KeyboardArrowLeft />
-                )}
-            </IconButton>
-            <IconButton
-                onClick={handleNextButtonClick}
-                disabled={page >= Math.ceil(count / rowsPerPage) - 1}
-                aria-label="next page"
-            >
-                {theme.direction === "rtl" ? (
-                    <KeyboardArrowLeft />
-                ) : (
-                    <KeyboardArrowRight />
-                )}
-            </IconButton>
-            <IconButton
-                onClick={handleLastPageButtonClick}
-                disabled={page >= Math.ceil(count / rowsPerPage) - 1}
-                aria-label="last page"
-            >
-                {theme.direction === "rtl" ? <FirstPageIcon /> : <LastPageIcon />}
-            </IconButton>
-        </div>
-    );
-};
-
-TablePaginationActions.propTypes = {
-    count: PropTypes.number.isRequired,
-    onChangePage: PropTypes.func.isRequired,
-    page: PropTypes.number.isRequired,
-    rowsPerPage: PropTypes.number.isRequired,
-};
 
 const StyledTableCell = withStyles((theme) => ({
     head: {
@@ -174,158 +48,133 @@ const StyledTableCell = withStyles((theme) => ({
 }))(TableCell);
 
 export default function WorkorderDetails({
-    workorderId,
-    setWorkorderId,
     onlyView,
     setOnlyView,
-    setActivePage
+    setActivePage,
+    workorderId
 }) {
 
-    const [page, setPage] = useState(0);
-    const [rowsPerPage, setRowsPerPage] = useState(10);
+    // const getInfo = () => {
+    //     Axios.get("/api/workorder/info", { params: { workorder_id: workorderId } })
+    //         .then((res) => res.data)
+    //         .then((info) => {
+    //             setInfo(info[0])
+    //         })
+    //         .catch((err) => {
+    //             console.log(err);
+    //         });
+    // };
+
+    const customStyles = {
+        content: {
+            top: "50%",
+            left: "50%",
+            right: "auto",
+            bottom: "auto",
+            marginRight: "-50%",
+            transform: "translate(-50%, -50%)",
+            minHeight: "400px",
+            maxWidth: "700px",
+            maxHeight: "700px",
+            overlfow: "scroll",
+            zIndex: 11,
+        },
+        overlay: { zIndex: 10 },
+    };
+
     const [isLoading, setLoading] = useState(false);
     const [workorderProducts, setWorkorderProducts] = useState([]);
-    const [info, setInfo] = useState(null);
-
-    const handleChangePage = (event, newPage) => {
-        setPage(newPage);
-    };
-
-    const handleChangeRowsPerPage = (event) => {
-        setRowsPerPage(+event.target.value);
-        setPage(0);
-    };
+    const [counterparties, setCounterparties] = useState([]);
+    const [modalWindow, setModalWindow] = useState(null);
 
     useEffect(() => {
-        if (workorderId !== "") {
-            getInfo();
-            getWorkorderProducts()
-        }
-    }, [workorderId]);
+        getWorkorderProducts();
+        getCounterparties();
+    }, []);
 
-    const getInfo = () => {
-        Axios.get("/api/workorder/info", { params: { workorder_id: workorderId } })
+    const getWorkorderProducts = () => {
+        setLoading(true);
+        Axios.get("/api/workorder/details", { params: { workorderId } })
             .then((res) => res.data)
-            .then((info) => {
-                setInfo(info[0])
+            .then((list) => {
+                setWorkorderProducts(list)
+                setLoading(false);
+            })
+            .catch((err) => {
+                setLoading(false);
+                ErrorAlert(err);
+            });
+    };
+
+    const getCounterparties = () => {
+        Axios.get("/api/workorder/cpsinworkorder", { params: { workorderId } })
+            .then((res) => res.data)
+            .then((cps) => {
+                setCounterparties(cps);
             })
             .catch((err) => {
                 console.log(err);
             });
     };
+    const showModal = (product) => {
+        setModalWindow(
+            <Modal
+                isOpen={true}
+                style={customStyles}
+            >
+                <AttributeWindow
+                    product={product}
+                    setModalWindow={setModalWindow}
+                    workorderId={workorderId}
+                />
+            </Modal>
+        )
+    };
 
-    const getWorkorderProducts = () => {
-        setLoading(true);
-        Axios.get("/api/workorder/details", { params: { workorder_id: workorderId } })
+    useEffect(() => {
+        if (modalWindow === null) {
+            getWorkorderProducts();
+        }
+    }, [modalWindow]);
+
+    const recieveWorkorder = (counterparty) => {
+        console.log(workorderId, counterparty);
+        Axios.post("/api/workorder/invoice", {
+            workorder_id: workorderId,
+            counterparty
+        })
             .then((res) => res.data)
-            .then((products) => {
-                if (!onlyView) {
-                    let temp = [];
-                    products.forEach(el => {
-                        temp.push({ ...el, isChecked: false, w_units: el.units, units: el.units })
+            .then((res) => {
+                if (res.code === "success") {
+                    Alert.success("Товары успешно приняты на склад", {
+                        position: "top-right",
+                        effect: "bouncyflip",
+                        timeout: 2000,
                     });
-                    setWorkorderProducts(temp);
+                    getCounterparties();
+                    getWorkorderProducts();
                 }
                 else {
-                    setWorkorderProducts(products);
+                    Alert.error(res.text, {
+                        position: "top-right",
+                        effect: "bouncyflip",
+                        timeout: 2000,
+                    });
                 }
-                setLoading(false);
-
             })
             .catch((err) => {
-                setLoading(false);
-                console.log(err)
-            });
-    };
-
-    const unitsChange = (value, idx) => {
-        setWorkorderProducts(prevState => {
-            let obj = prevState[idx];
-            obj.units = value;
-            return [...prevState];
-        });
-    };
-
-    const checkChange = (e, idx) => {
-        let temp;
-        setWorkorderProducts(prevState => {
-            let obj = prevState[idx];
-            temp = prevState[idx];
-            obj.isChecked = e.target.checked;
-            return [...prevState];
-        });
-        if (e.target.checked === true) {
-            Axios.post("/api/workorder/details/update/units",
-                { workorder_id: workorderId, products: [{ id: temp.product, units: temp.units }] })
-                .then((res) => res.data)
-                .then((res) => {
-                    setLoading(false);
-                })
-                .catch((err) => {
-                    console.log(err);
-                    Alert.error(err, {
-                        position: "top-right",
-                        effect: "bouncyflip",
-                        timeout: 2000,
-                    });
-                    setLoading(false);
+                console.log(err);
+                Alert.error(err, {
+                    position: "top-right",
+                    effect: "bouncyflip",
+                    timeout: 2000,
                 });
-        }
-    };
-
-    const checkAll = (e) => {
-        setLoading(true);
-        let temp = [];
-        workorderProducts.forEach(el => {
-            temp.push({ ...el, isChecked: e.target.checked })
-        });
-        setWorkorderProducts(temp);
-        if (e.target.checked === true) {
-            let sendProds = [];
-            temp.forEach(el => {
-                sendProds.push({ id: el.product, units: el.units })
             });
-            Axios.post("/api/workorder/details/update/units",
-                { workorder_id: workorderId, products: sendProds })
-                .then((res) => res.data)
-                .then((res) => {
-                    setLoading(false);
-                })
-                .catch((err) => {
-                    console.log(err);
-                    Alert.error(err, {
-                        position: "top-right",
-                        effect: "bouncyflip",
-                        timeout: 2000,
-                    });
-                    setLoading(false);
-                });
-        }
-        setLoading(false);
-    };
-
-    const nextPage = () => {
-        let flag = true;
-        workorderProducts.forEach(el => {
-            if (el.isChecked === false) {
-                flag = false;
-            }
-        });
-
-        if (flag) {
-            setActivePage(3)
-        }
-        else {
-            Alert.warning(`Для продолжения выберите все товары`, {
-                position: "top-right",
-                effect: "bouncyflip",
-                timeout: 3000,
-            });
-        }
-    };
+    }
 
     return (
         <Fragment>
+            {modalWindow}
             <Grid
                 container
                 spacing={1}
@@ -340,35 +189,12 @@ export default function WorkorderDetails({
                 </Grid>
                 <Grid item xs={2} style={{ paddingBottom: "0px", textAlign: "right" }}>
                     <button className="btn btn-link btn-sm" onClick={() => {
-                        setWorkorderId(""); setOnlyView(false);
+                        setOnlyView(false);
                         setActivePage(1)
                     }}>
                         Назад
                     </button>
                 </Grid>
-                {info &&
-                    <Fragment>
-                        <Grid item xs={2}>
-                            <span style={{ color: "gray" }}>
-                                Заказ-наряд № <br />
-                                Контрагент <br />
-                                Торовая точка <br />
-                                Пользователь <br />
-                                Дата создания
-                            </span>
-                        </Grid>
-                        <Grid item xs={10}>
-                            <span style={{ color: "gray" }}>
-                                <b>{info.workorder_number}</b><br />
-                                <b>{info.counterparty + " (" + info.bin + ")"}</b><br />
-                                <b>{info.point}</b> <br />
-                                <b>{info.username}</b><br />
-                                <b>{Moment(info.date).format("DD.MM.YYYY HH:mm:ss")}</b>
-                            </span>
-                        </Grid>
-
-                    </Fragment>
-                }
                 {isLoading &&
                     <Grid item xs={12}>
                         <BorderLinearProgress />
@@ -396,79 +222,69 @@ export default function WorkorderDetails({
                                                 Наименование
                                             </StyledTableCell>
                                             <StyledTableCell align="center">
-                                                {!onlyView ? "Количество в заказ-наряде" : "Количество"}
+                                                Партийные характеристики
                                             </StyledTableCell>
-                                            {!onlyView &&
-                                                <StyledTableCell align="center">
-                                                    Принятое количество
-                                                </StyledTableCell>}
-                                            {!onlyView &&
-                                                <StyledTableCell align="right">
-                                                    <FormControlLabel
-                                                    style={{margin: "0px"}}
-                                                        value="bottom"
-                                                        control={
-                                                            <WhiteCheckbox
-                                                                disabled={isLoading}
-                                                                color="default"
-                                                                onChange={(e) => checkAll(e)}
-                                                            />
-                                                        }
-                                                        label="Выбрать все"
-                                                        labelPlacement="left"
-                                                    />
-                                                </StyledTableCell>}
+                                            <StyledTableCell align="center">
+                                                Количество
+                                            </StyledTableCell>
+                                            <StyledTableCell />
                                         </TableRow>
                                     </TableHead>
                                     <TableBody>
-                                        {workorderProducts
-                                            .slice(page * rowsPerPage, page * rowsPerPage + rowsPerPage)
-                                            .map((product, idx) => (
-                                                <TableRow key={idx}>
-                                                    <StyledTableCell>
-                                                        {product.code}
-                                                    </StyledTableCell>
-                                                    <StyledTableCell>
-                                                        {product.name}
-                                                    </StyledTableCell>
-                                                    <StyledTableCell align="center">
-                                                        {!onlyView ? product.w_units : product.units}
-                                                    </StyledTableCell>
-                                                    {!onlyView &&
-                                                        <StyledTableCell align="center">
-                                                            {product.isChecked ? product.units :
-                                                                <UnitsInput
-                                                                    variant="outlined"
-                                                                    value={product.units}
-                                                                    onChange={(e) => unitsChange(e.target.value, idx)}
-                                                                />}
-                                                        </StyledTableCell>}
-                                                    {!onlyView &&
+                                        {counterparties
+                                            .map((cp, id) => (
+                                                <Fragment key={id}>
+                                                    <TableRow >
+                                                        <StyledTableCell colSpan={4} align="left">
+                                                            Контрагент &emsp; <b>{cp.name}</b>
+                                                        </StyledTableCell>
                                                         <StyledTableCell align="right">
-                                                            <GreenCheckbox
-                                                                disabled={isLoading}
-                                                                checked={product.isChecked}
-                                                                onChange={(e) => checkChange(e, idx)}
-                                                            />
-                                                        </StyledTableCell>}
-                                                </TableRow>
+                                                            {!cp.status ? <button
+                                                                className="btn btn-success"
+                                                                onClick={() => recieveWorkorder(cp.counterparty)}
+                                                            >
+                                                                Принять
+                                                            </button> : "Товары приняты"}
+                                                        </StyledTableCell>
+                                                    </TableRow>
+                                                    {workorderProducts
+                                                        .map((product, idx) => (
+                                                            <Fragment key={idx}>
+                                                                {
+                                                                    product.counterparty === cp.counterparty &&
+                                                                    <TableRow key={idx}>
+                                                                        <StyledTableCell>
+                                                                            {product.code}
+                                                                        </StyledTableCell>
+                                                                        <StyledTableCell>
+                                                                            {product.name}
+                                                                        </StyledTableCell>
+                                                                        <StyledTableCell>
+                                                                            {product.attr_json ? product.attr_json.map((attr, id) => (
+                                                                                <Fragment key={id}>
+                                                                                    <span>{attr.name + ": " + attr.value}</span>
+                                                                                    <br />
+                                                                                </Fragment>
+                                                                            )) : "Нет партийных характеристик"
+                                                                            }
+                                                                        </StyledTableCell>
+                                                                        <StyledTableCell align="center">
+                                                                            {product.accepted_units}
+                                                                        </StyledTableCell>
+                                                                        <StyledTableCell align="right">
+                                                                            {!cp.status && <button className="btn btn-link btn-sm" onClick={() => showModal(product)}>
+                                                                                {product.attributes === "0" ? "Добавить атрибуты" : "Изменить атрибуты"}
+                                                                            </button>}
+                                                                        </StyledTableCell>
+                                                                    </TableRow>
+                                                                }
+                                                            </Fragment>
+                                                        ))}
+                                                </Fragment>
                                             ))}
                                     </TableBody>
                                 </Table>
                             </TableContainer>
-                            <TablePagination
-                                rowsPerPageOptions={[10, 20, 50]}
-                                component="div"
-                                count={workorderProducts.length}
-                                backIconButtonText="Предыдущая страница"
-                                labelRowsPerPage="Строк в странице"
-                                nextIconButtonText="Следующая страница"
-                                rowsPerPage={rowsPerPage}
-                                page={page}
-                                onChangePage={handleChangePage}
-                                onChangeRowsPerPage={handleChangeRowsPerPage}
-                                ActionsComponent={TablePaginationActions}
-                            />
                         </Grid>
                         {workorderProducts.length !== 0 &&
                             <Grid item xs={6} style={{ textAlign: 'left' }}>
@@ -480,18 +296,8 @@ export default function WorkorderDetails({
                                     buttonText="Выгрузить в Excel"
                                 />
                             </Grid>}
-                        {!onlyView &&
-                            <Grid item xs={6} style={{ textAlign: 'right' }}>
-                                <button
-                                    className="btn btn-success"
-                                    onClick={nextPage}
-                                    disabled={isLoading}
-                                >
-                                    Далее
-                                </button>
-                            </Grid>}
                     </Fragment>}
             </Grid >
         </Fragment >
     )
-}
+};

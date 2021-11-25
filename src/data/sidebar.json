@@ -128,7 +128,12 @@
       },
       {
         "id": 9,
-        "name": "Прием по заказ-наряду",
+        "name": "Обработка заказ-нарядов",
+        "route": "product/acceptworkorder"
+      },
+      {
+        "id": 9,
+        "name": "Прием товаров по заказ-наряду",
         "route": "product/recievebyworkorder"
       }
     ]

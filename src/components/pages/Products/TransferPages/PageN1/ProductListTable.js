@@ -1,4 +1,4 @@
-import React, { Fragment } from "react";
+import React, { Fragment, useEffect, useState } from "react";
 import TableContainer from "@material-ui/core/TableContainer";
 import TableHead from "@material-ui/core/TableHead";
 import TableRow from "@material-ui/core/TableRow";
@@ -27,6 +27,15 @@ const StyledTableCell = withStyles((theme) => ({
 }))(TableCell);
 
 export default function ProductListTable({ productList, removeProduct }) {
+
+  const [isWholesale, setWholeSale] = useState(false);
+
+  useEffect(() => {
+    if (JSON.parse(sessionStorage.getItem("isme-company-data")) && JSON.parse(sessionStorage.getItem("isme-company-data")).wholesale) {
+      setWholeSale(true);
+    }
+  }, [])
+
   return (
     <Fragment>
       <div className="empty-space"></div>
@@ -37,7 +46,8 @@ export default function ProductListTable({ productList, removeProduct }) {
             <TableRow>
               <StyledTableCell align="center">Продукт</StyledTableCell>
               <StyledTableCell align="center">Штрих код</StyledTableCell>
-              <StyledTableCell align="center">Новая цена</StyledTableCell>
+              <StyledTableCell align="center">Новая розничная цена</StyledTableCell>
+              {isWholesale && <StyledTableCell align="center">Оптовая цена</StyledTableCell>}
               <StyledTableCell align="center">Количество</StyledTableCell>
               <StyledTableCell align="center">Сумма</StyledTableCell>
               <StyledTableCell />
@@ -55,6 +65,12 @@ export default function ProductListTable({ productList, removeProduct }) {
                   >
                     {product.price}
                   </StyledTableCell>
+                  {isWholesale && <StyledTableCell
+                    align="center"
+                    className={"tenge"}
+                  >
+                    {product.wholesale_price}
+                  </StyledTableCell>}
                   <StyledTableCell align="center">
                     {product.amount}
                   </StyledTableCell>

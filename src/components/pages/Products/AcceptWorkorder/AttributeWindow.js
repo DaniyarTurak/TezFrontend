@@ -19,7 +19,6 @@ import TableRow from "@material-ui/core/TableRow";
 import TableHead from "@material-ui/core/TableHead";
 import Paper from "@material-ui/core/Paper";
 
-
 const StyledTableCell = withStyles((theme) => ({
     head: {
         background: "#17a2b8",
@@ -78,7 +77,7 @@ export default function AttributeWindow({ product, setModalWindow, workorderId }
     useEffect(() => {
         setBarcode(product.code);
         setListCode(product.attributes);
-        setProductAttributes(product.attr_json ? product.attr_json : []);
+        setProductAttributes(product.attr_json);
         getAttributes();
     }, []);
 
@@ -97,7 +96,6 @@ export default function AttributeWindow({ product, setModalWindow, workorderId }
                 console.log(err);
             });
     };
-
 
     const attrNameChange = (attribute) => {
         setSelectedAttrName(attribute);
@@ -120,6 +118,7 @@ export default function AttributeWindow({ product, setModalWindow, workorderId }
         }
     };
 
+    //добавление атрибута
     const addAttribute = () => {
         if (barcode !== "") {
             if (!selectedAttrName) {
@@ -139,7 +138,6 @@ export default function AttributeWindow({ product, setModalWindow, workorderId }
                 }
                 else {
                     let flag = false;
-                    console.log(productAttributes);
                     productAttributes.forEach(pa => {
                         if (pa.id.toString().trim() === selectedAttrName.value.toString().trim()) {
                             flag = true
@@ -173,7 +171,6 @@ export default function AttributeWindow({ product, setModalWindow, workorderId }
                                     .catch((err) => {
                                         ErrorAlert(err);
                                     });
-
                                 setProductAttributes([...productAttributes, {
                                     format: attrFormat,
                                     id: selectedAttrName.value,
@@ -209,6 +206,7 @@ export default function AttributeWindow({ product, setModalWindow, workorderId }
         setModalWindow(null);
     };
 
+    //модальное окно подтверждения при попытку удалить атрибут
     const showConfiramtion = (attribute) => {
         setSweetAlert(
             <SweetAlert
@@ -229,12 +227,12 @@ export default function AttributeWindow({ product, setModalWindow, workorderId }
         );
     };
 
+    //удаление атрибута у товара
     const deleteAttribute = (attribute) => {
         const reqdata = {
             listcode: listCode,
-            attribcode: attribute.id
+            attribcode: attribute.attr_id
         };
-
         Axios.post("/api/attributes/delete", reqdata)
             .then((res) => {
                 if (res.data.code === "success") {
@@ -248,15 +246,13 @@ export default function AttributeWindow({ product, setModalWindow, workorderId }
                     setProductAttributes(arr);
                 }
                 else {
-                    setSweetAlert(null);
                     ErrorAlert(res.text);
                 }
             })
             .catch((err) => {
-                setSweetAlert(null);
                 ErrorAlert(err);
             });
-    }
+    };
 
     return (
         <Fragment>

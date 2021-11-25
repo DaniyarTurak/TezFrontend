@@ -35,7 +35,7 @@ export default function PurchasePrices() {
   ]
 
   useEffect(() => {
-    setWholeSale(JSON.parse(sessionStorage.getItem("isme-company-data")).wholesale ? JSON.parse(sessionStorage.getItem("isme-company-data")).wholesale : false);
+    setWholeSale( JSON.parse(sessionStorage.getItem("isme-company-data")) && JSON.parse(sessionStorage.getItem("isme-company-data")).wholesale ? JSON.parse(sessionStorage.getItem("isme-company-data")).wholesale : false);
     getCategories();
     getBrands();
     getCounterparties();

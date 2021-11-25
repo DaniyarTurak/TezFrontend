@@ -1,4 +1,4 @@
-import React, { Fragment } from "react";
+import React, { Fragment, useState, useEffect } from "react";
 import TableContainer from "@material-ui/core/TableContainer";
 import Input from "@material-ui/core/Input";
 import Table from "@material-ui/core/Table";
@@ -32,6 +32,15 @@ export default function DetailTable({
   handleCheckboxChange1,
   addProduct,
 }) {
+
+  const [isWholesale, setWholeSale] = useState(false);
+
+  useEffect(() => {
+    if (JSON.parse(sessionStorage.getItem("isme-company-data")) && JSON.parse(sessionStorage.getItem("isme-company-data")).wholesale !== null) {
+      setWholeSale(true);
+    }
+  }, [])
+
   return (
     <TableContainer component={Paper} style={{ marginBottom: "1rem" }}>
       <Table>
@@ -95,6 +104,10 @@ export default function DetailTable({
             </Fragment>
             }
           </TableRow>
+          {isWholesale && <TableRow>
+            <StyledTableCell style={{ color: "#C0C0C0" }}>Оптовая цена</StyledTableCell>
+            <StyledTableCell className="tenge" style={{ color: "#C0C0C0" }} colSpan={5}>{detail.wholesale_price}</StyledTableCell>
+          </TableRow>}
           <TableRow>
             <StyledTableCell colSpan="7" align="center">
               <button className="btn btn-info" onClick={addProduct}>

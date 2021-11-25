@@ -188,10 +188,10 @@ export default function WorkorderOptions({
     const createWorkorder = () => {
         let send = {};
         if (workorderNumber !== "") {
-            send = { point, counterparty, workorder_number: workorderNumber };
+            send = { point };
         }
         else {
-            send = { point, counterparty };
+            send = { point };
         };
 
         Axios.post("/api/workorder/manage", send)
@@ -235,7 +235,7 @@ export default function WorkorderOptions({
                         { caption: "Новый заказ-наряд", active: true },
                     ]} />
                 </Grid>
-                <Grid item xs={3}>
+                <Grid item xs={6}>
                     <label style={{ fontSize: "12px", color: point === "" || !point ? "red" : "black" }}>*Торговая точка</label>
                     <Select
                         styles={customStyles}
@@ -244,16 +244,7 @@ export default function WorkorderOptions({
                         placeholder="Торговая точка"
                     />
                 </Grid>
-                <Grid item xs={3}>
-                    <label style={{ fontSize: "12px", color: counterparty === "" || !counterparty ? "red" : "black" }}>*Контрагент</label>
-                    <Select
-                        styles={customStyles}
-                        options={counterparties}
-                        onChange={counterpartyChange}
-                        placeholder="Контрагент"
-                    />
-                </Grid>
-                <Grid item xs={3}>
+                <Grid item xs={6}>
                     <label style={{ fontSize: "12px" }}>Номер заказ-наряда</label>
                     <TextField
                         classes={{
@@ -271,7 +262,7 @@ export default function WorkorderOptions({
                     <button
                         className="btn btn-success"
                         onClick={createWorkorder}
-                        disabled={point === "" || counterparty === "" || isLoading || haveActive ? true : false}
+                        disabled={point === "" || isLoading || haveActive ? true : false}
 
                     >
                         Далее

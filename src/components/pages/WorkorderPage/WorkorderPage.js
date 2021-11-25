@@ -18,7 +18,7 @@ export default function WorkorderPage() {
   const [workorderList, setWorkorderList] = useState([]);
 
   const getWorkorderProducts = (workorder_id) => {
-    Axios.get("/api/workorder/details", { params: { workorder_id: workorderId || workorder_id } })
+    Axios.get("/api/workorder/details", { params: { workorderId: workorderId || workorder_id } })
       .then((res) => res.data)
       .then((products) => {
         let temp = [];

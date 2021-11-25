@@ -272,7 +272,6 @@ export default function PageN1({
         },
       ],
     };
-
     Axios.post("/api/invoice/add/product", reqdata)
       .then(() => {
         const newProduct = {
@@ -282,6 +281,7 @@ export default function PageN1({
           amount: newAmount,
           attributes: productSelectValue.attributes,
           price: newPriceCheck ? detail.priceto : detail.price,
+          wholesale_price: detail.wholesale_price
         };
         productList.push(newProduct);
         setnewAmount("");

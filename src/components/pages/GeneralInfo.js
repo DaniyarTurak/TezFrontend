@@ -44,9 +44,10 @@ const PurpleSwitch = withStyles({
 })(Switch);
 
 class GeneralInfo extends Component {
+  company_data = JSON.parse(sessionStorage.getItem("isme-company-data"));
   state = {
     companyData: JSON.parse(sessionStorage.getItem("isme-company-data")) || {},
-    wholesale: JSON.parse(sessionStorage.getItem("isme-company-data")) ? JSON.parse(sessionStorage.getItem("isme-company-data")).wholesale : false,
+    wholesale: JSON.parse(sessionStorage.getItem("isme-company-data")) && JSON.parse(sessionStorage.getItem("isme-company-data")).wholesale ? JSON.parse(sessionStorage.getItem("isme-company-data")).wholesale : false,
     isEdit: false,
     isEdited: false,
     modalIsOpen: false,
@@ -238,7 +239,7 @@ class GeneralInfo extends Component {
 
   handleCancel = () => {
     this.setState({
-      wholesale: JSON.parse(sessionStorage.getItem("isme-company-data")).wholesale || false,
+      wholesale: JSON.parse(sessionStorage.getItem("isme-company-data")) && JSON.parse(sessionStorage.getItem("isme-company-data")).wholesale ? JSON.parse(sessionStorage.getItem("isme-company-data")).wholesale : false,
       isEdit: false,
       grouping: false,
       field: {

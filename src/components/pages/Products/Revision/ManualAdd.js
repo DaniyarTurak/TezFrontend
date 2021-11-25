@@ -228,7 +228,7 @@ export default function ManualAdd({
             });
         }
         else {
-            if (units !== "" && units > 0) {
+            if (units !== "" ) {
                 let params = { ...selectedProd, unitswas: selectedProd.unitswas ? selectedProd.unitswas : Number(selectedProd.units), revnumber: revNumber, point: point, units: units };
                 Axios.post("/api/revision/revisiontemp/insert", params)
                     .then((res) => res.data)

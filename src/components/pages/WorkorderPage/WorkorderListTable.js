@@ -293,7 +293,8 @@ export default function WorkorderListTable({
                                             <StyledTableCell align="center">
                                                 {wo.status === 'CREATED' ? <span style={{ color: "#17a2b8" }}>Создан</span>
                                                     : wo.status === 'FORMATION' ? <span style={{ color: "#ffc107" }}>Формирование</span>
-                                                        : wo.status === 'ACCEPTED' ? <span style={{ color: "#28a745" }}>Принят</span> : ''}
+                                                        : wo.status === 'APPROVED' ? <span style={{ color: "#28a745" }}>Обработан</span>
+                                                            : wo.status === 'ACCEPTED' ? <span style={{ color: "#28a745" }}>Принят</span> : ''}
                                             </StyledTableCell>
                                             <StyledTableCell align="right">
                                                 {(wo.status === 'FORMATION' || wo.status === 'CREATED') &&
@@ -303,7 +304,7 @@ export default function WorkorderListTable({
                                                 <IconButton onClick={() => viewWorkorder(wo)}>
                                                     <VisibilityIcon size="small" />
                                                 </IconButton>
-                                                {wo.status === 'FORMATION' &&
+                                                {(wo.status === 'FORMATION' || wo.status === 'CREATED') &&
                                                     <IconButton disabled={isLoading} onClick={() => showConfiramtion(wo)}>
                                                         <DeleteIcon size="small" />
                                                     </IconButton>}
