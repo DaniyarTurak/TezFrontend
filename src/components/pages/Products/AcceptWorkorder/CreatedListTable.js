@@ -13,6 +13,10 @@ import Paper from "@material-ui/core/Paper";
 import Moment from "moment";
 import VisibilityIcon from '@material-ui/icons/Visibility';
 import LinearProgress from '@material-ui/core/LinearProgress';
+import AddBoxIcon from '@material-ui/icons/AddBox';
+import Axios from "axios";
+import Alert from "react-s-alert";
+import IndeterminateCheckBoxIcon from '@material-ui/icons/IndeterminateCheckBox';
 
 const BorderLinearProgress = withStyles((theme) => ({
     root: {
@@ -49,8 +53,49 @@ export default function AcceptedListTable({
     setOnlyView,
     setActivePage,
     isLoading,
-    workorderId
+    workorderId,
+    getWorkorders
 }) {
+
+    const addToAccepting = (id) => {
+        Axios.post("/api/workorder/manage", {
+            workorder_id: id,
+            status: 'INPROCESS'
+        })
+            .then((res) => res.data)
+            .then((res) => {
+                getWorkorders();
+            })
+            .catch((err) => {
+                console.log(err);
+                Alert.error(err, {
+                    position: "top-right",
+                    effect: "bouncyflip",
+                    timeout: 2000,
+                });
+                // setLoading(false);
+            });
+    };
+
+    const deleteFromAccepting = (id) => {
+        Axios.post("/api/workorder/manage", {
+            workorder_id: id,
+            status: 'CREATED'
+        })
+            .then((res) => res.data)
+            .then((res) => {
+                getWorkorders();
+            })
+            .catch((err) => {
+                console.log(err);
+                Alert.error(err, {
+                    position: "top-right",
+                    effect: "bouncyflip",
+                    timeout: 2000,
+                });
+                // setLoading(false);
+            });
+    };
 
     return (
         <Fragment>
@@ -113,6 +158,21 @@ export default function AcceptedListTable({
                                                         <IconButton onClick={() => { setWorkorderId(wo.id); setOnlyView(true); setActivePage(2) }}>
                                                             <VisibilityIcon size="small" />
                                                         </IconButton>
+                                                        {wo.status === 'CREATED' ?
+                                                            <IconButton
+                                                                onClick={() => { addToAccepting(wo.id) }}
+                                                                title="Добавить в обработку"
+                                                            >
+                                                                <AddBoxIcon size="small" />
+                                                            </IconButton>
+                                                            : wo.status === 'INPROCESS' ?
+                                                                <IconButton
+                                                                    onClick={() => { deleteFromAccepting(wo.id) }}
+                                                                    title="Убрать из обработки"
+                                                                >
+                                                                    <IndeterminateCheckBoxIcon size="small" />
+                                                                </IconButton> : ""
+                                                        }
                                                     </StyledTableCell>
                                                 </TableRow>
                                             ))}

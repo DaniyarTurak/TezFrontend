@@ -96,7 +96,7 @@ export default function WorkorderTable({
     const unitsChange = (value, idx) => {
         setWorkorderProducts(prevState => {
             let obj = prevState[idx];
-            if (Number(value) !== "NaN") {
+            if (value === "" || value === "0" || Number(value)) {
                 obj.units = value;
             }
             return [...prevState];
@@ -106,7 +106,7 @@ export default function WorkorderTable({
     const updateProduct = (product) => {
         setLoading(true);
         Axios.post("/api/workorder/details/update", {
-            units: product.units,
+            units: !product.units || product.units === "" ? 0 : product.units,
             product: product.product,
             workorder_id: product.workorder_id,
             attributes: product.attributes
@@ -269,9 +269,9 @@ export default function WorkorderTable({
                                 <TableBody>
                                     {counterparties
                                         .map((cp, id) => (
-                                            <Fragment>
+                                            <Fragment key={id}>
                                                 <TableRow >
-                                                    <StyledTableCell colspan={!onlyView ? 6 : 5} align="center">
+                                                    <StyledTableCell colSpan={!onlyView ? 6 : 5} align="center">
                                                         <b>{cp.name}</b>
                                                     </StyledTableCell>
                                                 </TableRow>

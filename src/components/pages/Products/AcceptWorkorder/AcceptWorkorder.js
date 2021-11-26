@@ -27,7 +27,7 @@ export default function AcceptWorkorder() {
                 let c = [];
                 let a = [];
                 list.forEach(el => {
-                    if (el.status === 'CREATED') {
+                    if (el.status === 'CREATED' || el.status === 'INPROCESS') {
                         c.push(el)
                     }
                     else {
@@ -69,6 +69,7 @@ export default function AcceptWorkorder() {
                                 setWorkorderList={setCreatedList}
                                 setWorkorderId={setWorkorderId}
                                 setActivePage={setActivePage}
+                                getWorkorders={getWorkorders}
                             />
                         </Grid>
                         <Grid item xs={12}>
@@ -94,6 +95,8 @@ export default function AcceptWorkorder() {
                 onlyView={onlyView}
                 setOnlyView={setOnlyView}
                 setActivePage={setActivePage}
+                getWorkorders={getWorkorders}
+
             />}
         </Fragment>
     )

@@ -19,7 +19,6 @@ import ReactHTMLTableToExcel from "react-html-table-to-excel";
 import ErrorAlert from "../../../ReusableComponents/ErrorAlert";
 import EditIcon from '@material-ui/icons/Edit';
 import Modal from 'react-modal';
-import { getISODay } from "date-fns";
 
 const BorderLinearProgress = withStyles((theme) => ({
     root: {
@@ -87,7 +86,8 @@ export default function WorkorderDetails({
     setOnlyView,
     setActivePage,
     workorderId,
-    setWorkorderId
+    setWorkorderId,
+    getWorkorders
 }) {
 
     const [isLoading, setLoading] = useState(false);
@@ -101,7 +101,6 @@ export default function WorkorderDetails({
         getIds();
         getWorkorderProducts();
         getCounterparties();
-
     }, []);
 
     const getIds = () => {
@@ -155,7 +154,8 @@ export default function WorkorderDetails({
     const unitsChange = (value, idx) => {
         setProductDetails(prevState => {
             let obj = prevState[idx];
-            if (value === "" || Number(value)) {
+            console.log(value);
+            if (value === "" || value === "0" || Number(value)) {
                 obj.accepted_units = value;
             }
             return [...prevState];
@@ -313,8 +313,7 @@ export default function WorkorderDetails({
             }
         });
         if (flag) {
-            console.log("Необходимо установит все цены!");
-            Alert.warning("Необходимо установит все цены!", {
+            Alert.warning("Необходимо установить все цены!", {
                 position: "top-right",
                 effect: "bouncyflip",
                 timeout: 2000,
@@ -325,6 +324,7 @@ export default function WorkorderDetails({
                 .then((res) => res.data)
                 .then((res) => {
                     console.log(res);
+                    getWorkorders();
                     setActivePage(1);
                 })
                 .catch((err) => {
@@ -395,6 +395,12 @@ export default function WorkorderDetails({
                                                 <StyledTableCell align="center">
                                                     Принятое количество
                                                 </StyledTableCell>}
+                                            <StyledTableCell>
+                                                Цена (тг.)
+                                            </StyledTableCell>
+                                            <StyledTableCell>
+                                                Сумма (тг.)
+                                            </StyledTableCell>
                                             {!onlyView &&
                                                 <StyledTableCell align="right">
                                                 </StyledTableCell>}
@@ -405,7 +411,7 @@ export default function WorkorderDetails({
                                             .map((cp, id) => (
                                                 <Fragment key={id}>
                                                     <TableRow >
-                                                        <StyledTableCell colSpan={5} align="center">
+                                                        <StyledTableCell colSpan={7} align="center">
                                                             <b>{cp.name}</b>
                                                         </StyledTableCell>
                                                     </TableRow>
@@ -429,6 +435,14 @@ export default function WorkorderDetails({
                                                                                     <span style={{ color: "gray" }}> Укажите количество </span>
                                                                                 }
                                                                             </StyledTableCell>}
+                                                                        <StyledTableCell>
+                                                                            {product.purchaseprice}
+                                                                        </StyledTableCell>
+                                                                        <StyledTableCell>
+                                                                            {!onlyView ? product.purchaseprice * product.accepted_units :
+                                                                                product.purchaseprice * product.units
+                                                                            }
+                                                                        </StyledTableCell>
                                                                         {!onlyView &&
                                                                             <StyledTableCell align="right">
                                                                                 <IconButton onClick={() => getProductDetails(product.product)}>
