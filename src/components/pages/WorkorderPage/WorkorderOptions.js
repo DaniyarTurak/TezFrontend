@@ -191,7 +191,7 @@ export default function WorkorderOptions({
             send = { point };
         }
         else {
-            send = { point };
+            send = { point, workorderNumber };
         };
 
         Axios.post("/api/workorder/manage", send)

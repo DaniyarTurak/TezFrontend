@@ -135,6 +135,9 @@ export default function AcceptedListTable({
                                             <StyledTableCell align="center">
                                                 Дата создания
                                             </StyledTableCell>
+                                            <StyledTableCell align="center">
+                                                Статус
+                                            </StyledTableCell>
                                             <StyledTableCell />
                                         </TableRow>
                                     </TableHead>
@@ -154,6 +157,11 @@ export default function AcceptedListTable({
                                                     <StyledTableCell align="center">
                                                         {Moment(wo.date).format("DD.MM.YYYY HH:mm:ss")}
                                                     </StyledTableCell >
+                                                    <StyledTableCell align="center">
+                                                        {wo.status === 'INPROCESS' ? <span style={{ color: "#28a745" }}> Добавлен к обработке </span> :
+                                                            <span style={{ color: "#17a2b8" }}> Создан </span>
+                                                        }
+                                                    </StyledTableCell>
                                                     <StyledTableCell align="right">
                                                         <IconButton onClick={() => { setWorkorderId(wo.id); setOnlyView(true); setActivePage(2) }}>
                                                             <VisibilityIcon size="small" />
