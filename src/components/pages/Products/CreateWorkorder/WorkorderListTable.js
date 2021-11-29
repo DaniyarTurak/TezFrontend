@@ -293,20 +293,27 @@ export default function WorkorderListTable({
                                             <StyledTableCell align="center">
                                                 {wo.status === 'CREATED' ? <span style={{ color: "#17a2b8" }}>Создан</span>
                                                     : wo.status === 'FORMATION' ? <span style={{ color: "#ffc107" }}>Формирование</span>
-                                                    : wo.status === 'INPROCESS' ? <span style={{ color: "#28a745" }}>В обработке</span>
-                                                        : wo.status === 'APPROVED' ? <span style={{ color: "#28a745" }}>Обработан</span>
-                                                            : wo.status === 'ACCEPTED' ? <span style={{ color: "#28a745" }}>Принят</span> : ''}
+                                                        : wo.status === 'INPROCESS' ? <span style={{ color: "#28a745" }}>В обработке</span>
+                                                            : wo.status === 'APPROVED' ? <span style={{ color: "#28a745" }}>Обработан</span>
+                                                                : wo.status === 'ACCEPTED' ? <span style={{ color: "#" }}>Принят</span> : ''}
                                             </StyledTableCell>
                                             <StyledTableCell align="right">
                                                 {(wo.status === 'FORMATION' || wo.status === 'CREATED') &&
-                                                    <IconButton disabled={isLoading} onClick={() => editWorkorder(wo)}>
+                                                    <IconButton
+                                                        title="Редактировать"
+                                                        disabled={isLoading}
+                                                        onClick={() => editWorkorder(wo)}>
                                                         <EditIcon size="small" />
                                                     </IconButton>}
-                                                <IconButton onClick={() => viewWorkorder(wo)}>
+                                                <IconButton
+                                                    title="Посмотреть"
+                                                    onClick={() => viewWorkorder(wo)}>
                                                     <VisibilityIcon size="small" />
                                                 </IconButton>
                                                 {(wo.status === 'FORMATION' || wo.status === 'CREATED') &&
-                                                    <IconButton disabled={isLoading} onClick={() => showConfiramtion(wo)}>
+                                                    <IconButton
+                                                        title="Удалить"
+                                                        disabled={isLoading} onClick={() => showConfiramtion(wo)}>
                                                         <DeleteIcon size="small" />
                                                     </IconButton>}
                                             </StyledTableCell>

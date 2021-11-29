@@ -5,9 +5,9 @@ import WorkorderOptions from "./WorkorderOptions";
 import WorkorderAddProducts from "./WorkorderAddProducts";
 import WorkorderTable from "./WorkorderTable";
 import WorkorderList from "./WorkorderList";
-import ErrorAlert from "../../ReusableComponents/ErrorAlert";
+import ErrorAlert from "../../../ReusableComponents/ErrorAlert";
 
-export default function WorkorderPage() {
+export default function CreateWorkorder() {
 
   const [point, setPoint] = useState("");
   const [counterparty, setCounterparty] = useState("");

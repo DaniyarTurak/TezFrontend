@@ -51,7 +51,8 @@ export default function WorkorderDetails({
     onlyView,
     setOnlyView,
     setActivePage,
-    workorderId
+    workorderId,
+    getWorkorders
 }) {
 
     // const getInfo = () => {
@@ -151,6 +152,7 @@ export default function WorkorderDetails({
                         effect: "bouncyflip",
                         timeout: 2000,
                     });
+                    getWorkorders();
                     getCounterparties();
                     getWorkorderProducts();
                 }

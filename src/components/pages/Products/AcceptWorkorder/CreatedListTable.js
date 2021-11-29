@@ -97,6 +97,25 @@ export default function AcceptedListTable({
             });
     };
 
+    const acceptWorkorders = () => {
+        let flag = false;
+        workorderList.forEach(el => {
+            if (el.status === 'INPROCESS') {
+                flag = true;
+            }
+        });
+        if (!flag) {
+            Alert.warning('В обработке нет заказ-нарядов', {
+                position: "top-right",
+                effect: "bouncyflip",
+                timeout: 2000,
+            });
+        }
+        else {
+            setActivePage(2)
+        }
+    }
+
     return (
         <Fragment>
             <Grid
@@ -163,8 +182,12 @@ export default function AcceptedListTable({
                                                         }
                                                     </StyledTableCell>
                                                     <StyledTableCell align="right">
-                                                        <IconButton onClick={() => { setWorkorderId(wo.id); setOnlyView(true); setActivePage(2) }}>
-                                                            <VisibilityIcon size="small" />
+                                                        <IconButton
+                                                            title="Посмотреть"
+                                                            onClick={() => { setWorkorderId(wo.id); setOnlyView(true); setActivePage(2) }}>
+                                                            <VisibilityIcon
+                                                                size="small"
+                                                            />
                                                         </IconButton>
                                                         {wo.status === 'CREATED' ?
                                                             <IconButton
@@ -191,7 +214,7 @@ export default function AcceptedListTable({
                         <Grid item xs={12} style={{ textAlign: 'center' }}>
                             <button
                                 className="btn btn-success"
-                                onClick={() => setActivePage(2)}
+                                onClick={acceptWorkorders}
                             >
                                 Обработать заказ-наряды
                             </button>

@@ -25,7 +25,7 @@ import NewsInformation from "../pages/News/NewsInformation";
 import ESF from "../pages/ESF/ESF";
 import PricingMasterPage from "../pages/PricingMasterPage";
 import CreatePrefix from "../pages/ProductsWeight/CreatePrefix";
-import WorkorderPage from "../pages/WorkorderPage";
+import CreateWorkorder from "../pages/Products/CreateWorkorder";
 
 
 // import UpdateCategoryPage from "../pages/Products/ProductReference/UpdateCategoryPage";
@@ -210,8 +210,8 @@ export default function getBody({
             return (
               <CreateReceiveInvoice history={history} location={location} />
             );
-          case "workorder":
-            return <WorkorderPage history={history} location={location} />;
+          case "createworkorder":
+            return <CreateWorkorder history={history} location={location} />;
           case "acceptworkorder":
             return <AcceptWorkorder history={history} location={location} />;
           case "recievebyworkorder":

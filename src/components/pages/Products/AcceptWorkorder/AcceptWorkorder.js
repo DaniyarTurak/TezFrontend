@@ -21,7 +21,7 @@ export default function AcceptWorkorder() {
 
     const getWorkorders = () => {
         setLoading(true);
-        Axios.get("/api/workorder/list", { params: { rec: true } })
+        Axios.get("/api/workorder/list")
             .then((res) => res.data)
             .then((list) => {
                 let c = [];
@@ -31,6 +31,7 @@ export default function AcceptWorkorder() {
                         c.push(el)
                     }
                     else {
+                        if (el.status === 'APPROVED')
                         a.push(el)
                     }
                     setAcceptedList(a);

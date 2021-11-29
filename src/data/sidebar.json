@@ -68,11 +68,6 @@
         "id": 12,
         "route": "options/createprefix",
         "name": "Префикс весов"
-      },
-      {
-        "id": 13,
-        "route": "options/workorder",
-        "name": "Заказ-наряд"
       }
     ]
   },
@@ -124,7 +119,7 @@
       {
         "id": 8,
         "name": "Создание заказ-наряда",
-        "route": "product/workorder"
+        "route": "product/createworkorder"
       },
       {
         "id": 9,

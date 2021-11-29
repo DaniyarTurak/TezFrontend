@@ -16,7 +16,7 @@ import InputBase from '@material-ui/core/InputBase';
 import SaveIcon from '@material-ui/icons/Save';
 import Alert from "react-s-alert";
 import SweetAlert from "react-bootstrap-sweetalert";
-import ErrorAlert from "../../ReusableComponents/ErrorAlert";
+import ErrorAlert from "../../../ReusableComponents/ErrorAlert";
 import LinearProgress from '@material-ui/core/LinearProgress';
 import ReactHTMLTableToExcel from "react-html-table-to-excel";
 

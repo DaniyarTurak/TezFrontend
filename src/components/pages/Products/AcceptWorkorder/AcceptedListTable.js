@@ -221,24 +221,16 @@ export default function AcceptedListTable({
                                                 {Moment(wo.date).format("DD.MM.YYYY HH:mm:ss")}
                                             </StyledTableCell >
                                             <StyledTableCell align="center">
-                                                {wo.accept_date ? Moment(wo.accept_date).format("DD.MM.YYYY HH:mm:ss") : "-"}
+                                                {wo.approve_date ? Moment(wo.approve_date).format("DD.MM.YYYY HH:mm:ss") : "-"}
                                             </StyledTableCell>
-                                            {/* <StyledTableCell align="center">
-                                                {wo.status === 'CREATED' ? <span style={{ color: "#17a2b8" }}>Создан</span>
-                                                    : wo.status === 'FORMATION' ? <span style={{ color: "#ffc107" }}>Формирование</span>
-                                                        : wo.status === 'ACCEPTED' ? <span style={{ color: "#28a745" }}>Принят</span> : ''}
-                                            </StyledTableCell> */}
                                             <StyledTableCell align="right">
-                                                <IconButton onClick={() => viewWorkorder(wo.id)}>
-                                                    <VisibilityIcon size="small" />
+                                                <IconButton onClick={() => viewWorkorder(wo.id)}
+                                                    title="Посмотреть"
+                                                >
+                                                    <VisibilityIcon
+                                                        size="small"
+                                                    />
                                                 </IconButton>
-                                                {wo.status === 'CREATED' &&
-                                                    <Fragment>
-                                                        <IconButton onClick={() => { setWorkorderId(wo.id); setActivePage(2) }}>
-                                                            <PlaylistAddCheckIcon size="small" />
-                                                        </IconButton>
-                                                    </Fragment>
-                                                }
                                             </StyledTableCell>
                                         </TableRow>
                                     ))}

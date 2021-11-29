@@ -82,6 +82,7 @@ export default function RecieveByWorkorder() {
                 onlyView={onlyView}
                 setOnlyView={setOnlyView}
                 setActivePage={setActivePage}
+                getWorkorders={getWorkorders}
             />}
             {activePage === 3 && <WorkorderAddAttributes
                 is={isLoading}

@@ -3,10 +3,10 @@ import React, { useState, useEffect, Fragment } from "react";
 import Grid from '@material-ui/core/Grid';
 import Select from "react-select";
 import Axios from "axios";
-import ErrorAlert from "../../ReusableComponents/ErrorAlert";
+import ErrorAlert from "../../../ReusableComponents/ErrorAlert";
 import Alert from "react-s-alert";
 import SweetAlert from "react-bootstrap-sweetalert";
-import Breadcrumb from "../../Breadcrumb";
+import Breadcrumb from "../../../Breadcrumb";
 import TextField from "@material-ui/core/TextField";
 import { makeStyles, createStyles } from '@material-ui/core/styles';
 
@@ -186,12 +186,13 @@ export default function WorkorderOptions({
     };
 
     const createWorkorder = () => {
+        console.log(workorderNumber)
         let send = {};
         if (workorderNumber !== "") {
-            send = { point };
+            send = { point, workorder_number: workorderNumber };
         }
         else {
-            send = { point, workorderNumber };
+            send = { point };
         };
 
         Axios.post("/api/workorder/manage", send)

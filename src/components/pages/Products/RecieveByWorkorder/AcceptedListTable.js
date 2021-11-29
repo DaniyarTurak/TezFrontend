@@ -118,6 +118,12 @@ export default function AcceptedListTable({
                                     <StyledTableCell align="center">
                                         Дата обработки
                                     </StyledTableCell>
+                                    <StyledTableCell align="center">
+                                        Дата принятия
+                                    </StyledTableCell>
+                                    <StyledTableCell align="center">
+                                        Статус
+                                    </StyledTableCell>
                                     <StyledTableCell />
                                 </TableRow>
                             </TableHead>
@@ -138,13 +144,25 @@ export default function AcceptedListTable({
                                                 {Moment(wo.date).format("DD.MM.YYYY HH:mm:ss")}
                                             </StyledTableCell >
                                             <StyledTableCell align="center">
+                                                {wo.approve_date ? Moment(wo.approve_date).format("DD.MM.YYYY HH:mm:ss") : "-"}
+                                            </StyledTableCell >
+                                            <StyledTableCell align="center">
                                                 {wo.accept_date ? Moment(wo.accept_date).format("DD.MM.YYYY HH:mm:ss") : "-"}
                                             </StyledTableCell>
+                                            <StyledTableCell align="center">
+                                                {wo.status === 'APPROVED' ? <span style={{ color: "#17a2b8" }}>Обработан</span>
+                                                    : wo.status === 'PART' ? <span style={{ color: "#fd7e14" }}>Принят частично</span>
+                                                        : wo.status === 'ACCEPTED' ? <span style={{ color: "#28a745" }}>Принят</span> : ''}
+                                            </StyledTableCell>
                                             <StyledTableCell align="right">
-                                                <IconButton onClick={() => { setWorkorderId(wo.id); setOnlyView(true); setActivePage(2) }}>
+                                                <IconButton
+                                                    title="Посмотреть"
+                                                    onClick={() => { setWorkorderId(wo.id); setOnlyView(true); setActivePage(2) }}>
                                                     <VisibilityIcon size="small" />
                                                 </IconButton>
-                                                <IconButton onClick={() => { setWorkorderId(wo.id); setActivePage(2); console.log(wo.id); }}>
+                                                <IconButton 
+                                                        title="Принять товары"
+                                                onClick={() => { setWorkorderId(wo.id); setActivePage(2); console.log(wo.id); }}>
                                                     <PlaylistAddCheckIcon size="small" />
                                                 </IconButton>
                                             </StyledTableCell>

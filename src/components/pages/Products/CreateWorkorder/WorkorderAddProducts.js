@@ -5,7 +5,7 @@ import Grid from '@material-ui/core/Grid';
 import Axios from "axios";
 import Autocomplete from "@material-ui/lab/Autocomplete";
 import TextField from "@material-ui/core/TextField";
-import Breadcrumb from "../../Breadcrumb";
+import Breadcrumb from "../../../Breadcrumb";
 import Alert from "react-s-alert";
 import Modal from 'react-modal';
 import SearchIcon from '@material-ui/icons/Search';
@@ -14,7 +14,7 @@ import Paper from '@material-ui/core/Paper';
 import Divider from '@material-ui/core/Divider';
 
 
-export default function PurchasePriceAdd({
+export default function WorkorderAddProducts({
     workorderId,
     point,
     setPoint,

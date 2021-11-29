@@ -129,7 +129,11 @@ export default function WorkorderDetails({
             .then((list) => {
                 let temp = [];
                 list.forEach(el => {
-                    temp.push({ ...el, temp_accepted_units: el.accepted_units })
+                    temp.push({
+                        ...el,
+                        accepted_units: el.accepted_units ? el.accepted_units : el.units,
+                        temp_accepted_units: el.accepted_units ? el.accepted_units : el.units,
+                    })
                 });
                 setWorkorderProducts(temp)
                 setLoading(false);
@@ -305,7 +309,6 @@ export default function WorkorderDetails({
     };
 
     const acceptWorkorders = () => {
-        console.log(workorderProducts);
         let flag = false;
         workorderProducts.forEach(element => {
             if (!element.accepted_units || element.accepted_units === "") {
@@ -323,7 +326,6 @@ export default function WorkorderDetails({
             Axios.post("/api/workorder/update/status", { workorders })
                 .then((res) => res.data)
                 .then((res) => {
-                    console.log(res);
                     getWorkorders();
                     setActivePage(1);
                 })
