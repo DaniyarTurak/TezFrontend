@@ -20,7 +20,7 @@ import Paper from "@material-ui/core/Paper";
 import Alert from "react-s-alert";
 import SweetAlert from "react-bootstrap-sweetalert";
 import Moment from "moment";
-import Breadcrumb from "../../../Breadcrumb";
+import Breadcrumb from "../../../../Breadcrumb";
 import Modal from 'react-modal';
 import AttributeWindow from "./AttributeWindow";
 import LinearProgress from '@material-ui/core/LinearProgress';

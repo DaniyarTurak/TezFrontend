@@ -4,7 +4,7 @@ import Grid from '@material-ui/core/Grid';
 import Axios from "axios";
 import { makeStyles, createStyles, withStyles } from "@material-ui/core/styles";
 import Alert from "react-s-alert";
-import ErrorAlert from "../../../ReusableComponents/ErrorAlert";
+import ErrorAlert from "../../../../ReusableComponents/ErrorAlert";
 import Moment from "moment";
 import Select from "react-select";
 import TextField from '@material-ui/core/TextField';
@@ -97,7 +97,6 @@ export default function AttributeWindow({ product, setModalWindow, workorderId }
                 console.log(err);
             });
     };
-
 
     const attrNameChange = (attribute) => {
         setSelectedAttrName(attribute);

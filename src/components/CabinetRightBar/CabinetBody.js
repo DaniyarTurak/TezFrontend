@@ -25,7 +25,6 @@ import NewsInformation from "../pages/News/NewsInformation";
 import ESF from "../pages/ESF/ESF";
 import PricingMasterPage from "../pages/PricingMasterPage";
 import CreatePrefix from "../pages/ProductsWeight/CreatePrefix";
-import CreateWorkorder from "../pages/Products/CreateWorkorder";
 
 
 // import UpdateCategoryPage from "../pages/Products/ProductReference/UpdateCategoryPage";
@@ -57,8 +56,9 @@ import PromotionsPage from "../pages/Products/PromotionsPage";
 import MarginalPricePage from "../pages/Products/MarginalPricePage";
 import ProductReference from "../pages/Products/ProductReference";
 import ReconciliationPage from "../pages/Products/ReconciliationPage";
-import AcceptWorkorder from "../pages/Products/AcceptWorkorder";
-import RecieveByWorkorder from "../pages/Products/RecieveByWorkorder";
+import CreateWorkorder from "../pages/Products/Workorder/CreateWorkorder";
+import AcceptWorkorder from "../pages/Products/Workorder/AcceptWorkorder";
+import RecieveByWorkorder from "../pages/Products/Workorder/RecieveByWorkorder";
 
 import StockMonitoringPage from '../pages/StockMonitoringPage';
 import Revision from '../pages/Products/Revision';

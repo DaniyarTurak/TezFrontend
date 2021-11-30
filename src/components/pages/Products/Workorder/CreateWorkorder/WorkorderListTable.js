@@ -1,12 +1,14 @@
 
 import React, { useState, Fragment } from "react";
 import Grid from '@material-ui/core/Grid';
+import Axios from "axios";
 import Table from "@material-ui/core/Table";
 import TableBody from "@material-ui/core/TableBody";
 import TableCell from "@material-ui/core/TableCell";
 import TableContainer from "@material-ui/core/TableContainer";
 import TableRow from "@material-ui/core/TableRow";
 import TableHead from "@material-ui/core/TableHead";
+import DeleteIcon from '@material-ui/icons/DeleteForever';
 import IconButton from "@material-ui/core/IconButton";
 import PropTypes from "prop-types";
 import TablePagination from "@material-ui/core/TablePagination";
@@ -16,24 +18,11 @@ import KeyboardArrowRight from "@material-ui/icons/KeyboardArrowRight";
 import LastPageIcon from "@material-ui/icons/LastPage";
 import { withStyles, makeStyles, useTheme } from "@material-ui/core/styles";
 import Paper from "@material-ui/core/Paper";
+import Alert from "react-s-alert";
 import Moment from "moment";
+import EditIcon from '@material-ui/icons/Edit';
 import VisibilityIcon from '@material-ui/icons/Visibility';
-import PlaylistAddCheckIcon from '@material-ui/icons/PlaylistAddCheck'
-import LinearProgress from '@material-ui/core/LinearProgress';
-
-const BorderLinearProgress = withStyles((theme) => ({
-    root: {
-        height: 5,
-        borderRadius: 2,
-    },
-    colorPrimary: {
-        backgroundColor: theme.palette.grey[theme.palette.type === 'light' ? 200 : 700],
-    },
-    bar: {
-        borderRadius: 2,
-        backgroundColor: '#17a2b8',
-    },
-}))(LinearProgress);
+import SweetAlert from "react-bootstrap-sweetalert";
 
 const useStyles1 = makeStyles((theme) => ({
     root: {
@@ -131,16 +120,21 @@ const StyledTableCell = withStyles((theme) => ({
     },
 }))(TableCell);
 
-export default function AcceptedListTable({
+export default function WorkorderListTable({
     workorderList,
     setWorkorderId,
+    setPoint,
+    setWorkorderNumber,
+    setCounterparty,
+    getWorkorderProducts,
     setOnlyView,
-    setActivePage,
-    isLoading,
+    getWorkorders
 }) {
 
     const [page, setPage] = useState(0);
     const [rowsPerPage, setRowsPerPage] = useState(10);
+    const [isLoading, setLoading] = useState(false);
+    const [sweetAlert, setSweetAlert] = useState(null);
 
     const handleChangePage = (event, newPage) => {
         setPage(newPage);
@@ -151,33 +145,77 @@ export default function AcceptedListTable({
         setPage(0);
     };
 
-    const viewWorkorder = (workorder_id) => {
-        setWorkorderId(workorder_id);
+    const editWorkorder = (workorder) => {
+        setPoint(workorder.point);
+        setCounterparty(workorder.counterparty);
+        setWorkorderId(workorder.id);
+        setWorkorderNumber(workorder.workorder_number);
+        getWorkorderProducts(workorder.id);
+    };
+
+    const viewWorkorder = (workorder) => {
         setOnlyView(true);
-        setActivePage(2);
+        setPoint(workorder.point);
+        setCounterparty(workorder.counterparty);
+        setWorkorderId(workorder.id);
+        setWorkorderNumber(workorder.workorder_number);
+        getWorkorderProducts(workorder.id);
+    };
+
+    const deleteWorkorder = (workorder) => {
+        setLoading(true);
+        Axios.post("/api/workorder/delete", { workorderId: workorder.id })
+            .then((res) => res.data)
+            .then((res) => {
+                setSweetAlert(null);
+                setLoading(false);
+                getWorkorders();
+            })
+            .catch((err) => {
+                console.log(err);
+                Alert.error(err, {
+                    position: "top-right",
+                    effect: "bouncyflip",
+                    timeout: 2000,
+                });
+                setSweetAlert(null);
+                setLoading(false);
+                getWorkorders();
+            });
+    };
+
+    const showConfiramtion = (workorder) => {
+        setSweetAlert(
+            <SweetAlert
+                warning
+                showCancel
+                confirmBtnText={"Да, удалить"}
+                cancelBtnText={"Нет"}
+                confirmBtnBsStyle="success"
+                cancelBtnBsStyle="default"
+                title={"Внимание"}
+                allowEscape={false}
+                closeOnClickOutside={false}
+                onConfirm={() => deleteWorkorder(workorder)}
+                onCancel={() => setSweetAlert(null)}
+            >
+                Заказ-наряд будет удалён без возможности восстановления. Удалить?
+            </SweetAlert>)
     }
 
     return (
         <Fragment>
+            {sweetAlert}
             <Grid
                 container
                 spacing={2}
             >
-                {isLoading &&
-                    <Grid item xs={12}>
-                        <BorderLinearProgress />
+                {workorderList.length === 0 &&
+                    <Grid item xs={12} style={{ textAlign: "center", color: '#6c757d' }}>
+                        У Вас пока нет заказ-нарядов
                     </Grid>
                 }
-                {workorderList.length === 0 && !isLoading ?
-                    <Grid item xs={12}>
-                        У Вас пока нет обработанных заказ-нарядов
-                    </Grid>
-                    :
-                    <Grid item xs={12}>
-                        Обработанные заказ-наряды
-                    </Grid>
-                }
-                {!isLoading && workorderList.length > 0 && <Grid item xs={12}>
+                <Grid item xs={12}>
                     <TableContainer
                         component={Paper}
                         style={{ boxShadow: "0px -1px 1px 1px white" }}
@@ -198,7 +236,10 @@ export default function AcceptedListTable({
                                         Дата создания
                                     </StyledTableCell>
                                     <StyledTableCell align="center">
-                                        Дата обработки
+                                        Дата принятия
+                                    </StyledTableCell>
+                                    <StyledTableCell align="center">
+                                        Статус
                                     </StyledTableCell>
                                     <StyledTableCell />
                                 </TableRow>
@@ -221,16 +262,34 @@ export default function AcceptedListTable({
                                                 {Moment(wo.date).format("DD.MM.YYYY HH:mm:ss")}
                                             </StyledTableCell >
                                             <StyledTableCell align="center">
-                                                {wo.approve_date ? Moment(wo.approve_date).format("DD.MM.YYYY HH:mm:ss") : "-"}
+                                                {wo.accept_date ? Moment(wo.accept_date).format("DD.MM.YYYY HH:mm:ss") : "-"}
+                                            </StyledTableCell>
+                                            <StyledTableCell align="center">
+                                                {wo.status === 'CREATED' ? <span style={{ color: "#17a2b8" }}>Создан</span>
+                                                    : wo.status === 'FORMATION' ? <span style={{ color: "#ffc107" }}>Формирование</span>
+                                                        : wo.status === 'INPROCESS' ? <span style={{ color: "#28a745" }}>В обработке</span>
+                                                            : wo.status === 'APPROVED' ? <span style={{ color: "#28a745" }}>Обработан</span>
+                                                                : wo.status === 'ACCEPTED' ? <span style={{ color: "#" }}>Принят</span> : ''}
                                             </StyledTableCell>
                                             <StyledTableCell align="right">
-                                                <IconButton onClick={() => viewWorkorder(wo.id)}
+                                                {(wo.status === 'FORMATION' || wo.status === 'CREATED') &&
+                                                    <IconButton
+                                                        title="Редактировать"
+                                                        disabled={isLoading}
+                                                        onClick={() => editWorkorder(wo)}>
+                                                        <EditIcon size="small" />
+                                                    </IconButton>}
+                                                <IconButton
                                                     title="Посмотреть"
-                                                >
-                                                    <VisibilityIcon
-                                                        size="small"
-                                                    />
+                                                    onClick={() => viewWorkorder(wo)}>
+                                                    <VisibilityIcon size="small" />
                                                 </IconButton>
+                                                {(wo.status === 'FORMATION' || wo.status === 'CREATED') &&
+                                                    <IconButton
+                                                        title="Удалить"
+                                                        disabled={isLoading} onClick={() => showConfiramtion(wo)}>
+                                                        <DeleteIcon size="small" />
+                                                    </IconButton>}
                                             </StyledTableCell>
                                         </TableRow>
                                     ))}
@@ -250,8 +309,8 @@ export default function AcceptedListTable({
                         onChangeRowsPerPage={handleChangeRowsPerPage}
                         ActionsComponent={TablePaginationActions}
                     />
-                </Grid>}
+                </Grid>
             </Grid>
         </Fragment >
     )
-}
+};

@@ -16,9 +16,8 @@ import InputBase from '@material-ui/core/InputBase';
 import SaveIcon from '@material-ui/icons/Save';
 import Alert from "react-s-alert";
 import SweetAlert from "react-bootstrap-sweetalert";
-import ErrorAlert from "../../../ReusableComponents/ErrorAlert";
+import ErrorAlert from "../../../../ReusableComponents/ErrorAlert";
 import LinearProgress from '@material-ui/core/LinearProgress';
-import ReactHTMLTableToExcel from "react-html-table-to-excel";
 
 const BorderLinearProgress = withStyles((theme) => ({
     root: {
@@ -163,16 +162,16 @@ export default function WorkorderTable({
                     setSweetAlert(
                         <SweetAlert
                             success
-                            showCancel
-                            confirmBtnText={"Закрыть"}
-                            cancelBtnText={"Выгрузить в Excel"}
+                            // showCancel
+                            // confirmBtnText={"Закрыть"}
+                            // cancelBtnText={"Выгрузить в Excel"}
                             confirmBtnBsStyle="default"
                             cancelBtnBsStyle="success"
                             title={""}
                             allowEscape={false}
                             closeOnClickOutside={false}
                             onConfirm={() => clearOptions()}
-                            onCancel={workOrderToExcel}
+                            // onCancel={workOrderToExcel}
                         >
                             Заказ-наряд успешно создан
                         </SweetAlert>)
@@ -330,18 +329,6 @@ export default function WorkorderTable({
                         </TableContainer>
                     </Grid>
                 </Fragment>}
-                {workorderProducts.length !== 0 &&
-                    <Grid item xs={12}>
-                        <ReactHTMLTableToExcel
-                            className="col-md-3 btn btn-sm btn-outline-success"
-                            table="table-to-xls"
-                            filename={`Заказ-наряд`}
-                            sheet="tablexls"
-                            buttonText="Выгрузить в excel"
-                        />
-                    </Grid>
-
-                }
                 {!onlyView && workorderProducts.length !== 0 &&
                     <Grid item xs={12} style={{ textAlign: "center" }}>
                         <button

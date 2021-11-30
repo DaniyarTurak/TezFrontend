@@ -3,9 +3,9 @@ import AcceptedListTable from "./AcceptedListTable";
 import CreatedListTable from "./CreatedListTable";
 import WorkorderDetails from "./WorkorderDetails";
 import Axios from "axios";
-import ErrorAlert from "../../../ReusableComponents/ErrorAlert";
+import ErrorAlert from "../../../../ReusableComponents/ErrorAlert";
 import Grid from '@material-ui/core/Grid';
-import Breadcrumb from "../../../Breadcrumb";
+import Breadcrumb from "../../../../Breadcrumb";
 
 export default function AcceptWorkorder() {
     const [workorderId, setWorkorderId] = useState("")

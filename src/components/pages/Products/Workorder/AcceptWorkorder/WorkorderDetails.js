@@ -13,10 +13,9 @@ import { withStyles } from "@material-ui/core/styles";
 import Paper from "@material-ui/core/Paper";
 import InputBase from '@material-ui/core/InputBase';
 import Alert from "react-s-alert";
-import Breadcrumb from "../../../Breadcrumb";
+import Breadcrumb from "../../../../Breadcrumb";
 import LinearProgress from '@material-ui/core/LinearProgress';
-import ReactHTMLTableToExcel from "react-html-table-to-excel";
-import ErrorAlert from "../../../ReusableComponents/ErrorAlert";
+import ErrorAlert from "../../../../ReusableComponents/ErrorAlert";
 import EditIcon from '@material-ui/icons/Edit';
 import Modal from 'react-modal';
 
@@ -215,7 +214,7 @@ export default function WorkorderDetails({
                                                     <StyledTableCell align='center'>
                                                         <UnitsInput
                                                             variant="outlined"
-                                                            value={product.accepted_units || ""}
+                                                            value={product.accepted_units}
                                                             onChange={(e) => unitsChange(e.target.value, idx)}
                                                         />
                                                     </StyledTableCell>
@@ -250,7 +249,7 @@ export default function WorkorderDetails({
                 console.log(products);
                 let temp = [];
                 products.forEach(el => {
-                    temp.push({ ...el, w_units: el.units })
+                    temp.push({ ...el, accepted_units: el.accepted_units ? el.accepted_units : el.units })
                 });
                 setProductDetails(temp);
                 setLoading(false);
@@ -461,18 +460,8 @@ export default function WorkorderDetails({
                                 </Table>
                             </TableContainer>
                         </Grid>
-                        {workorderProducts.length !== 0 &&
-                            <Grid item xs={6} style={{ textAlign: 'left' }}>
-                                <ReactHTMLTableToExcel
-                                    className="btn btn-sm btn-outline-success"
-                                    table="table-to-xls"
-                                    filename={`Заказа-наряд`}
-                                    sheet="tablexls"
-                                    buttonText="Выгрузить в Excel"
-                                />
-                            </Grid>}
                         {!onlyView &&
-                            <Grid item xs={6} style={{ textAlign: 'right' }}>
+                            <Grid item xs={12} style={{ textAlign: 'center' }}>
                                 <button
                                     className="btn btn-success"
                                     onClick={acceptWorkorders}

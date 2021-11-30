@@ -10,10 +10,9 @@ import TableRow from "@material-ui/core/TableRow";
 import TableHead from "@material-ui/core/TableHead";
 import { withStyles } from "@material-ui/core/styles";
 import Paper from "@material-ui/core/Paper";
-import Breadcrumb from "../../../Breadcrumb";
+import Breadcrumb from "../../../../Breadcrumb";
 import LinearProgress from '@material-ui/core/LinearProgress';
-import ReactHTMLTableToExcel from "react-html-table-to-excel";
-import ErrorAlert from "../../../ReusableComponents/ErrorAlert";
+import ErrorAlert from "../../../../ReusableComponents/ErrorAlert";
 import Modal from 'react-modal';
 import AttributeWindow from "./AttributeWindow";
 import Alert from "react-s-alert";
@@ -246,7 +245,7 @@ export default function WorkorderDetails({
                                                                 onClick={() => recieveWorkorder(cp.counterparty)}
                                                             >
                                                                 Принять
-                                                            </button> : "Товары приняты"}
+                                                            </button> : !onlyView ? "Товары приняты" : ""}
                                                         </StyledTableCell>
                                                     </TableRow>
                                                     {workorderProducts
@@ -274,7 +273,7 @@ export default function WorkorderDetails({
                                                                             {product.accepted_units}
                                                                         </StyledTableCell>
                                                                         <StyledTableCell align="right">
-                                                                            {!cp.status && <button className="btn btn-link btn-sm" onClick={() => showModal(product)}>
+                                                                            {(!cp.status && !onlyView) && <button className="btn btn-link btn-sm" onClick={() => showModal(product)}>
                                                                                 {product.attributes === "0" ? "Добавить атрибуты" : "Изменить атрибуты"}
                                                                             </button>}
                                                                         </StyledTableCell>
@@ -288,7 +287,7 @@ export default function WorkorderDetails({
                                 </Table>
                             </TableContainer>
                         </Grid>
-                        {workorderProducts.length !== 0 &&
+                        {/* {workorderProducts.length !== 0 &&
                             <Grid item xs={6} style={{ textAlign: 'left' }}>
                                 <ReactHTMLTableToExcel
                                     className="btn btn-sm btn-outline-success"
@@ -297,7 +296,7 @@ export default function WorkorderDetails({
                                     sheet="tablexls"
                                     buttonText="Выгрузить в Excel"
                                 />
-                            </Grid>}
+                            </Grid>} */}
                     </Fragment>}
             </Grid >
         </Fragment >
