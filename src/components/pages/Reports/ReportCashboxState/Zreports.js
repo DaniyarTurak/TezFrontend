@@ -17,11 +17,12 @@ import TableContainer from "@material-ui/core/TableContainer";
 import TableHead from "@material-ui/core/TableHead";
 import TableRow from "@material-ui/core/TableRow";
 import Paper from "@material-ui/core/Paper";
-
+import { makeStyles } from "@material-ui/core/styles";
 import "moment/locale/ru";
 import MaterialDateDefault from "../../../ReusableComponents/MaterialDateDefault";
 import ErrorAlert from "../../../ReusableComponents/ErrorAlert";
 import SkeletonTable from "../../../Skeletons/TableSkeleton";
+import DebtDetail from "./DebtDetail";
 Moment.locale("ru");
 
 const styles = (theme) => ({
@@ -35,8 +36,23 @@ const styles = (theme) => ({
     top: theme.spacing(1),
     color: theme.palette.grey[500],
   },
+  hover: {
+    cursor: "pointer",
+    color: "#162ece",
+    "&:hover": {
+      color: "#09135b",
+    },
+  },
 });
-
+const useStyles = makeStyles(() => ({
+  hover: {
+    cursor: "pointer",
+    color: "#162ece",
+    "&:hover": {
+      color: "#09135b",
+    },
+  },
+}));
 const StyledCell = withStyles((theme) => ({
   head: {
     backgroundColor: "#17a2b8",
@@ -82,6 +98,8 @@ export default function Zreports({
   const [isLoading, setLoading] = useState(false);
   const [dateFrom, setDateFrom] = useState(Moment().format("YYYY-MM-DD"));
   const [dateTo, setDateTo] = useState(Moment().format("YYYY-MM-DD"));
+  const classes = useStyles();
+
 
   useEffect(
     () => {
@@ -313,12 +331,10 @@ export default function Zreports({
                             minimumFractionDigits: 2,
                           })}
                         </StyledCell>
-                        <StyledCell className="tenge">
+                        <StyledCell className={rep.Debt? `tenge ${classes.hover}`  : "tenge"} >
                           {!rep.Debt
                             ? "0.00"
-                            : rep.Debt.toLocaleString("ru", {
-                              minimumFractionDigits: 2,
-                            })}
+                            : <DebtDetail rep={rep.Debt} />}
                         </StyledCell>
                         <StyledCell className="tenge">
                           {(
