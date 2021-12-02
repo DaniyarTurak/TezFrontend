@@ -22,7 +22,8 @@ export default function WorkorderAddProducts({
     getWorkorderProducts,
     setWorkorderId,
     onlyView,
-    setOnlyView
+    setOnlyView,
+    setWorkorderProducts
 }) {
     const useStylesAC = makeStyles(theme =>
         createStyles({
@@ -272,7 +273,15 @@ export default function WorkorderAddProducts({
                 });
                 setLoading(false);
             });
-    }
+    };
+
+    const goBack = () => {
+        setPoint("");
+        setCounterparty("");
+        setWorkorderId("");
+        setWorkorderProducts([]);
+        setOnlyView(false);
+    };
 
     return (
         <Fragment>
@@ -290,7 +299,7 @@ export default function WorkorderAddProducts({
                     ]} />
                 </Grid>
                 <Grid item xs={2} style={{ paddingBottom: "0px", textAlign: "right" }}>
-                    <button className="btn btn-link btn-sm" onClick={() => { setPoint(""); setCounterparty(""); setWorkorderId(""); setOnlyView(false) }}>
+                    <button className="btn btn-link btn-sm" onClick={goBack}>
                         Назад
                     </button>
                 </Grid>

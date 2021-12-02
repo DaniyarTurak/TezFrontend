@@ -169,6 +169,7 @@ export default function WorkorderListTable({
             .then((res) => {
                 setSweetAlert(null);
                 setLoading(false);
+                setWorkorderId("");
                 getWorkorders();
             })
             .catch((err) => {

@@ -1,8 +1,7 @@
 import React, { useState, Fragment } from "react";
 import MarginOptions from "./MarginOptions";
 import AdditionalOptions from "./AdditionalOptions";
-import SellingPrices from "./SellingPrices";
-import PurchasePrices from "./PurchasePrices";
+import SellAndPurchasePrices from "./SellAndPurchasePrices";
 import pricing from "../../../data/pricing.json";
 
 export default function PricingMasterPage() {
@@ -39,8 +38,7 @@ export default function PricingMasterPage() {
             <div className="col-md-12">
               {mode === "MarginOptions" && <MarginOptions />}
               {mode === "AdditionalOptions" && <AdditionalOptions />}
-              {mode === "PurchasePrices" && <PurchasePrices />}
-              {mode === "SellingPrices" && <SellingPrices />}
+              {mode === "SellAndPurchasePrices" && <SellAndPurchasePrices />}
             </div>
           </div>
         </Fragment>

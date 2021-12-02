@@ -75,30 +75,30 @@ export default function ReportSales({ companyProps }) {
   const [barcode, setBarcode] = useState("");
   const [products, setProducts] = useState([]);
 
-  const [sellType, setSellType] = useState({ value: "0", label: "Все" });
+  const [sellType, setSellType] = useState({ value: "@", label: "Все" });
   const sellTypes = [
     {
-      value: "0", label: 'Все'
+      value: "@", label: 'Все'
     },
     {
-      value: "1", label: 'Розничная'
+      value: "0", label: 'Розничная'
     },
     {
-      value: "2", label: 'Оптовая'
+      value: "1", label: 'Оптовая'
     },
   ];
 
-  const [clientType, setClientType] = useState({ value: "0", label: "Все" });
+  const [clientType, setClientType] = useState({ value: "@", label: "Все" });
 
   const clientTypes = [
     {
-      value: "0", label: 'Все'
+      value: "@", label: 'Все'
     },
     {
-      value: "1", label: 'Физ. лицо'
+      value: "0", label: 'Физ. лицо'
     },
     {
-      value: "2", label: 'Юр. лицо'
+      value: "1", label: 'Юр. лицо'
     },
   ]
 
@@ -522,7 +522,9 @@ export default function ReportSales({ companyProps }) {
         point: point.value,
         category: category.value,
         brand: brand.value,
-        type: type.value,
+        transaction_type: type.value,
+        sell_type: sellType.value,
+        client_type: clientType.value,
         attribute: attribute.value,
         attrval: attrval.label === "Все" ? "" : attrval.label,
         notattr,
@@ -559,16 +561,6 @@ export default function ReportSales({ companyProps }) {
   const getWithoutDate = () => {
     setLoading(true);
     setSubmitting(true);
-    console.log({
-      barcode,
-      counterparty: counterparty.value,
-      point: point.value,
-      category: category.value,
-      brand: brand.value,
-      type: type.value,
-      dateFrom,
-      dateTo
-    });
 
     Axios.get("/api/report/sales/withoutdate", {
       params: {
@@ -577,7 +569,9 @@ export default function ReportSales({ companyProps }) {
         point: point.value,
         category: category.value,
         brand: brand.value,
-        type: type.value,
+        transaction_type: type.value,
+        sell_type: sellType.value,
+        client_type: clientType.value,
         dateFrom,
         dateTo
       },

@@ -1,15 +1,15 @@
 
 import React, { useState, useEffect, Fragment } from "react";
 import Grid from '@material-ui/core/Grid';
-import PurchasePricesList from "./PurchasePricesList"
-import PurchasePriceAdd from "./PurchasePriceAdd";
+import PricesList from "./PricesList"
+import PriceAdd from "./PriceAdd";
 import Axios from "axios";
 import CustomSelect from "../../../ReusableComponents/CustomSelect";
 import ErrorAlert from "../../../ReusableComponents/ErrorAlert";
 import CustomAutocomplete from "../../../ReusableComponents/CustomAutocomplete";
 import Autocomplete from "@material-ui/lab/Autocomplete";
 
-export default function PurchasePrices() {
+export default function SellAndPurchasePrices() {
 
   const [counterparty, setCounterparty] = useState({ label: "", value: -1 });
   const [brand, setBrand] = useState({ label: "Без бренда", value: 0 });
@@ -35,7 +35,7 @@ export default function PurchasePrices() {
   ]
 
   useEffect(() => {
-    setWholeSale( JSON.parse(sessionStorage.getItem("isme-company-data")) && JSON.parse(sessionStorage.getItem("isme-company-data")).wholesale ? JSON.parse(sessionStorage.getItem("isme-company-data")).wholesale : false);
+    setWholeSale(JSON.parse(sessionStorage.getItem("isme-company-data")) && JSON.parse(sessionStorage.getItem("isme-company-data")).wholesale ? JSON.parse(sessionStorage.getItem("isme-company-data")).wholesale : false);
     getCategories();
     getBrands();
     getCounterparties();
@@ -112,7 +112,7 @@ export default function PurchasePrices() {
   const getPrices = () => {
     setLoading(true);
     let path = "";
-    if (object === 1) {
+    if (object === 1 && barcode !== "" && prodName !== "") {
       path = "/api/prices/listbycounterparty";
       setByCounterparty(true);
     }
@@ -271,7 +271,7 @@ export default function PurchasePrices() {
               {object === 1 ? 'Добавление закупочной цены' : ' Поиск товара'}
             </Grid>
             <Grid item xs={12}>
-              <PurchasePriceAdd
+              <PriceAdd
                 counterparty={counterparty}
                 brand={brand}
                 category={category}
@@ -287,7 +287,7 @@ export default function PurchasePrices() {
           </Fragment>
         }
         {isSearched && <Grid item xs={12}>
-          <PurchasePricesList
+          <PricesList
             counterparty={counterparty}
             priceList={priceList}
             setPriceList={setPriceList}
