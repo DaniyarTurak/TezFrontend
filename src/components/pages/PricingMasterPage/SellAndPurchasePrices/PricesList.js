@@ -148,7 +148,7 @@ const StyledTableCell = withStyles((theme) => ({
     },
 }))(TableCell);
 
-export default function PurchasePricesList({
+export default function SellPurchasePricesList({
     priceList,
     setPriceList,
     isLoading,
@@ -249,14 +249,14 @@ export default function PurchasePricesList({
                 sell.push(
                     {
                         id: el.product,
-                        price: el.sell_price,
+                        price: el.sell_price === "" ? null : el.sell_price,
                         counterparty: el.counterparty,
-                        wholesale_price: el.wholesale_price
+                        wholesale_price: el.wholesale_price === "" ? null : el.wholesale_price
                     }
                 );
                 buy.push({
                     id: el.product,
-                    price: el.purchase_price,
+                    price: el.purchase_price === "" ? null : el.purchase_price,
                     counterparty: el.counterparty,
                 })
             }
@@ -272,19 +272,19 @@ export default function PurchasePricesList({
                 setBarcode(null);
                 setProdName(null);
                 setSweetAlert(null);
-                if (res.prices_management.code === "exception" || res.prices_management.code === "error") {
+                if (res.prices_management.code !== "success") {
                     Alert.error(res.prices_management.text, {
                         position: "top-right",
                         effect: "bouncyflip",
                         timeout: 2000,
-                    }); 
+                    });
                 }
                 else {
                     Alert.success("Цены успешно сохранены", {
                         position: "top-right",
                         effect: "bouncyflip",
                         timeout: 2000,
-                    }); 
+                    });
                 }
             })
             .catch((err) => {
@@ -412,18 +412,6 @@ export default function PurchasePricesList({
                                                         тг.
                                                     </StyledTableCell>}
                                                 <StyledTableCell align="center">
-                                                    {/* {((pc.purchase_price.toString() !== pc.temp_purchase_price.toString())
-                                                        || (pc.sell_price.toString() !== pc.temp_sell_price.toString())
-                                                        || (pc.wholesale_price.toString() !== pc.temp_wholesale_price.toString()))
-                                                        &&
-                                                        <IconButton
-                                                            size="small"
-                                                            disabled={isLoading}
-                                                            onClick={() => {
-                                                                updatePrice(pc);
-                                                            }}>
-                                                            <SaveIcon fontSize="small" />
-                                                        </IconButton>} */}
                                                     {byCounterparty && <IconButton
                                                         size="small"
                                                         disabled={isLoading}

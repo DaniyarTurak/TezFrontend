@@ -238,7 +238,8 @@ export default function WorkorderTable({
                         В заказ-наряде пока нет товаров
                     </Grid>
                 }
-                {workorderProducts.length > 0 && !isLoading && <Fragment>
+                {workorderProducts.length > 0 && !isLoading && 
+                <Fragment>
                     <Grid item xs={12}>
                         <TableContainer
                             component={Paper}

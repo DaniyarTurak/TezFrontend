@@ -97,7 +97,7 @@ export default function ProductListTable({ productList, removeProduct }) {
           </TableBody>
           <TableFooter>
             <TableRow>
-              <StyledTableCell colSpan="3">Итого:</StyledTableCell>
+              <StyledTableCell colSpan={isWholesale ? "4" : "3"}>Итого:</StyledTableCell>
 
               <StyledTableCell align="center">
                 {productList.reduce((prev, cur) => {
