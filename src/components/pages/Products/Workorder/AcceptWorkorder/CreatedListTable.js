@@ -102,7 +102,7 @@ export default function AcceptedListTable({
             }
         });
         if (!flag) {
-            Alert.warning('В обработке нет заказ-нарядов', {
+            Alert.warning('В обработке нет наряд-заказов', {
                 position: "top-right",
                 effect: "bouncyflip",
                 timeout: 2000,
@@ -126,7 +126,7 @@ export default function AcceptedListTable({
                 }
                 {workorderList.length === 0 && !isLoading &&
                     <Grid item xs={12}>
-                        У Вас пока нет необработанных заказ-нарядов
+                        У Вас пока нет необработанных наряд-заказов
                     </Grid>
                 }
                 {!isLoading && workorderList.length > 0 &&
@@ -140,7 +140,7 @@ export default function AcceptedListTable({
                                     <TableHead>
                                         <TableRow style={{ fontWeight: "bold" }} >
                                             <StyledTableCell align="center">
-                                                № заказ-наряда
+                                                № наряд-заказа
                                             </StyledTableCell>
                                             <StyledTableCell align="center">
                                                 Торговая точка
@@ -213,7 +213,7 @@ export default function AcceptedListTable({
                                 className="btn btn-success"
                                 onClick={acceptWorkorders}
                             >
-                                Обработать заказ-наряды
+                                Обработать наряд-заказы
                             </button>
                         </Grid>
                     </Fragment>

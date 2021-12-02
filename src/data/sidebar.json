@@ -118,17 +118,17 @@
       },
       {
         "id": 8,
-        "name": "Создание заказ-наряда",
+        "name": "Создание наряд-заказа",
         "route": "product/createworkorder"
       },
       {
         "id": 9,
-        "name": "Обработка заказ-нарядов",
+        "name": "Обработка наряд-заказа",
         "route": "product/acceptworkorder"
       },
       {
         "id": 9,
-        "name": "Прием товаров по заказ-наряду",
+        "name": "Прием товаров по наряд-заказу",
         "route": "product/recievebyworkorder"
       }
     ]

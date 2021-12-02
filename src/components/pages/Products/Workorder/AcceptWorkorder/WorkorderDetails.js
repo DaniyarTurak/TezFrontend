@@ -194,7 +194,7 @@ export default function WorkorderDetails({
                                                 Торговая точка
                                             </StyledTableCell>
                                             <StyledTableCell align="center">
-                                                Количество в заказ-наряде
+                                                Количество в наряд-заказе
                                             </StyledTableCell>
                                             <StyledTableCell align="center">
                                                 Принятое количество
@@ -350,9 +350,9 @@ export default function WorkorderDetails({
                 <Grid item xs={10} style={{ paddingBottom: "0px" }}>
                     <Breadcrumb content={[
                         { caption: "Управление товарами" },
-                        { caption: "Обработка заказ-нарядов" },
-                        { caption: "Список заказ-нарядов", },
-                        { caption: onlyView ? "Просмотр заказ-наряда" : "Прием заказ-наряда", active: true },
+                        { caption: "Обработка наряд-заказов" },
+                        { caption: "Список наряд-заказов", },
+                        { caption: onlyView ? "Просмотр наряд-заказа" : "Прием наряд-заказа", active: true },
                     ]} />
                 </Grid>
                 <Grid item xs={2} style={{ paddingBottom: "0px", textAlign: "right" }}>
@@ -371,7 +371,7 @@ export default function WorkorderDetails({
                 }
                 {workorderProducts.length === 0 && !isLoading &&
                     <Grid item xs={12} style={{ textAlign: "center", color: '#6c757d' }}>
-                        В заказ-наряде пока нет товаров
+                        В наряд-заказе пока нет товаров
                     </Grid>}
                 {!isLoading && workorderProducts.length > 0 &&
                     <Fragment>
@@ -390,7 +390,7 @@ export default function WorkorderDetails({
                                                 Наименование
                                             </StyledTableCell>
                                             <StyledTableCell align="center">
-                                                {!onlyView ? "Количество в заказ-наряде" : "Количество"}
+                                                {!onlyView ? "Количество в наряд-заказе" : "Количество"}
                                             </StyledTableCell>
                                             {!onlyView &&
                                                 <StyledTableCell align="center">

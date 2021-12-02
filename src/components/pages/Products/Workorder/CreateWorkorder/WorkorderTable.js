@@ -173,7 +173,7 @@ export default function WorkorderTable({
                             onConfirm={() => clearOptions()}
                             // onCancel={workOrderToExcel}
                         >
-                            Заказ-наряд успешно создан
+                            Наряд-заказ успешно создан
                         </SweetAlert>)
                     setLoading(false);
                 }
@@ -210,7 +210,7 @@ export default function WorkorderTable({
                 const url = window.URL.createObjectURL(new Blob([res]));
                 const link = document.createElement("a");
                 link.href = url;
-                link.setAttribute("download", `Заказ-наряд.xlsx`);
+                link.setAttribute("download", `Наряд-заказ.xlsx`);
                 document.body.appendChild(link);
                 link.click();
                 setLoading(false);
@@ -235,7 +235,7 @@ export default function WorkorderTable({
                 }
                 {workorderProducts.length === 0 && !isLoading &&
                     <Grid item xs={12} style={{ textAlign: "center", color: '#6c757d' }}>
-                        В заказ-наряде пока нет товаров
+                        В наряд-заказе пока нет товаров
                     </Grid>
                 }
                 {workorderProducts.length > 0 && !isLoading && 
@@ -337,7 +337,7 @@ export default function WorkorderTable({
                             onClick={saveWorkorder}
                             disabled={isLoading}
                         >
-                            Отправить заказ-наряд
+                            Отправить наряд-заказ
                         </button>
                     </Grid>
                 }

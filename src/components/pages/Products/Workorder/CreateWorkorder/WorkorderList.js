@@ -23,7 +23,7 @@ export default function WorkorderList({
         <Fragment>
             {workorderList.length === 0 &&
                 <Grid item xs={12} style={{ textAlign: 'center', color: '#6c757d' }}>
-                    Заказ-наряды не найдены
+                    Наряд-заказы не найдены
                 </Grid>}
             {workorderList.length > 0 &&
                 <Grid item xs={12}>
