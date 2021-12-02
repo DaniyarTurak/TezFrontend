@@ -53,7 +53,6 @@ export default function AcceptedListTable({
     setOnlyView,
     setActivePage,
     isLoading,
-    workorderId,
     getWorkorders
 }) {
 
@@ -73,7 +72,6 @@ export default function AcceptedListTable({
                     effect: "bouncyflip",
                     timeout: 2000,
                 });
-                // setLoading(false);
             });
     };
 
@@ -93,7 +91,6 @@ export default function AcceptedListTable({
                     effect: "bouncyflip",
                     timeout: 2000,
                 });
-                // setLoading(false);
             });
     };
 

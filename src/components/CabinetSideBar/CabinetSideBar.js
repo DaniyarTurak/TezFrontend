@@ -44,6 +44,10 @@ const ConvertRoles = (roles) => {
           caption = "holder";
           break;
         }
+        case "8": {
+          caption = "catman";
+          break;
+        }
         default:
           caption = "";
       }

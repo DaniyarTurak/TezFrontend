@@ -559,6 +559,17 @@ export default function ReportSales({ companyProps }) {
   const getWithoutDate = () => {
     setLoading(true);
     setSubmitting(true);
+    console.log({
+      barcode,
+      counterparty: counterparty.value,
+      point: point.value,
+      category: category.value,
+      brand: brand.value,
+      type: type.value,
+      dateFrom,
+      dateTo
+    });
+
     Axios.get("/api/report/sales/withoutdate", {
       params: {
         barcode,
@@ -567,7 +578,7 @@ export default function ReportSales({ companyProps }) {
         category: category.value,
         brand: brand.value,
         type: type.value,
-        dateFrom, 
+        dateFrom,
         dateTo
       },
     })

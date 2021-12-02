@@ -127,7 +127,7 @@ export default function PurchasePriceAdd({
         }
         else {
             setLoading(true);
-
+ 
             Axios.post("/api/prices", {
                 deleted: false,
                 sell: [
@@ -147,7 +147,7 @@ export default function PurchasePriceAdd({
             })
                 .then((res) => res.data)
                 .then((res) => {
-                    if (res.prices_management.code === "exception" || res.prices_management.code === "error") {
+                    if (res.prices_management.code !== "success") {
                         Alert.error(res.prices_management.text, {
                             position: "top-right",
                             effect: "bouncyflip",
@@ -232,7 +232,7 @@ export default function PurchasePriceAdd({
                                     />
                                 )}
                             />
-                            <IconButton onClick={object === 1 ? searchProduct : getPrices} className={classes.iconButton} aria-label="search">
+                            <IconButton onClick={object === 1 ? searchProduct : getPrices}>
                                 <SearchIcon />
                             </IconButton>
                         </Paper>

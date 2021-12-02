@@ -89,6 +89,20 @@ const rules = {
       "couponspage",
     ],
   },
+  catman: {
+    static: [
+      "report",
+      "stockreport",
+      "prices",
+      "marginalpricepage",
+      "changeprice",
+      "pricingmaster",
+      "product",
+      "createworkorder",
+      "acceptworkorder",
+      "recievebyworkorder"
+    ]
+  },
   undefined: {
     static: [],
   },

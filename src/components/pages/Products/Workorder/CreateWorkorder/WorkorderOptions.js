@@ -3,10 +3,10 @@ import React, { useState, useEffect, Fragment } from "react";
 import Grid from '@material-ui/core/Grid';
 import Select from "react-select";
 import Axios from "axios";
-import ErrorAlert from "../../../ReusableComponents/ErrorAlert";
+import ErrorAlert from "../../../../ReusableComponents/ErrorAlert";
 import Alert from "react-s-alert";
 import SweetAlert from "react-bootstrap-sweetalert";
-import Breadcrumb from "../../../Breadcrumb";
+import Breadcrumb from "../../../../Breadcrumb";
 import TextField from "@material-ui/core/TextField";
 import { makeStyles, createStyles } from '@material-ui/core/styles';
 
@@ -27,7 +27,6 @@ export default function WorkorderOptions({
         control: (base, state) => ({
             ...base,
             backgroundColor: "white",
-            // border: '2px solid #17a2b8',
             boxShadow: state.isFocused ? null : null,
             "&:hover": {
                 border: '2px solid #17a2b8',
@@ -62,7 +61,6 @@ export default function WorkorderOptions({
     const classesAC = useStylesAC();
 
     const [points, setPoints] = useState([]);
-    const [counterparties, setCounterparties] = useState([]);
     const [isLoading, setLoading] = useState(false);
     const [haveActive, setHaveActive] = useState(false);
     const [sweetAlert, setSweetAlert] = useState(null);
@@ -70,7 +68,6 @@ export default function WorkorderOptions({
     useEffect(() => {
         setWorkorderNumber("");
         getPoints();
-        getCounterparties();
     }, []);
 
     useEffect(() => {
@@ -94,28 +91,10 @@ export default function WorkorderOptions({
             });
     };
 
-    const getCounterparties = () => {
-        Axios.get("/api/counterparties")
-            .then((res) => res.data)
-            .then((counterparties) => {
-                let temp = [];
-                counterparties.forEach(ct => {
-                    temp.push({ label: ct.name + " | " + ct.bin, value: ct.id })
-                });
-                setCounterparties(temp);
-            })
-            .catch((err) => console.log(err));
-    };
-
-
-
     const pointChange = (e) => {
         setPoint(e.value);
     };
 
-    const counterpartyChange = (e) => {
-        setCounterparty(e.value)
-    };
 
     const checkActive = () => {
         setLoading(true);

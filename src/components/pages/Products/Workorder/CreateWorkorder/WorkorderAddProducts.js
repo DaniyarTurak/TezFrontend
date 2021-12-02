@@ -5,7 +5,7 @@ import Grid from '@material-ui/core/Grid';
 import Axios from "axios";
 import Autocomplete from "@material-ui/lab/Autocomplete";
 import TextField from "@material-ui/core/TextField";
-import Breadcrumb from "../../../Breadcrumb";
+import Breadcrumb from "../../../../Breadcrumb";
 import Alert from "react-s-alert";
 import Modal from 'react-modal';
 import SearchIcon from '@material-ui/icons/Search';
@@ -18,7 +18,6 @@ export default function WorkorderAddProducts({
     workorderId,
     point,
     setPoint,
-    counterparty,
     setCounterparty,
     getWorkorderProducts,
     setWorkorderId,
@@ -92,7 +91,6 @@ export default function WorkorderAddProducts({
     const [prodName, setProdName] = useState("");
     const [barcode, setBarcode] = useState("");
     const [units, setUnits] = useState("");
-    const [price, setPrice] = useState("");
     const [isLoading, setLoading] = useState(false);
     const [productList, setProductList] = useState([]);
     const [selectedProd, setSelectedProd] = useState(null);
@@ -162,11 +160,9 @@ export default function WorkorderAddProducts({
             .then((res) => res.data)
             .then((products) => {
                 if (products.length === 1) {
-
                     setSelectedProd(products[0]);
                     setProdName(products[0].name);
                     setBarcode(products[0].code);
-                    setPrice(products[0].price !== null ? products[0].price : "")
                 }
                 else {
                     setSweetAlert(
@@ -260,7 +256,6 @@ export default function WorkorderAddProducts({
             })
             .then((res) => res.data)
             .then((res) => {
-                setPrice("");
                 setUnits("");
                 setProdName("");
                 setBarcode("");
@@ -350,7 +345,7 @@ export default function WorkorderAddProducts({
                                         />
                                     )}
                                 />
-                                <IconButton onClick={searchProduct} className={classes.iconButton} aria-label="search">
+                                <IconButton onClick={searchProduct}>
                                     <SearchIcon />
                                 </IconButton>
 
