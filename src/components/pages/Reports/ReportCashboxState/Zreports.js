@@ -334,7 +334,7 @@ export default function Zreports({
                         <StyledCell className={rep.Debt? `tenge ${classes.hover}`  : "tenge"} >
                           {!rep.Debt
                             ? "0.00"
-                            : <DebtDetail rep={rep.Debt} />}
+                            : <DebtDetail rep={rep.Debt} shiftNumber={rep.ShiftNumber}/>}
                         </StyledCell>
                         <StyledCell className="tenge">
                           {(

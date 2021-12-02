@@ -1,6 +1,7 @@
-import React, {useState, Fragment} from 'react';
+import React, {useState, Fragment, useEffect} from 'react';
 import Modal from '@material-ui/core/Modal';
 import Box from '@material-ui/core/Box';
+import Axios from "axios";
 import { makeStyles, withStyles } from "@material-ui/core/styles";
 import Table from "@material-ui/core/Table";
 import TableBody from "@material-ui/core/TableBody";
@@ -9,6 +10,7 @@ import TableContainer from "@material-ui/core/TableContainer";
 import TableHead from "@material-ui/core/TableHead";
 import TableRow from "@material-ui/core/TableRow";
 import Paper from "@material-ui/core/Paper";
+import ErrorAlert from "../../../ReusableComponents/ErrorAlert";
 
   const useStyles = makeStyles(() => ({
     modal: {
@@ -16,7 +18,7 @@ import Paper from "@material-ui/core/Paper";
       top: "50%",
       left: "50%",
       transform: "translate(-50%, -50%)",
-      width: 400,
+      width: 800,
       background: "white",
       border: "1px solid #000",
       padding: 20,
@@ -43,8 +45,9 @@ import Paper from "@material-ui/core/Paper";
   }))(TableCell);
 
 
-function DebtDetail({rep}) {
+function DebtDetail({rep, shiftNumber}) {
     const [openModal, setOpenModal] = useState(false)
+    const [debtDetails, setDebtDetails] = useState([])
     const classes = useStyles();
     const debtModalHandler = () => {
         setOpenModal(true)
@@ -53,13 +56,25 @@ function DebtDetail({rep}) {
         setOpenModal(false)
     }
 
+    useEffect(() => {
+      getDebtDetail(shiftNumber)
+    }, [rep])
+
+    const getDebtDetail = (shiftnumber) => {
+      Axios.get("/api/cashbox/debt_details", {params: {shiftnumber: shiftnumber}})
+        .then((res) => res.data)
+        .then((result) => {
+          setDebtDetails(result)
+        })
+        .catch((err) => {
+          ErrorAlert(err);
+        });
+    }
     return (
       <Fragment>
         <p
           onClick={() => {
             debtModalHandler();
-            console.log("hello");
-            console.log(openModal);
           }}
         >
           {rep.toLocaleString("ru", {
@@ -73,10 +88,37 @@ function DebtDetail({rep}) {
           onClose={closeModalHandler}
         >
           <Box className={classes.modal}>
-            <h6 id="child-modal-title">hello</h6>
-            <p id="child-modal-description">
-              Lorem ipsum, dolor sit amet consectetur adipisicing elit.
-            </p>
+            <h6>Список клиентов за текущую смену</h6>
+            <TableContainer
+              component={Paper}
+              style={{ marginTop: "1rem", marginBottom: "1rem" }}
+            >
+              <Table id="table-to-xls">
+                <TableHead>
+                  <TableRow>
+                    <StyledCell>Имя</StyledCell>
+                    <StyledCell>Оплачена в долг</StyledCell>
+                    <StyledCell>Общий долг</StyledCell>
+                  </TableRow>
+                </TableHead>
+                <TableBody>
+                  {debtDetails.map((data) => {
+                    return (
+                    <TableRow key={data.name}>
+                      <StyledCell>
+                        {data.name}
+                      </StyledCell>
+                      <StyledCell>
+                        {data.currdebt}
+                      </StyledCell>
+                      <StyledCell>
+                        {data.totaldebt}
+                      </StyledCell>
+                    </TableRow>
+                  )})}
+                </TableBody>
+              </Table>
+            </TableContainer>
           </Box>
         </Modal>
       </Fragment>
