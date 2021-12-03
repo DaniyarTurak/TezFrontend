@@ -293,8 +293,8 @@ export default function WorkorderAddProducts({
                 <Grid item xs={10} style={{ paddingBottom: "0px" }}>
                     <Breadcrumb content={[
                         { caption: "Настройки" },
-                        { caption: "Заказ-наряд" },
-                        { caption: "Новый заказ-наряд" },
+                        { caption: "Наряд-заказ" },
+                        { caption: "Новый наряд-заказ" },
                         { caption: "Добавление товаров", active: true },
                     ]} />
                 </Grid>
@@ -305,7 +305,7 @@ export default function WorkorderAddProducts({
                 </Grid>
                 {info && <Grid item xs={12}>
                     <span style={{ color: "gray" }}>
-                        Заказ-наряд: <b>{info.workorder_number}</b> | Контрагент: <b>{info.counterparty + " (" + info.bin + ")"}</b> | Торовая точка: <b>{info.point}</b> | Пользователь: <b>{info.username}</b>
+                        Наряд-заказ: <b>{info.workorder_number}</b> | Контрагент: <b>{info.counterparty + " (" + info.bin + ")"}</b> | Торовая точка: <b>{info.point}</b> | Пользователь: <b>{info.username}</b>
                     </span>
                 </Grid>}
                 {!onlyView &&

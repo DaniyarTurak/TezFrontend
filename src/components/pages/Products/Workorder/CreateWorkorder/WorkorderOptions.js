@@ -109,7 +109,7 @@ export default function WorkorderOptions({
                             warning
                             showCancel
                             confirmBtnText={"Продолжить"}
-                            cancelBtnText={"Нет, удалить заказ-наряд"}
+                            cancelBtnText={"Нет, удалить наряд-заказ"}
                             confirmBtnBsStyle="success"
                             cancelBtnBsStyle="danger"
                             title={"Внимание"}
@@ -118,7 +118,7 @@ export default function WorkorderOptions({
                             onConfirm={() => continueWorkorder(workorder[0])}
                             onCancel={() => deleteWorkorder(workorder[0])}
                         >
-                            У Вас имеется незавершенный заказ-наряд с такими параметрами, хотите продолжить заполнение?
+                            У Вас имеется незавершенный наряд-заказ с такими параметрами, хотите продолжить заполнение?
                         </SweetAlert>)
                 }
                 else {
@@ -211,8 +211,8 @@ export default function WorkorderOptions({
                 <Grid item xs={12} style={{ paddingBottom: "0px" }}>
                     <Breadcrumb content={[
                         { caption: "Настройки" },
-                        { caption: "Заказ-наряд" },
-                        { caption: "Новый заказ-наряд", active: true },
+                        { caption: "Наряд-заказ" },
+                        { caption: "Новый наряд-заказ", active: true },
                     ]} />
                 </Grid>
                 <Grid item xs={6}>
@@ -225,12 +225,12 @@ export default function WorkorderOptions({
                     />
                 </Grid>
                 <Grid item xs={6}>
-                    <label style={{ fontSize: "12px" }}>Номер заказ-наряда</label>
+                    <label style={{ fontSize: "12px" }}>Номер наряд-заказа</label>
                     <TextField
                         classes={{
                             root: classesAC.root,
                         }}
-                        placeholder="Номер заказ-наряда"
+                        placeholder="Номер наряд-заказа"
                         variant="outlined"
                         size="small"
                         value={workorderNumber}

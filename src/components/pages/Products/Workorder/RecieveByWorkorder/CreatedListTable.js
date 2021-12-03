@@ -64,7 +64,7 @@ export default function AcceptedListTable({
                 }
                 {workorderList.length === 0 && !isLoading &&
                     <Grid item xs={12}>
-                        У Вас пока нет заказ-нарядов
+                        У Вас пока нет наряд-заказов
                     </Grid>
                 }
                 {!isLoading && workorderList.length > 0 &&
@@ -78,7 +78,7 @@ export default function AcceptedListTable({
                                     <TableHead>
                                         <TableRow style={{ fontWeight: "bold" }} >
                                             <StyledTableCell align="center">
-                                                № заказ-наряда
+                                                № наряд-заказа
                                             </StyledTableCell>
                                             <StyledTableCell align="center">
                                                 Торговая точка
@@ -124,7 +124,7 @@ export default function AcceptedListTable({
                                 className="btn btn-success"
                                 onClick={() => setActivePage(2)}
                             >
-                                Обработать заказ-наряды
+                                Обработать наряд-заказы
                             </button>
                         </Grid>
                     </Fragment>

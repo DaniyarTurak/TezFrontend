@@ -9,8 +9,8 @@ import Breadcrumb from "../../../../Breadcrumb";
 
 export default function AcceptWorkorder() {
     const [workorderId, setWorkorderId] = useState("")
-    const [acceptedList, setAcceptedList] = useState([]); //только принятые заказ-наряды
-    const [createdList, setCreatedList] = useState([]); //только  созданные заказ-наряды
+    const [acceptedList, setAcceptedList] = useState([]);
+    const [createdList, setCreatedList] = useState([]);
     const [onlyView, setOnlyView] = useState(false);
     const [activePage, setActivePage] = useState(1);
     const [isLoading, setLoading] = useState(false);
@@ -56,8 +56,8 @@ export default function AcceptWorkorder() {
                         <Grid item xs={12} style={{ paddingBottom: "0px" }}>
                             <Breadcrumb content={[
                                 { caption: "Управление товарами" },
-                                { caption: "Обработка заказ-нарядов" },
-                                { caption: "Список заказ-нарядов", active: true },
+                                { caption: "Обработка наряд-заказова" },
+                                { caption: "Список наряд-заказова", active: true },
                             ]} />
                         </Grid>
                         <Grid item xs={12}>

@@ -256,7 +256,7 @@ export default function WorkorderAddAttributes({
                         closeOnClickOutside={false}
                         onConfirm={() => { setWorkorderId(""); setLoading(false); setSweetAlert(null); setActivePage(1) }}
                     >
-                        Товары по заказ-наряду успешно приняты на склад
+                        Товары по наряд-заказу успешно приняты на склад
                     </SweetAlert>);
                 setLoading(false);
 
@@ -302,9 +302,9 @@ export default function WorkorderAddAttributes({
                 <Grid item xs={10} style={{ paddingBottom: "0px" }}>
                     <Breadcrumb content={[
                         { caption: "Управление товарами" },
-                        { caption: "Прием товара по заказ-наряду" },
-                        { caption: "Список заказ-нарядов", },
-                        { caption: "Просмотр заказ-наряда", },
+                        { caption: "Прием товара по наряд-заказу" },
+                        { caption: "Список наряд-заказов", },
+                        { caption: "Просмотр наряд-заказа", },
                         { caption: "Добавление атрибутов", active: true },
                     ]} />
                 </Grid>
@@ -317,7 +317,7 @@ export default function WorkorderAddAttributes({
                     <Fragment>
                         <Grid item xs={2}>
                             <span style={{ color: "gray" }}>
-                                Заказ-наряд № <br />
+                                Наряд-заказ № <br />
                                 Контрагент <br />
                                 Торовая точка <br />
                                 Пользователь <br />
@@ -343,7 +343,7 @@ export default function WorkorderAddAttributes({
                 }
                 {workorderProducts.length === 0 && !isLoading &&
                     <Grid item xs={12} style={{ textAlign: "center", color: '#6c757d' }}>
-                        В заказ-наряде пока нет товаров
+                        В наряд-заказе пока нет товаров
                     </Grid>
                 }
                 {workorderProducts.length > 0 && !isLoading &&

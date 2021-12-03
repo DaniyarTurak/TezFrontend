@@ -200,7 +200,7 @@ export default function WorkorderListTable({
                 onConfirm={() => deleteWorkorder(workorder)}
                 onCancel={() => setSweetAlert(null)}
             >
-                Заказ-наряд будет удалён без возможности восстановления. Удалить?
+                Наряд-заказ будет удалён без возможности восстановления. Удалить?
             </SweetAlert>)
     }
 
@@ -213,7 +213,7 @@ export default function WorkorderListTable({
             >
                 {workorderList.length === 0 &&
                     <Grid item xs={12} style={{ textAlign: "center", color: '#6c757d' }}>
-                        У Вас пока нет заказ-нарядов
+                        У Вас пока нет наряд-заказов
                     </Grid>
                 }
                 <Grid item xs={12}>
@@ -225,7 +225,7 @@ export default function WorkorderListTable({
                             <TableHead>
                                 <TableRow style={{ fontWeight: "bold" }} >
                                     <StyledTableCell align="center">
-                                        № заказ-наряда
+                                        № наряд-заказа
                                     </StyledTableCell>
                                     <StyledTableCell align="center">
                                         Торговая точка

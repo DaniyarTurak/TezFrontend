@@ -55,8 +55,8 @@ export default function RecieveByWorkorder() {
                         <Grid item xs={12} style={{ paddingBottom: "0px" }}>
                             <Breadcrumb content={[
                                 { caption: "Управление товарами" },
-                                { caption: "Прием товара по заказ-наряду" },
-                                { caption: "Список заказ-нарядов", active: true },
+                                { caption: "Прием товара по наряд-заказу" },
+                                { caption: "Список наряд-заказов", active: true },
                             ]} />
                         </Grid>
                         <Grid item xs={12}>
