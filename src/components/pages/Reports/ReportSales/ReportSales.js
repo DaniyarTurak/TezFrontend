@@ -556,6 +556,9 @@ export default function ReportSales({ companyProps }) {
     if (e.target.checked) {
       getWithoutDate();
     }
+    else {
+      getSales();
+    }
   };
 
   const getWithoutDate = () => {

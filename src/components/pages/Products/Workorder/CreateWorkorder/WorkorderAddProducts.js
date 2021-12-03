@@ -245,6 +245,7 @@ export default function WorkorderAddProducts({
         }
     };
 
+    // добавление товара в наряд-заказ
     const insertProduct = () => {
         Axios.post("/api/workorder/details/insert",
             {

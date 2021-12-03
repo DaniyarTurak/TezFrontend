@@ -1,4 +1,6 @@
 
+// детализация товаров в наряд-заказе
+
 import React, { useState, useEffect, Fragment } from "react";
 import Grid from '@material-ui/core/Grid';
 import Axios from "axios";
@@ -102,6 +104,7 @@ export default function WorkorderDetails({
         getCounterparties();
     }, []);
 
+    //получение списка id обрабатываемых наряд-заказов для определения их количества и дальнейшей разбивки при детализации
     const getIds = () => {
         Axios.get("/api/workorder/ids", { params: { workorderId } })
             .then((res) => res.data)
@@ -114,14 +117,16 @@ export default function WorkorderDetails({
             });
     };
 
+
+    //получение списка товаров по наряд-заказу
     const getWorkorderProducts = () => {
         setLoading(true);
         let path = "";
         if (workorderId && workorderId !== "") {
-            path = "/api/workorder/details"
+            path = "/api/workorder/details" // подтягивает отдельный заказ наряд по его id
         }
         else {
-            path = "/api/workorder/details/grouped"
+            path = "/api/workorder/details/grouped" //группирует все товары наряд-заказов со статусом INPROCESS
         }
         Axios.get(path, { params: { workorderId } })
             .then((res) => res.data)
@@ -143,6 +148,7 @@ export default function WorkorderDetails({
             });
     };
 
+    //получение списка контрагентов по наряд-заказам
     const getCounterparties = () => {
         Axios.get("/api/workorder/cpsinworkorder", { params: { onlyView, workorderId: workorderId !== "" ? workorderId : null } })
             .then((res) => res.data)
@@ -154,6 +160,7 @@ export default function WorkorderDetails({
             });
     };
 
+    //изменение количества товара в наряд-заказе
     const unitsChange = (value, idx) => {
         setProductDetails(prevState => {
             let obj = prevState[idx];
@@ -240,6 +247,7 @@ export default function WorkorderDetails({
         }
     }, [productDetails])
 
+    //детализация товара по точкам (когда один и тот же товар заказан с разных точек)
     const getProductDetails = (product) => {
         console.log(product);
         setLoading(false);
@@ -260,6 +268,7 @@ export default function WorkorderDetails({
             });
     };
 
+    //сохранение изменений
     const saveChanges = () => {
         setLoading(true);
         let temp = [];
@@ -307,6 +316,7 @@ export default function WorkorderDetails({
         };
     };
 
+    //завершение обработки наряд-заказа и присвоение ему статуса APPROVED
     const acceptWorkorders = () => {
         let flag = false;
         workorderProducts.forEach(element => {
@@ -325,6 +335,39 @@ export default function WorkorderDetails({
             Axios.post("/api/workorder/update/status", { workorders })
                 .then((res) => res.data)
                 .then((res) => {
+                    //  выгрузка наряд-заказа в excel по контрагентам
+                    // counterparties.forEach(cp => {
+                    //     let temp = [];
+                    //     workorderProducts.forEach(p => {
+                    //         if (cp.counterparty === p.counterparty) {
+                    //             temp.push(p);
+                    //         }
+                    //     });
+                    //     console.log(temp);
+            
+                    //     Axios.get("/api/report/transactions/excel", {
+                    //         responseType: "blob",
+                    //         params:
+                    //             temp
+                    //         ,
+                    //     })
+                    //         .then((res) => res.data)
+                    //         .then((stockbalance) => {
+                    //             const url = window.URL.createObjectURL(new Blob([stockbalance]));
+                    //             const link = document.createElement("a");
+                    //             link.href = url;
+                    //             link.setAttribute(
+                    //                 "download",
+                    //                 `Наряд-заказ.xlsx`
+                    //             );
+                    //             document.body.appendChild(link);
+                    //             link.click();
+                    //         })
+                    //         .catch((err) => {
+                    //             ErrorAlert(err);
+                    //         });
+                    // });
+
                     getWorkorders();
                     setActivePage(1);
                 })
@@ -337,7 +380,11 @@ export default function WorkorderDetails({
                     });
                     setLoading(false);
                 });
-        }
+        };
+
+
+
+
     }
 
     return (

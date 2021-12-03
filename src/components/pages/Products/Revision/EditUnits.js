@@ -1,3 +1,5 @@
+//Модальное окно изменения количества товара в ревизии
+
 import React, { Fragment, useState, useEffect } from "react";
 import Grid from '@material-ui/core/Grid';
 import Axios from "axios";
@@ -43,6 +45,7 @@ export default function EditUnits({
         }
     }, [])
 
+    //со изменённого количества
     const sendUnits = () => {
         if (tempUnits !== "") {
             setLoading(true);

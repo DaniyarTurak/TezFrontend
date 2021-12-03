@@ -56,6 +56,7 @@ export default function AcceptedListTable({
     getWorkorders
 }) {
 
+    // добавление наряд-заказа к списку обрабатываемых
     const addToAccepting = (id) => {
         Axios.post("/api/workorder/manage", {
             workorder_id: id,
@@ -75,6 +76,7 @@ export default function AcceptedListTable({
             });
     };
 
+    // удаление наряд-заказа из списка обрабатываемых
     const deleteFromAccepting = (id) => {
         Axios.post("/api/workorder/manage", {
             workorder_id: id,

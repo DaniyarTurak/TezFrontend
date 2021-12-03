@@ -1,3 +1,5 @@
+//Обработка наряд-заказа
+
 import React, { useState, Fragment, useEffect } from "react";
 import AcceptedListTable from "./AcceptedListTable";
 import CreatedListTable from "./CreatedListTable";
@@ -19,6 +21,7 @@ export default function AcceptWorkorder() {
         getWorkorders();
     }, [])
 
+    //получение списка наряд-заказов
     const getWorkorders = () => {
         setLoading(true);
         Axios.get("/api/workorder/list")
@@ -34,8 +37,8 @@ export default function AcceptWorkorder() {
                         if (el.status === 'APPROVED')
                         a.push(el)
                     }
-                    setAcceptedList(a);
-                    setCreatedList(c)
+                    setAcceptedList(a); // массив обработанных наряд-заказов
+                    setCreatedList(c); // массив созданных и обрабатываемых наряд-заказов
                 });
                 setLoading(false);
             })

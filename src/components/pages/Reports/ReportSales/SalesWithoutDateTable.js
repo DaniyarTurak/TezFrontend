@@ -233,6 +233,17 @@ export default function SalesTable({
                 <StyledTableCell rowSpan="2">
                   <span
                     className="hand"
+                    onClick={() => orderByFunction("code")}
+                  >
+                    Штрих-код
+                  </span>
+                  {orderBy === "code" && (
+                    <OrderArrowMaterial ascending={ascending} />
+                  )}
+                </StyledTableCell>
+                <StyledTableCell rowSpan="2">
+                  <span
+                    className="hand"
                     onClick={() => orderByFunction("name")}
                   >
                     Наименование товара
@@ -324,13 +335,14 @@ export default function SalesTable({
                     >
                       {product.type}
                     </StyledTableCell>
+                    <StyledTableCell>{product.code}</StyledTableCell>
                     <StyledTableCell>{product.name}</StyledTableCell>
                     <StyledTableCell align="center">
                       {parseFloat(product.units).toLocaleString("ru", {
                         minimumFractionDigits: 2,
                       })}
                     </StyledTableCell>
-                    <StyledTableCell align="center"  className="tenge">
+                    <StyledTableCell align="center" className="tenge">
                       {parseFloat(product.totalprice).toLocaleString("ru", {
                         minimumFractionDigits: 2,
                       })}

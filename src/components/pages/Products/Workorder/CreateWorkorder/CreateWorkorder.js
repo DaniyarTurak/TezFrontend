@@ -17,6 +17,7 @@ export default function CreateWorkorder() {
   const [workorderProducts, setWorkorderProducts] = useState([]);
   const [workorderList, setWorkorderList] = useState([]);
 
+  //список товаров из наряд-заказа
   const getWorkorderProducts = (workorder_id) => {
     Axios.get("/api/workorder/details", { params: { workorderId: workorderId || workorder_id } })
       .then((res) => res.data)
@@ -36,6 +37,7 @@ export default function CreateWorkorder() {
     setWorkorderId("");
   }
 
+  //список наряд-заказов
   const getWorkorders = () => {
     Axios.get("/api/workorder/list")
       .then((res) => res.data)

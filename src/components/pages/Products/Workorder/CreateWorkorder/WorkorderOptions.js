@@ -14,12 +14,9 @@ export default function WorkorderOptions({
     point,
     setPoint,
     counterparty,
-    setCounterparty,
-    workorderId,
     setWorkorderId,
     workorderNumber,
     setWorkorderNumber,
-    setWorkorderProducts,
     getWorkorderProducts,
     getWorkorders
 }) {
@@ -95,7 +92,6 @@ export default function WorkorderOptions({
         setPoint(e.value);
     };
 
-
     const checkActive = () => {
         setLoading(true);
         Axios.get("/api/workorder/checkactive", { params: { point: point, counterparty: counterparty } })
@@ -141,6 +137,7 @@ export default function WorkorderOptions({
         setLoading(false);
     };
 
+    //удаление наряд-заказа
     const deleteWorkorder = (workorder) => {
         console.log(workorder.id);
         Axios.post("/api/workorder/delete", { workorderId: workorder.id })
@@ -164,8 +161,8 @@ export default function WorkorderOptions({
             });
     };
 
+    //создание наряд-заказа
     const createWorkorder = () => {
-        console.log(workorderNumber)
         let send = {};
         if (workorderNumber !== "") {
             send = { point, workorder_number: workorderNumber };
@@ -173,7 +170,6 @@ export default function WorkorderOptions({
         else {
             send = { point };
         };
-
         Axios.post("/api/workorder/manage", send)
             .then((res) => res.data[0].workorder_management)
             .then((res) => {
