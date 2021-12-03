@@ -104,18 +104,20 @@ function DebtDetail({rep, shiftNumber}) {
                 <TableBody>
                   {debtDetails.map((data) => {
                     return (
-                    <TableRow key={data.name}>
-                      <StyledCell>
-                        {data.name}
-                      </StyledCell>
-                      <StyledCell>
-                        {data.currdebt}
-                      </StyledCell>
-                      <StyledCell>
-                        {data.totaldebt}
-                      </StyledCell>
-                    </TableRow>
-                  )})}
+                      <TableRow key={data.name}>
+                        <StyledCell>{data.name}</StyledCell>
+                        <StyledCell className="tenge">
+                          {data.currdebt.toLocaleString("ru", {
+                            minimumFractionDigits: 2,
+                          })}
+                        </StyledCell>
+                        <StyledCell className="tenge">
+                          {data.totaldebt.toLocaleString("ru", {
+                            minimumFractionDigits: 2,
+                          })}
+                        </StyledCell>
+                      </TableRow>
+                    );})}
                 </TableBody>
               </Table>
             </TableContainer>
