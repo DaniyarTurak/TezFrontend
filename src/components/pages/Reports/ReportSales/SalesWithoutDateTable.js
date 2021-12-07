@@ -368,6 +368,7 @@ export default function SalesTable({
               <TableRow>
                 <StyledTableCell colSpan="2">Итого</StyledTableCell>
                 <StyledTableCell />
+                <StyledTableCell />
                 <StyledTableCell align="center">
                   {sales
                     .reduce((prev, cur) => {
