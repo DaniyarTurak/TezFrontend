@@ -20,6 +20,7 @@ import ReportTransactions from "./ReportTransactions";
 import AbcXyzPage from "./AbcXyzPage";
 import ShelfLifePage from "./ShelfLifePage";
 import ReconciliationPage from "./ReconciliationPage";
+import ReportDebtPage from "./ReportDebtPage";
 
 export default function ReportPage({ type, history, location }) {
   const [parameters, setParameters] = useState("");
@@ -148,6 +149,9 @@ export default function ReportPage({ type, history, location }) {
                   history={history}
                   location={location}
                 />
+              )}
+               {typeMode === "report" && reportMode === "reportdebtpage" && (
+                <ReportDebtPage history={history} location={location} />
               )}
 
               {typeMode === "stockreport" &&

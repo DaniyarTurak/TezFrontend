@@ -31,7 +31,6 @@ export default function SingleMaterialDate({ value, onChange, label }) {
       <MuiPickersUtilsProvider utils={DateFnsUtils} locale={ruLocale}>
         <KeyboardDatePicker
           disableToolbar
-          autoOk
           variant="inline"
           invalidDateMessage="Введите корректную дату"
           format="dd.MM.yyyy"
@@ -46,7 +45,6 @@ export default function SingleMaterialDate({ value, onChange, label }) {
           inputProps={{
             style: { fontSize: ".875rem" },
           }}
-          value={value}
           onChange={onChange}
           KeyboardButtonProps={{
             "aria-label": "change date",
