@@ -12,13 +12,15 @@ import TableContainer from "@material-ui/core/TableContainer";
 import TableHead from "@material-ui/core/TableHead";
 import TableRow from "@material-ui/core/TableRow";
 import ErrorAlert from "../../../ReusableComponents/ErrorAlert";
-import TextField from '@mui/material/TextField';
-import LocalizationProvider from '@mui/lab/LocalizationProvider';
+import TextField from '@material-ui/core/TextField';
 import SkeletonTable from "../../../Skeletons/TableSkeleton";
-import DatePicker from '@mui/lab/DatePicker';
-import AdapterDateFns from '@mui/lab/AdapterDateFns';
 import ruLocale from 'date-fns/locale/ru';
 import ClearIcon from "@material-ui/icons/Clear";
+import {
+  MuiPickersUtilsProvider,
+  KeyboardDatePicker,
+} from "@material-ui/pickers";
+import DateFnsUtils from "@date-io/date-fns";
 
 
 const useStyles = makeStyles((theme) => ({
@@ -92,35 +94,39 @@ function ReportDebtPage() {
             <Paper className={classes.paper}>
               <Grid container spacing={3}>
                 <Grid item xs={3}>
-                  <LocalizationProvider
-                    dateAdapter={AdapterDateFns}
+                  <MuiPickersUtilsProvider
+                    utils={DateFnsUtils}
                     locale={ruLocale}
                   >
-                    <DatePicker
+                    <KeyboardDatePicker
                       label={"Долг на дату"}
                       value={date}
                       renderInput={(params) => <TextField {...params} />}
                       onChange={(newValue) => {
                         setDate(newValue);
                       }}
+                      disableToolbar
+                      autoOk
+                      variant="inline"
+                      format="dd.MM.yyyy"
                       InputProps={
-                        date && (
-                        {
-                        startAdornment: (
-                          <IconButton
-                            onClick={() => {
-                              setDate(null);
-                              setFilterDate(null);
-                            }}
-                            disabled={!date}
-                            style={{ order: 1 }}
-                          >
-                            <ClearIcon color="disabled" fontSize="small" />
-                          </IconButton>
-                        ),
-                      })}
+                        date && {
+                          startAdornment: (
+                            <IconButton
+                              onClick={() => {
+                                setDate(null);
+                                setFilterDate(null);
+                              }}
+                              disabled={!date}
+                              style={{ order: 1 }}
+                            >
+                              <ClearIcon color="disabled" fontSize="small" />
+                            </IconButton>
+                          ),
+                        }
+                      }
                     />
-                  </LocalizationProvider>
+                  </MuiPickersUtilsProvider>
                 </Grid>
                 <Grid item xs={2} className={classes.buttonGrid}>
                   <Button
