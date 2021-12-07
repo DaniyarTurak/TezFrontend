@@ -67,8 +67,7 @@ function ReportDebtPage() {
 
 
     useEffect(() => {
-      getDebtData(filterDate)
-      console.log(filterDate)
+      getDebtData(date)
     }, [filterDate])
 
   
@@ -142,6 +141,8 @@ function ReportDebtPage() {
                         "-" +
                         date.getDate();
                       setFilterDate(Date);
+                      setLoading(true);
+                      getDebtData(Date);
                     }}
                   >
                     Поиск
