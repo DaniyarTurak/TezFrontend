@@ -482,7 +482,6 @@ export default function ReportSales({ companyProps }) {
         ErrorAlert(err);
       });
   };
-
   const handleSearch = () => {
     if (withoutDate) {
       getWithoutDate();
@@ -495,7 +494,7 @@ export default function ReportSales({ companyProps }) {
           effect: "bouncyflip",
           timeout: 3000,
         });
-      } else if (dateFrom > dateTo) {
+      } else if (dateFrom > dateTo || Moment(dateTo).format("YYYY-MM-DD") > Moment(dateFrom).add(1,'M').format("YYYY-MM-DD")  ) {
         return Alert.warning(`Заполните дату правильно`, {
           position: "top-right",
           effect: "bouncyflip",

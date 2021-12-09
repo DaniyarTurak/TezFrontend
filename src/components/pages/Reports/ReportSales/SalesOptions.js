@@ -1,6 +1,7 @@
 import React, { Fragment } from "react";
 import FormControlLabel from "@material-ui/core/FormControlLabel";
 import Checkbox from "@material-ui/core/Checkbox";
+import moment from 'moment';
 import Grid from "@material-ui/core/Grid";
 import TextField from "@material-ui/core/TextField";
 import MaterialDateDefault from "../../../ReusableComponents/MaterialDateDefault";
@@ -69,6 +70,7 @@ export default function SalesOptions({
           dateToChange={dateToChange}
           searchInvoices={handleSearch}
           disableButton={isSubmitting}
+          maxDate={moment(dateFrom).add(1,'M')}
         />
       </Grid>
       <Grid item xs={6}>
