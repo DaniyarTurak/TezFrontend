@@ -483,25 +483,25 @@ export default function ReportSales({ companyProps }) {
       });
   };
   const handleSearch = () => {
-    if (withoutDate) {
-      getWithoutDate();
-    }
-    else {
-      if (!dateFrom || !dateTo) {
-        const text = !dateFrom ? "Дата с" : !dateTo ? "Дата по" : "Фильтр";
-        return Alert.warning(`Заполните поле  ${text}`, {
-          position: "top-right",
-          effect: "bouncyflip",
-          timeout: 3000,
-        });
-      } else if (dateFrom > dateTo || Moment(dateTo).format("YYYY-MM-DD") > Moment(dateFrom).add(1,'M').format("YYYY-MM-DD")  ) {
-        return Alert.warning(`Заполните дату правильно`, {
-          position: "top-right",
-          effect: "bouncyflip",
-          timeout: 3000,
-        });
+    if (!dateFrom || !dateTo) {
+      const text = !dateFrom ? "Дата с" : !dateTo ? "Дата по" : "Фильтр";
+      return Alert.warning(`Заполните поле  ${text}`, {
+        position: "top-right",
+        effect: "bouncyflip",
+        timeout: 3000,
+      });
+    } else if (dateFrom > dateTo || Moment(dateTo).format("YYYY-MM-DD") > Moment(dateFrom).add(1,'M').format("YYYY-MM-DD")  ) {
+      return Alert.warning(`Заполните дату правильно`, {
+        position: "top-right",
+        effect: "bouncyflip",
+        timeout: 3000,
+      });
+    } else {
+      if (withoutDate) {
+        getWithoutDate();
+      } else {
+        getSales();
       }
-      getSales();
     }
   };
 
