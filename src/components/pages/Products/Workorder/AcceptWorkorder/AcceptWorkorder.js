@@ -34,7 +34,7 @@ export default function AcceptWorkorder() {
                         c.push(el)
                     }
                     else {
-                        if (el.status === 'APPROVED')
+                        if (el.status === 'ACCEPTED')
                         a.push(el)
                     }
                     setAcceptedList(a); // массив обработанных наряд-заказов
