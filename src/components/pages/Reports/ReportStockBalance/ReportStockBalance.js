@@ -51,7 +51,7 @@ export default function ReportStockBalance({ companyProps }) {
   const [attributes, setAttributes] = useState([]);
   const [attributeTypes, setAttributeTypes] = useState([]);
   const [attrval, setAttrVal] = useState(
-    attribute.format === "SPR" ? { value: "", label: "Все" } : ""
+    // 
   );
   const [barcode, setBarcode] = useState("");
   const [brand, setBrand] = useState({ value: "@", label: "Все" });
@@ -189,7 +189,7 @@ export default function ReportStockBalance({ companyProps }) {
   }, [
     productSelectValue,
     selectedStock,
-    // counterparty,
+    counterparty,
     category,
     brand,
     attribute,
@@ -228,6 +228,7 @@ export default function ReportStockBalance({ companyProps }) {
   const onDateChange = (date) => {
     setDateChanging(true);
     setDate(date);
+    console.log(date)
   };
 
   const onBarcodeChange = (e) => {
@@ -271,16 +272,24 @@ export default function ReportStockBalance({ companyProps }) {
   };
 
   const onAttributeChange = (event, a) => {
-    console.log(a);
     setAttribute(a);
+    console.log(a)
     setAttrVal("");
     getAttributeTypes(a.value);
   };
 
   const onAttributeTypeChange = (event, a) => {
-    setAttrVal(event.target.value);
+    setAttrVal({value: a.value, label: a.label})
   };
 
+  const onAttributeTextFieldChange = (event) => {
+    event.preventDefault()
+    setAttrVal(event.target.value);
+  }
+
+  const onAttributeDateChange = (date) => {
+    setAttrVal(Moment(date).format("YYYY-MM-DD") )
+  }
   const onGroupingChange = (event) => {
     setGrouping(event.target.checked);
   };
@@ -311,6 +320,7 @@ export default function ReportStockBalance({ companyProps }) {
     if (reason === "input") getCategories(c);
   };
 
+  console.log(attrval)
   const getAttributes = () => {
     Axios.get("/api/attributes", { params: { deleted: false, company } })
       .then((res) => res.data)
@@ -520,7 +530,7 @@ export default function ReportStockBalance({ companyProps }) {
       Axios.get("/api/report/stockbalance", {
         params: {
           attribute: attribute.value,
-          attrval: attrval === "Все" ? "" : attrval,
+          attrval: attrval === "Все" ? "" : attribute.format === "SPR" ? attrval.value : attrval,
           barcode,
           brand: brand.value,
           category: category.value,
@@ -683,12 +693,14 @@ export default function ReportStockBalance({ companyProps }) {
         onCategoryChange={onCategoryChange}
         onCategoryListInput={onCategoryListInput}
         onAttributeChange={onAttributeChange}
+        onAttributeTextFieldChange = {onAttributeTextFieldChange}
         productSelectValue={productSelectValue}
         products={products}
         selectedStock={selectedStock}
         stockList={stockList}
         handleCounterpartyChange={handleCounterpartyChange}
         handleCounterpartyInputChange={handleCounterpartyInputChange}
+        onAttributeDateChange = {onAttributeDateChange}
       />
 
       {!isLoading && stockbalance.length === 0 && (

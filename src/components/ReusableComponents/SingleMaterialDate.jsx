@@ -24,7 +24,7 @@ const useStyles = makeStyles((theme) => ({
   button: { width: "12rem" },
 }));
 
-export default function SingleMaterialDate({ value, onChange, label }) {
+export default function SingleMaterialDate({ value, onChange, label, margin}) {
   const classes = useStyles();
   return (
     <div>
@@ -34,7 +34,7 @@ export default function SingleMaterialDate({ value, onChange, label }) {
           variant="inline"
           invalidDateMessage="Введите корректную дату"
           format="dd.MM.yyyy"
-          margin="normal"
+          margin={margin}
           id="date-from-default"
           label={label}
           InputLabelProps={{
@@ -45,6 +45,7 @@ export default function SingleMaterialDate({ value, onChange, label }) {
           inputProps={{
             style: { fontSize: ".875rem" },
           }}
+          value={value}
           onChange={onChange}
           KeyboardButtonProps={{
             "aria-label": "change date",
