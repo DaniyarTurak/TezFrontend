@@ -19,9 +19,9 @@ import IconButton from "@material-ui/core/IconButton";
 import SearchIcon from "@material-ui/icons/Search";
 import Button from "@material-ui/core/Button";
 import CircularProgress from "@material-ui/core/CircularProgress";
-import AddAttribute from "./AddAttribute";
-import AddAttributeChar from "./AddAttributeChar";
 import ErrorAlert from "../../../../ReusableComponents/ErrorAlert";
+
+
 const useStyles = makeStyles((theme) => ({
   topDiv: {
     borderRadius: "4px",
@@ -63,16 +63,29 @@ const useStyles = makeStyles((theme) => ({
     },
   },
 }));
+const useStyles2 = makeStyles((theme) => ({
+  underline: {
+    "&&&:before": {
+      borderBottom: "none",
+    },
+    "&&:after": {
+      borderBottom: "none",
+    },
+  },
+}));
 
 function WeightProducts() {
-    const [isLoading, setLoading] = useState(false);
-    const [isValidate, setValidate] = useState(false);
-    const [isValidateName, setValidateName] = useState(false);
-    const [isValidateUnit, setValidateUnit] = useState(false);
-    const [unitOptions, setUnitOptions] = useState([]);
-    const [productName, setProductName] = useState("");
+  const [isLoading, setLoading] = useState(false);
+  const [isValidate, setValidate] = useState(false);
+  const [isValidateName, setValidateName] = useState(false);
+  const [isValidateUnit, setValidateUnit] = useState(false);
+  const [unitOptions, setUnitOptions] = useState([]);
+  const [productName, setProductName] = useState("");
+  const [unitspr, setUnitspr] = useState(1);
+  const [tax, setTax] = useState(1);
+  const classes = useStyles();
+  const classes2 = useStyles2();
 
-    
   const onProductNameChange = (e) => {
     let pn = e.target.value;
     if (!pn === 0) {
@@ -95,11 +108,12 @@ function WeightProducts() {
     }
     setProductName(pn);
   };
+  const clearForm = () => {
+    setProductName("");
+  };
 
   const getProductByName = (name) => {
-    Axios.get("/api/", {
-      params: { barcode: barcodeChanged, all: 1 },
-    })
+    Axios.get("/api/")
       .then((res) => res.data)
       .then((product) => {
         if (product !== "") {
@@ -112,18 +126,16 @@ function WeightProducts() {
           clearForm();
         }
         else {
-          Axios.get("/api/nomenclature/spr", {
-            params: { barcode: barcode },
-          })
+          Axios.get("/api/nomenclature/spr")
             .then((res) => res.data)
             .then((res) => {
               if (res !== "") {
                 setProductName(res.name);
-                 
+
                 setLoading(false);
               }
               else {
-                Alert.warning(`Товар со штрих-кодом ${barcode} не найден. Вы можете его добавить.`, {
+                Alert.warning(`Товар Товар с названием ${name} не найден. Вы можете его добавить.`, {
                   position: "top-right",
                   effect: "bouncyflip",
                   timeout: 4000,
@@ -142,7 +154,12 @@ function WeightProducts() {
         console.log(err);
       });
   };
-
+  const unitListChange = (e, unitsprChanged) => {
+    setUnitspr(unitsprChanged);
+  };
+  const onUnitListInput = (e, unitspr) => {
+    if (unitspr.lenght > 0) setUnitspr(unitspr);
+  };
   const handleSearch = (pn) => {
     pn.preventDefault();
     if (!pn) {
@@ -155,52 +172,66 @@ function WeightProducts() {
     setLoading(true);
     getProductByName(pn);
   };
+  const getTaxes = (inputValue) => {
+    Axios.get("/api/taxes", { params: { category: inputValue } })
+      .then((res) => res.data)
+      .catch((err) => {
+        console.log(err);
+      });
+  };
+  const onTaxChange = (e, t) => {
+    setTax(e.target.value);
+  };
 
-    return (
-        <Fragment>
-        <Grid container spacing={1}>
-          <Grid item xs={3} />
-          <Grid item xs={6}>
-            <Grid container spacing={1}>
-              <Grid item xs={12}>
-                <label>Наименование</label>
-                <div className={classes.topDiv}>
-                  <TextField
-                    size="small"
-                    onChange={onProductNameChange}
-                    value={productName}
-                    error={isValidate}
-                    className={classes.input}
-                    InputProps={{
-                      classes: classes2,
-                      endAdornment: (
-                        <React.Fragment>
-                          {isLoading ? (
-                            <CircularProgress color="inherit" size={20} />
-                          ) : null}
-                        </React.Fragment>
-                      ),
-                    }}
-                    type="text"
-                    placeholder="Введите название товара"
-                  />
-                  <IconButton
-                    type="submit"
-                    disabled={isEditing}
-                    className={classes.iconButton}
-                    aria-label="search"
-                    onClick={handleSearch}
-                  >
-                    <SearchIcon />
-                  </IconButton>
-                </div>
-                {isValidate && (
-                  <span className={classes.errorText}>
-                    Поле обязательно для заполнения
-                  </span>
-                )}
-              </Grid>
-              {/* <Grid item xs={12}>
+  const taxes = [
+    { label: "Без НДС", value: "0" },
+    { label: "Стандартный НДС", value: "1" },
+  ];
+
+  return (
+    <Fragment>
+      <Grid container spacing={1}>
+        <Grid item xs={3} />
+        <Grid item xs={6}>
+          <Grid container spacing={1}>
+            <Grid item xs={12}>
+              <label>Наименование</label>
+              <div className={classes.topDiv}>
+                <TextField
+                  size="small"
+                  onChange={onProductNameChange}
+                  value={productName}
+                  error={isValidate}
+                  className={classes.input}
+                  InputProps={{
+                    classes: classes2,
+                    endAdornment: (
+                      <React.Fragment>
+                        {isLoading ? (
+                          <CircularProgress color="inherit" size={20} />
+                        ) : null}
+                      </React.Fragment>
+                    ),
+                  }}
+                  type="text"
+                  placeholder="Введите название товара"
+                />
+                <IconButton
+                  type="submit"
+                  className={classes.iconButton}
+                  aria-label="search"
+                  onClick={handleSearch}
+                >
+                  <SearchIcon />
+                </IconButton>
+              </div>
+              {isValidate && (
+                <span className={classes.errorText}>
+                  Поле обязательно для заполнения
+                </span>
+              )}
+            </Grid>
+            {/* <Grid item xs={12}>
                 <label>Наименование</label>
                 <TextField
                   placeholder="Введите название товара"
@@ -216,117 +247,91 @@ function WeightProducts() {
                   }
                 />
               </Grid> */}
-              <Grid item xs={12}>
-                  <Grid item xs={6}>
-                    <Typography
-                      style={{ paddingBottom: "10px", paddingTop: "8px" }}
-                    >
-                      Единица измерения
-                    </Typography>
-                    <Autocomplete
-                      fullWidth
-                      size="small"
-                      options={unitOptions}
-                      value={unitspr}
-                      onChange={unitListChange}
-                      noOptionsText="Единица измерения не найдена"
-                      onInputChange={onUnitListInput.bind(this)}
-                      filterOptions={(options) =>
-                        options.filter((option) => option.unitOptions !== "")
-                      }
-                      getOptionLabel={(option) => (option ? option.name : "")}
-                      getOptionSelected={(option, value) =>
-                        option.label === value.label
-                      }
-                      renderInput={(params) => (
-                        <TextField
-                          {...params}
-                          variant="outlined"
-                          placeholder="Килограмм"
-                        />
-                      )}
-                    />
-                  </Grid>
-                </Grid>
-              {companyData.certificatenum && (
-                <Grid
-                  item
-                  xs={12}
-                  style={{ paddingBottom: "20px", paddingTop: "20px" }}
+            <Grid
+              item
+              xs={12}
+              style={{ paddingBottom: "20px", paddingTop: "20px" }}
+            >
+              <label> Налоговая категория</label>
+              <FormControl
+                style={{ paddingBottom: "5px", paddingTop: "10px" }}
+                fullWidth
+                variant="outlined"
+                size="small"
+                value="Выберите налоговую катергию"
+              >
+                <Select
+                  fullWidth
+                  size="small"
+                  value={tax}
+                  onChange={onTaxChange}
                 >
-                  <label> Налоговая категория</label>
-                  <FormControl
-                    style={{ paddingBottom: "5px", paddingTop: "10px" }}
-                    fullWidth
-                    variant="outlined"
-                    size="small"
-                    value="Выберите налоговую катергию"
-                  >
-                    <Select
-                      fullWidth
-                      size="small"
-                      value={tax}
-                      onChange={onTaxChange}
-                    >
-                      {taxes.map((option) => (
-                        <MenuItem key={option.value} value={option.value}>
-                          {option.label}
-                        </MenuItem>
-                      ))}
-                    </Select>
-                  </FormControl>
-                </Grid>
-              )}
-              <Grid item xs={12}>
-                <label style={{ marginTop: 10 }}>
-                  <strong>Постоянные характиристики</strong>
-                </label>
-                <Grid container spacing={1} >
-                  <Grid item xs={12}>
-                    <AddAttributeChar
-                      isEditing={isEditing}
-                      selected={selectedAttribute}
-                      clearBoard={clearBoard}
-                      attributeCode={getAttributeCharCode}
+                  {taxes.map((option) => (
+                    <MenuItem key={option.value} value={option.value}>
+                      {option.label}
+                    </MenuItem>
+                  ))}
+                </Select>
+              </FormControl>
+            </Grid>
+            <Grid item xs={12}>
+              <Grid item xs={6}>
+                <Typography
+                  style={{ paddingBottom: "10px", paddingTop: "8px" }}
+                >
+                  Единица измерения
+                </Typography>
+                <Autocomplete
+                  fullWidth
+                  size="small"
+                  options={unitOptions}
+                  value={unitspr}
+                  onChange={unitListChange}
+                  noOptionsText="Единица измерения не найдена"
+                  onInputChange={onUnitListInput.bind(this)}
+                  filterOptions={(options) =>
+                    options.filter((option) => option.unitOptions !== "")
+                  }
+                  getOptionLabel={(option) => (option ? option.name : "")}
+                  getOptionSelected={(option, value) =>
+                    option.label === value.label
+                  }
+                  renderInput={(params) => (
+                    <TextField
+                      {...params}
+                      variant="outlined"
+                      placeholder="Килограмм"
                     />
-                  </Grid>
-                  <Grid item xs={12}>
-                    <AddAttribute
-                      isEditing={isEditing}
-                      selected={selectedAttribute}
-                      clearBoard={clearBoard}
-                      attributeCode={getAttributeCode}
-                      attrListProps={getAttrList}
-                    />
-                  </Grid>
-                </Grid>
+                  )}
+                />
               </Grid>
             </Grid>
           </Grid>
-          <Grid item xs={3} />
-          <Grid
-            container
-            style={{ paddingTop: "20px", paddingBottom: "20px" }}
-            spacing={1}
-            justify="center"
-            alignItems="center">
-            <button
-              type="button"
-              className="btn mr-10"
-              onClick={clearForm}
-            >
-              Очистить
-            </button>
-            &emsp;
-            <button className="btn btn-success"
-              onClick={() => createProduct()}
-            >
-              Сохранить
-            </button>
-          </Grid>
         </Grid>
-      </Fragment >
-    )
+        <Grid item xs={3} />
+        <Grid
+          container
+          style={{ paddingTop: "20px", paddingBottom: "20px" }}
+          spacing={1}
+          justify="center"
+          alignItems="center">
+          <button
+            type="button"
+            className="btn mr-10"
+            onClick={clearForm}
+          >
+            Очистить
+          </button>
+          &emsp;
+          <button className="btn btn-success"
+            onClick={() => console.log("saved")}
+          >
+            Сохранить
+          </button>
+        </Grid>
+      </Grid>
+    </Fragment >
+  )
 }
 
 export default WeightProducts
