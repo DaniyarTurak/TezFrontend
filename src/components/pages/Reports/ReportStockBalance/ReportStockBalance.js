@@ -329,7 +329,7 @@ export default function ReportStockBalance({ companyProps }) {
     Axios.get("/api/attributes/getsprattr", { params: { sprid, company } })
       .then((res) => res.data)
       .then((attributeTypes) => {
-        const all = [{ label: "Все", value: "" }];
+        const all = [{ label: "Все", value: -1 }];
         const attrtype = attributeTypes.map((attrtype) => {
           return {
             value: attrtype.id,
@@ -347,7 +347,6 @@ export default function ReportStockBalance({ companyProps }) {
         ErrorAlert(err);
       });
   };
-
   const getBrands = (inputValue) => {
     Axios.get("/api/brand/search", { params: { brand: inputValue, company } })
       .then((res) => res.data)
