@@ -7,6 +7,7 @@ import productreference from "../../../../data/productreference.json";
 import CreateProduct from "./CreateProduct";
 import UpdateCategoryPage from "../../Updates/UpdateCategoryPage";
 import AttrSprPage from "../../AttrSprPage";
+import WeightProducts from "./WeightProducts/WeightProducts";
 
 const useStyles = makeStyles((theme) => ({
   root: {
@@ -136,7 +137,7 @@ export default function ProductReference() {
       <div>
         <div className={`row ${currentTab ? "pb-10" : ""}`}>
           {productreference.map((create) => (
-            <div className="col-md-3 create-btn-block" key={create.id}>
+            <div className="col-md-2 create-btn-block" key={create.id}>
               <button
                 className={`btn btn-sm btn-block btn-create ${currentTab === create.route ? "btn-info" : "btn-outline-info"
                   }`}
@@ -190,6 +191,7 @@ export default function ProductReference() {
                 )}
                 {currentTab === "UpdateCategoryPage" && <UpdateCategoryPage />}
                 {currentTab === "AttrSprPage" && <AttrSprPage />}
+                {currentTab === "WeightProducts" && <WeightProducts/>}
               </div>
             </div>
           </Fragment>

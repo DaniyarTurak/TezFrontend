@@ -22,6 +22,12 @@
       "type":"change",
       "route":"AttrSprPage",
       "caption":"Настройка атрибутов"
+    },
+    {
+      "id":4,
+      "type":"change",
+      "route":"WeightProducts",
+      "caption":"Весовые товары"
     }
   
 ]
