@@ -54,6 +54,8 @@ export default function StockbalanceOptions({
   stockList,
   handleCounterpartyChange,
   handleCounterpartyInputChange,
+  dateAttrval,
+  clean
 }) {
   return (
     <Fragment>
@@ -149,7 +151,7 @@ export default function StockbalanceOptions({
       {attribute.format === "DATE" && (
         <Grid item xs={3}>
           <SingleMaterialDate
-             value={attrval} onChange={onAttributeDateChange} label="Дата" 
+            value={dateAttrval} onChange={onAttributeDateChange} label="Дата"
           />
         </Grid>
       )}
@@ -216,6 +218,7 @@ export default function StockbalanceOptions({
           Поиск
         </Button>
       </Grid>
+
     </Fragment >
   );
 }

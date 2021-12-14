@@ -50,9 +50,8 @@ export default function ReportStockBalance({ companyProps }) {
   });
   const [attributes, setAttributes] = useState([]);
   const [attributeTypes, setAttributeTypes] = useState([]);
-  const [attrval, setAttrVal] = useState(
-    // 
-  );
+  const [attrval, setAttrVal] = useState("");
+  const [dateAttrval, setDateAttrval] = useState(Moment().format("YYYY-MM-DD"))
   const [barcode, setBarcode] = useState("");
   const [brand, setBrand] = useState({ value: "@", label: "Все" });
   const [brands, setBrands] = useState([]);
@@ -186,18 +185,7 @@ export default function ReportStockBalance({ companyProps }) {
     return () => {
       setDateChanging(false);
     };
-  }, [
-    productSelectValue,
-    selectedStock,
-    counterparty,
-    category,
-    brand,
-    attribute,
-    attrval,
-    grouping,
-    nds,
-    consignment,
-  ]);
+  }, []);
 
   useEffect(() => {
     if (isPaginationLoading) {
@@ -228,9 +216,7 @@ export default function ReportStockBalance({ companyProps }) {
   const onDateChange = (date) => {
     setDateChanging(true);
     setDate(date);
-    console.log(date)
   };
-
   const onBarcodeChange = (e) => {
     let barcodeChanged = e.target.value.toUpperCase();
     if (barcodeChanged) {
@@ -274,7 +260,6 @@ export default function ReportStockBalance({ companyProps }) {
   const onAttributeChange = (event, a) => {
     setAttribute(a);
     console.log(a)
-    setAttrVal("");
     getAttributeTypes(a.value);
   };
 
@@ -288,7 +273,7 @@ export default function ReportStockBalance({ companyProps }) {
   }
 
   const onAttributeDateChange = (date) => {
-    setAttrVal(Moment(date).format("YYYY-MM-DD") )
+    setDateAttrval(Moment(date).format("YYYY-MM-DD") )
   }
   const onGroupingChange = (event) => {
     setGrouping(event.target.checked);
@@ -530,7 +515,7 @@ export default function ReportStockBalance({ companyProps }) {
       Axios.get("/api/report/stockbalance", {
         params: {
           attribute: attribute.value,
-          attrval: attrval === "Все" ? "" : attribute.format === "SPR" ? attrval.value : attrval,
+          attrval: attrval.label === "Все" ? "" : attribute.format === "SPR" ? attrval.value : attribute.format === "DATE" ? dateAttrval : attrval,
           barcode,
           brand: brand.value,
           category: category.value,
@@ -658,6 +643,7 @@ export default function ReportStockBalance({ companyProps }) {
       </ReactModal>
       <StockbalanceOptions
         attrval={attrval}
+        dateAttrval={dateAttrval}
         attribute={attribute}
         attributes={attributes}
         attributeTypes={attributeTypes}
@@ -701,6 +687,7 @@ export default function ReportStockBalance({ companyProps }) {
         handleCounterpartyChange={handleCounterpartyChange}
         handleCounterpartyInputChange={handleCounterpartyInputChange}
         onAttributeDateChange = {onAttributeDateChange}
+        clean = {clean}
       />
 
       {!isLoading && stockbalance.length === 0 && (
