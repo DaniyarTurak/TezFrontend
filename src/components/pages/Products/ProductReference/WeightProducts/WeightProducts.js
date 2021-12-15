@@ -22,6 +22,7 @@ import CircularProgress from "@material-ui/core/CircularProgress";
 import ErrorAlert from "../../../../ReusableComponents/ErrorAlert";
 
 
+
 const useStyles = makeStyles((theme) => ({
   topDiv: {
     borderRadius: "4px",
@@ -85,6 +86,7 @@ function WeightProducts() {
   const [tax, setTax] = useState(1);
   const classes = useStyles();
   const classes2 = useStyles2();
+  const companyData = JSON.parse(sessionStorage.getItem("isme-company-data")) || {};
 
   const onProductNameChange = (e) => {
     let pn = e.target.value;
@@ -188,6 +190,35 @@ function WeightProducts() {
     { label: "Стандартный НДС", value: "1" },
   ];
 
+
+  const createProduct = () => {
+      if (!productName) {
+        Alert.warning("Заполните наименование товара!", {
+          position: "top-right",
+          effect: "bouncyflip",
+          timeout: 3000,
+        });
+      }
+        else {
+            let product = {
+              name: productName,
+              tax: companyData.certificatenum ? tax : "0",
+            };
+            Axios.post("/api/pluproducts/create", { product })
+              .then((res) => {
+                Alert.success("Товар успешно сохранен", {
+                  position: "top-right",
+                  effect: "bouncyflip",
+                  timeout: 2000,
+                });
+              })
+              .catch((err) => {
+                ErrorAlert(err);
+                console.log(err);
+              });
+      }
+  };
+
   return (
     <Fragment>
       <Grid container spacing={1}>
@@ -231,22 +262,6 @@ function WeightProducts() {
                 </span>
               )}
             </Grid>
-            {/* <Grid item xs={12}>
-                <label>Наименование</label>
-                <TextField
-                  placeholder="Введите название товара"
-                  fullWidth
-                  size="small"
-                  variant="outlined"
-                  type="text"
-                  value={productName}
-                  onChange={onProductNameChange}
-                  error={isValidateName}
-                  helperText={
-                    isValidateName ? "Поле обязательно для заполнения" : ""
-                  }
-                />
-              </Grid> */}
             <Grid
               item
               xs={12}
@@ -324,7 +339,10 @@ function WeightProducts() {
           </button>
           &emsp;
           <button className="btn btn-success"
-            onClick={() => console.log("saved")}
+            onClick={() => {
+              console.log("saved")
+              createProduct()
+            }}
           >
             Сохранить
           </button>
