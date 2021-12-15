@@ -43,22 +43,22 @@ const StyledTableCell = withStyles((theme) => ({
 function TablePaginationActions(props) {
   const classes = useStyles1();
   const theme = useTheme();
-  const { count, page, rowsPerPage, onChangePage } = props;
+  const { count, page, rowsPerPage, onPageChange } = props;
 
   const handleFirstPageButtonClick = (event) => {
-    onChangePage(event, 0);
+    onPageChange(event, 0);
   };
 
   const handleBackButtonClick = (event) => {
-    onChangePage(event, page - 1);
+    onPageChange(event, page - 1);
   };
 
   const handleNextButtonClick = (event) => {
-    onChangePage(event, page + 1);
+    onPageChange(event, page + 1);
   };
 
   const handleLastPageButtonClick = (event) => {
-    onChangePage(event, Math.max(0, Math.ceil(count / rowsPerPage) - 1));
+    onPageChange(event, Math.max(0, Math.ceil(count / rowsPerPage) - 1));
   };
 
   return (
@@ -238,8 +238,8 @@ export default function StockbalanceTable({
           nextIconButtonText="Следующая страница"
           rowsPerPage={itemsPerPage}
           page={activePage}
-          onChangePage={handlePageChange}
-          onChangeRowsPerPage={handleChangeRowsPerPage}
+          onPageChange={handlePageChange}
+          onRowsPerPageChange={handleChangeRowsPerPage}
           ActionsComponent={TablePaginationActions}
         />
       )}

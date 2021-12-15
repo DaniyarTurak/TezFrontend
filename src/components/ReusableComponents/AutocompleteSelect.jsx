@@ -34,7 +34,7 @@ export default function AutocompleteSelect({
       renderOption={(option) => (
         <Typography style={{ fontSize: ".875rem" }}>{option.label}</Typography>
       )}
-      getOptionSelected={(option, value) => option.label === value.label}
+      getOptionSelected={(option, value) => option.label===value}
       getOptionLabel={(option) => (option ? option.label : "")}
       renderInput={(params) => (
         <TextField

@@ -7,6 +7,9 @@ export default function WriteOffDetails({
   inputWriteOff,
   companyID,
 }) {
+
+  console.log(JSON.stringify(companyID) + "hello")
+  console.log(JSON.stringify(customerInfo.details))
   return (
     <div>
       <div className="row">
@@ -47,10 +50,10 @@ export default function WriteOffDetails({
                 <td className="text-center">{e.name}</td>
                 <td className="text-center">{e.debt}</td>
                 <td
-                  colSpan={parseFloat(companyID.id) === e.company ? 1 : 2}
+                  colSpan={companyID.companyname === e.name ? 1 : 2}
                   className="col-md-10 text-center"
                 >
-                  {parseFloat(companyID.id) === e.company ? (
+                  {companyID.companyname === e.name ? (
                     <input
                       type="text"
                       pattern="\d+"
@@ -67,7 +70,7 @@ export default function WriteOffDetails({
                     </label>
                   )}
                 </td>
-                {parseFloat(companyID.id) === e.company && (
+                {companyID.companyname === e.name && (
                   <td className="text-center">
                     <button
                       className="btn btn-success"

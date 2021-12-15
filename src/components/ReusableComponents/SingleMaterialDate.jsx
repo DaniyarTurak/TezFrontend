@@ -6,6 +6,7 @@ import {
   KeyboardDatePicker,
 } from "@material-ui/pickers";
 import { makeStyles } from "@material-ui/core/styles";
+import moment from "../../../node_modules/moment/moment";
 
 const useStyles = makeStyles((theme) => ({
   labelRoot: {
@@ -24,17 +25,18 @@ const useStyles = makeStyles((theme) => ({
   button: { width: "12rem" },
 }));
 
-export default function SingleMaterialDate({ value, onChange, label }) {
+export default function SingleMaterialDate({ value, onChange, label, margin }) {
   const classes = useStyles();
   return (
     <div>
       <MuiPickersUtilsProvider utils={DateFnsUtils} locale={ruLocale}>
         <KeyboardDatePicker
           disableToolbar
+          autoOk
           variant="inline"
           invalidDateMessage="Введите корректную дату"
           format="dd.MM.yyyy"
-          margin="normal"
+          margin={margin}
           id="date-from-default"
           label={label}
           InputLabelProps={{
@@ -45,6 +47,7 @@ export default function SingleMaterialDate({ value, onChange, label }) {
           inputProps={{
             style: { fontSize: ".875rem" },
           }}
+          value={value}
           onChange={onChange}
           KeyboardButtonProps={{
             "aria-label": "change date",
