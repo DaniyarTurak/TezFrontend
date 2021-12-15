@@ -80,7 +80,7 @@ function WeightProducts() {
   const [isValidate, setValidate] = useState(false);
   const [isValidateName, setValidateName] = useState(false);
   const [isValidateUnit, setValidateUnit] = useState(false);
-  const [unitOptions, setUnitOptions] = useState([]);
+  const [unitOptions, setUnitOptions] = useState([{ id: 1, name: "Килограмм", label: "Килограмм" }]);
   const [productName, setProductName] = useState("");
   const [unitspr, setUnitspr] = useState(1);
   const [tax, setTax] = useState(1);
@@ -192,31 +192,37 @@ function WeightProducts() {
 
 
   const createProduct = () => {
-      if (!productName) {
-        Alert.warning("Заполните наименование товара!", {
-          position: "top-right",
-          effect: "bouncyflip",
-          timeout: 3000,
+    if (!productName) {
+      Alert.warning("Заполните наименование товара!", {
+        position: "top-right",
+        effect: "bouncyflip",
+        timeout: 3000,
+      });
+    }
+    else {
+      Axios.post("/api/pluproducts/create", {
+        name: productName,
+        tax: tax
+      })
+        .then((res) => {
+          return res.data
+        })
+        .then((data) => {
+          if(data.code==="success") {
+            Alert.success("Товар успешно сохранен", {
+              position: "top-right",
+              effect: "bouncyflip",
+              timeout: 2000,
+            });
+          } else {
+            ErrorAlert(data.text);
+          }
+        })
+        .catch((err) => {
+          ErrorAlert(err);
+          console.log(err);
         });
-      }
-        else {
-            let product = {
-              name: productName,
-              tax: companyData.certificatenum ? tax : "0",
-            };
-            Axios.post("/api/pluproducts/create", { product })
-              .then((res) => {
-                Alert.success("Товар успешно сохранен", {
-                  position: "top-right",
-                  effect: "bouncyflip",
-                  timeout: 2000,
-                });
-              })
-              .catch((err) => {
-                ErrorAlert(err);
-                console.log(err);
-              });
-      }
+    }
   };
 
   return (
@@ -247,14 +253,6 @@ function WeightProducts() {
                   type="text"
                   placeholder="Введите название товара"
                 />
-                <IconButton
-                  type="submit"
-                  className={classes.iconButton}
-                  aria-label="search"
-                  onClick={handleSearch}
-                >
-                  <SearchIcon />
-                </IconButton>
               </div>
               {isValidate && (
                 <span className={classes.errorText}>

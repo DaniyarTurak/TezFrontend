@@ -27,6 +27,7 @@ export default function ProductReference() {
   const [productOptions, setProductOptions] = useState([]);
   const [capations, setCapations] = useState([]);
   const [productsList, setProductsList] = useState([]);
+  const [weightProductsList, setWeightProductsList] = useState([])
 
   useEffect(() => {
     if (productSelectValue.label) {
@@ -34,7 +35,9 @@ export default function ProductReference() {
       setProductBarcode(productSelectValue.code);
     }
   }, [productSelectValue]);
-
+  useEffect(() => {
+    getWeightProducts()
+  }, [])
   const changeProductList = (e) => {
     getProducts();
     setCurrentTab(e.target.name);
@@ -90,7 +93,13 @@ export default function ProductReference() {
         console.log(err);
       });
   };
-
+  const getWeightProducts =() => {
+    Axios.get("/api/pluproducts")
+      .then((res) => res.data)
+      .then((list) => {
+        setWeightProductsList(list)
+      })
+  }
   const getProducts = (inp) => {
     Axios.get("/api/products", {
       params: { productName: inp ? inp : productSelectValue },
@@ -187,6 +196,7 @@ export default function ProductReference() {
                     getProductByBarcode={getProductByBarcode}
                     capations={capations}
                     setProductsList={setProductsList}
+                    weightProductsList={weightProductsList}
                   />
                 )}
                 {currentTab === "UpdateCategoryPage" && <UpdateCategoryPage />}

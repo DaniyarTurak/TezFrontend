@@ -7,9 +7,13 @@ import FormControl from "@material-ui/core/FormControl";
 import Autocomplete from "@material-ui/lab/Autocomplete";
 import Grid from "@material-ui/core/Grid";
 import Button from "@material-ui/core/Button";
+import Typography from "@material-ui/core/Typography";
+import Checkbox from "@material-ui/core/Checkbox";
+import FormControlLabel from "@material-ui/core/FormControlLabel";
 
 export default function ProductReferenceList({
   productsList,
+  weightProductsList,
   company,
   getProducts,
   setProductsList
@@ -24,11 +28,12 @@ export default function ProductReferenceList({
   const [piecesUnint, setPiecesUnint] = useState("");
   const [cnofeacode, setCnofeacode] = useState("");
   const [errorAlert, setErrorAlert] = useState(false);
-
+  const [weightProduct, setWeightProduct] = useState(false)
   const [prodName, setProdName] = useState("");
   const [barcode, setBarcode] = useState("");
   const [isClear, setClear] = useState(false);
   const [productDetails, setProductDetails] = useState({});
+  const [weightProductDetails, setWeightProductDetails] = useState({})
 
   const companyData =
     JSON.parse(sessionStorage.getItem("isme-company-data")) || {};
@@ -206,6 +211,17 @@ export default function ProductReferenceList({
     };
   };
 
+  const getWeightProductDetails = () => {
+    Axios.get("/api/pluproducts/byname", {
+      params: { name: prodName ? prodName.trim() : "" },
+    })
+      .then((res) => res.data)
+      .then((data) => {
+        setWeightProductDetails(data)
+        console.log(data)
+      })
+  }
+
   const onPieceAmountChange = (e) => {
     const num = e.target.value;
     setPiecesUnint(num);
@@ -291,58 +307,102 @@ export default function ProductReferenceList({
         console.log(err);
       });
   };
-
+  const onCheckboxChange = (e) => {
+    setWeightProduct(e.target.checked)
+  }
   return (
     <Fragment>
-      <Grid container spacing={2}>
-        <Grid item xs={4}>
-          <FormControl fullWidth>
-            <TextField
-              style={{ marginTop: "5px", marginLeft: "10px" }}
-              variant="outlined"
-              type="text"
-              name="barcode"
-              value={barcode}
-              className="form-control"
-              placeholder="Введите или отсканируйте штрихкод"
-              onChange={(e) => barcodeChange(e.target.value)}
-              onInputChange={(e) => barcodeChange(e.target.value)}
-              onKeyDown={(e) => onBarcodeKeyDown(e, barcode)}
-            />
-          </FormControl>
-        </Grid>
-        <Grid item xs={4}>
-          <Autocomplete
-            style={{ marginTop: "5px", marginLeft: "10px" }}
-            options={productsList.map((option) => option.name)}
-            value={prodName}
-            onChange={(e, value) => prodNameChange({ value, search: false, fromBarcode: false })}
-            noOptionsText="Товар не найден"
-            onInputChange={(e, value) => prodNameChange({ value, search: true, fromBarcode: false })}
-            renderInput={(params) => (
-              <TextField
-                {...params}
-                label="Наименование товара"
-                variant="outlined"
+      <Grid item xs={12}>
+        <Typography variant="h6">
+          <FormControlLabel
+            control={
+              <Checkbox
+                size="small"
+                name="checkedB"
+                color="primary"
+                onChange={onCheckboxChange}
               />
-            )}
+            }
+            size="small"
+            label="Весовые товары"
           />
-        </Grid>
-        <Grid item xs={3}>
-          <Button
-            style={{
-              minHeight: "3.5rem",
-              marginTop: "5px",
-              marginLeft: "10px",
-            }}
-            variant="outlined"
-            color="primary"
-            fullWidth
-            size="large"
-            onClick={getProductDetails}
-          >
-            Поиск
-          </Button>
+        </Typography>
+      </Grid>
+      <Grid item xs={12}>
+        <Grid container spacing={2}>
+          {!weightProduct ?
+            (<Fragment>
+              <Grid item xs={4}>
+              <FormControl fullWidth>
+                <TextField
+                  style={{ marginTop: "5px", marginLeft: "10px" }}
+                  variant="outlined"
+                  type="text"
+                  name="barcode"
+                  value={barcode}
+                  className="form-control"
+                  placeholder="Введите или отсканируйте штрихкод"
+                  onChange={(e) => barcodeChange(e.target.value)}
+                  onInputChange={(e) => barcodeChange(e.target.value)}
+                  onKeyDown={(e) => onBarcodeKeyDown(e, barcode)}
+                />
+              </FormControl>
+            </Grid>
+              <Grid item xs={4}>
+                <Autocomplete
+                  style={{ marginTop: "5px", marginLeft: "10px" }}
+                  options={productsList.map((option) => option.name)}
+                  value={prodName}
+                  onChange={(e, value) => prodNameChange({ value, search: false, fromBarcode: false })}
+                  noOptionsText="Товар не найден"
+                  onInputChange={(e, value) => prodNameChange({ value, search: true, fromBarcode: false })}
+                  renderInput={(params) => (
+                    <TextField
+                      {...params}
+                      label="Наименование товара"
+                      variant="outlined"
+                    />
+                  )}
+                />
+              </Grid>
+            </Fragment>
+            ) : (
+              <Grid item xs={4}>
+                <Autocomplete
+                  style={{ marginTop: "5px", marginLeft: "10px" }}
+                  options={weightProductsList.map((option) => option.name)}
+                  value={prodName}
+                  onChange={(e, value) => prodNameChange({ value, search: false })}
+                  noOptionsText="Товар не найден"
+                  onInputChange={(e, value) => prodNameChange({ value, search: true })}
+                  renderInput={(params) => (
+                    <TextField
+                      {...params}
+                      label="Наименование товара"
+                      variant="outlined"
+                    />
+                  )}
+                />
+              </Grid>
+            )}
+
+          <Grid item xs={3}>
+            <Button
+              style={{
+                minHeight: "3.5rem",
+                marginTop: "5px",
+                marginLeft: "10px",
+              }}
+              variant="outlined"
+              color="primary"
+              fullWidth
+              size="large"
+              onClick={weightProduct? getWeightProductDetails : getProductDetails}
+            >
+              Поиск
+            </Button>
+          </Grid>
+
         </Grid>
       </Grid>
       {Object.keys(productDetails).length > 0 &&
@@ -378,6 +438,7 @@ export default function ProductReferenceList({
           />
         </Grid>
       }
+
     </Fragment>
   );
 }
