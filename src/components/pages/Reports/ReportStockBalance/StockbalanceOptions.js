@@ -5,7 +5,7 @@ import Grid from "@material-ui/core/Grid";
 import AutocompleteSelect from "../../../ReusableComponents/AutocompleteSelect";
 import AutocompleteProductBarcode from "../../../ReusableComponents/AutocompleteProductBarcode";
 import SingleMaterialDate from "../../../ReusableComponents/SingleMaterialDate";
-
+import Moment from "moment";
 import TextField from "@material-ui/core/TextField";
 import Button from "@material-ui/core/Button";
 
@@ -39,6 +39,8 @@ export default function StockbalanceOptions({
   onProductChange,
   onProductListInput,
   onStockChange,
+  onAttributeTextFieldChange,
+  onAttributeDateChange,
   onCounterpartieChange,
   onCounterpartieListInput,
   onBrandChange,
@@ -52,11 +54,13 @@ export default function StockbalanceOptions({
   stockList,
   handleCounterpartyChange,
   handleCounterpartyInputChange,
+  dateAttrval,
+  clean
 }) {
   return (
     <Fragment>
       <Grid item xs={12}>
-        <SingleMaterialDate value={date} onChange={onDateChange} label="Дата" />
+        <SingleMaterialDate value={date} onChange={onDateChange} label="Дата" margin={"normal"} />
       </Grid>
       <AutocompleteProductBarcode
         barcode={barcode}
@@ -125,7 +129,7 @@ export default function StockbalanceOptions({
         <Grid item xs={3}>
           <TextField
             value={attrval}
-            onChange={onAttributeTypeChange}
+            onChange={onAttributeTextFieldChange}
             disabled={!grouping}
             label="Значение Атрибута"
           />
@@ -141,6 +145,13 @@ export default function StockbalanceOptions({
             isDisabled={!grouping}
             noOptions="Атрибут не найден"
             label="Значение Атрибута"
+          />
+        </Grid>
+      )}
+      {attribute.format === "DATE" && (
+        <Grid item xs={3}>
+          <SingleMaterialDate
+            value={dateAttrval} onChange={onAttributeDateChange} label="Дата"
           />
         </Grid>
       )}
@@ -207,6 +218,7 @@ export default function StockbalanceOptions({
           Поиск
         </Button>
       </Grid>
+
     </Fragment >
   );
 }

@@ -72,6 +72,9 @@ export default function HistoryTable({
               {["1", "2", "16", "17"].includes(invoicetype.value) && (
                 <StyledTableCell align="center">На склад</StyledTableCell>
               )}
+              {["1", "2", "16", "17"].includes(invoicetype.value) && (
+                <StyledTableCell align="center">Статус</StyledTableCell>
+              )}
               {["2", "16", "17"].includes(invoicetype.value) && (
                 <StyledTableCell align="center">Контрагент</StyledTableCell>
               )}
@@ -139,6 +142,11 @@ export default function HistoryTable({
                 {["1", "2", "16", "17"].includes(invoicetype.value) && (
                   <StyledTableCell align="center">
                     {invoice.stockto}
+                  </StyledTableCell>
+                )}
+                {["1", "2", "16", "17"].includes(invoicetype.value) && (
+                  <StyledTableCell align="center">
+                    {invoice.status}
                   </StyledTableCell>
                 )}
                 {["2", "16", "17"].includes(invoicetype.value) && (

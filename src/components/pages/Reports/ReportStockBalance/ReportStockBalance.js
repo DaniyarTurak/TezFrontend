@@ -50,9 +50,8 @@ export default function ReportStockBalance({ companyProps }) {
   });
   const [attributes, setAttributes] = useState([]);
   const [attributeTypes, setAttributeTypes] = useState([]);
-  const [attrval, setAttrVal] = useState(
-    attribute.format === "SPR" ? { value: "", label: "Все" } : ""
-  );
+  const [attrval, setAttrVal] = useState("");
+  const [dateAttrval, setDateAttrval] = useState(Moment().format("YYYY-MM-DD"))
   const [barcode, setBarcode] = useState("");
   const [brand, setBrand] = useState({ value: "@", label: "Все" });
   const [brands, setBrands] = useState([]);
@@ -186,18 +185,7 @@ export default function ReportStockBalance({ companyProps }) {
     return () => {
       setDateChanging(false);
     };
-  }, [
-    productSelectValue,
-    selectedStock,
-    // counterparty,
-    category,
-    brand,
-    attribute,
-    attrval,
-    grouping,
-    nds,
-    consignment,
-  ]);
+  }, []);
 
   useEffect(() => {
     if (isPaginationLoading) {
@@ -229,7 +217,6 @@ export default function ReportStockBalance({ companyProps }) {
     setDateChanging(true);
     setDate(date);
   };
-
   const onBarcodeChange = (e) => {
     let barcodeChanged = e.target.value.toUpperCase();
     if (barcodeChanged) {
@@ -271,16 +258,23 @@ export default function ReportStockBalance({ companyProps }) {
   };
 
   const onAttributeChange = (event, a) => {
-    console.log(a);
     setAttribute(a);
-    setAttrVal("");
+    console.log(a)
     getAttributeTypes(a.value);
   };
 
   const onAttributeTypeChange = (event, a) => {
-    setAttrVal(event.target.value);
+    setAttrVal({value: a.value, label: a.label})
   };
 
+  const onAttributeTextFieldChange = (event) => {
+    event.preventDefault()
+    setAttrVal(event.target.value);
+  }
+
+  const onAttributeDateChange = (date) => {
+    setDateAttrval(Moment(date).format("YYYY-MM-DD") )
+  }
   const onGroupingChange = (event) => {
     setGrouping(event.target.checked);
   };
@@ -311,6 +305,7 @@ export default function ReportStockBalance({ companyProps }) {
     if (reason === "input") getCategories(c);
   };
 
+  console.log(attrval)
   const getAttributes = () => {
     Axios.get("/api/attributes", { params: { deleted: false, company } })
       .then((res) => res.data)
@@ -334,7 +329,7 @@ export default function ReportStockBalance({ companyProps }) {
     Axios.get("/api/attributes/getsprattr", { params: { sprid, company } })
       .then((res) => res.data)
       .then((attributeTypes) => {
-        const all = [{ label: "Все", value: "" }];
+        const all = [{ label: "Все", value: -1 }];
         const attrtype = attributeTypes.map((attrtype) => {
           return {
             value: attrtype.id,
@@ -352,7 +347,6 @@ export default function ReportStockBalance({ companyProps }) {
         ErrorAlert(err);
       });
   };
-
   const getBrands = (inputValue) => {
     Axios.get("/api/brand/search", { params: { brand: inputValue, company } })
       .then((res) => res.data)
@@ -520,7 +514,7 @@ export default function ReportStockBalance({ companyProps }) {
       Axios.get("/api/report/stockbalance", {
         params: {
           attribute: attribute.value,
-          attrval: attrval === "Все" ? "" : attrval,
+          attrval: attrval.label === "Все" ? "" : attribute.format === "SPR" ? attrval.value : attribute.format === "DATE" ? dateAttrval : attrval,
           barcode,
           brand: brand.value,
           category: category.value,
@@ -648,6 +642,7 @@ export default function ReportStockBalance({ companyProps }) {
       </ReactModal>
       <StockbalanceOptions
         attrval={attrval}
+        dateAttrval={dateAttrval}
         attribute={attribute}
         attributes={attributes}
         attributeTypes={attributeTypes}
@@ -683,12 +678,15 @@ export default function ReportStockBalance({ companyProps }) {
         onCategoryChange={onCategoryChange}
         onCategoryListInput={onCategoryListInput}
         onAttributeChange={onAttributeChange}
+        onAttributeTextFieldChange = {onAttributeTextFieldChange}
         productSelectValue={productSelectValue}
         products={products}
         selectedStock={selectedStock}
         stockList={stockList}
         handleCounterpartyChange={handleCounterpartyChange}
         handleCounterpartyInputChange={handleCounterpartyInputChange}
+        onAttributeDateChange = {onAttributeDateChange}
+        clean = {clean}
       />
 
       {!isLoading && stockbalance.length === 0 && (
