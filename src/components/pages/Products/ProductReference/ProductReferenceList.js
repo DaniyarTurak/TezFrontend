@@ -1,6 +1,7 @@
 import React, { useState, useEffect, Fragment } from "react";
 import Axios from "axios";
 import EditProduct from "./EditProduct";
+import EditWeightProducts from "./EditWeightProducts";
 import Alert from "react-s-alert";
 import TextField from "@material-ui/core/TextField";
 import FormControl from "@material-ui/core/FormControl";
@@ -438,6 +439,7 @@ export default function ProductReferenceList({
           />
         </Grid>
       }
+      {Object.keys(weightProductDetails).length > 0 && <EditWeightProducts />}
 
     </Fragment>
   );
