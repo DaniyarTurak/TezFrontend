@@ -35,11 +35,14 @@ export default function ProductReference() {
       setProductBarcode(productSelectValue.code);
     }
   }, [productSelectValue]);
+
   useEffect(() => {
     getWeightProducts()
   }, [])
+
   const changeProductList = (e) => {
     getProducts();
+    getWeightProducts()
     setCurrentTab(e.target.name);
     setReference({});
     setProductBarcode("");
@@ -94,7 +97,7 @@ export default function ProductReference() {
       });
   };
   const getWeightProducts =() => {
-    Axios.get("/api/pluproducts")
+    Axios.get("/api/pluproducts/names")
       .then((res) => res.data)
       .then((list) => {
         setWeightProductsList(list)
@@ -192,6 +195,7 @@ export default function ProductReference() {
                     productListChange={productListChange}
                     onProductListChange={onProductListChange}
                     getProducts={getProducts}
+                    getWeightProducts={ getWeightProducts}
                     getBarcodeProps={getProductByBarcode}
                     getProductByBarcode={getProductByBarcode}
                     capations={capations}

@@ -16,13 +16,7 @@ import ErrorAlert from "../../../../ReusableComponents/ErrorAlert";
 import Moment from "moment";
 
 export default function EditProduct({
-  productDetails,
-  brandOptions,
-  onBrandListInput,
-  onCategoryListInput,
-  categoryOptions,
-  setUnitOptions,
-  onUnitListInput,
+  weightProductDetails,
   sellByPieces,
   companyData,
   errorAlert,
@@ -30,127 +24,99 @@ export default function EditProduct({
   piecesUnint,
   setClear,
   isClear,
-  setProductDetails
+  setWeightProductDetails
 }) {
 
   const [editingProduct, setEditingProduct] = useState({});
   const [listAllAttributes, setListAllAttributes] = useState([]);
-
+  const [unitOptions, setUnitOptions] = useState([{ id: 1, name: "Килограмм", label: "Килограмм" }]);
+  const [unitspr, setUnitspr] = useState(1);
   const [constAttribCode, setConstAttribCode] = useState(0);
   const [partAttribCode, setPartAttribCode] = useState(0);
   const [attributesValues, setAttributesValues] = useState([]);
   const [detailsValues, setDetailsValues] = useState([]);
   const [isDeleteListCode, setDeleteListCode] = useState(false);
   const [sweetalert, setSweetAlert] = useState(null);
-  const [tax, setTax] = useState("0");
-
-  const getAttributes = () => {
-    Axios.get("/api/attributes")
-      .then((res) => res.data)
-      .then((attributes) => {
-        setListAllAttributes(attributes);
-      })
-      .catch((err) => {
-        console.log(err);
-      });
-  };
+  const [tax, setTax] = useState("");
 
   useEffect(() => {
-    setEditingProduct(productDetails);
-    setTax(productDetails.taxid)
-  }, [productDetails]);
+    setEditingProduct(weightProductDetails);
+    setTax(weightProductDetails.tax)
+  }, [weightProductDetails]);
 
-  useEffect(() => {
-    getAttributes();
-  }, []);
 
-  const editProdRes = () => {
-    let tempAttributes = [];
-    let tempDetails = [];
-    if (detailsValues.length > 0) {
-      detailsValues.forEach(element => {
-        tempDetails.push({
-          code: element.attribute_id,
-          name: element.attribute_name,
-          value: element.attribute_value
-        })
-      });
-    }
-
-    if (attributesValues.length > 0) {
-      attributesValues.forEach(element => {
-        tempAttributes.push({
-          code: element.attribute_id,
-          name: element.attribute_name,
-          value: element.attribute_format === "DATE" ? Moment().format("YYYY-MM-DD") : ""
-        })
-      });
-    }
-    let product = {
-      id: editingProduct.id,
-      code: editingProduct.code,
-      name: editingProduct.name,
-      category: editingProduct.categoryid,
-      brand: editingProduct.brandid,
-      taxid: companyData.certificatenum ? tax : "0",
-      unitsprid: editingProduct.unitsprid,
-      piece:
-        editingProduct.piece === true ? editingProduct.piece : sellByPieces,
-      pieceinpack: piecesUnint ? piecesUnint : 0,
-      cnofeacode: editingProduct.cnofeacode,
-      details: constAttribCode,
-      attributes: partAttribCode,
-      delete: "",
-      attributesValue: tempAttributes,
-      detailsValue: tempDetails
-    };
-    if (productDetails.id === 0) {
-      Axios.post("/api/products/create", { product })
-        .then((res) => {
-          Alert.success("Товар успешно сохранен", {
-            position: "top-right",
-            effect: "bouncyflip",
-            timeout: 2000,
-          });
-          setClear(!isClear);
-          setEditingProduct({});
-          setSweetAlert(null);
-          setProductDetails({})
-        })
-        .catch((err) => {
-          ErrorAlert(err);
-          console.log(err);
-        });
-    }
-    else {
-      Axios.post("/api/products/update", {
-        product,
-      })
-        .then((res) => {
-          Alert.success("Товар успешно сохранен", {
-            position: "top-right",
-            effect: "bouncyflip",
-            timeout: 2000,
-          });
-          setClear(!isClear);
-          setEditingProduct({});
-          setSweetAlert(null);
-          setProductDetails({})
-          setDeleteListCode(!isDeleteListCode);
-        })
-        .catch((err) => {
-          ErrorAlert(err);
-        });
-    }
-  };
+  // const editProdRes = () => {
+  //   let tempDetails = [];
+  //   if (detailsValues.length > 0) {
+  //     detailsValues.forEach(element => {
+  //       tempDetails.push({
+  //         code: element.attribute_id,
+  //         name: element.attribute_name,
+  //         value: element.attribute_value
+  //       })
+  //     });
+  //   }
+  //   let product = {
+  //     id: editingProduct.id,
+  //     code: editingProduct.code,
+  //     name: editingProduct.name,
+  //     category: editingProduct.categoryid,
+  //     brand: editingProduct.brandid,
+  //     taxid: companyData.certificatenum ? tax : "0",
+  //     unitsprid: editingProduct.unitsprid,
+  //     piece:
+  //       editingProduct.piece === true ? editingProduct.piece : sellByPieces,
+  //     pieceinpack: piecesUnint ? piecesUnint : 0,
+  //     cnofeacode: editingProduct.cnofeacode,
+  //     details: constAttribCode,
+  //     attributes: partAttribCode,
+  //     delete: "",
+  //     detailsValue: tempDetails
+  //   };
+  //   if (productDetails.id === 0) {
+  //     Axios.post("/api/products/create", { product })
+  //       .then((res) => {
+  //         Alert.success("Товар успешно сохранен", {
+  //           position: "top-right",
+  //           effect: "bouncyflip",
+  //           timeout: 2000,
+  //         });
+  //         setClear(!isClear);
+  //         setEditingProduct({});
+  //         setSweetAlert(null);
+  //         setProductDetails({})
+  //       })
+  //       .catch((err) => {
+  //         ErrorAlert(err);
+  //         console.log(err);
+  //       });
+  //   }
+  //   else {
+  //     Axios.post("/api/products/update", {
+  //       product,
+  //     })
+  //       .then((res) => {
+  //         Alert.success("Товар успешно сохранен", {
+  //           position: "top-right",
+  //           effect: "bouncyflip",
+  //           timeout: 2000,
+  //         });
+  //         setClear(!isClear);
+  //         setEditingProduct({});
+  //         setSweetAlert(null);
+  //         setProductDetails({})
+  //         setDeleteListCode(!isDeleteListCode);
+  //       })
+  //       .catch((err) => {
+  //         ErrorAlert(err);
+  //       });
+  //   }
+  // };
 
   const handleDelete = () => {
-    const product = {
-      id: editingProduct.id,
-      delete: "true",
-    };
-    Axios.post("/api/products/update", {
-      product,
+
+    Axios.post("/api/pluproducts/delete", {
+      id: editingProduct.id
     })
       .then((res) => res.data)
       .then((res) => {
@@ -163,7 +129,7 @@ export default function EditProduct({
           setClear(!isClear);
           setEditingProduct({});
           setSweetAlert(null);
-          setProductDetails({})
+          setWeightProductDetails({})
         } else
           return Alert.warning(res.text, {
             position: "top-right",
@@ -208,12 +174,12 @@ export default function EditProduct({
     };
   };
 
-  const unitSprChange = (value) => {
-    if (value) {
-      setEditingProduct({ ...editingProduct, unitspr_name: value.name, unitsprid: value.id })
-    };
+  const unitListChange = (e, unitsprChanged) => {
+    setUnitspr(unitsprChanged);
   };
-
+  const onUnitListInput = (e, unitspr) => {
+    if (unitspr.lenght > 0) setUnitspr(unitspr);
+  };
   const taxChange = (e) => {
     setTax(e.target.value);
     setEditingProduct({ ...editingProduct, taxid: e.target.value })
@@ -233,8 +199,7 @@ export default function EditProduct({
 
   return (
     <Fragment>
-        hello
-      {/* {sweetalert}
+      {sweetalert}
       {errorAlert && (
         <AlertMaterial severity="error">
           {errorMessage.response && errorMessage.response.data.text}
@@ -274,14 +239,15 @@ export default function EditProduct({
             <Grid item xs={12}>
               <label>Единица измерения:</label>
               <Autocomplete
+                fullWidth
                 size="small"
-                options={setUnitOptions}
-                value={editingProduct.unitspr_name}
-                onChange={(e, value) => unitSprChange(value)}
-                noOptionsText="Единица измерение не найден"
+                options={unitOptions}
+                value={unitspr}
+                onChange={unitListChange}
+                noOptionsText="Единица измерения не найдена"
                 onInputChange={onUnitListInput.bind(this)}
                 filterOptions={(options) =>
-                  options.filter((option) => option.unit !== "")
+                  options.filter((option) => option.unitOptions !== "")
                 }
                 getOptionLabel={(option) => (option ? option.name : "")}
                 getOptionSelected={(option, value) =>
@@ -290,8 +256,8 @@ export default function EditProduct({
                 renderInput={(params) => (
                   <TextField
                     {...params}
-                    placeholder={editingProduct.unitspr_name}
                     variant="outlined"
+                    placeholder="Килограмм"
                   />
                 )}
               />
@@ -305,8 +271,8 @@ export default function EditProduct({
                   value={tax}
                   onChange={taxChange}
                 >
-                  <MenuItem value={"0"}>Без НДС</MenuItem>
-                  <MenuItem value={"1"}>Стандартный НДС</MenuItem>
+                  <MenuItem value={"Без НДС"}>Без НДС</MenuItem>
+                  <MenuItem value={"Стандартный НДС"}>Стандартный НДС</MenuItem>
                 </Select>
               </Grid>
             <Grid item xs={3} />
@@ -321,21 +287,21 @@ export default function EditProduct({
                 className="btn mr-10"
                 onClick={() => {
                   setClear(!isClear);
-                  setProductDetails({});
+                  setWeightProductDetails({});
                 }}
               >
                 Отмена
               </button>
               &emsp;
               <button className="btn btn-success"
-                onClick={() => editProdRes()}
+                onClick={() => console.log("saved")}
               >
                 Сохранить
               </button>
             </Grid>
           </Grid>
         </Grid>
-      </Grid> */}
+      </Grid>
     </Fragment>
   );
 }

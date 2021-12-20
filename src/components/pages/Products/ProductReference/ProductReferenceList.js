@@ -17,7 +17,8 @@ export default function ProductReferenceList({
   weightProductsList,
   company,
   getProducts,
-  setProductsList
+  setProductsList,
+  getWeightProducts
 }) {
   const [brand, setBrand] = useState("");
   const [brandOptions, setBrandOptions] = useState([]);
@@ -44,12 +45,14 @@ export default function ProductReferenceList({
     getBrands();
     getMeasures();
     getProducts();
+    getWeightProducts();
   }, []);
 
   useEffect(() => {
     setProdName("");
     setBarcode("");
     getProducts();
+    getWeightProducts();
   }, [isClear]);
 
   const getBrands = (inputValue) => {
@@ -308,6 +311,9 @@ export default function ProductReferenceList({
         console.log(err);
       });
   };
+  const getWeightProductByName = (value) => {
+
+  }
   const onCheckboxChange = (e) => {
     setWeightProduct(e.target.checked)
   }
@@ -334,21 +340,21 @@ export default function ProductReferenceList({
           {!weightProduct ?
             (<Fragment>
               <Grid item xs={4}>
-              <FormControl fullWidth>
-                <TextField
-                  style={{ marginTop: "5px", marginLeft: "10px" }}
-                  variant="outlined"
-                  type="text"
-                  name="barcode"
-                  value={barcode}
-                  className="form-control"
-                  placeholder="Введите или отсканируйте штрихкод"
-                  onChange={(e) => barcodeChange(e.target.value)}
-                  onInputChange={(e) => barcodeChange(e.target.value)}
-                  onKeyDown={(e) => onBarcodeKeyDown(e, barcode)}
-                />
-              </FormControl>
-            </Grid>
+                <FormControl fullWidth>
+                  <TextField
+                    style={{ marginTop: "5px", marginLeft: "10px" }}
+                    variant="outlined"
+                    type="text"
+                    name="barcode"
+                    value={barcode}
+                    className="form-control"
+                    placeholder="Введите или отсканируйте штрихкод"
+                    onChange={(e) => barcodeChange(e.target.value)}
+                    onInputChange={(e) => barcodeChange(e.target.value)}
+                    onKeyDown={(e) => onBarcodeKeyDown(e, barcode)}
+                  />
+                </FormControl>
+              </Grid>
               <Grid item xs={4}>
                 <Autocomplete
                   style={{ marginTop: "5px", marginLeft: "10px" }}
@@ -398,7 +404,7 @@ export default function ProductReferenceList({
               color="primary"
               fullWidth
               size="large"
-              onClick={weightProduct? getWeightProductDetails : getProductDetails}
+              onClick={weightProduct ? getWeightProductDetails : getProductDetails}
             >
               Поиск
             </Button>
@@ -439,7 +445,20 @@ export default function ProductReferenceList({
           />
         </Grid>
       }
-      {Object.keys(weightProductDetails).length > 0 && <EditWeightProducts />}
+      {Object.keys(weightProductDetails).length > 0 &&
+        <Grid item xs={12} style={{ paddingTop: "20px" }}>
+          <EditWeightProducts
+          setClear={setClear}
+          isClear={isClear}
+          weightProductDetails={weightProductDetails}
+          setWeightProductDetails={setWeightProductDetails}
+          onUnitListInput={onUnitListInput}
+          errorAlert={errorAlert}
+          companyData={companyData}
+          setErrorAlert={setErrorAlert}
+          />
+        </Grid>
+      }
 
     </Fragment>
   );
