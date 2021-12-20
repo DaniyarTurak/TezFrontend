@@ -11,6 +11,7 @@ import Button from "@material-ui/core/Button";
 import Typography from "@material-ui/core/Typography";
 import Checkbox from "@material-ui/core/Checkbox";
 import FormControlLabel from "@material-ui/core/FormControlLabel";
+import WeightProducts from "./WeightProducts/WeightProducts";
 
 export default function ProductReferenceList({
   productsList,
@@ -18,6 +19,7 @@ export default function ProductReferenceList({
   company,
   getProducts,
   setProductsList,
+  setWeightProductsList,
   getWeightProducts
 }) {
   const [brand, setBrand] = useState("");
@@ -32,6 +34,8 @@ export default function ProductReferenceList({
   const [errorAlert, setErrorAlert] = useState(false);
   const [weightProduct, setWeightProduct] = useState(false)
   const [prodName, setProdName] = useState("");
+  const [weightProdName, setWeightProdName] = useState("")
+  const [weightProdId, setWeightProdId] = useState()
   const [barcode, setBarcode] = useState("");
   const [isClear, setClear] = useState(false);
   const [productDetails, setProductDetails] = useState({});
@@ -45,14 +49,13 @@ export default function ProductReferenceList({
     getBrands();
     getMeasures();
     getProducts();
-    getWeightProducts();
+    getWeightProductByName("")
   }, []);
 
   useEffect(() => {
     setProdName("");
     setBarcode("");
     getProducts();
-    getWeightProducts();
   }, [isClear]);
 
   const getBrands = (inputValue) => {
@@ -216,8 +219,8 @@ export default function ProductReferenceList({
   };
 
   const getWeightProductDetails = () => {
-    Axios.get("/api/pluproducts/byname", {
-      params: { name: prodName ? prodName.trim() : "" },
+    Axios.get("/api/pluproducts/details", {
+      params: { id: weightProdId },
     })
       .then((res) => res.data)
       .then((data) => {
@@ -255,6 +258,29 @@ export default function ProductReferenceList({
       }
     }
   };
+
+  const weightProdNameChange = ({ value, search }) => {
+    if (!value || value.trim() === "") {
+      setWeightProdName("")
+      if (search) {
+        getWeightProductByName("");
+      }
+    }
+
+    else {
+      setWeightProdName(value);
+      let flag = false;
+      weightProductsList.forEach(prod => {
+        if (prod.name === value) {
+          setWeightProdName(value)
+          flag = true;
+        }
+      });
+      if (!flag && search) {
+        getWeightProductByName(value)
+      }
+    }
+  }
 
   const barcodeChange = (value) => {
     setBarcode(value.trim());
@@ -311,9 +337,25 @@ export default function ProductReferenceList({
         console.log(err);
       });
   };
-  const getWeightProductByName = (value) => {
 
+  const getWeightProductByName = (value) => {
+    Axios.get("/api/pluproducts/names", {
+      params: { name: value ? value.trim() : "" }
+    }
+    )
+      .then((res) => res.data)
+      .then((product) => {
+        if (product.length > 0) {
+          setWeightProductsList(product);
+          setWeightProdId(product[0].id);
+
+        }
+      })
+      .catch((err) => {
+        console.log(err);
+      })
   }
+
   const onCheckboxChange = (e) => {
     setWeightProduct(e.target.checked)
   }
@@ -378,10 +420,10 @@ export default function ProductReferenceList({
                 <Autocomplete
                   style={{ marginTop: "5px", marginLeft: "10px" }}
                   options={weightProductsList.map((option) => option.name)}
-                  value={prodName}
-                  onChange={(e, value) => prodNameChange({ value, search: false })}
+                  value={weightProdName}
+                  onChange={(e, value) => weightProdNameChange({ value, search: false })}
                   noOptionsText="Товар не найден"
-                  onInputChange={(e, value) => prodNameChange({ value, search: true })}
+                  onInputChange={(e, value) => weightProdNameChange({ value, search: true })}
                   renderInput={(params) => (
                     <TextField
                       {...params}
@@ -448,14 +490,14 @@ export default function ProductReferenceList({
       {Object.keys(weightProductDetails).length > 0 &&
         <Grid item xs={12} style={{ paddingTop: "20px" }}>
           <EditWeightProducts
-          setClear={setClear}
-          isClear={isClear}
-          weightProductDetails={weightProductDetails}
-          setWeightProductDetails={setWeightProductDetails}
-          onUnitListInput={onUnitListInput}
-          errorAlert={errorAlert}
-          companyData={companyData}
-          setErrorAlert={setErrorAlert}
+            setClear={setClear}
+            isClear={isClear}
+            weightProductDetails={weightProductDetails}
+            setWeightProductDetails={setWeightProductDetails}
+            onUnitListInput={onUnitListInput}
+            errorAlert={errorAlert}
+            companyData={companyData}
+            setErrorAlert={setErrorAlert}
           />
         </Grid>
       }

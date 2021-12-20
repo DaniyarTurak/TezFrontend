@@ -17,24 +17,15 @@ import Moment from "moment";
 
 export default function EditProduct({
   weightProductDetails,
-  sellByPieces,
   companyData,
   errorAlert,
   errorMessage,
-  piecesUnint,
   setClear,
   isClear,
   setWeightProductDetails
 }) {
 
   const [editingProduct, setEditingProduct] = useState({});
-  const [listAllAttributes, setListAllAttributes] = useState([]);
-  const [unitOptions, setUnitOptions] = useState([{ id: 1, name: "Килограмм", label: "Килограмм" }]);
-  const [unitspr, setUnitspr] = useState(1);
-  const [constAttribCode, setConstAttribCode] = useState(0);
-  const [partAttribCode, setPartAttribCode] = useState(0);
-  const [attributesValues, setAttributesValues] = useState([]);
-  const [detailsValues, setDetailsValues] = useState([]);
   const [isDeleteListCode, setDeleteListCode] = useState(false);
   const [sweetalert, setSweetAlert] = useState(null);
   const [tax, setTax] = useState("");
@@ -45,73 +36,32 @@ export default function EditProduct({
   }, [weightProductDetails]);
 
 
-  // const editProdRes = () => {
-  //   let tempDetails = [];
-  //   if (detailsValues.length > 0) {
-  //     detailsValues.forEach(element => {
-  //       tempDetails.push({
-  //         code: element.attribute_id,
-  //         name: element.attribute_name,
-  //         value: element.attribute_value
-  //       })
-  //     });
-  //   }
-  //   let product = {
-  //     id: editingProduct.id,
-  //     code: editingProduct.code,
-  //     name: editingProduct.name,
-  //     category: editingProduct.categoryid,
-  //     brand: editingProduct.brandid,
-  //     taxid: companyData.certificatenum ? tax : "0",
-  //     unitsprid: editingProduct.unitsprid,
-  //     piece:
-  //       editingProduct.piece === true ? editingProduct.piece : sellByPieces,
-  //     pieceinpack: piecesUnint ? piecesUnint : 0,
-  //     cnofeacode: editingProduct.cnofeacode,
-  //     details: constAttribCode,
-  //     attributes: partAttribCode,
-  //     delete: "",
-  //     detailsValue: tempDetails
-  //   };
-  //   if (productDetails.id === 0) {
-  //     Axios.post("/api/products/create", { product })
-  //       .then((res) => {
-  //         Alert.success("Товар успешно сохранен", {
-  //           position: "top-right",
-  //           effect: "bouncyflip",
-  //           timeout: 2000,
-  //         });
-  //         setClear(!isClear);
-  //         setEditingProduct({});
-  //         setSweetAlert(null);
-  //         setProductDetails({})
-  //       })
-  //       .catch((err) => {
-  //         ErrorAlert(err);
-  //         console.log(err);
-  //       });
-  //   }
-  //   else {
-  //     Axios.post("/api/products/update", {
-  //       product,
-  //     })
-  //       .then((res) => {
-  //         Alert.success("Товар успешно сохранен", {
-  //           position: "top-right",
-  //           effect: "bouncyflip",
-  //           timeout: 2000,
-  //         });
-  //         setClear(!isClear);
-  //         setEditingProduct({});
-  //         setSweetAlert(null);
-  //         setProductDetails({})
-  //         setDeleteListCode(!isDeleteListCode);
-  //       })
-  //       .catch((err) => {
-  //         ErrorAlert(err);
-  //       });
-  //   }
-  // };
+  const editProdRes = () => {
+    let tempDetails = [];
+    let product = {
+      id: editingProduct.id,
+      name: editingProduct.name,
+      taxid: companyData.certificatenum ? tax : "0",
+    };
+      Axios.post("/api/pluproducts/update", {
+        product,
+      })
+        .then((res) => {
+          Alert.success("Товар успешно сохранен", {
+            position: "top-right",
+            effect: "bouncyflip",
+            timeout: 2000,
+          });
+          setClear(!isClear);
+          setEditingProduct({});
+          setSweetAlert(null);
+          setWeightProductDetails({})
+          setDeleteListCode(!isDeleteListCode);
+        })
+        .catch((err) => {
+          ErrorAlert(err);
+        });
+  };
 
   const handleDelete = () => {
 
@@ -162,40 +112,11 @@ export default function EditProduct({
     );
   };
 
-  const categoryChange = (value) => {
-    if (value) {
-      setEditingProduct({ ...editingProduct, category: value.name, categoryid: value.id })
-    };
-  };
-
-  const brandChange = (value) => {
-    if (value) {
-      setEditingProduct({ ...editingProduct, brand: value.name, brandid: value.id })
-    };
-  };
-
-  const unitListChange = (e, unitsprChanged) => {
-    setUnitspr(unitsprChanged);
-  };
-  const onUnitListInput = (e, unitspr) => {
-    if (unitspr.lenght > 0) setUnitspr(unitspr);
-  };
   const taxChange = (e) => {
     setTax(e.target.value);
     setEditingProduct({ ...editingProduct, taxid: e.target.value })
   };
 
-  const deleteListCode = (listcode) => {
-    Axios.post("/api/attributes/delete/listcode", {
-      listcode,
-    })
-      .then((res) => {
-        console.log(res);
-      })
-      .catch((err) => {
-        ErrorAlert(err);
-      });
-  }
 
   return (
     <Fragment>
@@ -236,7 +157,7 @@ export default function EditProduct({
                 onChange={(e) => setEditingProduct({ ...editingProduct, name: e.target.value })}
               />
             </Grid>
-            <Grid item xs={12}>
+            {/* <Grid item xs={12}>
               <label>Единица измерения:</label>
               <Autocomplete
                 fullWidth
@@ -261,7 +182,7 @@ export default function EditProduct({
                   />
                 )}
               />
-            </Grid>
+            </Grid> */}
               <Grid item xs={12}>
                 <label>Налоговая категория:</label>
                 <Select
@@ -294,7 +215,7 @@ export default function EditProduct({
               </button>
               &emsp;
               <button className="btn btn-success"
-                onClick={() => console.log("saved")}
+                onClick={() => editProdRes()}
               >
                 Сохранить
               </button>

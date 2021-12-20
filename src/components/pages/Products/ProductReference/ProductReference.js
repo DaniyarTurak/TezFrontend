@@ -36,13 +36,9 @@ export default function ProductReference() {
     }
   }, [productSelectValue]);
 
-  useEffect(() => {
-    getWeightProducts()
-  }, [])
 
   const changeProductList = (e) => {
     getProducts();
-    getWeightProducts()
     setCurrentTab(e.target.name);
     setReference({});
     setProductBarcode("");
@@ -96,13 +92,15 @@ export default function ProductReference() {
         console.log(err);
       });
   };
-  const getWeightProducts =() => {
-    Axios.get("/api/pluproducts/names")
-      .then((res) => res.data)
-      .then((list) => {
-        setWeightProductsList(list)
-      })
-  }
+  // const getWeightProducts =(inp) => {
+  //   Axios.get("/api/pluproducts", {
+  //     params: {name: inp ? inp : productSelectValue}
+  //   })
+  //     .then((res) => res.data)
+  //     .then((list) => {
+  //       setWeightProductsList(list)
+  //     })
+  // }
   const getProducts = (inp) => {
     Axios.get("/api/products", {
       params: { productName: inp ? inp : productSelectValue },
@@ -195,12 +193,12 @@ export default function ProductReference() {
                     productListChange={productListChange}
                     onProductListChange={onProductListChange}
                     getProducts={getProducts}
-                    getWeightProducts={ getWeightProducts}
                     getBarcodeProps={getProductByBarcode}
                     getProductByBarcode={getProductByBarcode}
                     capations={capations}
                     setProductsList={setProductsList}
                     weightProductsList={weightProductsList}
+                    setWeightProductsList={setWeightProductsList}
                   />
                 )}
                 {currentTab === "UpdateCategoryPage" && <UpdateCategoryPage />}
