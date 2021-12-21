@@ -185,7 +185,7 @@ export default function ReportStockBalance({ companyProps }) {
     return () => {
       setDateChanging(false);
     };
-  }, []);
+  }, [onGroupingChange]);
 
   useEffect(() => {
     if (isPaginationLoading) {
@@ -197,8 +197,8 @@ export default function ReportStockBalance({ companyProps }) {
   }, [activePage, itemsPerPage]);
 
   const clean = () => {
-    setAttribute({ value: "@", label: "Все", format: "" });
-    setAttrVal({ value: "", label: "Все" });
+    setAttribute([]);
+    setAttrVal("");
     setBarcode("");
     setBrand({ value: "@", label: "Все" });
     setBrands([]);
@@ -259,8 +259,8 @@ export default function ReportStockBalance({ companyProps }) {
 
   const onAttributeChange = (event, a) => {
     setAttribute(a);
-    console.log(a)
     getAttributeTypes(a.value);
+    setAttrVal("")
   };
 
   const onAttributeTypeChange = (event, a) => {
@@ -277,6 +277,13 @@ export default function ReportStockBalance({ companyProps }) {
   }
   const onGroupingChange = (event) => {
     setGrouping(event.target.checked);
+    if(event.target.checked===false) {
+      clean()
+    } else {
+      handleSearch()
+    }
+    
+    
   };
 
   const onConsignmentChange = (event) => {
@@ -305,7 +312,6 @@ export default function ReportStockBalance({ companyProps }) {
     if (reason === "input") getCategories(c);
   };
 
-  console.log(attrval)
   const getAttributes = () => {
     Axios.get("/api/attributes", { params: { deleted: false, company } })
       .then((res) => res.data)
@@ -511,10 +517,9 @@ export default function ReportStockBalance({ companyProps }) {
       } else notattr = 1;
       const page = activePage ? activePage + 1 : 1;
       setLoading(true);
-      Axios.get("/api/report/stockbalance", {
-        params: {
+      Axios.post("/api/report/stockbalance", {
           attribute: attribute.value,
-          attrval: attrval.label === "Все" ? "" : attribute.format === "SPR" ? attrval.value : attribute.format === "DATE" ? dateAttrval : attrval,
+          attrval: attrval.label === "Все" ? "" : attribute.format === "SPR" ? attrval.label : attribute.format === "DATE" ? dateAttrval : attrval,
           barcode,
           brand: brand.value,
           category: category.value,
@@ -529,7 +534,7 @@ export default function ReportStockBalance({ companyProps }) {
           pageNumber: page,
           stockID: selectedStock.value,
         },
-      })
+      )
         .then((res) => res.data)
         .then((stockbalanceList) => {
           if (!totalprice || flag === true) {
