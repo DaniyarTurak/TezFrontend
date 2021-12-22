@@ -17,7 +17,8 @@ export default function ProductReferenceList({
   weightProductsList,
   company,
   getProducts,
-  setProductsList
+  setProductsList,
+  setWeightProductsList
 }) {
   const [brand, setBrand] = useState("");
   const [brandOptions, setBrandOptions] = useState([]);
@@ -212,21 +213,6 @@ export default function ProductReferenceList({
     };
   };
 
-  const getWeightProductDetails = () => {
-    Axios.get("/api/pluproducts/byname", {
-      params: { name: prodName ? prodName.trim() : "" },
-    })
-      .then((res) => res.data)
-      .then((data) => {
-        setWeightProductDetails(data)
-        console.log(data)
-      })
-  }
-
-  const onPieceAmountChange = (e) => {
-    const num = e.target.value;
-    setPiecesUnint(num);
-  };
 
   const prodNameChange = ({ value, search, fromBarcode }) => {
     if (!value || value.trim() === "") {
@@ -308,6 +294,24 @@ export default function ProductReferenceList({
         console.log(err);
       });
   };
+
+  const getWeightProductByName = (value) => {
+    Axios.get("/api/pluproducts/names", {
+      params: { name: value ? value.trim() : "" },
+    })
+      .then((res) => res.data)
+      .then((data) => {
+        setWeightProductDetails(data)
+        setWeightProductsList(data)
+        console.log(data)
+      })
+  }
+
+  const onPieceAmountChange = (e) => {
+    const num = e.target.value;
+    setPiecesUnint(num);
+  };
+
   const onCheckboxChange = (e) => {
     setWeightProduct(e.target.checked)
   }
@@ -398,7 +402,7 @@ export default function ProductReferenceList({
               color="primary"
               fullWidth
               size="large"
-              onClick={weightProduct? getWeightProductDetails : getProductDetails}
+              onClick={weightProduct? getWeightProductByName : getProductDetails}
             >
               Поиск
             </Button>
@@ -439,7 +443,14 @@ export default function ProductReferenceList({
           />
         </Grid>
       }
-      {Object.keys(weightProductDetails).length > 0 && <EditWeightProducts />}
+      {Object.keys(weightProductDetails).length > 0 && 
+        <EditWeightProducts 
+          setWeightProductDetails={setWeightProductDetails}
+          setClear={setClear}
+          isClear={isClear}
+          errorAlert={errorAlert}
+          setErrorAlert={setErrorAlert}        
+      />}
 
     </Fragment>
   );

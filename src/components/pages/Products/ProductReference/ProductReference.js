@@ -93,8 +93,10 @@ export default function ProductReference() {
         console.log(err);
       });
   };
-  const getWeightProducts =() => {
-    Axios.get("/api/pluproducts")
+  const getWeightProducts =(inp) => {
+    Axios.get("/api/pluproducts/names", {
+      params: {name: inp ? inp: productSelectValue}
+    })
       .then((res) => res.data)
       .then((list) => {
         setWeightProductsList(list)
@@ -197,6 +199,7 @@ export default function ProductReference() {
                     capations={capations}
                     setProductsList={setProductsList}
                     weightProductsList={weightProductsList}
+                    setWeightProductsList = {setWeightProductsList}
                   />
                 )}
                 {currentTab === "UpdateCategoryPage" && <UpdateCategoryPage />}

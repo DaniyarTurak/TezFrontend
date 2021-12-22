@@ -282,8 +282,6 @@ export default function ReportStockBalance({ companyProps }) {
     } else {
       handleSearch()
     }
-    
-    
   };
 
   const onConsignmentChange = (event) => {

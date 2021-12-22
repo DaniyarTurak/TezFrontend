@@ -137,7 +137,7 @@ function WeightProducts() {
                 setLoading(false);
               }
               else {
-                Alert.warning(`Товар Товар с названием ${name} не найден. Вы можете его добавить.`, {
+                Alert.warning(`Товар с названием ${name} не найден. Вы можете его добавить.`, {
                   position: "top-right",
                   effect: "bouncyflip",
                   timeout: 4000,
@@ -338,7 +338,6 @@ function WeightProducts() {
           &emsp;
           <button className="btn btn-success"
             onClick={() => {
-              console.log("saved")
               createProduct()
             }}
           >
