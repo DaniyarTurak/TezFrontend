@@ -2,7 +2,6 @@ import React, { useState, useEffect, Fragment } from "react";
 import Axios from "axios";
 import Paper from "@material-ui/core/Paper";
 import TextField from "@material-ui/core/TextField";
-import Autocomplete from "@material-ui/lab/Autocomplete";
 import Select from "@material-ui/core/Select";
 import MenuItem from "@material-ui/core/MenuItem";
 import ListAltSharpIcon from "@material-ui/icons/ListAltSharp";
@@ -13,33 +12,17 @@ import DeleteIcon from "@material-ui/icons/Delete";
 import IconButton from "@material-ui/core/IconButton";
 import SweetAlert from "react-bootstrap-sweetalert";
 import ErrorAlert from "../../../../ReusableComponents/ErrorAlert";
-import Moment from "moment";
 
 export default function EditProduct({
   weightProductDetails,
-  brandOptions,
-  onBrandListInput,
-  onCategoryListInput,
-  categoryOptions,
-  setUnitOptions,
-  onUnitListInput,
-  sellByPieces,
-  companyData,
   errorAlert,
   errorMessage,
-  piecesUnint,
   setClear,
   isClear,
   setWeightProductDetails
 }) {
 
   const [editingProduct, setEditingProduct] = useState({});
-  const [listAllAttributes, setListAllAttributes] = useState([]);
-
-  const [constAttribCode, setConstAttribCode] = useState(0);
-  const [partAttribCode, setPartAttribCode] = useState(0);
-  const [attributesValues, setAttributesValues] = useState([]);
-  const [detailsValues, setDetailsValues] = useState([]);
   const [isDeleteListCode, setDeleteListCode] = useState(false);
   const [sweetalert, setSweetAlert] = useState(null);
   const [tax, setTax] = useState("0");

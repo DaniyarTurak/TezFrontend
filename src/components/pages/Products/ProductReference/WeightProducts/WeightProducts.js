@@ -1,23 +1,14 @@
-import React, { useState, useEffect, Fragment } from "react";
+import React, { useState, Fragment } from "react";
 import Axios from "axios";
 import Alert from "react-s-alert";
-import { isAllowed } from "../../../../../barcodeTranslate";
 import MenuItem from "@material-ui/core/MenuItem";
 import Select from "@material-ui/core/Select";
-import InfoIcon from "@material-ui/icons/Info";
-import Tooltip from "@material-ui/core/Tooltip";
 import Grid from "@material-ui/core/Grid";
 import FormControl from "@material-ui/core/FormControl";
 import TextField from "@material-ui/core/TextField";
 import Autocomplete from "@material-ui/lab/Autocomplete";
 import Typography from "@material-ui/core/Typography";
-import Checkbox from "@material-ui/core/Checkbox";
-import FormControlLabel from "@material-ui/core/FormControlLabel";
 import { makeStyles } from "@material-ui/core/styles";
-import Divider from "@material-ui/core/Divider";
-import IconButton from "@material-ui/core/IconButton";
-import SearchIcon from "@material-ui/icons/Search";
-import Button from "@material-ui/core/Button";
 import CircularProgress from "@material-ui/core/CircularProgress";
 import ErrorAlert from "../../../../ReusableComponents/ErrorAlert";
 
@@ -78,26 +69,16 @@ const useStyles2 = makeStyles((theme) => ({
 function WeightProducts() {
   const [isLoading, setLoading] = useState(false);
   const [isValidate, setValidate] = useState(false);
-  const [isValidateName, setValidateName] = useState(false);
-  const [isValidateUnit, setValidateUnit] = useState(false);
-  const [unitOptions, setUnitOptions] = useState([{ id: 1, name: "Килограмм", label: "Килограмм" }]);
+  const [unitOptions, setUnitOptions] = useState(false);useState([{ id: 1, name: "Килограмм", label: "Килограмм" }]);
   const [productName, setProductName] = useState("");
   const [unitspr, setUnitspr] = useState(1);
   const [tax, setTax] = useState(1);
   const classes = useStyles();
   const classes2 = useStyles2();
-  const companyData = JSON.parse(sessionStorage.getItem("isme-company-data")) || {};
+
 
   const onProductNameChange = (e) => {
     let pn = e.target.value;
-    if (!pn === 0) {
-      setValidateName(true);
-      return;
-    } else if (!pn) {
-      setValidateName(true);
-    } else {
-      setValidateName(false);
-    }
     if (pn.length > 100) {
       return Alert.warning(
         `Название товара не может содержать символы: ' ; ' ' , '`,
@@ -112,74 +93,13 @@ function WeightProducts() {
   };
   const clearForm = () => {
     setProductName("");
-  };
-
-  const getProductByName = (name) => {
-    Axios.get("/api/")
-      .then((res) => res.data)
-      .then((product) => {
-        if (product !== "") {
-          Alert.info(`Товар с названием ${name} уже существует. Вы не можете его добавить.`, {
-            position: "top-right",
-            effect: "bouncyflip",
-            timeout: 3000,
-          });
-          setLoading(false);
-          clearForm();
-        }
-        else {
-          Axios.get("/api/nomenclature/spr")
-            .then((res) => res.data)
-            .then((res) => {
-              if (res !== "") {
-                setProductName(res.name);
-
-                setLoading(false);
-              }
-              else {
-                Alert.warning(`Товар с названием ${name} не найден. Вы можете его добавить.`, {
-                  position: "top-right",
-                  effect: "bouncyflip",
-                  timeout: 4000,
-                });
-                setLoading(false);
-              }
-            }
-            )
-            .catch((err) => {
-              console.log(err);
-            });
-        }
-      })
-      .catch((err) => {
-        setLoading(false);
-        console.log(err);
-      });
+    setUnitspr(1)
   };
   const unitListChange = (e, unitsprChanged) => {
     setUnitspr(unitsprChanged);
   };
   const onUnitListInput = (e, unitspr) => {
     if (unitspr.lenght > 0) setUnitspr(unitspr);
-  };
-  const handleSearch = (pn) => {
-    pn.preventDefault();
-    if (!pn) {
-      return Alert.info("Заполните поле Наименование", {
-        position: "top-right",
-        effect: "bouncyflip",
-        timeout: 2000,
-      });
-    }
-    setLoading(true);
-    getProductByName(pn);
-  };
-  const getTaxes = (inputValue) => {
-    Axios.get("/api/taxes", { params: { category: inputValue } })
-      .then((res) => res.data)
-      .catch((err) => {
-        console.log(err);
-      });
   };
   const onTaxChange = (e, t) => {
     setTax(e.target.value);
@@ -214,6 +134,8 @@ function WeightProducts() {
               effect: "bouncyflip",
               timeout: 2000,
             });
+            setProductName("");
+            setUnitspr(1)
           } else {
             ErrorAlert(data.text);
           }
