@@ -18,7 +18,8 @@ export default function ProductReferenceList({
   company,
   getProducts,
   setProductsList,
-  setWeightProductsList
+  setWeightProductsList,
+  getWeightProducts,
 }) {
   const [brand, setBrand] = useState("");
   const [brandOptions, setBrandOptions] = useState([]);
@@ -32,6 +33,8 @@ export default function ProductReferenceList({
   const [errorAlert, setErrorAlert] = useState(false);
   const [weightProduct, setWeightProduct] = useState(false)
   const [prodName, setProdName] = useState("");
+  const [weightProdName, setWeightProdName] = useState("")
+  const [weightProdId, setWeightProdId] = useState()
   const [barcode, setBarcode] = useState("");
   const [isClear, setClear] = useState(false);
   const [productDetails, setProductDetails] = useState({});
@@ -45,12 +48,15 @@ export default function ProductReferenceList({
     getBrands();
     getMeasures();
     getProducts();
+    getWeightProducts();
   }, []);
 
   useEffect(() => {
     setProdName("");
+    setWeightProdName("")
     setBarcode("");
     getProducts();
+    getWeightProducts();
   }, [isClear]);
 
   const getBrands = (inputValue) => {
@@ -136,6 +142,7 @@ export default function ProductReferenceList({
       );
     }
     setProdName(pn);
+    setWeightProdName(pn)
   };
 
   const onCnofeacodeEdit = (e) => {
@@ -213,6 +220,28 @@ export default function ProductReferenceList({
     };
   };
 
+  const getWeightProductDetails = () => {
+    if (weightProdName.trim() === "") {
+      return Alert.info("Выберите товар", {
+        position: "top-right",
+        effect: "bouncyflip",
+        timeout: 2000,
+      });
+    }
+    else {
+      Axios.get("/api/pluproducts/details", {
+        params: {id: weightProdId}
+      })
+      .then((res) => res.data)
+      .then((data) => {
+        setWeightProductDetails(data)
+        console.log(data)
+      })
+      .catch((err) => {
+        console.log(err)
+      })
+    }
+  }
 
   const prodNameChange = ({ value, search, fromBarcode }) => {
     if (!value || value.trim() === "") {
@@ -238,6 +267,28 @@ export default function ProductReferenceList({
       }
     }
   };
+
+  const weightProdNameChange = ({value, search}) => {
+    if (!value || value.trim() === "") {
+      setWeightProdName("");
+      if (search) {
+        getWeightProductByName("");
+      }
+    }
+    else {
+      setWeightProdName(value);
+      let flag = false;
+      weightProductsList.forEach(prod => {
+        if (prod.name === value) {
+          setWeightProdId(prod.id)
+          flag = true;
+        }
+      });
+      if (!flag && search) {
+        getWeightProductByName(value);
+      }
+    }
+  }
 
   const barcodeChange = (value) => {
     setBarcode(value.trim());
@@ -301,9 +352,10 @@ export default function ProductReferenceList({
     })
       .then((res) => res.data)
       .then((data) => {
-        setWeightProductDetails(data)
-        setWeightProductsList(data)
-        console.log(data)
+        setWeightProductsList(data);
+      })
+      .catch((err) => {
+        console.log(err)
       })
   }
 
@@ -314,6 +366,8 @@ export default function ProductReferenceList({
 
   const onCheckboxChange = (e) => {
     setWeightProduct(e.target.checked)
+    setWeightProductDetails({})
+    setWeightProdName("")
   }
   return (
     <Fragment>
@@ -376,10 +430,10 @@ export default function ProductReferenceList({
                 <Autocomplete
                   style={{ marginTop: "5px", marginLeft: "10px" }}
                   options={weightProductsList.map((option) => option.name)}
-                  value={prodName}
-                  onChange={(e, value) => prodNameChange({ value, search: false })}
+                  value={weightProdName}
+                  onChange={(e, value) => weightProdNameChange({ value, search: false })}
                   noOptionsText="Товар не найден"
-                  onInputChange={(e, value) => prodNameChange({ value, search: true })}
+                  onInputChange={(e, value) => weightProdNameChange({ value, search: true })}
                   renderInput={(params) => (
                     <TextField
                       {...params}
@@ -402,7 +456,7 @@ export default function ProductReferenceList({
               color="primary"
               fullWidth
               size="large"
-              onClick={weightProduct? getWeightProductByName : getProductDetails}
+              onClick={weightProduct? getWeightProductDetails : getProductDetails}
             >
               Поиск
             </Button>
@@ -443,14 +497,19 @@ export default function ProductReferenceList({
           />
         </Grid>
       }
-      {Object.keys(weightProductDetails).length > 0 && 
+      
+      {Object.keys(weightProductDetails).length > 0 && weightProduct && 
+      <Grid item xs={12} style={{ paddingTop: "20px" }}>
         <EditWeightProducts 
           setWeightProductDetails={setWeightProductDetails}
+          weightProductDetails = {weightProductDetails}
           setClear={setClear}
           isClear={isClear}
           errorAlert={errorAlert}
           setErrorAlert={setErrorAlert}        
-      />}
+      />
+      </Grid>
+      }
 
     </Fragment>
   );

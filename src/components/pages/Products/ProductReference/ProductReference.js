@@ -194,6 +194,7 @@ export default function ProductReference() {
                     productListChange={productListChange}
                     onProductListChange={onProductListChange}
                     getProducts={getProducts}
+                    getWeightProducts={getWeightProducts}
                     getBarcodeProps={getProductByBarcode}
                     getProductByBarcode={getProductByBarcode}
                     capations={capations}

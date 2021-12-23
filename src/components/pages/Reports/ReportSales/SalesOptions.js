@@ -10,6 +10,7 @@ import Autocomplete from "@material-ui/lab/Autocomplete";
 
 export default function SalesOptions({
   attrval,
+  textAttrval,
   attribute,
   attributes,
   attributeTypes,
@@ -193,7 +194,7 @@ export default function SalesOptions({
       {attribute.format === "TEXT" && (
         <Grid item xs={3}>
           <TextField
-            value={attrval}
+            value={textAttrval}
             onChange={onAttributeTypeChange}
             disabled={!grouping}
             label="Значение Атрибута"

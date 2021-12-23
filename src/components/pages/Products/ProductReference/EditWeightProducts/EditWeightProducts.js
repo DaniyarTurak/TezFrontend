@@ -16,7 +16,7 @@ import ErrorAlert from "../../../../ReusableComponents/ErrorAlert";
 import Moment from "moment";
 
 export default function EditProduct({
-  productDetails,
+  weightProductDetails,
   brandOptions,
   onBrandListInput,
   onCategoryListInput,
@@ -45,20 +45,89 @@ export default function EditProduct({
   const [tax, setTax] = useState("0");
 
 
+  useEffect(() => {
+    setEditingProduct(weightProductDetails);
+    setTax(weightProductDetails.tax)
+  }, [weightProductDetails]);
+
+
   const editWeightProdRes = () => {
-    console.log("")
-  }
+    Axios.post("/api/pluproducts/update", {
+      id: editingProduct.id,
+      name: editingProduct.name,
+      tax: editingProduct.tax,
+    })
+      .then((res) => {
+        Alert.success("Товар успешно сохранен", {
+          position: "top-right",
+          effect: "bouncyflip",
+          timeout: 2000,
+        });
+        setClear(!isClear);
+        setEditingProduct({});
+        setSweetAlert(null);
+        setWeightProductDetails({})
+        setDeleteListCode(!isDeleteListCode);
+      })
+      .catch((err) => {
+        ErrorAlert(err);
+      });
+    }
+ 
+  const handleDelete = () => {
+    Axios.post("/api/pluproducts/delete", {
+      id: editingProduct.id,
+    })
+      .then((res) => res.data)
+      .then((res) => {
+        if (res.code === "success") {
+          Alert.success("Товар успешно удален.", {
+            position: "top-right",
+            effect: "bouncyflip",
+            timeout: 2000,
+          });
+          setClear(!isClear);
+          setEditingProduct({});
+          setSweetAlert(null);
+          setWeightProductDetails({})
+        } else
+          return Alert.warning(res.text, {
+            position: "top-right",
+            effect: "bouncyflip",
+            timeout: 2000,
+          });
+      })
+      .catch((err) => {
+        console.log(err);
+      });
+  };
 
   const handleDeleteProduct = () => {
-    console.log("")
-  }
+    setSweetAlert(
+      <SweetAlert
+        warning
+        showCancel
+        confirmBtnText="Да, я уверен"
+        cancelBtnText="Нет, отменить"
+        confirmBtnBsStyle="success"
+        cancelBtnBsStyle="default"
+        title="Вы уверены?"
+        allowEscape={true}
+        closeOnClickOutside={false}
+        onConfirm={handleDelete}
+        onCancel={() => setSweetAlert(null)}
+      >
+        Вы действительно хотите удалить товар?
+      </SweetAlert>
+    );
+  };
 
-  const taxChange = () => {
-    console.log("")
+  const taxChange = (e) => {
+    setTax(e.target.value);
+    setEditingProduct({ ...editingProduct, tax: e.target.value })
   }
   return (
     <Fragment>
-        hello
       {sweetalert}
       {errorAlert && (
         <AlertMaterial severity="error">
