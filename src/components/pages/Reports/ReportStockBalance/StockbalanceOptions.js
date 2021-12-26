@@ -8,6 +8,14 @@ import SingleMaterialDate from "../../../ReusableComponents/SingleMaterialDate";
 import Moment from "moment";
 import TextField from "@material-ui/core/TextField";
 import Button from "@material-ui/core/Button";
+import ruLocale from 'date-fns/locale/ru';
+import ClearIcon from "@material-ui/icons/Clear";
+import {
+  MuiPickersUtilsProvider,
+  KeyboardDatePicker,
+} from "@material-ui/pickers";
+import DateFnsUtils from "@date-io/date-fns";
+import IconButton from '@material-ui/core/IconButton';
 
 export default function StockbalanceOptions({
   attrval,
@@ -55,12 +63,18 @@ export default function StockbalanceOptions({
   handleCounterpartyChange,
   handleCounterpartyInputChange,
   dateAttrval,
+  setDateAttrval,
   clean
 }) {
   return (
     <Fragment>
       <Grid item xs={12}>
-        <SingleMaterialDate value={date} onChange={onDateChange} label="Дата" margin={"normal"} />
+        <SingleMaterialDate
+          value={date}
+          onChange={onDateChange}
+          label="Дата"
+          margin={"normal"}
+        />
       </Grid>
       <AutocompleteProductBarcode
         barcode={barcode}
@@ -150,9 +164,38 @@ export default function StockbalanceOptions({
       )}
       {attribute.format === "DATE" && (
         <Grid item xs={3}>
-          <SingleMaterialDate
+          {/* <SingleMaterialDate
             value={dateAttrval} onChange={onAttributeDateChange} label="Дата"
-          />
+          /> */}
+          <MuiPickersUtilsProvider utils={DateFnsUtils} locale={ruLocale}>
+            <KeyboardDatePicker
+              label={"Выберите дату"}
+              value={dateAttrval}
+              renderInput={(params) => <TextField {...params} />}
+              onChange={(newValue) => {
+                setDateAttrval(Moment(newValue).format("YYYY-MM-DD"));
+              }}
+              disableToolbar
+              autoOk
+              variant="inline"
+              format="dd.MM.yyyy"
+              InputProps={
+                dateAttrval && {
+                  startAdornment: (
+                    <IconButton
+                      onClick={() => {
+                        setDateAttrval(null);
+                      }}
+                      disabled={!dateAttrval}
+                      style={{ order: 1 }}
+                    >
+                      <ClearIcon color="disabled" fontSize="small" />
+                    </IconButton>
+                  ),
+                }
+              }
+            />
+          </MuiPickersUtilsProvider>
         </Grid>
       )}
       <Grid item xs={3}>
@@ -177,7 +220,8 @@ export default function StockbalanceOptions({
           }
           label={
             <span style={{ fontSize: ".875rem" }}>
-              Разбить по партийным характеристиками (Например: по цвету, размеру и т.д.)
+              Разбить по партийным характеристиками (Например: по цвету, размеру
+              и т.д.)
             </span>
           }
         />
@@ -218,7 +262,6 @@ export default function StockbalanceOptions({
           Поиск
         </Button>
       </Grid>
-
-    </Fragment >
+    </Fragment>
   );
 }

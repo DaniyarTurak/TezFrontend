@@ -51,7 +51,7 @@ export default function ReportStockBalance({ companyProps }) {
   const [attributes, setAttributes] = useState([]);
   const [attributeTypes, setAttributeTypes] = useState([]);
   const [attrval, setAttrVal] = useState("");
-  const [dateAttrval, setDateAttrval] = useState(Moment().format("YYYY-MM-DD"))
+  const [dateAttrval, setDateAttrval] = useState(null)
   const [barcode, setBarcode] = useState("");
   const [brand, setBrand] = useState({ value: "@", label: "Все" });
   const [brands, setBrands] = useState([]);
@@ -185,7 +185,7 @@ export default function ReportStockBalance({ companyProps }) {
     return () => {
       setDateChanging(false);
     };
-  }, [onGroupingChange]);
+  }, [grouping]);
 
   useEffect(() => {
     if (isPaginationLoading) {
@@ -271,16 +271,10 @@ export default function ReportStockBalance({ companyProps }) {
     event.preventDefault()
     setAttrVal(event.target.value);
   }
-
-  const onAttributeDateChange = (date) => {
-    setDateAttrval(Moment(date).format("YYYY-MM-DD") )
-  }
   const onGroupingChange = (event) => {
     setGrouping(event.target.checked);
     if(event.target.checked===false) {
       clean()
-    } else {
-      handleSearch()
     }
   };
 
@@ -646,6 +640,7 @@ export default function ReportStockBalance({ companyProps }) {
       <StockbalanceOptions
         attrval={attrval}
         dateAttrval={dateAttrval}
+        setDateAttrval={setDateAttrval}
         attribute={attribute}
         attributes={attributes}
         attributeTypes={attributeTypes}
@@ -688,7 +683,6 @@ export default function ReportStockBalance({ companyProps }) {
         stockList={stockList}
         handleCounterpartyChange={handleCounterpartyChange}
         handleCounterpartyInputChange={handleCounterpartyInputChange}
-        onAttributeDateChange = {onAttributeDateChange}
         clean = {clean}
       />
 
