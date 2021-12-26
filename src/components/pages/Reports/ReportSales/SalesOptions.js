@@ -10,6 +10,14 @@ import Autocomplete from "@material-ui/lab/Autocomplete";
 import Button from "@material-ui/core/Button";
 import { makeStyles } from "@material-ui/core/styles";
 import ErrorAlert from "../../../ReusableComponents/ErrorAlert";
+import ruLocale from 'date-fns/locale/ru';
+import ClearIcon from "@material-ui/icons/Clear";
+import {
+  MuiPickersUtilsProvider,
+  KeyboardDatePicker,
+} from "@material-ui/pickers";
+import DateFnsUtils from "@date-io/date-fns";
+import IconButton from '@material-ui/core/IconButton';
 
 const useStyles = makeStyles((theme) => ({
   button: {
@@ -23,6 +31,8 @@ const useStyles = makeStyles((theme) => ({
 export default function SalesOptions({
   attrval,
   textAttrval,
+  dateAttrval,
+  setDateAttrval,
   attribute,
   attributes,
   attributeTypes,
@@ -236,6 +246,39 @@ export default function SalesOptions({
             noOptions="Атрибут не найден"
             label="Значение Атрибута"
           />
+        </Grid>
+      )}
+      {attribute.format === "DATE" && (
+        <Grid item xs={3}>
+          <MuiPickersUtilsProvider utils={DateFnsUtils} locale={ruLocale}>
+            <KeyboardDatePicker
+              label={"Выберите дату"}
+              value={dateAttrval}
+              renderInput={(params) => <TextField {...params} />}
+              onChange={(newValue) => {
+                setDateAttrval(moment(newValue).format("YYYY-MM-DD"));
+              }}
+              disableToolbar
+              autoOk
+              variant="inline"
+              format="dd.MM.yyyy"
+              InputProps={
+                dateAttrval && {
+                  startAdornment: (
+                    <IconButton
+                      onClick={() => {
+                        setDateAttrval(null);
+                      }}
+                      disabled={!dateAttrval}
+                      style={{ order: 1 }}
+                    >
+                      <ClearIcon color="disabled" fontSize="small" />
+                    </IconButton>
+                  ),
+                }
+              }
+            />
+          </MuiPickersUtilsProvider>
         </Grid>
       )}
 

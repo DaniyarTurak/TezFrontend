@@ -47,7 +47,8 @@ export default function ReportSales({ companyProps }) {
     format: "",
   });
   const [attrval, setAttrVal] = useState({ value: "", label: "Все" });
-  const [textAttrval, setTextAttrval] = useState("")
+  const [textAttrval, setTextAttrval] = useState("");
+  const [dateAttrval, setDateAttrval] = useState(null)
   const [attributeTypes, setAttributeTypes] = useState([]);
   const [attributes, setAttributes] = useState([]);
   const [brand, setBrand] = useState({ value: "@", label: "Все" });
@@ -530,7 +531,7 @@ export default function ReportSales({ companyProps }) {
         sell_type: sellType.value,
         client_type: clientType.value,
         attribute: attribute.value,
-        attrval: attribute.format==="TEXT" ? textAttrval : attrval.label === "Все" ? "" : attrval.label,
+        attrval: attribute.format==="TEXT" ? textAttrval : attribute.format==="DATE" ? dateAttrval : attrval.label === "Все" ? "" : attrval.label,
         notattr,
         company,
       },
@@ -655,6 +656,8 @@ export default function ReportSales({ companyProps }) {
         setSellType={setSellType}
         clientTypes={clientTypes}
         sellTypes={sellTypes}
+        dateAttrval={dateAttrval}
+        setDateAttrval={setDateAttrval}
       />
 
       {isLoading && (
