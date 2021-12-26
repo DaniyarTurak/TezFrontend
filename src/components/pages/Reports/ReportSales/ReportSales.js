@@ -153,18 +153,7 @@ export default function ReportSales({ companyProps }) {
     return () => {
       setDateChanging(false);
     };
-  }, [
-    attribute,
-    attrval,
-    brand,
-    counterparty,
-    category,
-    dateFrom,
-    dateTo,
-    grouping,
-    point,
-    type,
-  ]);
+  }, []);
 
   useEffect(
     () => {
@@ -237,14 +226,24 @@ export default function ReportSales({ companyProps }) {
 
 
   const clean = () => {
-    setSales([]);
-    setAttrVal("");
-    setTextAttrval("")
-    setPoints([]);
-    setCounterparties([]);
-    setCategories([]);
+    // setSales([]);
+    // setAttrVal("");
+    // setTextAttrval("");
+    // setAttributes([]);
+    // setPoints([]);
+    // setCounterparties([]);
+    // setCategories([]);
+    // setBrands([]);
+    // setAttributeTypes([]);
+    setAttrVal({ value: "", label: "Все" });
+    setBarcode("");
+    setBrand({ value: "@", label: "Все" });
     setBrands([]);
-    setAttributeTypes([]);
+    setCategory({ value: "@", label: "Все" });
+    setCategories([]);
+    setCounterparties([]);
+    setAttribute({ value: "@", label: "Все", format: "" });
+    setSales([])
   };
 
   const changeDate = (dateStr) => {

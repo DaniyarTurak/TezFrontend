@@ -32,6 +32,9 @@ const useStyles = makeStyles((theme) => ({
     fontSize: ".875rem",
     textTransform: "none",
   },
+  button_invisible: {
+    display: "none"
+  }
 }));
 
 export default function MaterialDateDefault({
@@ -42,7 +45,8 @@ export default function MaterialDateDefault({
   dateToChange,
   searchInvoices,
   disableButton,
-  maxDate
+  maxDate,
+  invisibleButton
 }) {
   const classes = useStyles();
 
@@ -136,7 +140,7 @@ export default function MaterialDateDefault({
         </Grid>
         <Grid item xs={2} className={classes.buttonGrid}>
           <Button
-            className={classes.button}
+            className={invisibleButton? classes.button_invisible : classes.button}
             variant="outlined"
             color="primary"
             disabled={disableButton}

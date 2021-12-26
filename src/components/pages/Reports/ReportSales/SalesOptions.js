@@ -7,6 +7,18 @@ import TextField from "@material-ui/core/TextField";
 import MaterialDateDefault from "../../../ReusableComponents/MaterialDateDefault";
 import AutocompleteSelect from "../../../ReusableComponents/AutocompleteSelect";
 import Autocomplete from "@material-ui/lab/Autocomplete";
+import Button from "@material-ui/core/Button";
+import { makeStyles } from "@material-ui/core/styles";
+import ErrorAlert from "../../../ReusableComponents/ErrorAlert";
+
+const useStyles = makeStyles((theme) => ({
+  button: {
+    width: "12rem",
+    minHeight: "3.5rem",
+    fontSize: ".875rem",
+    textTransform: "none",
+  },
+}));
 
 export default function SalesOptions({
   attrval,
@@ -60,6 +72,17 @@ export default function SalesOptions({
   sellTypes
 }) {
 
+  const classes = useStyles()
+
+  const checkDates = () => {
+    if (moment(dateFrom).format("L") === "Invalid date" || moment(dateTo).format("L") === "Invalid date") {
+      ErrorAlert("Введите корректную дату");
+    }
+    else {
+      handleSearch();
+    }
+  };
+
   return (
     <Fragment>
       <Grid item xs={12}>
@@ -72,6 +95,7 @@ export default function SalesOptions({
           searchInvoices={handleSearch}
           disableButton={isSubmitting}
           maxDate={moment(dateFrom).add(1,'M')}
+          invisibleButton={true}
         />
       </Grid>
       <Grid item xs={6}>
@@ -249,6 +273,19 @@ export default function SalesOptions({
           }
         />
       </Grid>
+      <Grid item xs={3}>
+      <Button
+            className={classes.button}
+            variant="outlined"
+            color="primary"
+            disabled={isSubmitting}
+            // // onClick={searchInvoices}
+            onClick={checkDates}
+
+          >
+            Поиск
+          </Button>
+          </Grid>
     </Fragment>
   );
 }
