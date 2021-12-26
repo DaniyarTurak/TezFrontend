@@ -69,7 +69,7 @@ const useStyles2 = makeStyles((theme) => ({
 function WeightProducts() {
   const [isLoading, setLoading] = useState(false);
   const [isValidate, setValidate] = useState(false);
-  const [unitOptions, setUnitOptions] = useState(false);useState([{ id: 1, name: "Килограмм", label: "Килограмм" }]);
+  const [unitOptions, setUnitOptions] = useState([{ id: 1, name: "Килограмм", label: "Килограмм" }]);
   const [productName, setProductName] = useState("");
   const [unitspr, setUnitspr] = useState(1);
   const [tax, setTax] = useState(1);
