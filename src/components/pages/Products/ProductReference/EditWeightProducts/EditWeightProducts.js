@@ -157,8 +157,8 @@ export default function EditProduct({
                   value={tax}
                   onChange={taxChange}
                 >
-                  <MenuItem value={"Без НДС"}>Без НДС</MenuItem>
-                  <MenuItem value={"Стандартный НДС"}>Стандартный НДС</MenuItem>
+                  <MenuItem value={"0"}>Без НДС</MenuItem>
+                  <MenuItem value={"1"}>Стандартный НДС</MenuItem>
                 </Select>
               </Grid>
             <Grid item xs={3} />

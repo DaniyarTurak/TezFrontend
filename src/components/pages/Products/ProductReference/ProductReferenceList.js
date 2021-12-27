@@ -11,7 +11,6 @@ import Button from "@material-ui/core/Button";
 import Typography from "@material-ui/core/Typography";
 import Checkbox from "@material-ui/core/Checkbox";
 import FormControlLabel from "@material-ui/core/FormControlLabel";
-import WeightProducts from "./WeightProducts/WeightProducts";
 
 export default function ProductReferenceList({
   productsList,
@@ -236,7 +235,6 @@ export default function ProductReferenceList({
       .then((res) => res.data)
       .then((data) => {
         setWeightProductDetails(data)
-        console.log(data)
       })
       .catch((err) => {
         console.log(err)

@@ -8,6 +8,10 @@ import CustomSelect from "../../../ReusableComponents/CustomSelect";
 import ErrorAlert from "../../../ReusableComponents/ErrorAlert";
 import CustomAutocomplete from "../../../ReusableComponents/CustomAutocomplete";
 import Autocomplete from "@material-ui/lab/Autocomplete";
+import Typography from "@material-ui/core/Typography";
+import Checkbox from "@material-ui/core/Checkbox";
+import FormControlLabel from "@material-ui/core/FormControlLabel";
+import WeightPriceAdd from "./WeightPriceAdd";
 
 export default function SellAndPurchasePrices() {
 
@@ -26,6 +30,7 @@ export default function SellAndPurchasePrices() {
   const [isWholesale, setWholeSale] = useState(false);
   const [byCounterparty, setByCounterparty] = useState(false);
   const [options, setOptions] = useState([]);
+  const [weightOptions, setWeightOptions] = useState(false)
 
   const objects = [
     { value: 0, label: "Все товары" },
@@ -136,16 +141,16 @@ export default function SellAndPurchasePrices() {
         let temp = [];
         if (prices.length > 0) {
           prices.forEach((el, idx) => {
-            temp.push({
-              ...el,
-              num: idx + 1,
-              purchase_price: el.purchase_price ? el.purchase_price : "",
-              sell_price: el.sell_price ? el.sell_price : "",
-              wholesale_price: el.wholesale_price ? el.wholesale_price : "",
-              temp_purchase_price: el.purchase_price ? el.purchase_price : "",
-              temp_sell_price: el.sell_price ? el.sell_price : "",
-              temp_wholesale_price: el.wholesale_price ? el.wholesale_price : "",
-            })
+              temp.push({
+                ...el,
+                num: idx + 1,
+                purchase_price: el.purchase_price ? el.purchase_price : "",
+                sell_price: el.sell_price ? el.sell_price : "",
+                wholesale_price: el.wholesale_price ? el.wholesale_price : "",
+                temp_purchase_price: el.purchase_price ? el.purchase_price : "",
+                temp_sell_price: el.sell_price ? el.sell_price : "",
+                temp_wholesale_price: el.wholesale_price ? el.wholesale_price : "",
+              })
           });
         }
         setPriceList(temp);
@@ -211,6 +216,10 @@ export default function SellAndPurchasePrices() {
     }
   };
 
+  const onCheckboxChange = (e) => {
+    setWeightOptions(e.target.checked);
+  }
+
 
   return (
     <Fragment>
@@ -270,23 +279,52 @@ export default function SellAndPurchasePrices() {
             <Grid item xs={12} style={{ textAlign: 'center', color: '#6c757d' }}>
               {object === 1 ? 'Добавление закупочной цены' : ' Поиск товара'}
             </Grid>
+            {object === 1 || object === 0 ?
+              <Grid item xs={12}>
+                <Typography variant="h6">
+                  <FormControlLabel
+                    control={
+                      <Checkbox
+                        size="small"
+                        name="checkedB"
+                        color="primary"
+                        onChange={onCheckboxChange}
+                      />
+                    }
+                    size="small"
+                    label="Весовые товары"
+                  />
+                </Typography>
+              </Grid>
+              : null
+            }
+
             <Grid item xs={12}>
-              <PriceAdd
-                counterparty={counterparty}
-                brand={brand}
-                category={category}
-                getPrices={getPrices}
-                isWholesale={isWholesale}
-                object={object}
-                barcode={barcode}
-                setBarcode={setBarcode}
-                prodName={prodName}
-                setProdName={setProdName}
-              />
+              {weightOptions ?
+                <WeightPriceAdd
+                  isWholesale={isWholesale}
+                  counterparty={counterparty}
+
+                />
+                :
+                <PriceAdd
+                  counterparty={counterparty}
+                  brand={brand}
+                  category={category}
+                  getPrices={getPrices}
+                  isWholesale={isWholesale}
+                  object={object}
+                  barcode={barcode}
+                  setBarcode={setBarcode}
+                  prodName={prodName}
+                  setProdName={setProdName}
+                />
+              }
+
             </Grid>
           </Fragment>
         }
-        {isSearched && <Grid item xs={12}>
+        {isSearched && <Grid item xs={12} >
           <PricesList
             counterparty={counterparty}
             priceList={priceList}
