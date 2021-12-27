@@ -304,7 +304,8 @@ export default function SellAndPurchasePrices() {
                 <WeightPriceAdd
                   isWholesale={isWholesale}
                   counterparty={counterparty}
-
+                  object={object}
+                  getPrices={getPrices}
                 />
                 :
                 <PriceAdd

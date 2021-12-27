@@ -10,7 +10,7 @@ import Divider from '@material-ui/core/Divider';
 import SearchIcon from '@material-ui/icons/Search';
 import IconButton from '@material-ui/core/IconButton';
 
-function WeightPriceAdd({isWholesale, counterparty}) {
+function WeightPriceAdd({isWholesale, counterparty, object, getPrices}) {
     const useStylesAC = makeStyles(theme =>
         createStyles({
             root: {
@@ -215,7 +215,7 @@ function WeightPriceAdd({isWholesale, counterparty}) {
                                     />
                                 )}
                             />
-                            <IconButton onClick={searchProduct}>
+                            <IconButton  onClick={object === 1 ? searchProduct : getPrices}>
                                 <SearchIcon />
                             </IconButton>
                         </Paper>
