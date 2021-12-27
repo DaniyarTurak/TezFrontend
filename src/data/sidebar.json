@@ -115,21 +115,6 @@
         "id": 7,
         "name": "Сверка",
         "route": "product/reconciliationpage"
-      },
-      {
-        "id": 8,
-        "name": "Создание наряд-заказа",
-        "route": "product/createworkorder"
-      },
-      {
-        "id": 9,
-        "name": "Обработка наряд-заказа",
-        "route": "product/acceptworkorder"
-      },
-      {
-        "id": 9,
-        "name": "Прием товаров по наряд-заказу",
-        "route": "product/recievebyworkorder"
       }
     ]
   },
@@ -157,6 +142,28 @@
   },
   {
     "id": 5,
+    "groupName": "Заказ-наряд",
+    "status": "close",
+    "group": [
+      {
+        "id": 1,
+        "name": "Создание",
+        "route": "product/createworkorder"
+      },
+      {
+        "id": 2,
+        "name": "Обработка",
+        "route": "product/acceptworkorder"
+      },
+      {
+        "id": 3,
+        "name": "Прием товаров по наряд-заказу",
+        "route": "product/recievebyworkorder"
+      }
+    ]
+  },
+  {
+    "id": 6,
     "groupName": "Маркетинг и продвижение",
     "status": "close",
     "group": [
