@@ -20,7 +20,7 @@ export default function ProductReferenceList({
   getProducts,
   setProductsList,
   setWeightProductsList,
-  getWeightProducts
+  getWeightProducts,
 }) {
   const [brand, setBrand] = useState("");
   const [brandOptions, setBrandOptions] = useState([]);
@@ -49,13 +49,15 @@ export default function ProductReferenceList({
     getBrands();
     getMeasures();
     getProducts();
-    getWeightProductByName("")
+    getWeightProducts();
   }, []);
 
   useEffect(() => {
     setProdName("");
+    setWeightProdName("")
     setBarcode("");
     getProducts();
+    getWeightProducts();
   }, [isClear]);
 
   const getBrands = (inputValue) => {
@@ -141,6 +143,7 @@ export default function ProductReferenceList({
       );
     }
     setProdName(pn);
+    setWeightProdName(pn)
   };
 
   const onCnofeacodeEdit = (e) => {
@@ -219,20 +222,27 @@ export default function ProductReferenceList({
   };
 
   const getWeightProductDetails = () => {
-    Axios.get("/api/pluproducts/details", {
-      params: { id: weightProdId },
-    })
+    if (weightProdName.trim() === "") {
+      return Alert.info("Выберите товар", {
+        position: "top-right",
+        effect: "bouncyflip",
+        timeout: 2000,
+      });
+    }
+    else {
+      Axios.get("/api/pluproducts/details", {
+        params: {id: weightProdId}
+      })
       .then((res) => res.data)
       .then((data) => {
         setWeightProductDetails(data)
         console.log(data)
       })
+      .catch((err) => {
+        console.log(err)
+      })
+    }
   }
-
-  const onPieceAmountChange = (e) => {
-    const num = e.target.value;
-    setPiecesUnint(num);
-  };
 
   const prodNameChange = ({ value, search, fromBarcode }) => {
     if (!value || value.trim() === "") {
@@ -259,25 +269,24 @@ export default function ProductReferenceList({
     }
   };
 
-  const weightProdNameChange = ({ value, search }) => {
+  const weightProdNameChange = ({value, search}) => {
     if (!value || value.trim() === "") {
-      setWeightProdName("")
+      setWeightProdName("");
       if (search) {
         getWeightProductByName("");
       }
     }
-
     else {
       setWeightProdName(value);
       let flag = false;
       weightProductsList.forEach(prod => {
         if (prod.name === value) {
-          setWeightProdName(value)
+          setWeightProdId(prod.id)
           flag = true;
         }
       });
       if (!flag && search) {
-        getWeightProductByName(value)
+        getWeightProductByName(value);
       }
     }
   }
@@ -340,24 +349,26 @@ export default function ProductReferenceList({
 
   const getWeightProductByName = (value) => {
     Axios.get("/api/pluproducts/names", {
-      params: { name: value ? value.trim() : "" }
-    }
-    )
+      params: { name: value ? value.trim() : "" },
+    })
       .then((res) => res.data)
-      .then((product) => {
-        if (product.length > 0) {
-          setWeightProductsList(product);
-          setWeightProdId(product[0].id);
-
-        }
+      .then((data) => {
+        setWeightProductsList(data);
       })
       .catch((err) => {
-        console.log(err);
+        console.log(err)
       })
   }
 
+  const onPieceAmountChange = (e) => {
+    const num = e.target.value;
+    setPiecesUnint(num);
+  };
+
   const onCheckboxChange = (e) => {
     setWeightProduct(e.target.checked)
+    setWeightProductDetails({})
+    setWeightProdName("")
   }
   return (
     <Fragment>
@@ -487,19 +498,18 @@ export default function ProductReferenceList({
           />
         </Grid>
       }
-      {Object.keys(weightProductDetails).length > 0 &&
-        <Grid item xs={12} style={{ paddingTop: "20px" }}>
-          <EditWeightProducts
-            setClear={setClear}
-            isClear={isClear}
-            weightProductDetails={weightProductDetails}
-            setWeightProductDetails={setWeightProductDetails}
-            onUnitListInput={onUnitListInput}
-            errorAlert={errorAlert}
-            companyData={companyData}
-            setErrorAlert={setErrorAlert}
-          />
-        </Grid>
+      
+      {Object.keys(weightProductDetails).length > 0 && weightProduct && 
+      <Grid item xs={12} style={{ paddingTop: "20px" }}>
+        <EditWeightProducts 
+          setWeightProductDetails={setWeightProductDetails}
+          weightProductDetails = {weightProductDetails}
+          setClear={setClear}
+          isClear={isClear}
+          errorAlert={errorAlert}
+          setErrorAlert={setErrorAlert}        
+      />
+      </Grid>
       }
 
     </Fragment>

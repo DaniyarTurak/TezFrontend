@@ -2,7 +2,6 @@ import React, { useState, useEffect, Fragment } from "react";
 import Axios from "axios";
 import Paper from "@material-ui/core/Paper";
 import TextField from "@material-ui/core/TextField";
-import Autocomplete from "@material-ui/lab/Autocomplete";
 import Select from "@material-ui/core/Select";
 import MenuItem from "@material-ui/core/MenuItem";
 import ListAltSharpIcon from "@material-ui/icons/ListAltSharp";
@@ -13,11 +12,9 @@ import DeleteIcon from "@material-ui/icons/Delete";
 import IconButton from "@material-ui/core/IconButton";
 import SweetAlert from "react-bootstrap-sweetalert";
 import ErrorAlert from "../../../../ReusableComponents/ErrorAlert";
-import Moment from "moment";
 
 export default function EditProduct({
   weightProductDetails,
-  companyData,
   errorAlert,
   errorMessage,
   setClear,
@@ -28,7 +25,8 @@ export default function EditProduct({
   const [editingProduct, setEditingProduct] = useState({});
   const [isDeleteListCode, setDeleteListCode] = useState(false);
   const [sweetalert, setSweetAlert] = useState(null);
-  const [tax, setTax] = useState("");
+  const [tax, setTax] = useState("0");
+
 
   useEffect(() => {
     setEditingProduct(weightProductDetails);
@@ -36,37 +34,32 @@ export default function EditProduct({
   }, [weightProductDetails]);
 
 
-  const editProdRes = () => {
-    let tempDetails = [];
-    let product = {
+  const editWeightProdRes = () => {
+    Axios.post("/api/pluproducts/update", {
       id: editingProduct.id,
       name: editingProduct.name,
-      taxid: companyData.certificatenum ? tax : "0",
-    };
-      Axios.post("/api/pluproducts/update", {
-        product,
-      })
-        .then((res) => {
-          Alert.success("Товар успешно сохранен", {
-            position: "top-right",
-            effect: "bouncyflip",
-            timeout: 2000,
-          });
-          setClear(!isClear);
-          setEditingProduct({});
-          setSweetAlert(null);
-          setWeightProductDetails({})
-          setDeleteListCode(!isDeleteListCode);
-        })
-        .catch((err) => {
-          ErrorAlert(err);
+      tax: editingProduct.tax,
+    })
+      .then((res) => {
+        Alert.success("Товар успешно сохранен", {
+          position: "top-right",
+          effect: "bouncyflip",
+          timeout: 2000,
         });
-  };
-
+        setClear(!isClear);
+        setEditingProduct({});
+        setSweetAlert(null);
+        setWeightProductDetails({})
+        setDeleteListCode(!isDeleteListCode);
+      })
+      .catch((err) => {
+        ErrorAlert(err);
+      });
+    }
+ 
   const handleDelete = () => {
-
     Axios.post("/api/pluproducts/delete", {
-      id: editingProduct.id
+      id: editingProduct.id,
     })
       .then((res) => res.data)
       .then((res) => {
@@ -114,10 +107,8 @@ export default function EditProduct({
 
   const taxChange = (e) => {
     setTax(e.target.value);
-    setEditingProduct({ ...editingProduct, taxid: e.target.value })
-  };
-
-
+    setEditingProduct({ ...editingProduct, tax: e.target.value })
+  }
   return (
     <Fragment>
       {sweetalert}
@@ -157,32 +148,6 @@ export default function EditProduct({
                 onChange={(e) => setEditingProduct({ ...editingProduct, name: e.target.value })}
               />
             </Grid>
-            {/* <Grid item xs={12}>
-              <label>Единица измерения:</label>
-              <Autocomplete
-                fullWidth
-                size="small"
-                options={unitOptions}
-                value={unitspr}
-                onChange={unitListChange}
-                noOptionsText="Единица измерения не найдена"
-                onInputChange={onUnitListInput.bind(this)}
-                filterOptions={(options) =>
-                  options.filter((option) => option.unitOptions !== "")
-                }
-                getOptionLabel={(option) => (option ? option.name : "")}
-                getOptionSelected={(option, value) =>
-                  option.label === value.label
-                }
-                renderInput={(params) => (
-                  <TextField
-                    {...params}
-                    variant="outlined"
-                    placeholder="Килограмм"
-                  />
-                )}
-              />
-            </Grid> */}
               <Grid item xs={12}>
                 <label>Налоговая категория:</label>
                 <Select
@@ -215,14 +180,14 @@ export default function EditProduct({
               </button>
               &emsp;
               <button className="btn btn-success"
-                onClick={() => editProdRes()}
+                onClick={() => editWeightProdRes()}
               >
                 Сохранить
               </button>
             </Grid>
           </Grid>
         </Grid>
-      </Grid>
+      </Grid> 
     </Fragment>
   );
 }

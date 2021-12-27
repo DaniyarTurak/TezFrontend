@@ -47,6 +47,8 @@ export default function ReportSales({ companyProps }) {
     format: "",
   });
   const [attrval, setAttrVal] = useState({ value: "", label: "Все" });
+  const [textAttrval, setTextAttrval] = useState("");
+  const [dateAttrval, setDateAttrval] = useState(null)
   const [attributeTypes, setAttributeTypes] = useState([]);
   const [attributes, setAttributes] = useState([]);
   const [brand, setBrand] = useState({ value: "@", label: "Все" });
@@ -152,18 +154,7 @@ export default function ReportSales({ companyProps }) {
     return () => {
       setDateChanging(false);
     };
-  }, [
-    attribute,
-    attrval,
-    brand,
-    counterparty,
-    category,
-    dateFrom,
-    dateTo,
-    grouping,
-    point,
-    type,
-  ]);
+  }, []);
 
   useEffect(
     () => {
@@ -236,13 +227,24 @@ export default function ReportSales({ companyProps }) {
 
 
   const clean = () => {
-    setSales([]);
-    setAttrVal("");
-    setPoints([]);
-    setCounterparties([]);
-    setCategories([]);
+    // setSales([]);
+    // setAttrVal("");
+    // setTextAttrval("");
+    // setAttributes([]);
+    // setPoints([]);
+    // setCounterparties([]);
+    // setCategories([]);
+    // setBrands([]);
+    // setAttributeTypes([]);
+    setAttrVal({ value: "", label: "Все" });
+    setBarcode("");
+    setBrand({ value: "@", label: "Все" });
     setBrands([]);
-    setAttributeTypes([]);
+    setCategory({ value: "@", label: "Все" });
+    setCategories([]);
+    setCounterparties([]);
+    setAttribute({ value: "@", label: "Все", format: "" });
+    setSales([])
   };
 
   const changeDate = (dateStr) => {
@@ -346,10 +348,14 @@ export default function ReportSales({ companyProps }) {
 
   const onAttributeTypeChange = (event, a) => {
     setAttrVal(a);
+    setTextAttrval(event.target.value);
   };
 
   const onGroupingChange = (e) => {
     setGrouping(e.target.checked);
+    if(e.target.checked===false) {
+      clean()
+    }
   };
 
   const onCounterpartieListInput = (event, c, reason) => {
@@ -525,7 +531,7 @@ export default function ReportSales({ companyProps }) {
         sell_type: sellType.value,
         client_type: clientType.value,
         attribute: attribute.value,
-        attrval: attrval.label === "Все" ? "" : attrval.label,
+        attrval: attribute.format==="TEXT" ? textAttrval : attribute.format==="DATE" ? dateAttrval : attrval.label === "Все" ? "" : attrval.label,
         notattr,
         company,
       },
@@ -602,6 +608,7 @@ export default function ReportSales({ companyProps }) {
     <Grid container spacing={3}>
       <SalesOptions
         attrval={attrval}
+        textAttrval={textAttrval}
         attribute={attribute}
         attributes={attributes}
         attributeTypes={attributeTypes}
@@ -649,6 +656,8 @@ export default function ReportSales({ companyProps }) {
         setSellType={setSellType}
         clientTypes={clientTypes}
         sellTypes={sellTypes}
+        dateAttrval={dateAttrval}
+        setDateAttrval={setDateAttrval}
       />
 
       {isLoading && (
