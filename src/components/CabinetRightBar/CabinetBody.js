@@ -59,6 +59,7 @@ import ReconciliationPage from "../pages/Products/ReconciliationPage";
 import CreateWorkorder from "../pages/Products/Workorder/CreateWorkorder";
 import AcceptWorkorder from "../pages/Products/Workorder/AcceptWorkorder";
 import RecieveByWorkorder from "../pages/Products/Workorder/RecieveByWorkorder";
+import BindWeightProducts from "../pages/Products/Workorder/BindWeightProducts";
 
 import StockMonitoringPage from '../pages/StockMonitoringPage';
 import Revision from '../pages/Products/Revision';
@@ -216,7 +217,8 @@ export default function getBody({
             return <AcceptWorkorder history={history} location={location} />;
           case "recievebyworkorder":
             return <RecieveByWorkorder history={history} location={location} />;
-
+          case "bindweightproducts":
+            return <BindWeightProducts history={history} location={location} />
           case "invoice":
             return <ManageInvoice history={history} location={location} />;
           case "transfer":
