@@ -170,6 +170,7 @@ export default function SellAndPurchasePrices() {
     setBrand(null);
     setCategory(null);
     setCounterparty(null);
+    setWeightOptions(false)
   };
 
   const autocompleteOnChange = (value) => {
