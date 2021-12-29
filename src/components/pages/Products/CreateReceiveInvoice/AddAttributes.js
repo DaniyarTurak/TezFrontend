@@ -7,6 +7,12 @@ import Grid from '@material-ui/core/Grid';
 import ErrorAlert from "../../../ReusableComponents/ErrorAlert";
 import Moment from "moment";
 import Alert from "react-s-alert";
+import ruLocale from 'date-fns/locale/ru';
+import {
+    MuiPickersUtilsProvider,
+    KeyboardDatePicker,
+} from "@material-ui/pickers";
+import DateFnsUtils from "@date-io/date-fns";
 
 export default function AddAttributes({
     barcode,
@@ -192,17 +198,26 @@ export default function AddAttributes({
                                 className="form-control attr-spr"
                                 noOptionsMessage={() => "Характеристики не найдены"}
                             />
-                            : attrFormat === "DATE" ?
-                                <input
-                                    name="date"
-                                    value={dateValue}
-                                    type="date"
-                                    className="form-control"
-                                    placeholder="Введите значение"
-                                    onChange={(event) => {
-                                        setDateValue(event.target.value);
-                                    }}
-                                /> :
+                            : attrFormat === "DATE" ?                                
+                                    <MuiPickersUtilsProvider utils={DateFnsUtils} locale={ruLocale}>
+                                        <KeyboardDatePicker
+                                            label="Введите значение"
+
+                                            invalidDateMessage="Введите корректную дату"
+
+                                            value={dateValue}
+                                            renderInput={(params) => <TextField {...params} />}
+                                            onChange={(newValue) => {
+                                                setDateValue(Moment(newValue).format("YYYY-MM-DD"));
+                                            }}
+                                            disableToolbar
+                                            autoOk
+                                            variant="inline"
+                                            format="dd.MM.yyyy"
+                                            style={{marginTop: "-9px" }}
+                                        />
+                                    </MuiPickersUtilsProvider>
+                                :
                                 attrFormat === "TEXT" ?
                                     <TextField
                                         fullWidth
