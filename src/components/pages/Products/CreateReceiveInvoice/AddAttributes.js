@@ -214,7 +214,7 @@ export default function AddAttributes({
                                             autoOk
                                             variant="inline"
                                             format="dd.MM.yyyy"
-                                            style={{marginTop: "-9px" }}
+                                            style={{marginTop: "-9px", marginLeft: "-5px" }}
                                         />
                                     </MuiPickersUtilsProvider>
                                 :
