@@ -4,6 +4,7 @@ import Select from "react-select";
 import Alert from "react-s-alert";
 import ErrorAlert from "../../../../ReusableComponents/ErrorAlert";
 import SweetAlert from "react-bootstrap-sweetalert";
+import Grid from '@material-ui/core/Grid';
 import WeightProductsAdd from './WeightProductsAdd';
 
 function BindWeightProducts() {
@@ -77,7 +78,7 @@ function BindWeightProducts() {
             });
     };
 
-    
+
     const nonSelectedAlerts = () => {
         if (!point) {
             return Alert.warning("Выберите торговую точку", {
@@ -144,6 +145,7 @@ function BindWeightProducts() {
 
     const onScaleChange = (s) => {
         setScale(s);
+        console.log(scale)
     };
 
     return (
@@ -181,7 +183,7 @@ function BindWeightProducts() {
                 </div>
             </div>
             <div className="row">
-                {isWeightProductAdd && <WeightProductsAdd />}
+                    {isWeightProductAdd && <WeightProductsAdd scale={scale} />}
             </div>
         </Fragment>
     )
