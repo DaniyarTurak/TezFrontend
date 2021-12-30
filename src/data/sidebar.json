@@ -142,7 +142,7 @@
   },
   {
     "id": 5,
-    "groupName": "Заказ-наряд",
+    "groupName": "Наряд-заказ",
     "status": "close",
     "group": [
       {

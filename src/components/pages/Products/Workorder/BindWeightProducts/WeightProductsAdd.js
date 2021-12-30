@@ -9,6 +9,7 @@ import TextField from "@material-ui/core/TextField";
 import Button from "@material-ui/core/Button";
 import Typography from "@material-ui/core/Typography";
 import Box from "@material-ui/core/Box";
+import ErrorAlert from "../../../../ReusableComponents/ErrorAlert";
 import Alert from "react-s-alert";
 import Paper from '@material-ui/core/Paper';
 import { RequiredField, NoMoreThan13 } from "../../../../../validation";
@@ -17,7 +18,7 @@ import SearchIcon from '@material-ui/icons/Search';
 import IconButton from '@material-ui/core/IconButton';
 import { CommonSeriesSettingsHoverStyle } from '../../../../../../node_modules/devextreme-react/chart';
 
-function WeightProductsAdd({ scale }) {
+function WeightProductsAdd({ scale, getWeightProductsList }) {
     const useStylesAC = makeStyles(theme =>
         createStyles({
             root: {
@@ -80,7 +81,6 @@ function WeightProductsAdd({ scale }) {
     }, [])
 
     const weightProdNameChange = ({ value, search }) => {
-        generateBarcode();
         if (!value || value.trim() === "") {
             setWeightProdName("");
             if (search) {
@@ -93,6 +93,7 @@ function WeightProductsAdd({ scale }) {
             weightProductsList.forEach(prod => {
                 if (prod.name === value) {
                     setWeightProdId(prod.id)
+                    generateBarcode();
                     flag = true;
                 }
             });
@@ -111,7 +112,7 @@ function WeightProductsAdd({ scale }) {
                 setWeightProductsList(data);
             })
             .catch((err) => {
-                console.log(err)
+                ErrorAlert(err);
             })
     }
     const isSubmitting = () => {
@@ -123,13 +124,25 @@ function WeightProductsAdd({ scale }) {
     }
 
     const handleAdd = () => {
-        Axios.post("/api/pluproducts/scale/invoice",{
+        Axios.post("/api/pluproducts/scale/invoice", {
             id: weightProdId,
             scale: scale.value,
             code: barcode[0].code
         })
-        .then((res) => res.data)
-        .catch((err) => console.log(err))
+            .then((res) => res.data)
+            .then((data) => {
+                if (data.code === "success") {
+                    Alert.success("Товар успешно сохранен.", {
+                        position: "top-right",
+                        effect: "bouncyflip",
+                        timeout: 2000,
+                    });
+                    getWeightProductsList()
+                }
+            })
+            .catch((err) => {
+                ErrorAlert(err);
+            })
     }
     const generateBarcode = () => {
         Axios.get("/api/pluproducts/barcode_unused")
@@ -163,10 +176,6 @@ function WeightProductsAdd({ scale }) {
                             />
                         )}
                     />
-                    <IconButton onClick={generateBarcode}>
-                        <SearchIcon />
-                    </IconButton>
-
 
                     <div className="col-md-3 pw-adding-products-btn">
                         <button

@@ -56,6 +56,7 @@ export default function SaveProducts({ productsList, isSubmitting }) {
         <PickPrefixType
           productsList={productsList}
           closeModal={() => setModalOpen(false)}
+          isWeight={false}
         />
       </ReactModal>
       <div className="col-md-6 pw-adding-products-btn mt-4">
