@@ -142,7 +142,7 @@
   },
   {
     "id": 5,
-    "groupName": "Заказ-наряд",
+    "groupName": "Наряд-заказ",
     "status": "close",
     "group": [
       {
@@ -159,6 +159,11 @@
         "id": 3,
         "name": "Прием товаров по наряд-заказу",
         "route": "product/recievebyworkorder"
+      },
+      {
+        "id": 4,
+        "name": "Привязка весовых товаров",
+        "route": "product/bindweightproducts"
       }
     ]
   },

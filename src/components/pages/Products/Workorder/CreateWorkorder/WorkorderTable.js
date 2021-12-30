@@ -4,6 +4,7 @@ import Grid from '@material-ui/core/Grid';
 import Axios from "axios";
 import Table from "@material-ui/core/Table";
 import TableBody from "@material-ui/core/TableBody";
+import TableFooter from "@material-ui/core/TableFooter";
 import TableCell from "@material-ui/core/TableCell";
 import TableContainer from "@material-ui/core/TableContainer";
 import TableRow from "@material-ui/core/TableRow";
@@ -171,7 +172,7 @@ export default function WorkorderTable({
                             allowEscape={false}
                             closeOnClickOutside={false}
                             onConfirm={() => clearOptions()}
-                            // onCancel={workOrderToExcel}
+                        // onCancel={workOrderToExcel}
                         >
                             Наряд-заказ успешно создан
                         </SweetAlert>)
@@ -238,98 +239,122 @@ export default function WorkorderTable({
                         В наряд-заказе пока нет товаров
                     </Grid>
                 }
-                {workorderProducts.length > 0 && !isLoading && 
-                <Fragment>
-                    <Grid item xs={12}>
-                        <TableContainer
-                            component={Paper}
-                            style={{ boxShadow: "0px -1px 1px 1px white" }}
-                        >
-                            <Table>
-                                <TableHead>
-                                    <TableRow style={{ fontWeight: "bold" }} >
-                                        <StyledTableCell align="center">
-                                            Штрих-код
-                                        </StyledTableCell>
-                                        <StyledTableCell align="center">
-                                            Наименование
-                                        </StyledTableCell>
-                                        <StyledTableCell align="center">
-                                            Количество (шт.)
-                                        </StyledTableCell>
-                                        <StyledTableCell align="center">
-                                            Цена (тг.)
-                                        </StyledTableCell>
-                                        <StyledTableCell align="center">
-                                            Сумма (тг.)
-                                        </StyledTableCell>
-                                        {!onlyView && <StyledTableCell />}
-                                    </TableRow>
-                                </TableHead>
-                                <TableBody>
-                                    {counterparties
-                                        .map((cp, id) => (
-                                            <Fragment key={id}>
-                                                <TableRow >
-                                                    <StyledTableCell colSpan={!onlyView ? 6 : 5} align="center">
-                                                        <b>{cp.name}</b>
-                                                    </StyledTableCell>
-                                                </TableRow>
-                                                {workorderProducts
-                                                    .map((product, idx) => (
-                                                        <Fragment key={idx}>
-                                                            {cp.counterparty === product.counterparty &&
-                                                                <TableRow>
-                                                                    <StyledTableCell>
-                                                                        {product.code}
-                                                                    </StyledTableCell>
-                                                                    <StyledTableCell>
-                                                                        {product.name}
-                                                                    </StyledTableCell>
-                                                                    <StyledTableCell align="center">
-                                                                        {!onlyView ? <UnitsInput
-                                                                            variant="outlined"
-                                                                            value={product.units}
-                                                                            onChange={(e) => unitsChange(e.target.value, idx)}
-                                                                        /> : product.units
-                                                                        }
-                                                                    </StyledTableCell>
-                                                                    <StyledTableCell align="center">
-                                                                        {product.purchaseprice}
-                                                                    </StyledTableCell>
-                                                                    <StyledTableCell align="center">
-                                                                        {product.units * product.purchaseprice}
-                                                                    </StyledTableCell>
-                                                                    {!onlyView && <StyledTableCell align="right">
-                                                                        {product.units.toString() !== product.temp_units.toString() &&
+                {workorderProducts.length > 0 && !isLoading &&
+                    <Fragment>
+                        <Grid item xs={12}>
+                            <TableContainer
+                                component={Paper}
+                                style={{ boxShadow: "0px -1px 1px 1px white" }}
+                            >
+                                <Table>
+                                    <TableHead>
+                                        <TableRow style={{ fontWeight: "bold" }} >
+                                            <StyledTableCell align="center">
+                                                Штрих-код
+                                            </StyledTableCell>
+                                            <StyledTableCell align="center">
+                                                Наименование
+                                            </StyledTableCell>
+                                            <StyledTableCell align="center">
+                                                Количество
+                                            </StyledTableCell>
+                                            <StyledTableCell align="center">
+                                                Цена (тг.)
+                                            </StyledTableCell>
+                                            <StyledTableCell align="center">
+                                                Сумма (тг.)
+                                            </StyledTableCell>
+                                            {!onlyView && <StyledTableCell />}
+                                        </TableRow>
+                                    </TableHead>
+                                    <TableBody>
+                                        {counterparties
+                                            .map((cp, id) => (
+                                                <Fragment key={id}>
+                                                    <TableRow >
+                                                        <StyledTableCell colSpan={!onlyView ? 6 : 5} align="center">
+                                                            <b>{cp.name}</b>
+                                                        </StyledTableCell>
+                                                    </TableRow>
+                                                    {workorderProducts
+                                                        .map((product, idx) => (
+                                                            <Fragment key={idx}>
+                                                                {cp.counterparty === product.counterparty &&
+                                                                    <TableRow>
+                                                                        <StyledTableCell>
+                                                                            {product.code}
+                                                                        </StyledTableCell>
+                                                                        <StyledTableCell>
+                                                                            {product.name}
+                                                                        </StyledTableCell>
+                                                                        <StyledTableCell align="center">
+                                                                            {!onlyView ? <UnitsInput
+                                                                                variant="outlined"
+                                                                                value={product.units}
+                                                                                onChange={(e) => unitsChange(e.target.value, idx)}
+                                                                            /> : product.units
+                                                                            }
+                                                                        </StyledTableCell>
+                                                                        <StyledTableCell align="center">
+                                                                            {product.purchaseprice}
+                                                                        </StyledTableCell>
+                                                                        <StyledTableCell align="center">
+                                                                            {product.units * product.purchaseprice}
+                                                                        </StyledTableCell>
+                                                                        {!onlyView && <StyledTableCell align="right">
+                                                                            {product.units.toString() !== product.temp_units.toString() &&
+                                                                                <IconButton
+                                                                                    size="small"
+                                                                                    disabled={isLoading}
+                                                                                    onClick={() => {
+                                                                                        updateProduct(product);
+                                                                                    }}>
+                                                                                    <SaveIcon fontSize="small" />
+                                                                                </IconButton>}
                                                                             <IconButton
                                                                                 size="small"
                                                                                 disabled={isLoading}
                                                                                 onClick={() => {
-                                                                                    updateProduct(product);
+                                                                                    deleteProduct(product);
                                                                                 }}>
-                                                                                <SaveIcon fontSize="small" />
-                                                                            </IconButton>}
-                                                                        <IconButton
-                                                                            size="small"
-                                                                            disabled={isLoading}
-                                                                            onClick={() => {
-                                                                                deleteProduct(product);
-                                                                            }}>
-                                                                            <DeleteIcon fontSize="small" />
-                                                                        </IconButton>
-                                                                    </StyledTableCell>}
-                                                                </TableRow>
-                                                            }
-                                                        </Fragment>
-                                                    ))}
-                                            </Fragment>
-                                        ))}
-                                </TableBody>
-                            </Table>
-                        </TableContainer>
-                    </Grid>
-                </Fragment>}
+                                                                                <DeleteIcon fontSize="small" />
+                                                                            </IconButton>
+                                                                        </StyledTableCell>}
+                                                                    </TableRow>
+                                                                }
+                                                            </Fragment>
+                                                        ))}
+                                                </Fragment>
+                                            ))}
+                                    </TableBody>
+                                    <TableFooter>
+                                        <TableRow style={{ fontWeight: "bold" }}>
+                                            <StyledTableCell>Итого:</StyledTableCell>
+                                            <StyledTableCell />
+                                            <StyledTableCell />
+                                            <StyledTableCell
+                                                align="center"
+                                            >
+                                                {workorderProducts
+                                                    .reduce((prev, cur) => {
+                                                        return prev + parseFloat(cur.purchaseprice);
+                                                    }, 0)
+                                                    .toLocaleString("ru", { minimumFractionDigits: 2 })}
+                                            </StyledTableCell>
+                                            <StyledTableCell align="center">
+                                                {workorderProducts
+                                                    .reduce((prev, cur) => {
+                                                        return prev + parseFloat(cur.purchaseprice*cur.units);
+                                                    }, 0)
+                                                    .toLocaleString("ru", { minimumFractionDigits: 2 })}
+                                            </StyledTableCell>
+                                            <StyledTableCell colSpan={4} />
+                                        </TableRow>
+                                    </TableFooter>
+                                </Table>
+                            </TableContainer>
+                        </Grid>
+                    </Fragment>}
                 {!onlyView && workorderProducts.length !== 0 &&
                     <Grid item xs={12} style={{ textAlign: "center" }}>
                         <button

@@ -12,10 +12,10 @@ import SearchIcon from '@material-ui/icons/Search';
 import IconButton from '@material-ui/core/IconButton';
 import Paper from '@material-ui/core/Paper';
 import Divider from '@material-ui/core/Divider';
-
+import ErrorAlert from "../../../../ReusableComponents/ErrorAlert";
 
 export default function WorkorderAddProducts({
-    workorderId,
+    workorderId, 
     point,
     setPoint,
     setCounterparty,
@@ -267,11 +267,7 @@ export default function WorkorderAddProducts({
             })
             .catch((err) => {
                 console.log(err);
-                Alert.error(err, {
-                    position: "top-right",
-                    effect: "bouncyflip",
-                    timeout: 2000,
-                });
+                ErrorAlert(err);
                 setLoading(false);
             });
     };
@@ -313,48 +309,48 @@ export default function WorkorderAddProducts({
                     <Fragment>
                         <Grid item xs={12}>
                             <Paper className={classes.root}>
-                                <Autocomplete
-                                    value={barcode}
-                                    defaultValue={barcode}
-                                    fullWidth
-                                    disabled={isLoading}
-                                    options={productList.map((option) => option.code)}
-                                    onChange={(e, value) => { setBarcode(value); setProdName(""); setSelectedProd(null) }}
-                                    onInputChange={(e, value) => { setBarcode(value) }}
-                                    noOptionsText="Товар не найден"
-                                    renderInput={(params) => (
-                                        <TextField
-                                            classes={{
-                                                root: classesAC.root,
-                                            }}
-                                            {...params}
-                                            placeholder="Штрих-код"
-                                            variant="outlined"
-                                            size="small"
+                                        <Autocomplete
+                                            value={barcode}
+                                            defaultValue={barcode}
+                                            fullWidth
+                                            disabled={isLoading}
+                                            options={productList.map((option) => option.code)}
+                                            onChange={(e, value) => { setBarcode(value); setProdName(""); setSelectedProd(null) }}
+                                            onInputChange={(e, value) => { setBarcode(value) }}
+                                            noOptionsText="Товар не найден"
+                                            renderInput={(params) => (
+                                                <TextField
+                                                    classes={{
+                                                        root: classesAC.root,
+                                                    }}
+                                                    {...params}
+                                                    placeholder="Штрих-код"
+                                                    variant="outlined"
+                                                    size="small"
+                                                />
+                                            )}
                                         />
-                                    )}
-                                />
-                                <Divider className={classes.divider} orientation="vertical" />
-                                <Autocomplete
-                                    value={prodName}
-                                    fullWidth
-                                    disabled={isLoading}
-                                    options={productList.map((option) => option.name)}
-                                    onChange={(e, value) => { setProdName(value); setBarcode(""); setSelectedProd(null) }}
-                                    onInputChange={(e, value) => { setProdName(value) }}
-                                    noOptionsText="Товар не найден"
-                                    renderInput={(params) => (
-                                        <TextField
-                                            classes={{
-                                                root: classesAC.root,
-                                            }}
-                                            {...params}
-                                            placeholder="Наименование товара"
-                                            variant="outlined"
-                                            size="small"
+                                        <Divider className={classes.divider} orientation="vertical" />
+                                        <Autocomplete
+                                            value={prodName}
+                                            fullWidth
+                                            disabled={isLoading}
+                                            options={productList.map((option) => option.name)}
+                                            onChange={(e, value) => { setProdName(value); setBarcode(""); setSelectedProd(null) }}
+                                            onInputChange={(e, value) => { setProdName(value) }}
+                                            noOptionsText="Товар не найден"
+                                            renderInput={(params) => (
+                                                <TextField
+                                                    classes={{
+                                                        root: classesAC.root,
+                                                    }}
+                                                    {...params}
+                                                    placeholder="Наименование товара"
+                                                    variant="outlined"
+                                                    size="small"
+                                                />
+                                            )}
                                         />
-                                    )}
-                                />
                                 <IconButton onClick={searchProduct}>
                                     <SearchIcon />
                                 </IconButton>
