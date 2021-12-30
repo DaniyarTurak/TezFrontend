@@ -166,6 +166,7 @@ function WeightPriceAdd({isWholesale, counterparty, object, getPrices}) {
                             effect: "bouncyflip",
                             timeout: 2000,
                         });
+                        getPrices();
                     }
                     setPurchasePrice("");
                     setSellPrice("");
