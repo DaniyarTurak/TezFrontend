@@ -31,7 +31,7 @@ const useStyles = makeStyles((theme) => ({
     },
   }));
 
-function WeightProductsTable({weightProductsList, handleEdit}) {
+function WeightProductsTable({weightProductsList, handleEdit, handleDelete}) {
     const classes = useStyles(weightProductsList);
 
     return (
@@ -91,7 +91,7 @@ function WeightProductsTable({weightProductsList, handleEdit}) {
                     <IconButton
                       aria-label="удалить"
                       component="span"
-                      onClick={() => console.log("")}
+                      onClick={() => handleDelete(idx)}
                     >
                       <DeleteIcon />
                     </IconButton>

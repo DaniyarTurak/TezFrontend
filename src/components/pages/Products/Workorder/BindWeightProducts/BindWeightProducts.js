@@ -3,6 +3,7 @@ import Axios from "axios";
 import Select from "react-select";
 import Alert from "react-s-alert";
 import ErrorAlert from "../../../../ReusableComponents/ErrorAlert";
+import WarningDelete from "../../../ProductsWeight/Alerts/WarningDelete";
 import SweetAlert from "react-bootstrap-sweetalert";
 import Grid from '@material-ui/core/Grid';
 import WeightProductsAdd from './WeightProductsAdd';
@@ -50,7 +51,7 @@ function BindWeightProducts() {
     const [editingId, setEditingId] = useState("");
     const [isEditing, setEditing] = useState(false);
     const [isModalOpen, setModalOpen] = useState(false);
-
+    const [isDeleteModalOpen, setDeleteModalOpen] = useState(false);
 
     useEffect(() => {
         getPoints();
@@ -181,6 +182,68 @@ function BindWeightProducts() {
         setEditing(true);
         setModalOpen(true);
     };
+
+    const handleDeleteOpen = (id) => {
+        setDeleteModalOpen(true);
+        setEditingId(id);
+    };
+
+    const handleDeleteClose = () => {
+        setDeleteModalOpen(false);
+        cleanAlerts();
+    };
+
+    const handleDelete = () => {
+        const changedProductList = JSON.parse(JSON.stringify(weightProductsList));
+
+        let idToDelete;
+        changedProductList.forEach((el, idx) => {
+            if (idx === editingId) {
+                return (el.isdeleted = true);
+            }
+        });
+        changedProductList.forEach((el, idx) => {
+            if (idx === editingId) {
+                idToDelete = el.id;
+            }
+        });
+        setWeightProductsList(changedProductList);
+        handleDeleteClose();
+        const delete_main = "/api/pluproducts/delete/good";
+        const delete_main_values = {
+            id: idToDelete,
+        };
+        setSubmitting(true);
+        Axios.post(
+            delete_main,
+            delete_main_values
+        )
+            .then((data) => {
+                return data.data;
+            })
+            .then((resp) => {
+                setSubmitting(false);
+                if (resp.code === "success") {
+                    getWeightProductsList();
+                    Alert.success("Товар удален успешно.", {
+                        position: "top-right",
+                        effect: "bouncyflip",
+                        timeout: 2000,
+                    });
+                } else
+                    return Alert.warning(resp.text, {
+                        position: "top-right",
+                        effect: "bouncyflip",
+                        timeout: 2000,
+                    });
+
+            })
+            .catch((err) => {
+                setSubmitting(false);
+                ErrorAlert(err);
+            });
+    };
+
     const clear = () => {
         setScale("");
         setPoint(""); setSubmitting(false);
@@ -211,11 +274,11 @@ function BindWeightProducts() {
                     />
                 )}
             </ReactModal>
-            {/* <WarningDelete
+            <WarningDelete
                 handleDelete={handleDelete}
                 open={isDeleteModalOpen}
                 handleClose={handleDeleteClose}
-            /> */}
+            />
             {/* <SuccessAdd open={isAddModalOpen} handleClose={handleAddClose} /> */}
 
             <div className="row">
@@ -262,7 +325,7 @@ function BindWeightProducts() {
                         weightProductsList={weightProductsList}
                         isSubmitting={isSubmitting}
                         handleEdit={(id, old) => handleEdit(id, old)}
-
+                        handleDelete={(id) => handleDeleteOpen(id)}
                     />
                     <WeightProductsSave
                         weightProductsList={weightProductsList}

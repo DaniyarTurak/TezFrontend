@@ -132,7 +132,7 @@ export default function SellAndPurchasePrices() {
         barcode: barcode && barcode !== "" ? barcode : null,
         prodName: prodName && prodName !== "" ? prodName : null,
         object,
-        object_id: object === 1 ? counterparty.value :
+        object_id: object === 1 && counterparty.value!=-1 ? counterparty.value :
           object === 2 ? brand.value : object === 3 ? category.id : null
       }
     })
@@ -177,7 +177,7 @@ export default function SellAndPurchasePrices() {
     switch (object) {
       case 1:
         setCounterparty(value);
-        getCounterparties({ label: value ? value.label : "" });
+        // getCounterparties({ label: value ? value.label : "" });
         // setBrand(null);
         // setCategory(null);
         break;
@@ -202,7 +202,6 @@ export default function SellAndPurchasePrices() {
     switch (object) {
       case 1:
         setCounterparty({ value: -1, label: label ? label : "" });
-        getCounterparties({ label: label ? label : "" });
         break;
       case 2:
         setBrand({ value: -1, label: label ? label : "" });
