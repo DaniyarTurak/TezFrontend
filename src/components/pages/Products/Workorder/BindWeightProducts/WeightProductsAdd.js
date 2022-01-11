@@ -139,9 +139,11 @@ function WeightProductsAdd({ scale, getWeightProductsList }) {
                     });
                     getWeightProductsList()
                 }
+                setWeightProdName("");
             })
             .catch((err) => {
                 ErrorAlert(err);
+                setWeightProdName("");
             })
     }
     const generateBarcode = () => {
