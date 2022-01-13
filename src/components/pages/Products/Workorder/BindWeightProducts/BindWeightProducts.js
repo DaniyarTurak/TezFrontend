@@ -52,6 +52,7 @@ function BindWeightProducts() {
     const [isEditing, setEditing] = useState(false);
     const [isModalOpen, setModalOpen] = useState(false);
     const [isDeleteModalOpen, setDeleteModalOpen] = useState(false);
+    const [inStock, setInStock] = useState(false)
 
     useEffect(() => {
         getPoints();
@@ -184,8 +185,13 @@ function BindWeightProducts() {
     };
 
     const handleDeleteOpen = (id) => {
-        setDeleteModalOpen(true);
         setEditingId(id);
+        const changedProductList = JSON.parse(JSON.stringify(weightProductsList));
+        changedProductList.forEach((el, idx) => {
+            if (idx === id) {
+                el.stock? setDeleteModalOpen(true) : handleDelete()
+            }
+        });
     };
 
     const handleDeleteClose = () => {
@@ -195,7 +201,6 @@ function BindWeightProducts() {
 
     const handleDelete = () => {
         const changedProductList = JSON.parse(JSON.stringify(weightProductsList));
-
         let idToDelete;
         changedProductList.forEach((el, idx) => {
             if (idx === editingId) {
@@ -212,6 +217,7 @@ function BindWeightProducts() {
         const delete_main = "/api/pluproducts/delete/good";
         const delete_main_values = {
             id: idToDelete,
+            scale: scale.value,
         };
         setSubmitting(true);
         Axios.post(
