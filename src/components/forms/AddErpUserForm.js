@@ -103,7 +103,7 @@ let AddErpUserForm = ({
       .catch((err) => {
         Alert.error(
           err.response.data.code === "internal_error"
-            ? "Возникла ошибка при обработке вашего запроса. Мы уже работает над решением. Попробуйте позже"
+            ? "Возникла ошибка при обработке вашего запроса. Мы уже работаем над решением. Попробуйте позже"
             : err.response.data.text,
           {
             position: "top-right",

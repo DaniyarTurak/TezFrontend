@@ -1,4 +1,4 @@
-import React, { useState, Fragment } from "react";
+import React, { useState, Fragment, useEffect} from "react";
 import Axios from "axios";
 import Alert from "react-s-alert";
 import MenuItem from "@material-ui/core/MenuItem";
@@ -66,7 +66,7 @@ const useStyles2 = makeStyles((theme) => ({
   },
 }));
 
-function WeightProducts() {
+function WeightProducts({getUnusedBarcode, unusedBarcode}) {
   const [isLoading, setLoading] = useState(false);
   const [isValidate, setValidate] = useState(false);
   const [unitOptions, setUnitOptions] = useState([{ id: 1, name: "Килограмм", label: "Килограмм" }]);
@@ -76,6 +76,9 @@ function WeightProducts() {
   const classes = useStyles();
   const classes2 = useStyles2();
 
+  useEffect(() => {
+   getUnusedBarcode()
+  }, [])
 
   const onProductNameChange = (e) => {
     let pn = e.target.value;
@@ -122,7 +125,8 @@ function WeightProducts() {
     else {
       Axios.post("/api/pluproducts/create", {
         name: productName,
-        tax: tax
+        tax: tax,
+        code: unusedBarcode,
       })
         .then((res) => {
           return res.data

@@ -28,6 +28,7 @@ export default function ProductReference() {
   const [capations, setCapations] = useState([]);
   const [productsList, setProductsList] = useState([]);
   const [weightProductsList, setWeightProductsList] = useState([])
+  const [unusedBarcode, setUnusedBarcode] = useState()
 
   useEffect(() => {
     if (productSelectValue.label) {
@@ -124,7 +125,13 @@ export default function ProductReference() {
         console.log(err);
       });
   };
-
+  const getUnusedBarcode = () => {
+    Axios.get("/api/pluproducts/barcode_unused")
+    .then((res) => res.data)
+    .then((data) => {
+      setUnusedBarcode(data[0].code)
+    })
+  }
   const productListChange = (e, productSelectValueChanged) => {
     setProductSelectValue(productSelectValueChanged);
     if (productSelectValueChanged === null) {
@@ -137,7 +144,6 @@ export default function ProductReference() {
       return setProductBarcode();
     }
   };
-
   const onProductListChange = (e, productName) => {
     getProducts(productName);
   };
@@ -204,7 +210,7 @@ export default function ProductReference() {
                 )}
                 {currentTab === "UpdateCategoryPage" && <UpdateCategoryPage />}
                 {currentTab === "AttrSprPage" && <AttrSprPage />}
-                {currentTab === "WeightProducts" && <WeightProducts/>}
+                {currentTab === "WeightProducts" && <WeightProducts getUnusedBarcode={getUnusedBarcode} unusedBarcode={unusedBarcode}/>}
               </div>
             </div>
           </Fragment>

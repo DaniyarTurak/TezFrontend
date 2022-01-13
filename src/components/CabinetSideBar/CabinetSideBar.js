@@ -117,8 +117,7 @@ class CabinetSideBar extends Component {
       }
       if (role.id == "8" || role.id == "5") {
         adminPermissions.push("receive")
-      }
-
+     } 
     });
 
     if (accessBars["*"]) return accessBars;
@@ -128,8 +127,8 @@ class CabinetSideBar extends Component {
       adminPermissions.forEach((value, indx) => {
         if (accessBars[value]) {
           adminPermissions[indx] = "";
-        }
-        else isAnyAdminPermissions = true;
+        }else isAnyAdminPermissions = true;
+        
       });
       if (!isAnyAdminPermissions) return { "*": "*" };
       this.setState({ adminPermissions });
