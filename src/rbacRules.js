@@ -91,6 +91,8 @@ const rules = {
   },
   catman: {
     static: [
+      "options",
+      "erpuser",
       "report",
       "stockreport",
       "prices",

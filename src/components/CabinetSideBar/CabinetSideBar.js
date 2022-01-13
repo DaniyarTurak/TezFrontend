@@ -4,6 +4,7 @@ import Axios from "axios";
 import topics from "../../data/sidebar";
 import rules from "../../rbacRules";
 import Navigation from "./Navigation";
+import { ContinuousColorLegend } from "react-vis";
 
 
 
@@ -110,9 +111,14 @@ class CabinetSideBar extends Component {
             return result;
           }, accessBars);
         }
-      } else {
+      }
+      else {
         adminPermissions = rules[role.caption].static;
       }
+      if (role.id == "8" || role.id == "5") {
+        adminPermissions.push("receive")
+      }
+
     });
 
     if (accessBars["*"]) return accessBars;
@@ -120,7 +126,9 @@ class CabinetSideBar extends Component {
     if (adminPermissions) {
       let isAnyAdminPermissions = false;
       adminPermissions.forEach((value, indx) => {
-        if (accessBars[value]) adminPermissions[indx] = "";
+        if (accessBars[value]) {
+          adminPermissions[indx] = "";
+        }
         else isAnyAdminPermissions = true;
       });
       if (!isAnyAdminPermissions) return { "*": "*" };
