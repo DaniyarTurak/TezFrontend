@@ -189,7 +189,7 @@ function BindWeightProducts() {
         const changedProductList = JSON.parse(JSON.stringify(weightProductsList));
         changedProductList.forEach((el, idx) => {
             if (idx === id) {
-                el.stock? setDeleteModalOpen(true) : handleDelete()
+                el.stock ? setDeleteModalOpen(true) : handleDelete(id)
             }
         });
     };
@@ -199,19 +199,23 @@ function BindWeightProducts() {
         cleanAlerts();
     };
 
-    const handleDelete = () => {
+    const handleDelete = (id) => {
         const changedProductList = JSON.parse(JSON.stringify(weightProductsList));
         let idToDelete;
-        changedProductList.forEach((el, idx) => {
-            if (idx === editingId) {
-                return (el.isdeleted = true);
-            }
-        });
-        changedProductList.forEach((el, idx) => {
-            if (idx === editingId) {
-                idToDelete = el.id;
-            }
-        });
+        isDeleteModalOpen ?
+            (changedProductList.forEach((el, idx) => {
+                if (idx === editingId) {
+                    idToDelete = el.id;
+                }
+            })
+            ) :
+            (
+                changedProductList.forEach((el, idx) => {
+                    if (idx === id) {
+                        idToDelete = el.id;
+                    }
+                })
+            )
         setWeightProductsList(changedProductList);
         handleDeleteClose();
         const delete_main = "/api/pluproducts/delete/good";
