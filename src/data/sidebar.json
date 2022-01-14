@@ -63,11 +63,6 @@
         "id": 10,
         "route": "options/scales",
         "name": "Весы"
-      },
-      {
-        "id": 12,
-        "route": "options/createprefix",
-        "name": "Префикс весов"
       }
     ]
   },

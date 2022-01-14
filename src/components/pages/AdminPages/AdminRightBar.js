@@ -3,6 +3,7 @@ import React, { Fragment } from "react";
 import AddBrandForm from "../../forms/AddBrandForm";
 import AddAttributeForm from "../../forms/AddAttributeForm";
 import CreateInvoicePage from "./CreateInvoicePage";
+import CreatePrefix from "../ProductsWeight/CreatePrefix";
 import BrandListPage from "../ListPages/BrandListPage";
 import CompanyListPage from "../ListPages/CompanyListPage";
 import InfoCompanyPage from "../InfoCompanyPage";
@@ -48,6 +49,8 @@ export default function AdminRightBar({
               <CreateInvoicePage history={history} location={location} />
               :
               <NotAllowed />);
+        case "createprefix":
+          return <CreatePrefix history={history} location={location} />
         case "consolidated":
           return (user.login === "admin" ?
             <ConsolidatedReports history={history} location={location} />

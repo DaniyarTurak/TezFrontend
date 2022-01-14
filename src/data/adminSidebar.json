@@ -25,6 +25,7 @@
       }
     ]
   },
+
   {
     "id": 4,
     "route": "createinvoice",
@@ -34,6 +35,11 @@
     "id": 5,
     "name": "Создание атрибутов",
     "route": "updateattribute"
+  },
+  {
+    "id": 13,
+    "route": "createprefix",
+    "name": "Префикс весов"
   },
   {
     "id": 6,
