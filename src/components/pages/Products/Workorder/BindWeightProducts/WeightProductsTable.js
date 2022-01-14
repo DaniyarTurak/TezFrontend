@@ -78,7 +78,7 @@ function WeightProductsTable({weightProductsList, handleEdit, handleDelete}) {
                   </TableCell>
                   <TableCell align="center">{row.sellprice} тг.</TableCell>
                   <TableCell align="center">
-                    {row.tax === 0 ? "Без НДС" : "Стандартный НДС"}
+                    {row.tax === "0" ? "Без НДС" : "Стандартный НДС"}
                   </TableCell>
                   <TableCell align="center">
                     <IconButton
