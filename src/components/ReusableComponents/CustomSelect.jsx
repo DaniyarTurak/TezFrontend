@@ -18,10 +18,14 @@ export default function CustomSelect({
   options,
   onChange,
   placeholder,
-  disabled
+  disabled,
+  value,
+  onInputChange
 }) {
   return (
     <Select
+      onInputChange={onInputChange}
+      value={value}
       isDisabled={disabled}
       styles={customStyles}
       options={options}

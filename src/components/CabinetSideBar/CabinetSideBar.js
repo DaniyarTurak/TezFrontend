@@ -101,7 +101,7 @@ class CabinetSideBar extends Component {
   getAccessBars = (userRoles) => {
     userRoles = ConvertRoles(userRoles);
     let accessBars = {};
-    let adminPermissions = null;
+    let adminPermissions = [];
     userRoles.forEach((role) => {
       if (role.id !== "1") {
         const permissions = rules[role.caption];
@@ -117,12 +117,17 @@ class CabinetSideBar extends Component {
       }
       if (role.id == "8" || role.id == "5") {
         adminPermissions.push("receive")
-      } 
+      } else {
+        adminPermissions.pop();
+        if(role.id=="1") {
+          adminPermissions.push("revision")
+        }
+      }
     });
 
     if (accessBars["*"]) return accessBars;
 
-    if (adminPermissions) {
+    if (adminPermissions.length!==0) {
       let isAnyAdminPermissions = false;
       adminPermissions.forEach((value, indx) => {
         if (accessBars[value]) {

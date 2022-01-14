@@ -70,7 +70,7 @@ export default function SellAndPurchasePrices() {
         });
         temp.unshift({ label: "Без бренда", value: 0 });
         setBrands(temp);
-        setOptions(temp);
+        // setOptions(temp);
 
       })
       .catch((err) => {
@@ -92,7 +92,7 @@ export default function SellAndPurchasePrices() {
           };
         });
         setCategories([...categoriesList]);
-        setOptions([...categoriesList]);
+        // setOptions([...categoriesList]);
 
       })
       .catch((err) => {
@@ -109,7 +109,8 @@ export default function SellAndPurchasePrices() {
           temp.push({ label: ct.name, value: ct.id })
         });
         setCounterparties(temp);
-        setOptions(temp);
+        // setOptions(temp);
+        console.log(temp)
       })
       .catch((err) => console.log(err));
   };
@@ -117,7 +118,7 @@ export default function SellAndPurchasePrices() {
   const getPrices = () => {
     setLoading(true);
     let path = "";
-    if (object === 1 && barcode !== "" && prodName !== "") {
+    if (object === 1) {
       path = "/api/prices/listbycounterparty";
       setByCounterparty(true);
     }
@@ -132,8 +133,8 @@ export default function SellAndPurchasePrices() {
         barcode: barcode && barcode !== "" ? barcode : null,
         prodName: prodName && prodName !== "" ? prodName : null,
         object,
-        object_id: object === 1 && counterparty.value!=-1 ? counterparty.value :
-          object === 2 ? brand.value : object === 3 ? category.id : null
+        object_id: object === 1 && counterparty.value != -1 ? counterparty.value :
+          object === 2 ? brand.value : object === 3 ? category.value : null
       }
     })
       .then((res) => res.data)
@@ -141,16 +142,16 @@ export default function SellAndPurchasePrices() {
         let temp = [];
         if (prices.length > 0) {
           prices.forEach((el, idx) => {
-              temp.push({
-                ...el,
-                num: idx + 1,
-                purchase_price: el.purchase_price ? el.purchase_price : "",
-                sell_price: el.sell_price ? el.sell_price : "",
-                wholesale_price: el.wholesale_price ? el.wholesale_price : "",
-                temp_purchase_price: el.purchase_price ? el.purchase_price : "",
-                temp_sell_price: el.sell_price ? el.sell_price : "",
-                temp_wholesale_price: el.wholesale_price ? el.wholesale_price : "",
-              })
+            temp.push({
+              ...el,
+              num: idx + 1,
+              purchase_price: el.purchase_price ? el.purchase_price : "",
+              sell_price: el.sell_price ? el.sell_price : "",
+              wholesale_price: el.wholesale_price ? el.wholesale_price : "",
+              temp_purchase_price: el.purchase_price ? el.purchase_price : "",
+              temp_sell_price: el.sell_price ? el.sell_price : "",
+              temp_wholesale_price: el.wholesale_price ? el.wholesale_price : "",
+            })
           });
         }
         setPriceList(temp);
@@ -167,29 +168,30 @@ export default function SellAndPurchasePrices() {
     setObject(e.value);
     setOptions(e.value === 1 ? counterparties : e.value === 2 ? brands : e.value === 3 ? categories : []);
     setSearched(false);
-    setBrand(null);
-    setCategory(null);
-    setCounterparty(null);
+    setBrand({ label: "Без бренда", value: 0 });
+    setCategory({ label: "Без категории", value: 0 });
+    setCounterparty({ label: "Контрагент", value: -1 });
     setWeightOptions(false)
   };
 
-  const autocompleteOnChange = (value) => {
+  const autocompleteOnChange = (e) => {
+    setSearched(false);
     switch (object) {
       case 1:
-        setCounterparty(value);
+        setCounterparty({ value: e.value, label: e.label });
         // getCounterparties({ label: value ? value.label : "" });
         // setBrand(null);
         // setCategory(null);
         break;
       case 2:
-        setBrand(value);
-        getBrands({ label: value ? value.label : "" });
+        setBrand({ value: e.value, label: e.label });
+        getBrands({ label: e.value ? e.label : "" });
         // setCounterparty(null);
         // setCategory(null);
         break;
       case 3:
-        setCategory(value);
-        getCategories({ label: value ? value.label : "" });
+        setCategory({ value: e.value, label: e.label });
+        getCategories({ label: e.value ? e.label : "" });
         // setBrand(null);
         // setCounterparty(null);
         break;
@@ -235,7 +237,7 @@ export default function SellAndPurchasePrices() {
           />
         </Grid>
         {object !== 0 && <Grid item xs={5}>
-          <Autocomplete
+          {/* <Autocomplete
             value={object === 1 ? counterparty : object === 2 ? brand : object === 3 ? category : null}
             defaultValue={object === 1 ? counterparty : object === 2 ? brand : object === 3 ? category : null}
             fullWidth
@@ -255,6 +257,12 @@ export default function SellAndPurchasePrices() {
                 placeholder={object === 1 ? "Контрагент" : object === 2 ? "Бренд" : object === 3 ? "Категория" : ""}
               />
             )}
+          /> */}
+          <CustomSelect
+            value={object === 1 ? counterparty : object === 2 ? brand : object === 3 ? category : null}
+            options={options}
+            onChange={autocompleteOnChange}
+            placeholder={object === 1 ? "Контрагент" : object === 2 ? "Бренд" : object === 3 ? "Категория" : ""}
           />
         </Grid>}
         <Grid item xs={2}
@@ -263,7 +271,7 @@ export default function SellAndPurchasePrices() {
             className="btn btn-success"
             onClick={getPrices}
             disabled={
-              (object === 1 && !counterparty) ||
+              (object === 1 && counterparty.value==-1) ||
                 (object === 2 && !brand) ||
                 (object === 3 && !category) ||
                 isLoading ? true : false}
