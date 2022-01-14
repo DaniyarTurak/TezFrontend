@@ -6,6 +6,12 @@
       "caption": "Добавление товара"
     },
     {
+      "id":4,
+      "type":"change",
+      "route":"WeightProducts",
+      "caption":"Весовые товары"
+    },
+    {
       "id": 1,
       "type": "change",
       "route": "ProductList",
@@ -22,13 +28,6 @@
       "type":"change",
       "route":"AttrSprPage",
       "caption":"Настройка атрибутов"
-    },
-    {
-      "id":4,
-      "type":"change",
-      "route":"WeightProducts",
-      "caption":"Весовые товары"
     }
-  
 ]
   
