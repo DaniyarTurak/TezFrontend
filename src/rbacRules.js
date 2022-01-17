@@ -3,6 +3,8 @@
 const rules = {
   admin: {
     static: [
+      "options",
+      "erpuser",
       "point",
       "stock",
       "cashbox",
@@ -24,6 +26,8 @@ const rules = {
   },
   accountant: {
     static: [
+      "options",
+      "erpuser",
       "stockreport",
       "report",
       "general",
@@ -43,6 +47,8 @@ const rules = {
   },
   supplier: {
     static: [
+      "options",
+      "erpuser",
       "stockreport",
       "certificates",
       "product",
@@ -71,6 +77,8 @@ const rules = {
   },
   pointHead: {
     static: [
+      "options",
+      "erpuser",
       "point",
       "references",
       "stock",
@@ -91,6 +99,8 @@ const rules = {
   },
   catman: {
     static: [
+      "options",
+      "erpuser",
       "report",
       "stockreport",
       "prices",
@@ -108,6 +118,8 @@ const rules = {
   },
   revisor: {
     static: [
+      "options",
+      "erpuser",
       "revision", 
       "product", 
       "news", 

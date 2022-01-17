@@ -77,7 +77,7 @@ class CabinetSideBar extends Component {
     accessBars: {},
     adminPermissions: null,
   };
-
+  
   componentWillMount() {
     // this.test();
     document.body.setAttribute("style", "background-color:#f4f4f4 !important");
@@ -115,19 +115,21 @@ class CabinetSideBar extends Component {
       else {
         adminPermissions = rules[role.caption].static;
       }
-      if (role.id == "8" || role.id == "5") {
-        adminPermissions.push("receive")
-      } else {
-        adminPermissions.pop();
-        if(role.id=="1") {
-          adminPermissions.push("revision")
-        }
-      }
     });
-
+    if(userRoles.some(role => role.id==='8' || role.id==='5')) {
+      adminPermissions.push("receive")
+    } else {
+      let indices = []
+        let index = adminPermissions.indexOf("receive")
+        while (index !== -1) {
+          indices.push(index)
+          index = adminPermissions.indexOf("receive", index + 1);
+          adminPermissions.splice(index, 1)
+        }
+    }
     if (accessBars["*"]) return accessBars;
 
-    if (adminPermissions.length!==0) {
+    if (adminPermissions.length !== 0) {
       let isAnyAdminPermissions = false;
       adminPermissions.forEach((value, indx) => {
         if (accessBars[value]) {
