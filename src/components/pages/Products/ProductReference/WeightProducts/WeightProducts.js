@@ -143,6 +143,7 @@ function WeightProducts({getUnusedBarcode, unusedBarcode}) {
           } else {
             ErrorAlert(data.text);
           }
+          getUnusedBarcode();
         })
         .catch((err) => {
           ErrorAlert(err);

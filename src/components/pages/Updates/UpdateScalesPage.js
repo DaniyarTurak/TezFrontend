@@ -18,7 +18,7 @@ export default function CreateScales() {
   const [stocks, setStocks] = useState([]);
 
   const raiseError =
-    "Возникла ошибка при обработке вашего запроса. Мы уже работает над решением. Попробуйте позже";
+    "Возникла ошибка при обработке вашего запроса. Мы уже работаем над решением. Попробуйте позже";
   const caption = " список неактивных весов";
 
   useEffect(() => {
@@ -251,7 +251,7 @@ export default function CreateScales() {
                   <td>{idx + 1}</td>
                   <td>
                     <input
-                      type="email"
+                      type="text"
                       className="form-control"
                       value={scale.name}
                       onKeyDown={scaleValidation}

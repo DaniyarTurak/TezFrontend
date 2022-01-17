@@ -119,10 +119,8 @@ class CabinetSideBar extends Component {
     if(userRoles.some(role => role.id==='8' || role.id==='5')) {
       adminPermissions.push("receive")
     } else {
-      let indices = []
         let index = adminPermissions.indexOf("receive")
         while (index !== -1) {
-          indices.push(index)
           index = adminPermissions.indexOf("receive", index + 1);
           adminPermissions.splice(index, 1)
         }

@@ -273,7 +273,7 @@ export default function SellAndPurchasePrices() {
             disabled={
               (object === 1 && counterparty.value==-1) ||
                 (object === 2 && !brand) ||
-                (object === 3 && !category) ||
+                (object === 3 && category.value==-1) ||
                 isLoading ? true : false}
           >
             Показать
