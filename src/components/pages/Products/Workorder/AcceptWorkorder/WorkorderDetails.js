@@ -344,7 +344,7 @@ export default function WorkorderDetails({
                     //         }
                     //     });
                     //     console.log(temp);
-            
+
                     //     Axios.get("/api/report/transactions/excel", {
                     //         responseType: "blob",
                     //         params:
@@ -367,7 +367,7 @@ export default function WorkorderDetails({
                     //             ErrorAlert(err);
                     //         });
                     // });
-
+                    getExcel();
                     getWorkorders();
                     setActivePage(1);
                 })
@@ -381,10 +381,46 @@ export default function WorkorderDetails({
                     setLoading(false);
                 });
         };
+    }
+    const user = JSON.parse(sessionStorage.getItem("isme-user-data"))
+    console.log(user)
 
-
-
-
+    const getExcel = () => {
+        const data = workorderProducts.map((e) => {
+            return (e = {
+                barcode: e.code,
+                name: e.name,
+                product: e.product,
+                units: e.accepted_units,
+                price: e.price,
+                workorder_id: workorders[0].id,
+                total_price: e.units * e.price,
+            })
+        })
+        Axios({
+            method: "POST",
+            url: "/api/workorder/excel/report",
+            data: {
+                workorderProducts: data,
+                counterparty: counterparties[0].name,
+                company: user.companyname,
+                user: user.id,
+                user_name: user.name,
+            },
+            responseType: "blob",
+        })
+            .then((res) => res.data)
+            .then((res) => {
+                console.log(res)
+                const link = document.createElement("a");
+                link.href = window.URL.createObjectURL(new Blob([res]));
+                link.download = "report.xlsx";
+                document.body.appendChild(link);
+                link.click();
+            })
+            .catch((err) => {
+                ErrorAlert(err);
+            });
     }
 
     return (

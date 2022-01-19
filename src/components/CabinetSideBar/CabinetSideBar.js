@@ -129,8 +129,10 @@ class CabinetSideBar extends Component {
         if (userRoles.some(role => role.id === '8' || role.id === '5')) {
             adminPermissions.push("receive")
         } else {
-            adminPermissions = adminPermissions.filter(permission => permission !=="receive")
+            adminPermissions = adminPermissions.filter(permission => permission !== "receive")
         }
+
+
         if (accessBars["*"]) return accessBars;
 
         if (adminPermissions.length !== 0) {
@@ -194,6 +196,7 @@ class CabinetSideBar extends Component {
                         )}
 
                         {this.state.topics.map((topic) =>
+                        
                             !topic.group
                                 ? this.Can(
                                     topic.route.substr(

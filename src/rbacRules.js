@@ -36,7 +36,8 @@ const rules = {
       "buyers",
       "references",
       "stats",
-      "product",
+      "marketing",
+      "couponspage",
       "creatediscounts",
       "bonus",
       "promotionspage",
@@ -89,12 +90,11 @@ const rules = {
       "report",
       "stats",
       "product",
-      "creatediscounts",
-      "bonus",
-      "promotionspage",
       "news",
       "pricingmaster",
-      "couponspage",
+      "prices",
+      "marginalpricepage",
+      "changeprice"
     ],
   },
   catman: {
@@ -118,8 +118,6 @@ const rules = {
   },
   revisor: {
     static: [
-      "options",
-      "erpuser",
       "revision", 
       "product", 
       "news", 
