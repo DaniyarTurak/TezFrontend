@@ -240,7 +240,7 @@ export default function WorkorderDetails({
                                                             Контрагент &emsp; <b>{cp.name}</b>
                                                         </StyledTableCell>
                                                         <StyledTableCell align="right">
-                                                            {!cp.status ? <button
+                                                            {!cp.status && !onlyView? <button
                                                                 className="btn btn-success"
                                                                 onClick={() => recieveWorkorder(cp.counterparty)}
                                                             >

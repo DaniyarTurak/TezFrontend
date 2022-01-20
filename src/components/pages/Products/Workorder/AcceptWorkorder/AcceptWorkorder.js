@@ -16,6 +16,7 @@ export default function AcceptWorkorder() {
     const [onlyView, setOnlyView] = useState(false);
     const [activePage, setActivePage] = useState(1);
     const [isLoading, setLoading] = useState(false);
+    const [workorderProduct, setWorkorderProduct] = useState();
 
     useEffect(() => {
         getWorkorders();
@@ -29,6 +30,7 @@ export default function AcceptWorkorder() {
             .then((list) => {
                 let c = [];
                 let a = [];
+                let b = [];
                 list.forEach(el => {
                     if (el.status === 'CREATED' || el.status === 'INPROCESS') {
                         c.push(el)
@@ -37,8 +39,12 @@ export default function AcceptWorkorder() {
                         if (el.status === 'ACCEPTED')
                         a.push(el)
                     }
+                    if(el.status === 'INPROCESS') {
+                        b.push(el)
+                    }
                     setAcceptedList(a); // массив обработанных наряд-заказов
                     setCreatedList(c); // массив созданных и обрабатываемых наряд-заказов
+                    setWorkorderProduct(b); //массив наряд-заказа для обработки
                 });
                 setLoading(false);
             })
@@ -95,6 +101,7 @@ export default function AcceptWorkorder() {
                 workorderId={workorderId}
                 setLoading={setLoading}
                 workorderProducts={createdList}
+                workorderProduct = {workorderProduct}
                 setWorkorderId={setWorkorderId}
                 onlyView={onlyView}
                 setOnlyView={setOnlyView}

@@ -88,7 +88,8 @@ export default function WorkorderDetails({
     setActivePage,
     workorderId,
     setWorkorderId,
-    getWorkorders
+    getWorkorders,
+    workorderProduct
 }) {
 
     const [isLoading, setLoading] = useState(false);
@@ -97,6 +98,7 @@ export default function WorkorderDetails({
     const [productDetails, setProductDetails] = useState([]);
     const [counterparties, setCounterparties] = useState([]);
     const [workorders, setWorkorders] = useState([]);
+    
 
     useEffect(() => {
         getIds();
@@ -383,8 +385,7 @@ export default function WorkorderDetails({
         };
     }
     const user = JSON.parse(sessionStorage.getItem("isme-user-data"))
-    console.log(user)
-
+    console.log(workorderProduct)
     const getExcel = () => {
         const data = workorderProducts.map((e) => {
             return (e = {
@@ -395,6 +396,8 @@ export default function WorkorderDetails({
                 price: e.price,
                 workorder_id: workorders[0].id,
                 total_price: e.units * e.price,
+                workorder_number: e.workorder_number,
+                date: e.date
             })
         })
         Axios({

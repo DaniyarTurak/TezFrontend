@@ -166,12 +166,15 @@ export default function SellAndPurchasePrices() {
 
   const objectChange = (e) => {
     setObject(e.value);
+    getCategories(null);
+    getBrands("");
     setOptions(e.value === 1 ? counterparties : e.value === 2 ? brands : e.value === 3 ? categories : []);
     setSearched(false);
     setBrand({ label: "Без бренда", value: 0 });
     setCategory({ label: "Без категории", value: 0 });
     setCounterparty({ label: "Контрагент", value: -1 });
     setWeightOptions(false)
+    
   };
 
   const autocompleteOnChange = (e) => {
