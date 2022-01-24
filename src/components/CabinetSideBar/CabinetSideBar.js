@@ -4,7 +4,6 @@ import Axios from "axios";
 import Topics from "../../data/sidebar";
 import rules from "../../rbacRules";
 import Navigation from "./Navigation";
-import { ContinuousColorLegend } from "react-vis";
 
 
 
@@ -127,9 +126,9 @@ class CabinetSideBar extends Component {
             this.setState({ topics: updatedTopics })
         }
         if (userRoles.some(role => role.id === '8' || role.id === '5')) {
-            adminPermissions.push("receive")
+            adminPermissions.push("receive", "productsweight" )
         } else {
-            adminPermissions = adminPermissions.filter(permission => permission !== "receive")
+            adminPermissions = adminPermissions.filter(permission => permission !== "receive" && permission !== "productsweight")
         }
 
 
