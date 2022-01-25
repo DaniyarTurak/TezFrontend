@@ -148,6 +148,7 @@ export default function AddAttributes({
                                     attribute_name: selectedAttrName.label,
                                     attribute_value: reqbody.value,
                                 }]);
+                                console.log(dateValue)
                                 setAttrFormat("");
                                 setSelectedAttrName(null);
                                 setTextValue("");
@@ -198,25 +199,37 @@ export default function AddAttributes({
                                 className="form-control attr-spr"
                                 noOptionsMessage={() => "Характеристики не найдены"}
                             />
-                            : attrFormat === "DATE" ?                                
-                                    <MuiPickersUtilsProvider utils={DateFnsUtils} locale={ruLocale}>
-                                        <KeyboardDatePicker
-                                            label="Введите значение"
+                            : attrFormat === "DATE" ?
+                                // <MuiPickersUtilsProvider utils={DateFnsUtils} locale={ruLocale}>
+                                //     <KeyboardDatePicker
+                                //         label="Введите значение"
 
-                                            invalidDateMessage="Введите корректную дату"
+                                //         invalidDateMessage="Введите корректную дату"
 
-                                            value={dateValue}
-                                            renderInput={(params) => <TextField {...params} />}
-                                            onChange={(newValue) => {
-                                                setDateValue(Moment(newValue).format("YYYY-MM-DD"));
-                                            }}
-                                            disableToolbar
-                                            autoOk
-                                            variant="inline"
-                                            format="dd.MM.yyyy"
-                                            style={{marginTop: "-9px", marginLeft: "5px" }}
-                                        />
-                                    </MuiPickersUtilsProvider>
+                                //         value={dateValue}
+                                //         renderInput={(params) => <TextField {...params} />}
+                                //         onChange={(newValue) => {
+                                //             setDateValue(Moment(newValue).format("YYYY-MM-DD"));
+                                //         }}
+                                //         disableToolbar
+                                //         autoOk
+                                //         variant="inline"
+                                //         format="dd.MM.yyyy"
+                                //         style={{marginTop: "-9px", marginLeft: "5px" }}
+                                //     />
+                                // </MuiPickersUtilsProvider>
+                                <input
+                                    value={dateValue}
+                                    type="date"
+                                    className="form-control"
+                                    placeholder="Введите значение"
+                                    onChange={(newValue) => {
+                                        setDateValue(newValue.target.value);
+                                    }}
+                                    min="2018-01-01"
+                                    max="2100-01-01"
+                                    onKeyDown={(e) => e.preventDefault()}
+                                />
                                 :
                                 attrFormat === "TEXT" ?
                                     <TextField

@@ -72,6 +72,8 @@ const rules = {
   },
   pointHead: {
     static: [
+      "options",
+      "erpuser",
       "point",
       "references",
       "stock",

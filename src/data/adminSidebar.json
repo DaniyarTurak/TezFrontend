@@ -25,7 +25,6 @@
       }
     ]
   },
-
   {
     "id": 4,
     "route": "createinvoice",
@@ -40,6 +39,16 @@
     "id": 13,
     "route": "createprefix",
     "name": "Префикс весов"
+  },
+  {
+    "id": 14,
+    "name": "Торговая точка",
+    "route": "point"
+  },
+  {
+    "id": 15,
+    "name": "Касса",
+    "route": "cashbox"
   },
   {
     "id": 6,

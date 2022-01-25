@@ -39,6 +39,7 @@ export default class CashboxListPage extends Component {
       },
     },
     sweetalert: null,
+    admin: false,
   };
 
   componentDidMount() {
@@ -51,6 +52,12 @@ export default class CashboxListPage extends Component {
         timeout: 2000,
       });
     }
+    Axios.get("/api/auth")
+      .then((resp) => {
+        if (resp.data.role === 1) {
+          this.setState({ admin: true })
+        };
+      });
   }
 
   hideAlert = () => {
@@ -155,15 +162,17 @@ export default class CashboxListPage extends Component {
           <div className="col-md-6">
             <h6 className="btn-one-line">{label.list}</h6>
           </div>
+          {this.state.admin &&
+            <div className="col-md-6 text-right">
+              <button
+                className="btn btn-link btn-sm"
+                onClick={() => this.props.history.push("cashbox/manage")}
+              >
+                {label.add}
+              </button>
+            </div>
+          }
 
-          <div className="col-md-6 text-right">
-            <button
-              className="btn btn-link btn-sm"
-              onClick={() => this.props.history.push("cashbox/manage")}
-            >
-              {label.add}
-            </button>
-          </div>
         </div>
 
         {isLoading && <Searching />}
@@ -191,22 +200,25 @@ export default class CashboxListPage extends Component {
                     <td>{idx + 1}</td>
                     <td>{cashbox.name}</td>
                     <td>{cashbox.point_name}</td>
-                    <td className="text-right">
-                      <button
-                        className="btn btn-w-icon edit-item"
-                        title={label.title.edit}
-                        onClick={() => {
-                          this.handleEdit(cashbox);
-                        }}
-                      />
-                      <button
-                        className="btn btn-w-icon delete-item"
-                        title={label.title.delete}
-                        onClick={() => {
-                          this.handleDelete(cashbox);
-                        }}
-                      />
-                    </td>
+                    <td className="text-right"></td>
+                    {this.state.admin &&
+                      <td className="text-right">
+                        <button
+                          className="btn btn-w-icon edit-item"
+                          title={label.title.edit}
+                          onClick={() => {
+                            this.handleEdit(cashbox);
+                          }}
+                        />
+                        <button
+                          className="btn btn-w-icon delete-item"
+                          title={label.title.delete}
+                          onClick={() => {
+                            this.handleDelete(cashbox);
+                          }}
+                        />
+                      </td>
+                    }
                   </tr>
                 ))}
               </tbody>

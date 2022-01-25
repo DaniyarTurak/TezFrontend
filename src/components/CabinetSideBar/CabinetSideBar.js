@@ -122,7 +122,7 @@ class CabinetSideBar extends Component {
         if (userRoles.some(role => role.id === '1' || role.id === '8' || role.id === '2')) {
             this.setState({ topics: Topics })
         } else {
-            let updatedTopics = this.state.topics.filter(topic => topic.id !== 6)
+            let updatedTopics = this.state.topics.filter(topic => topic.groupName !== "Маркетинг и продвижение")
             this.setState({ topics: updatedTopics })
         }
         if (userRoles.some(role => role.id === '8' || role.id === '5')) {

@@ -41,6 +41,7 @@ class PointList extends Component {
       },
     },
     sweetalert: null,
+    admin: false,
   };
 
   componentDidMount() {
@@ -53,6 +54,12 @@ class PointList extends Component {
         timeout: 2000,
       });
     }
+    Axios.get("/api/auth")
+      .then((resp) => {
+        if (resp.data.role === 1) {
+          this.setState({ admin: true })
+        };
+      });
   }
 
   hideAlert = () => {
@@ -166,15 +173,17 @@ class PointList extends Component {
           <div className="col-md-6">
             <h6 className="btn-one-line">{label.list}</h6>
           </div>
+          {this.state.admin &&
+            <div className="col-md-6 text-right">
+              <button
+                className="btn btn-link btn-sm"
+                onClick={() => this.props.history.push("point/manage")}
+              >
+                {label.add}
+              </button>
+            </div>
+          }
 
-          <div className="col-md-6 text-right">
-            <button
-              className="btn btn-link btn-sm"
-              onClick={() => this.props.history.push("point/manage")}
-            >
-              {label.add}
-            </button>
-          </div>
         </div>
 
         {isLoading && <Searching />}
@@ -207,22 +216,27 @@ class PointList extends Component {
                     <td>{point.name}</td>
                     <td>{point.address}</td>
                     <td>{point.is_minus ? "Да" : "Нет"}</td>
-                    <td className="text-right">
-                      {/* <button className="btn btn-w-icon detail-item" title={label.title.detail}
+                    <td className="text-right"></td>
+                    {/* <button className="btn btn-w-icon detail-item" title={label.title.detail}
 													onClick={() => { this.handleDetail(point) }}>
 												</button> */}
-                      {point.point_type !== 0 ? (
-                        <button
-                          className="btn btn-w-icon edit-item"
-                          title={label.title.edit}
-                          onClick={() => {
-                            this.handleEdit(point);
-                          }}
-                        />
-                      ) : (
-                        ""
-                      )}
-                      {/* {point.point_type !== 0 ? (
+                    {this.state.admin &&
+                      <td className="text-right">
+                        {point.point_type !== 0 ? (
+                          <button
+                            className="btn btn-w-icon edit-item"
+                            title={label.title.edit}
+                            onClick={() => {
+                              this.handleEdit(point);
+                            }}
+                          />
+                        ) : (
+                          ""
+                        )}
+                      </td>
+                    }
+
+                    {/* {point.point_type !== 0 ? (
                         <button
                           className="btn btn-w-icon delete-item"
                           title={label.title.delete}
@@ -233,7 +247,7 @@ class PointList extends Component {
                       ) : (
                         ""
                       )} */}
-                    </td>
+
                   </tr>
                 ))}
               </tbody>

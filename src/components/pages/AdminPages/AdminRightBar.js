@@ -15,6 +15,8 @@ import NotAllowed from "../../NotAllowed";
 import AdminNews from "./AdminNews";
 import NewsInformation from "../News/NewsInformation";
 import ReportAdminPage from "./ReportAdminPage";
+import PointListPage from "../ListPages/PointListPage";
+import Cashbox from "../ListPages/Cashbox";
 
 import ImpNomenclature from "./ImpNomenclature";
 import ConsolidatedReports from "./ConsolidatedReports";
@@ -51,6 +53,12 @@ export default function AdminRightBar({
               <NotAllowed />);
         case "createprefix":
           return <CreatePrefix history={history} location={location} />
+
+        case "point":
+          return <PointListPage history={history} location={location} />
+        case "cashbox":
+          return <Cashbox history={history} location={location} />
+
         case "consolidated":
           return (user.login === "admin" ?
             <ConsolidatedReports history={history} location={location} />

@@ -285,6 +285,8 @@ export default function AddAttribute({
                     className="form-control"
                     placeholder="Введите значение"
                     onChange={onAttrValueChange}
+                    min="2018-01-01"
+                    max="2100-01-01"
                   />
                 )}
                 {selectedAttrType === "SPR" && (
