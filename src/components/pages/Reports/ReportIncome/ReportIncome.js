@@ -74,6 +74,7 @@ const useStyles = makeStyles((theme) => ({
 export default function ReportIncome({ companyProps }) {
   const classes = useStyles();
   const [attrval, setAttrVal] = useState({ value: "", label: "Все" });
+  const [textAttrval, setTextAttrval] = useState("");
   const [attribute, setAttribute] = useState({
     value: "@",
     label: "Все",
@@ -146,7 +147,7 @@ export default function ReportIncome({ companyProps }) {
     return () => {
       setDateChanging(false);
     };
-  }, [
+  }, [    
     point,
     counterparty,
     category,
@@ -161,7 +162,7 @@ export default function ReportIncome({ companyProps }) {
 
   const clean = () => {
     setSales([]);
-    setAttrVal("");
+    setAttrVal({ value: "", label: "Все" });
     setPoints([]);
     setBarcode("");
     setProducts([]);
@@ -169,6 +170,7 @@ export default function ReportIncome({ companyProps }) {
     setCategories([]);
     setBrands([]);
     setAttributeTypes([]);
+    setAttribute({ value: "@", label: "Все", format: "" });
     setNds({ value: "@", label: "Все" });
   };
 
@@ -275,10 +277,14 @@ export default function ReportIncome({ companyProps }) {
 
   const onAttributeTypeChange = (e, a) => {
     setAttrVal(a);
+    setTextAttrval(e.target.value);
   };
 
   const onGroupingChange = (e) => {
     setGrouping(e.target.checked);
+    if(e.target.checked===false) {
+      clean()
+    }
   };
 
   const onNdsChange = (e, n) => {
@@ -506,7 +512,7 @@ export default function ReportIncome({ companyProps }) {
         category: category.value,
         brand: brand.value,
         attribute: attribute.value,
-        attrval: attrval.label === "Все" ? "" : attrval.label,
+        attrval: attribute.format==="TEXT" ? textAttrval : attrval.label === "Все" ? "" : attrval.label,
         notattr,
         nds: nds.value,
       },
@@ -537,6 +543,7 @@ export default function ReportIncome({ companyProps }) {
       </Grid>
       <IncomeOptions
         attrval={attrval}
+        textAttrval={textAttrval}
         attribute={attribute}
         attributes={attributes}
         attributeTypes={attributeTypes}

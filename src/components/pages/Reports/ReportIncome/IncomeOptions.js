@@ -49,6 +49,7 @@ export default function IncomeOptions({
   points,
   products,
   productSelectValue,
+  textAttrval
 }) {
   return (
     <Fragment>
@@ -132,7 +133,7 @@ export default function IncomeOptions({
       {attribute.format === "TEXT" && (
         <Grid item xs={3}>
           <TextField
-            value={attrval}
+            value={textAttrval}
             onChange={onAttributeTypeChange}
             disabled={!grouping}
             label="Значение Атрибута"
