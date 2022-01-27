@@ -201,11 +201,8 @@ export default function ReportStockBalance({ companyProps }) {
     setAttrVal("");
     setBarcode("");
     setBrand({ value: "@", label: "Все" });
-    setBrands([]);
     setCategory({ value: "@", label: "Все" });
-    setCategories([]);
     setCounterparty({ value: "0", label: "Все" });
-    setCounterparties([]);
     setDate(Moment().format("YYYY-MM-DD"));
     setStockbalance([]);
     setSelectedStock({ value: "0", label: "Все" });

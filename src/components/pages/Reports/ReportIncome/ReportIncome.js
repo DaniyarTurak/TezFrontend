@@ -163,12 +163,7 @@ export default function ReportIncome({ companyProps }) {
   const clean = () => {
     setSales([]);
     setAttrVal({ value: "", label: "Все" });
-    setPoints([]);
     setBarcode("");
-    setProducts([]);
-    setCounterparties([]);
-    setCategories([]);
-    setBrands([]);
     setAttributeTypes([]);
     setAttribute({ value: "@", label: "Все", format: "" });
     setNds({ value: "@", label: "Все" });
