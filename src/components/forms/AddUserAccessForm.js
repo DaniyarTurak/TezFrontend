@@ -1,4 +1,4 @@
-import React, { Fragment } from 'react';
+import React, { Fragment, useState, useEffect } from 'react';
 import Box from '@mui/material/Box';
 import Checkbox from '@mui/material/Checkbox';
 import FormControlLabel from '@mui/material/FormControlLabel';
@@ -7,7 +7,23 @@ import Axios from "axios";
 
 function AddUserAccessForm({reset, dispatch, handleSubmit,setSubmitting, isSubmitting, pristine, submitting, userData, setAccessForm, history }) {
 
-  const [checked, setChecked] = React.useState([true, false]);
+  const [checked, setChecked] = useState([true, false]);
+  const [accessFunctions, setAccessFunctions] = useState([]);
+
+  
+  useEffect(() => {
+    getAccessFunctions()
+  }, [])
+
+  
+  const getAccessFunctions = () => {
+    Axios.get("/api/get_categories")
+    .then((res) => res.data)
+    .then((data) => {
+      console.log(data);
+      setAccessFunctions(data)
+    })
+  }
 
   const handleSubmitFunction = (data) => {
     if (!userData && !data.user_password) {
