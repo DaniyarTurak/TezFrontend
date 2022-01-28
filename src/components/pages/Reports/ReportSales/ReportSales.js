@@ -47,8 +47,7 @@ export default function ReportSales({ companyProps }) {
     format: "",
   });
   const [attrval, setAttrVal] = useState({ value: "", label: "Все" });
-  const [textAttrval, setTextAttrval] = useState("");
-  const [dateAttrval, setDateAttrval] = useState(null)
+  const [textAttrval, setTextAttrval] = useState("")
   const [attributeTypes, setAttributeTypes] = useState([]);
   const [attributes, setAttributes] = useState([]);
   const [brand, setBrand] = useState({ value: "@", label: "Все" });
@@ -154,7 +153,18 @@ export default function ReportSales({ companyProps }) {
     return () => {
       setDateChanging(false);
     };
-  }, []);
+  }, [
+    attribute,
+    attrval,
+    brand,
+    counterparty,
+    category,
+    dateFrom,
+    dateTo,
+    grouping,
+    point,
+    type,
+  ]);
 
   useEffect(
     () => {
@@ -227,24 +237,14 @@ export default function ReportSales({ companyProps }) {
 
 
   const clean = () => {
-    // setSales([]);
-    // setAttrVal("");
-    // setTextAttrval("");
-    // setAttributes([]);
-    // setPoints([]);
-    // setCounterparties([]);
-    // setCategories([]);
-    // setBrands([]);
-    // setAttributeTypes([]);
+    setSales([]);
+    setTextAttrval("")
+    setAttributeTypes([]);
     setAttrVal({ value: "", label: "Все" });
     setBarcode("");
     setBrand({ value: "@", label: "Все" });
-    setBrands([]);
     setCategory({ value: "@", label: "Все" });
-    setCategories([]);
-    setCounterparties([]);
     setAttribute({ value: "@", label: "Все", format: "" });
-    setSales([])
   };
 
   const changeDate = (dateStr) => {
@@ -531,7 +531,7 @@ export default function ReportSales({ companyProps }) {
         sell_type: sellType.value,
         client_type: clientType.value,
         attribute: attribute.value,
-        attrval: attribute.format==="TEXT" ? textAttrval : attribute.format==="DATE" ? dateAttrval : attrval.label === "Все" ? "" : attrval.label,
+        attrval: attribute.format==="TEXT" ? textAttrval : attrval.label === "Все" ? "" : attrval.label,
         notattr,
         company,
       },
@@ -656,8 +656,6 @@ export default function ReportSales({ companyProps }) {
         setSellType={setSellType}
         clientTypes={clientTypes}
         sellTypes={sellTypes}
-        dateAttrval={dateAttrval}
-        setDateAttrval={setDateAttrval}
       />
 
       {isLoading && (

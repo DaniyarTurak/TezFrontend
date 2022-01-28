@@ -7,32 +7,12 @@ import TextField from "@material-ui/core/TextField";
 import MaterialDateDefault from "../../../ReusableComponents/MaterialDateDefault";
 import AutocompleteSelect from "../../../ReusableComponents/AutocompleteSelect";
 import Autocomplete from "@material-ui/lab/Autocomplete";
-import Button from "@material-ui/core/Button";
-import { makeStyles } from "@material-ui/core/styles";
-import ErrorAlert from "../../../ReusableComponents/ErrorAlert";
-import ruLocale from 'date-fns/locale/ru';
-import ClearIcon from "@material-ui/icons/Clear";
-import {
-  MuiPickersUtilsProvider,
-  KeyboardDatePicker,
-} from "@material-ui/pickers";
-import DateFnsUtils from "@date-io/date-fns";
-import IconButton from '@material-ui/core/IconButton';
+import CategorySelect from "../../../ReusableComponents/CategorySelect";
 
-const useStyles = makeStyles((theme) => ({
-  button: {
-    width: "12rem",
-    minHeight: "3.5rem",
-    fontSize: ".875rem",
-    textTransform: "none",
-  },
-}));
 
 export default function SalesOptions({
   attrval,
   textAttrval,
-  dateAttrval,
-  setDateAttrval,
   attribute,
   attributes,
   attributeTypes,
@@ -82,17 +62,6 @@ export default function SalesOptions({
   sellTypes
 }) {
 
-  const classes = useStyles()
-
-  const checkDates = () => {
-    if (moment(dateFrom).format("L") === "Invalid date" || moment(dateTo).format("L") === "Invalid date") {
-      ErrorAlert("Введите корректную дату");
-    }
-    else {
-      handleSearch();
-    }
-  };
-
   return (
     <Fragment>
       <Grid item xs={12}>
@@ -105,7 +74,7 @@ export default function SalesOptions({
           searchInvoices={handleSearch}
           disableButton={isSubmitting}
           maxDate={moment(dateFrom).add(1,'M')}
-          invisibleButton={true}
+          invisibleButton={false}
         />
       </Grid>
       <Grid item xs={6}>
@@ -173,7 +142,7 @@ export default function SalesOptions({
         />
       </Grid>
 
-      <Grid item xs={3}>
+      {/* <Grid item xs={3}>
         <AutocompleteSelect
           value={category}
           onChange={onCategoryChange}
@@ -182,7 +151,8 @@ export default function SalesOptions({
           noOptions="Категории не найдены"
           label="Категории"
         />
-      </Grid>
+      </Grid> */}
+
 
       <Grid item xs={3}>
         <AutocompleteSelect
@@ -248,39 +218,6 @@ export default function SalesOptions({
           />
         </Grid>
       )}
-      {attribute.format === "DATE" && (
-        <Grid item xs={3}>
-          <MuiPickersUtilsProvider utils={DateFnsUtils} locale={ruLocale}>
-            <KeyboardDatePicker
-              label={"Выберите дату"}
-              value={dateAttrval}
-              renderInput={(params) => <TextField {...params} />}
-              onChange={(newValue) => {
-                setDateAttrval(moment(newValue).format("YYYY-MM-DD"));
-              }}
-              disableToolbar
-              autoOk
-              variant="inline"
-              format="dd.MM.yyyy"
-              InputProps={
-                dateAttrval && {
-                  startAdornment: (
-                    <IconButton
-                      onClick={() => {
-                        setDateAttrval(null);
-                      }}
-                      disabled={!dateAttrval}
-                      style={{ order: 1 }}
-                    >
-                      <ClearIcon color="disabled" fontSize="small" />
-                    </IconButton>
-                  ),
-                }
-              }
-            />
-          </MuiPickersUtilsProvider>
-        </Grid>
-      )}
 
       <Grid item xs={3}>
         <FormControlLabel
@@ -317,18 +254,8 @@ export default function SalesOptions({
         />
       </Grid>
       <Grid item xs={3}>
-      <Button
-            className={classes.button}
-            variant="outlined"
-            color="primary"
-            disabled={isSubmitting}
-            // // onClick={searchInvoices}
-            onClick={checkDates}
-
-          >
-            Поиск
-          </Button>
-          </Grid>
+        <CategorySelect onCategoryChange={onCategoryChange}/>
+      </Grid> 
     </Fragment>
   );
 }
