@@ -1,128 +1,149 @@
 [
   {
-    "id": 0,
-    "type": "report",
-    "route": "reportcashboxstate",
-    "caption": "Отчет по кассам"
-  },
-  {
     "id": 1,
     "type": "report",
-    "route": "reportsalessection",
-    "caption": "Общие продажи"
+    "route": "reportcashboxstate",
+    "caption": "Отчет по кассам",
+    "code": "rep_checkout"
   },
   {
     "id": 2,
     "type": "report",
-    "route": "reporttransactions",
-    "caption": "Чеки"
+    "route": "reportsalessection",
+    "caption": "Общие продажи",
+    "code": "rep_sales"
   },
   {
     "id": 3,
     "type": "report",
-    "route": "reportsales",
-    "caption": "Проданные товары"
+    "route": "reporttransactions",
+    "caption": "Чеки",
+    "code": "rep_checks"
   },
   {
     "id": 4,
-    "type": "stockreport",
-    "route": "reportstockbalance",
-    "caption": "Остаток на складе"
+    "type": "report",
+    "route": "reportsales",
+    "caption": "Проданные товары",
+    "code": "rep_prod_solds"
   },
   {
     "id": 5,
-    "type": "stockreport",
-    "route": "reportinvoicehistory",
-    "caption": "История по накладным"
+    "type": "report",
+    "route": "reportsalesplan",
+    "caption": "Индивидуальный бонус",
+    "code": "rep_single_bonus"
   },
   {
     "id": 6,
     "type": "report",
-    "route": "reportsalesplan",
-    "caption": "Индивидуальный бонус"
+    "route": "reportsalesplanteam",
+    "caption": "Командный бонус",
+    "code": "rep_team_bonus"
   },
   {
     "id": 7,
     "type": "report",
-    "route": "reportsalesplanteam",
-    "caption": "Командный бонус"
+    "route": "reportincome",
+    "caption": "Валовая прибыль",
+    "code": "rep_gross_profit"
   },
   {
     "id": 8,
-    "type": "stockreport",
-    "route": "reportproductmovement",
-    "caption": "Движение товара"
+    "type": "report",
+    "route": "reportdiscounts",
+    "caption": "Примененные скидки",
+    "code": "rep_discounts"
   },
   {
     "id": 9,
-    "type": "stockreport",
-    "route": "revision",
-    "caption": "Ревизия"
+    "type": "report",
+    "route": "reportconsultants",
+    "caption": "Консультанты",
+    "code": "rep_consultants"
   },
   {
     "id": 10,
     "type": "report",
-    "route": "reportincome",
-    "caption": "Валовая прибыль"
+    "route": "certificatespage",
+    "caption": "Сертификаты",
+    "code": "rep_certificates"
   },
   {
     "id": 11,
     "type": "report",
-    "route": "reportdiscounts",
-    "caption": "Примененные скидки"
+    "route": "abcxyz",
+    "caption": "ABC/XYZ",
+    "code": "rep_abc_xyz"
   },
   {
     "id": 12,
     "type": "report",
-    "route": "reportconsultants",
-    "caption": "Консультанты"
+    "route": "reportdebtpage",
+    "caption": "Долговая книга",
+    "code": "rep_debt_book"
   },
   {
     "id": 13,
     "type": "report",
-    "route": "certificatespage",
-    "caption": "Сертификаты"
+    "route": "reportFizCustomers",
+    "caption": "Отчёт по покупателям (физ. лица)",
+    "code": "rep_buyers"
+  },
+  {
+    "id": 24,
+    "type": "stockreport",
+    "route": "reportstockbalance",
+    "caption": "Остаток на складе",
+    "code": "whs_leftovers"
   },
   {
     "id": 15,
     "type": "stockreport",
-    "route": "reportholdingpage",
-    "caption": "Холдинги"
-  },
-  {
-    "id": 16,
-    "type": "stockreport",
-    "route": "consignmentreports",
-    "caption": "Консигнация"
-  },
-  {
-    "id": 17,
-    "type": "report",
-    "route": "abcxyz",
-    "caption": "ABC/XYZ"
+    "route": "reportinvoicehistory",
+    "caption": "История по накладным",
+    "code": "whs_inv_history"
   },
   {
     "id": 18,
     "type": "stockreport",
-    "route": "shelflife",
-    "caption": "Сроки годности"
+    "route": "reportproductmovement",
+    "caption": "Движение товара",
+    "code": "whs_prod_move"
   },
   {
     "id": 19,
     "type": "stockreport",
+    "route": "revision",
+    "caption": "Ревизия",
+    "code": "whs_revision"
+  },
+  {
+    "id": 115,
+    "type": "stockreport",
+    "route": "reportholdingpage",
+    "caption": "Холдинги",
+    "code": "whs_holdings"
+  },
+  {
+    "id": 116,
+    "type": "stockreport",
+    "route": "consignmentreports",
+    "caption": "Консигнация",
+    "code": "whs_consignment"
+  },
+  {
+    "id": 118,
+    "type": "stockreport",
+    "route": "shelflife",
+    "caption": "Сроки годности",
+    "code": "whs_exp_dates"
+  },
+  {
+    "id": 119,
+    "type": "stockreport",
     "route": "reconciliation",
-    "caption": "Сверка"
-  },
-  {
-    "id": 20,
-    "type": "report",
-    "route": "reportdebtpage",
-    "caption": "Долговая книга"
-  },
-  {
-    "id": 14,
-    "type": "report",
-    "route": "reportFizCustomers",
-    "caption": "Отчёт по покупателям (физ. лица)"
+    "caption": "Сверка",
+    "code": "whs_reconciliation"
   }
 ]

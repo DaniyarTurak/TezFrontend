@@ -37,6 +37,15 @@ export default function UserCabinet({ match, history, location }) {
       .catch((err) => {
         console.log(err);
       });
+
+      Axios.get("/api/erpuser/getuseraccesses")
+      .then((res) => res.data)
+      .then((data) => {
+        sessionStorage.setItem("isme-user-accesses", JSON.stringify(data[0].accesses))
+      })
+      .catch((err) => {
+        console.log(err);
+      });
   });
 
   const toggleSidebar = () => {
