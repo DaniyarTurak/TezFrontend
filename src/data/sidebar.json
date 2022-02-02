@@ -17,52 +17,62 @@
       {
         "id": 0,
         "route": "options/general",
-        "name": "Общая информация"
+        "name": "Общая информация",
+        "code": "setting_gen_info"
       },
       {
         "id": 1,
         "route": "options/point",
-        "name": "Торговая точка"
+        "name": "Торговая точка",
+        "code": "setting_store"
       },
       {
         "id": 2,
         "route": "options/stock",
-        "name": "Склад"
+        "name": "Склад",
+        "code": "setting_whs"
       },
       {
         "id": 3,
         "route": "options/cashbox",
-        "name": "Касса"
+        "name": "Касса",
+        "code": "setting_cash_reg"
       },
       {
         "id": 4,
         "route": "options/cashboxuser",
-        "name": "Пользователи касс"
+        "name": "Пользователи касс",
+        "code": "setting_user_chekout"
       },
       {
         "id": 5,
         "route": "options/erpuser",
-        "name": "Пользователи портала"
+        "name": "Пользователи портала",
+        "code": "setting_portal_user"
       },
       {
         "id": 6,
         "route": "options/salesplan",
-        "name": "План продаж"
+        "name": "План продаж",
+        "code": "setting_sales_plan"
       },
       {
         "id": 7,
         "route": "options/counterparties",
-        "name": "Поставщики"
+        "name": "Поставщики",
+        "code": "setting_supplies"
       },
       {
         "id": 8,
         "route": "options/buyers",
-        "name": "Покупатели юр. лица"
+        "name": "Покупатели юр. лица",
+        "code": "setting_buyers"
       },
       {
         "id": 10,
         "route": "options/scales",
-        "name": "Весы"
+        "name": "Весы",
+        "code": "setting_scales"
       }
     ]
   },

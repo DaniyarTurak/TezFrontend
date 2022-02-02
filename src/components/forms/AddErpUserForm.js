@@ -22,18 +22,20 @@ let AddErpUserForm = ({
   reset,
   submitting,
 }) => {
-  const userData = location.state ? location.state.userData : null;
+  // const userData = location.state ? location.state.userData : null;
   const [roles, setRoles] = useState([]);
   const [isSubmitting, setSubmitting] = useState(false);
-  const [accessForm, setAccessForm] = useState(false)
+  const [accessForm, setAccessForm] = useState(false);
+  const [userData, setUserData] = useState(location.state ? location.state.userData : null);
 
   useEffect(() => {
     getRoles();
-
+    if (userData) {
+      getUserAccesses()
+    };
     if (userData) {
       let userDataChanged = userData;
       const roles = userDataChanged.roles;
-
       userDataChanged.roles = [];
       userDataChanged.role = [];
       roles.forEach((role) => {
@@ -42,6 +44,17 @@ let AddErpUserForm = ({
       dispatch(initialize("AddErpUserForm", userDataChanged));
     }
   }, []);
+
+  const getUserAccesses = () => {
+    Axios.get(`/api/erpuser/getuseraccesses/${userData.id}`)
+      .then(res => res.data)
+      .then((data) => {
+        setUserData((prev) => { return { ...prev, accesses: data[0].accesses } })
+      })
+      .catch((err) => {
+        console.log(err);
+      });
+  }
 
   const getRoles = () => {
     Axios.get("/api/erpuser/roles")
@@ -74,7 +87,7 @@ let AddErpUserForm = ({
     setAccessForm(true)
   }
 
-  
+
 
   return (
     <div id="addErpUser">
@@ -110,7 +123,7 @@ let AddErpUserForm = ({
           setSubmitting={setSubmitting}
           dispatch={dispatch}
           reset={reset}
-          />
+        />
       ) : (
         <Fragment>
           <form >
