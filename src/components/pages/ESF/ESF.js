@@ -21,15 +21,20 @@ class ESF extends Component {
       invoiceType: "fiz",
       passwords: JSON.parse(sessionStorage.getItem("isme-passwords")) || [],
       sections: [
-        { name: "receive", label: "Прием", disabled: false },
-        { name: "send", label: "Передача", disabled: false },
-        { name: "cert", label: "Прикрепить ЭЦП", disabled: false },
-        { name: "report", label: "Отчет", disabled: false },
+        { name: "receive", label: "Прием", disabled: !this.checkAccess("elct_inv_reception") },
+        { name: "send", label: "Передача", disabled: !this.checkAccess("elct_inv_broadcast") },
+        { name: "cert", label: "Прикрепить ЭЦП", disabled: !this.checkAccess("elct_inv_attach_eds") },
+        { name: "report", label: "Отчет", disabled: !this.checkAccess("elct_inv_report") },
       ],
     };
     this.inboundInvoice = React.createRef();
     this.syncInvoice = React.createRef();
     this.esfReports = React.createRef();
+  }
+
+  checkAccess = (code) => {
+    const userAccesses = JSON.parse(sessionStorage.getItem("isme-user-accesses")) || [];
+    return userAccesses.some((access) => access.code == code)
   }
 
   setCurrType = (e) => {
@@ -170,7 +175,7 @@ class ESF extends Component {
     try {
       const sessionId =
         result["soap:Envelope"]["soap:Body"][0]["ns2:createSessionResponse"][0][
-          "sessionId"
+        "sessionId"
         ][0];
       console.log(sessionId);
       localStorage.setItem("isme-session", sessionId);
@@ -179,7 +184,7 @@ class ESF extends Component {
       try {
         const faultstring =
           result["soap:Envelope"]["soap:Body"][0]["soap:Fault"][0][
-            "faultstring"
+          "faultstring"
           ][0];
         console.log(faultstring);
         const matchingWord =
@@ -215,7 +220,7 @@ class ESF extends Component {
     try {
       const status =
         result["soap:Envelope"]["soap:Body"][0][
-          "ns2:currentSessionStatusResponse"
+        "ns2:currentSessionStatusResponse"
         ][0]["status"][0];
       if (status !== "OK") localStorage.removeItem("isme-session");
     } catch (e) {
@@ -268,9 +273,8 @@ class ESF extends Component {
                   onClick={this.setCurrType}
                   name={section.name}
                   disabled={section.disabled}
-                  className={`btn btn-block ${
-                    currType === section.name ? "btn-info" : "btn-outline-info"
-                  }`}
+                  className={`btn btn-block ${currType === section.name ? "btn-info" : section.disabled ? "btn-outline-info" : "btn-outline-secondary"
+                    }`}
                 >
                   {section.label}
                 </button>
@@ -318,7 +322,7 @@ class ESF extends Component {
             </div>
           )}
 
-          {currType === "send" && (
+          {currType === "send" && !this.checkAccess("elct_inv_broadcast") &&(
             <div>
               <div className="empty-space"></div>
               <div style={{ justifyContent: "center" }} className="row pb-10">
@@ -326,9 +330,8 @@ class ESF extends Component {
                   <button
                     onClick={() => this.onFizJurChange("fiz")}
                     name="fiz"
-                    className={`btn btn-block ${
-                      invoiceType === "fiz" ? "btn-info" : "btn-outline-info"
-                    }`}
+                    className={`btn btn-block ${invoiceType === "fiz" ? "btn-info" : "btn-outline-info"
+                      }`}
                   >
                     для физ. лиц
                   </button>
@@ -337,9 +340,8 @@ class ESF extends Component {
                   <button
                     onClick={() => this.onFizJurChange("jur")}
                     name="jur"
-                    className={`btn btn-block ${
-                      invoiceType === "jur" ? "btn-info" : "btn-outline-info"
-                    }`}
+                    className={`btn btn-block ${invoiceType === "jur" ? "btn-info" : "btn-outline-info"
+                      }`}
                   >
                     для юр. лиц
                   </button>
@@ -356,28 +358,28 @@ class ESF extends Component {
 						</div>
 					</div> */}
 
-          {currType === "receive" && (
+          {currType === "receive" && !this.checkAccess("elct_inv_reception") && (
             <InboundInvoice
               createSession={this.createSessionClick}
               ref={this.inboundInvoice}
             />
           )}
-          {currType === "send" && invoiceType === "fiz" && (
+          {currType === "send" && invoiceType === "fiz" && !this.checkAccess("elct_inv_broadcast") && (
             <SyncInvoice
               createSession={this.createSessionClick}
               closeSession={this.closeSession}
               ref={this.syncInvoice}
             />
           )}
-          {currType === "send" && invoiceType === "jur" && (
+          {currType === "send" && invoiceType === "jur" && !this.checkAccess("elct_inv_broadcast") && (
             <SyncInvoiceJur
               createSession={this.createSessionClick}
               closeSession={this.closeSession}
               ref={this.syncInvoice}
             />
           )}
-          {currType === "cert" && <CertAttach />}
-          {currType === "report" && (
+          {currType === "cert" && !this.checkAccess("elct_inv_attach_eds") && <CertAttach />}
+          {currType === "report" && !this.checkAccess("elct_inv_report") && (
             <EsfReports
               createSession={this.createSessionClick}
               ref={this.esfReports}

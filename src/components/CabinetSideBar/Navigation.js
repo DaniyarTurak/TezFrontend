@@ -7,31 +7,48 @@ export default function Navigation({
   reportMode,
   changeReportMode,
   newsLoaded,
+  disabled
 }) {
   useEffect(() => {
     newsLoaded();
   }, []);
 
   return (
-    <NavLink
-      key={subgroup.name + subgroup.id}
-      activeClassName="nav-active"
-      to={
-        // subgroup.route === "product/revision"
-        //   ? `/revision/params`
-        //   : 
-          `/usercabinet/${subgroup.route}`
-      }
-    >
-      <li
-        key={ind}
-        className={`subgroup-tab ${
-          subgroup.route === reportMode ? "active" : ""
-        }`}
-        onClick={() => changeReportMode(subgroup.route)}
+    disabled ? (
+      <NavLink
+        key={subgroup.name + subgroup.id}
+        style={{ cursor: "default" }}
+        to ={ "#"}
+
       >
-        {subgroup.name}
-      </li>
-    </NavLink>
+        <li
+          key={ind}
+          style={{ pointerEvents: "none", opacity: "0.6" }}
+        >
+          {subgroup.name}
+        </li>
+      </NavLink>
+    ) : (
+      <NavLink
+        key={subgroup.name + subgroup.id}
+        activeClassName="nav-active"
+        to={
+
+          `/usercabinet/${subgroup.route}`
+        }
+
+
+      >
+        <li
+          key={ind}
+          className={`subgroup-tab ${subgroup.route === reportMode ? "active" : ""
+            } `}
+          onClick={() => changeReportMode(subgroup.route)}
+        >
+          {subgroup.name}
+        </li>
+      </NavLink>
+    )
+
   );
 }
