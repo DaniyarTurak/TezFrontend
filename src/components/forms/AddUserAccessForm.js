@@ -2,17 +2,36 @@ import React, { Fragment, useState, useEffect } from 'react';
 import Box from '@mui/material/Box';
 import Checkbox from '@mui/material/Checkbox';
 import FormControlLabel from '@mui/material/FormControlLabel';
-import Alert from "react-s-alert";
+import CustomSelect from "../ReusableComponents/CustomSelect";
+import alert from "react-s-alert";
 import Axios from "axios";
+import Alert from '@mui/material/Alert';
 
-function AddUserAccessForm({ reset, dispatch, handleSubmit, setSubmitting, isSubmitting, pristine, submitting, userData, setAccessForm, history }) {
+function AddUserAccessForm({
+  reset,
+  dispatch,
+  handleSubmit,
+  setSubmitting,
+  isSubmitting,
+  submitting,
+  userData,
+  setAccessForm,
+  history,
+  userName
+}) {
 
   const [checkedCheckboxes, setCheckedCheckboxes] = useState(userData ? userData.accesses : []);
   const [accessFunctions, setAccessFunctions] = useState([]);
+  const [role, setRole] = useState({ value: "", label: "Набор" });
+  const [roles, setRoles] = useState([])
 
+  const options = roles.map((role) => {
+    return { value: role.id, label: role.name }
+  })
 
   useEffect(() => {
     getAccessFunctions()
+    getRoles()
   }, [])
 
   const getAccessFunctions = () => {
@@ -29,20 +48,15 @@ function AddUserAccessForm({ reset, dispatch, handleSubmit, setSubmitting, isSub
   };
 
   const submit = (data) => {
-    data.pass = data.user_password || null;
-    delete data.user_password;
-    delete data.confirmUserPassword;
+    // data.pass = data.user_password || null;
+    // delete data.user_password;
+    // delete data.confirmUserPassword;
 
-    data.roles = [];
-    data.role.forEach((role) => {
-      data.roles.push({ id: role.value });
-    });
     data.accesses = [];
     checkedCheckboxes.forEach((access) => {
       data.accesses.push({ id: access.id, code: access.code })
     })
 
-    delete data.role;
     const reqdata = { erpusr: data };
 
     Axios.post("/api/erpuser/new-manage", reqdata)
@@ -58,7 +72,7 @@ function AddUserAccessForm({ reset, dispatch, handleSubmit, setSubmitting, isSub
           history.push({
             pathname: "/usercabinet/options/erpuser"
           })
-          Alert.success("Пользователь ERP успешно создан", {
+          alert.success("Пользователь ERP успешно создан", {
             position: "top-right",
             effect: "bouncyflip",
             timeout: 2000,
@@ -66,9 +80,15 @@ function AddUserAccessForm({ reset, dispatch, handleSubmit, setSubmitting, isSub
         }
         setSubmitting(false);
         dispatch(reset("AddErpUserForm"));
+        const updatedData = { id: role.value, accesses: checkedCheckboxes }
+        Axios.put("/api/erpuser/updaterole", { role: updatedData })
+          .then((res) => res.data)
+          .catch((err) => {
+            console.log(err)
+          })
       })
       .catch((err) => {
-        Alert.error(
+        alert.error(
           err.response.data.code === "internal_error"
             ? "Возникла ошибка при обработке вашего запроса. Мы уже работаем над решением. Попробуйте позже"
             : err.response.data.text,
@@ -79,6 +99,19 @@ function AddUserAccessForm({ reset, dispatch, handleSubmit, setSubmitting, isSub
           }
         );
         setSubmitting(false);
+      });
+
+
+
+  };
+  const getRoles = () => {
+    Axios.get("/api/erpuser/roles")
+      .then((res) => res.data)
+      .then((data) => {
+        setRoles(data)
+      })
+      .catch((err) => {
+        console.log(err);
       });
   };
 
@@ -95,6 +128,11 @@ function AddUserAccessForm({ reset, dispatch, handleSubmit, setSubmitting, isSub
     }
   };
 
+  const roleSelectChangeHandler = (e) => {
+    setRole({ value: e.value, label: e.label })
+    const selectedRole = roles.find((role) => role.id == e.value)
+    setCheckedCheckboxes(selectedRole.accesses)
+  }
 
   const children = (data) => {
     return (
@@ -112,8 +150,23 @@ function AddUserAccessForm({ reset, dispatch, handleSubmit, setSubmitting, isSub
 
   };
   return (
-    <div>
-      <div style={{ display: "flex", flexDirection: "row", margin: "15px", flexWrap:"wrap", gap: "15px" }}>
+    <div style={{ margin: "15px" }}>
+      <h6 className="btn-one-line" >
+        {userData ? `Выберите доступы для пользователя ${userData.name}` : `Выберите доступы для пользователя ${userName} `}
+      </h6>
+
+      <Alert severity="info">
+        Укажите галочками доступы или выберите из списка готовый набор
+      </Alert>
+      <br />
+      <CustomSelect
+        placeholder={"Набор"}
+        options={options}
+        value={role}
+        onChange={roleSelectChangeHandler}
+      />
+      <br />
+      <div style={{ display: "flex", flexDirection: "row", flexWrap: "wrap", gap: "15px", marginBottom: "15px" }}>
         {accessFunctions.map((category) => {
           return (
             <Fragment key={category.category}>
@@ -148,7 +201,7 @@ function AddUserAccessForm({ reset, dispatch, handleSubmit, setSubmitting, isSub
         {isSubmitting
           ? "Пожалуйста подождите..."
           : !userData
-            ? "Добавить"
+            ? "Сохранить"
             : "Сохранить изменения"}
       </button>
     </div>

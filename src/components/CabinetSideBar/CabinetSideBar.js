@@ -90,7 +90,6 @@ class CabinetSideBar extends Component {
             .catch((err) => {
                 console.log(err);
             });
-
         this.setState({ accessBars: this.getAccessBars(this.props.userRoles) });
     }
 
@@ -119,42 +118,39 @@ class CabinetSideBar extends Component {
                 adminPermissions.push("acceptworkorder")
             }
         });
-        if (userRoles.some(role => role.id === '1' || role.id === '8' || role.id === '2')) {
-            this.setState({ topics: Topics })
-        } else {
-            let updatedTopics = this.state.topics.filter(topic => topic.groupName !== "Маркетинг и продвижение")
-            this.setState({ topics: updatedTopics })
-        }
-        if (userRoles.some(role => role.id === '8' || role.id === '5')) {
-            adminPermissions.push("receive", "productsweight" )
-        } else {
-            adminPermissions = adminPermissions.filter(permission => permission !== "receive" && permission !== "productsweight")
-        }
+        // if (userRoles.some(role => role.id === '1' || role.id === '8' || role.id === '2')) {
+        //     this.setState({ topics: Topics })
+        // } else {
+        //     let updatedTopics = this.state.topics.filter(topic => topic.groupName !== "Маркетинг и продвижение")
+        //     this.setState({ topics: updatedTopics })
+        // }
+        // if (userRoles.some(role => role.id === '8' || role.id === '5')) {
+        //     adminPermissions.push("receive", "productsweight")
+        // } else {
+        //     adminPermissions = adminPermissions.filter(permission => permission !== "receive" && permission !== "productsweight")
+        // }
 
 
-        if (accessBars["*"]) return accessBars;
+        // if (accessBars["*"]) return accessBars;
 
-        if (adminPermissions.length !== 0) {
-            let isAnyAdminPermissions = false;
-            adminPermissions.forEach((value, indx) => {
-                if (accessBars[value]) {
-                    adminPermissions[indx] = "";
-                } else isAnyAdminPermissions = true;
-            });
-            if (!isAnyAdminPermissions) return { "*": "*" };
-            this.setState({ adminPermissions });
-        }
+        // if (adminPermissions.length !== 0) {
+        //     let isAnyAdminPermissions = false;
+        //     adminPermissions.forEach((value, indx) => {
+        //         if (accessBars[value]) {
+        //             adminPermissions[indx] = "";
+        //         } else isAnyAdminPermissions = true;
+        //     });
+        //     if (!isAnyAdminPermissions) return { "*": "*" };
+        //     this.setState({ adminPermissions });
+        // }
 
-        return accessBars;
+        // return accessBars;
 
     };
 
     Can = (page) => {
-        const { adminPermissions, accessBars } = this.state;
-        if (adminPermissions)
-            return !adminPermissions.includes(page) ? true : false;
-        if (accessBars["*"]) return true;
-        return accessBars[page] ? true : false;
+        const userAccesses = JSON.parse(sessionStorage.getItem("isme-user-accesses")) || [];
+        return userAccesses.some((access) => access.code == page)
     };
 
     showTab = (index) => {
@@ -183,87 +179,69 @@ class CabinetSideBar extends Component {
                             </li>
                         </NavLink>
 
-                        {this.Can("general") && (
-                            <NavLink activeClassName="nav-active" to="/usercabinet/general">
-                                <li className="sidebar-brand">
-                                    {this.state.user && this.state.user.name}
-                                    <p className="hint">
-                                        {this.state.user && this.state.user.companyname}
-                                    </p>
-                                </li>
-                            </NavLink>
-                        )}
+
+                        <NavLink activeClassName="nav-active" to="/usercabinet/general">
+                            <li className="sidebar-brand">
+                                {this.state.user && this.state.user.name}
+                                <p className="hint">
+                                    {this.state.user && this.state.user.companyname}
+                                </p>
+                            </li>
+                        </NavLink>
+
 
                         {this.state.topics.map((topic) =>
-                        
                             !topic.group
-                                ? this.Can(
-                                    topic.route.substr(
-                                        0,
-                                        topic.route.indexOf("/") !== -1
-                                            ? topic.route.indexOf("/")
-                                            : topic.route.length
-                                    )
-                                ) && (
-                                    <NavLink
-                                        key={topic.id}
-                                        activeClassName="nav-active"
-                                        to={`/usercabinet/${topic.route}`}
+                                ?
+                                <NavLink
+                                    key={topic.id}
+                                    activeClassName="nav-active"
+                                    to={`/usercabinet/${topic.route}`}
+                                >
+                                    <li>{topic.name}</li>
+                                </NavLink>
+
+                                :
+                                <Fragment key={topic.id}>
+                                    <li
+                                        className="group-tab"
+                                        onClick={() => this.showTab(topic.id)}
                                     >
-                                        <li>{topic.name}</li>
-                                    </NavLink>
-                                )
-                                : this.Can(
-                                    topic.group[0].route.substr(
-                                        0,
-                                        topic.group[0].route.indexOf("/") !== -1
-                                            ? topic.group[0].route.indexOf("/")
-                                            : topic.group[0].route.length
-                                    )
-                                ) && (
-                                    <Fragment key={topic.id}>
-                                        <li
-                                            className="group-tab"
-                                            onClick={() => this.showTab(topic.id)}
-                                        >
-                                            {topic.groupName}
-                                            <i
-                                                className={`${topic.status === "active" ? "up" : "down"
-                                                    }`}
-                                            ></i>
-                                        </li>
-                                        <ul
-                                            className={`subgroups-container ${topic.status === "active" ? "slide-down" : "slide-up"
+                                        {topic.groupName}
+                                        <i
+                                            className={`${topic.status === "active" ? "up" : "down"
                                                 }`}
-                                        >
-                                            {topic.group.map(
-                                                (subgroup, ind) =>
-                                                    this.Can(
-                                                        subgroup.route.substr(
-                                                            subgroup.route.indexOf("/") + 1
-                                                        )
-                                                    ) && (
-                                                        //если путь "ревизия" он будет в неё же и обращаться, иначе будет пробовать зайти в "/usercabinet/другойпуть"
-                                                        <Navigation
-                                                            key={ind}
-                                                            subgroup={subgroup}
-                                                            ind={ind}
-                                                            reportMode={reportMode}
-                                                            changeReportMode={this.changeReportMode}
-                                                            newsLoaded={() => newsLoaded()}
-                                                        />
-                                                    )
-                                            )}
-                                        </ul>
-                                    </Fragment>
-                                )
+                                        ></i>
+                                    </li>
+                                    <ul
+                                        className={`subgroups-container ${topic.status === "active" ? "slide-down" : "slide-up"
+                                            }`}
+                                    >
+                                        {topic.group.map(
+                                            (subgroup, ind) =>
+
+                                                //если путь "ревизия" он будет в неё же и обращаться, иначе будет пробовать зайти в "/usercabinet/другойпуть"
+                                                <Navigation
+                                                    key={ind}
+                                                    subgroup={subgroup}
+                                                    ind={ind}
+                                                    reportMode={reportMode}
+                                                    changeReportMode={this.changeReportMode}
+                                                    newsLoaded={() => newsLoaded()}
+                                                    disabled={!this.Can(subgroup.code)}
+                                                />
+
+                                        )}
+                                    </ul>
+                                </Fragment>
+
                         )}
 
-                        {this.Can("esf") && (
-                            <NavLink activeClassName="nav-active" to="/usercabinet/esf">
-                                <li>ЭСФ</li>
-                            </NavLink>
-                        )}
+
+                        <NavLink activeClassName="nav-active" to="/usercabinet/esf">
+                            <li>ЭСФ</li>
+                        </NavLink>
+
 
                         <NavLink activeClassName="nav-active" to="/usercabinet/news">
                             <li>Новости</li>
