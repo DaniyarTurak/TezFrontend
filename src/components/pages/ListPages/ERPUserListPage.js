@@ -106,7 +106,7 @@ class ERPUserListPage extends Component {
     item.pass = null;
 
     const req = { erpusr: item };
-    Axios.post("/api/erpuser/manage", req)
+    Axios.post("/api/erpuser/new-manage", req)
       .then(() => {
         this.setState({
           erpusers: newUsersList,
