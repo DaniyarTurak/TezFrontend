@@ -80,7 +80,7 @@ export default function getBody({
 }) {
   // const companies_recon = [38, 56, 57, 68, 69, 81, 78, 98, 231, 241, 269, 96, 2];
   // const comp_id = parseInt(JSON.parse(sessionStorage.getItem("isme-company-data")).id);
-  if (Can(mode, userRoles, action)) {
+  // if (Can(mode, userRoles, action)) {
     switch (mode) {
       case "general":
         return <GeneralInfo history={history} location={location} />;
@@ -294,7 +294,7 @@ export default function getBody({
           <GeneralInfo history={history} location={location} />
         );
     }
-  } else {
-    return <NotAllowed />;
-  }
+  // } else {
+  //   return <NotAllowed />;
+  // }
 }

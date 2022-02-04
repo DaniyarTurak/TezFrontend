@@ -273,7 +273,7 @@ class ESF extends Component {
                   onClick={this.setCurrType}
                   name={section.name}
                   disabled={section.disabled}
-                  className={`btn btn-block ${currType === section.name ? "btn-info" : section.disabled ? "btn-outline-info" : "btn-outline-secondary"
+                  className={`btn btn-block ${currType === section.name ? "btn-info" : section.disabled ? "btn-outline-secondary" : "btn-outline-info" 
                     }`}
                 >
                   {section.label}
@@ -322,7 +322,7 @@ class ESF extends Component {
             </div>
           )}
 
-          {currType === "send" && !this.checkAccess("elct_inv_broadcast") &&(
+          {currType === "send" && this.checkAccess("elct_inv_broadcast") &&(
             <div>
               <div className="empty-space"></div>
               <div style={{ justifyContent: "center" }} className="row pb-10">
@@ -358,28 +358,28 @@ class ESF extends Component {
 						</div>
 					</div> */}
 
-          {currType === "receive" && !this.checkAccess("elct_inv_reception") && (
+          {currType === "receive" && this.checkAccess("elct_inv_reception") && (
             <InboundInvoice
               createSession={this.createSessionClick}
               ref={this.inboundInvoice}
             />
           )}
-          {currType === "send" && invoiceType === "fiz" && !this.checkAccess("elct_inv_broadcast") && (
+          {currType === "send" && invoiceType === "fiz" && this.checkAccess("elct_inv_broadcast") && (
             <SyncInvoice
               createSession={this.createSessionClick}
               closeSession={this.closeSession}
               ref={this.syncInvoice}
             />
           )}
-          {currType === "send" && invoiceType === "jur" && !this.checkAccess("elct_inv_broadcast") && (
+          {currType === "send" && invoiceType === "jur" && this.checkAccess("elct_inv_broadcast") && (
             <SyncInvoiceJur
               createSession={this.createSessionClick}
               closeSession={this.closeSession}
               ref={this.syncInvoice}
             />
           )}
-          {currType === "cert" && !this.checkAccess("elct_inv_attach_eds") && <CertAttach />}
-          {currType === "report" && !this.checkAccess("elct_inv_report") && (
+          {currType === "cert" && this.checkAccess("elct_inv_attach_eds") && <CertAttach />}
+          {currType === "report" && this.checkAccess("elct_inv_report") && (
             <EsfReports
               createSession={this.createSessionClick}
               ref={this.esfReports}

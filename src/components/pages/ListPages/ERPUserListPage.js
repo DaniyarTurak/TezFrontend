@@ -7,6 +7,8 @@ import AlertBox from "../../AlertBox";
 import SweetAlert from "react-bootstrap-sweetalert";
 import Alert from "react-s-alert";
 import Searching from "../../Searching";
+import CustomPopover from "./Popover";
+
 
 class ERPUserListPage extends Component {
   state = {
@@ -18,7 +20,7 @@ class ERPUserListPage extends Component {
       empty: "Список ERP пользователей пуст",
       userName: "ФИО",
       login: "Логин",
-      roleName: "Роли пользователя",
+      accessName: "Доступы пользователя",
       userIDN: "ИИН",
       title: {
         edit: "Редактировать",
@@ -44,7 +46,7 @@ class ERPUserListPage extends Component {
   };
 
   componentDidMount() {
-    this.getErpUsers();
+    this.getErpAccesses();
 
     if (this.props.location.state && this.props.location.state.fromEdit) {
       Alert.success(this.state.alert.successEdit, {
@@ -61,16 +63,10 @@ class ERPUserListPage extends Component {
     });
   };
 
-  getErpUsers = () => {
-    Axios.get("/api/erpuser")
+  getErpAccesses = () => {
+    Axios.get("/api/erpuser/erpaccesses")
       .then((res) => res.data)
       .then((erpusers) => {
-        erpusers.forEach((erpuser) => {
-          erpuser.roles = JSON.parse(
-            "[" + erpuser.roles.replace(/'/g, '"') + "]"
-          );
-        });
-
         this.setState({
           erpusers,
           isLoading: false,
@@ -79,7 +75,7 @@ class ERPUserListPage extends Component {
       .catch((err) => {
         console.log(err);
       });
-  };
+  }
 
   handleDelete = (item) => {
     this.setState({
@@ -153,7 +149,6 @@ class ERPUserListPage extends Component {
       erpusers: list,
     });
   };
-
   render() {
     const { erpusers, isLoading, label, sweetalert } = this.state;
     return (
@@ -192,7 +187,7 @@ class ERPUserListPage extends Component {
                   <th style={{ width: "20%" }}>{label.userIDN}</th>
                   <th style={{ width: "20%" }}>{label.userName}</th>
                   <th style={{ width: "20%" }}>{label.login}</th>
-                  <th style={{ width: "29%" }}>{label.roleName}</th>
+                  <th style={{ width: "29%" }}>{label.accessName}</th>
                   <th style={{ width: "10%" }}></th>
                 </tr>
               </thead>
@@ -203,13 +198,25 @@ class ERPUserListPage extends Component {
                     <td>{erpuser.iin}</td>
                     <td>{erpuser.name}</td>
                     <td>{erpuser.login.toUpperCase()}</td>
-                    <td>
-                      {erpuser.roles.map((role) => (
-                        <Fragment key={erpuser.id + role.id}>
-                          {role.name}
-                          <br />
-                        </Fragment>
-                      ))}
+                    <td
+
+                    >
+                      <p style={{
+                        textOverflow: "ellipsis",
+                        whiteSpace: "nowrap",
+                        overflow: "hidden",
+                        width: "25em"
+                      }}>
+                        {erpuser.accesses.map((access) => (
+                          <Fragment
+
+                            key={erpuser.id + access.id}
+                          >
+                            {access.name + " , "}
+                          </Fragment>
+                        ))}
+                      </p>
+                      <CustomPopover erpuser={erpuser}/>
                     </td>
                     <td className="text-right">
                       <button

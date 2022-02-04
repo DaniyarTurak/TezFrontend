@@ -66,6 +66,7 @@
     "marked": "^1.1.0",
     "mat-tree-select-input": "^1.1.2",
     "material-ui": "^0.20.2",
+    "material-ui-popup-state": "^2.0.0",
     "moment": "^2.22.2",
     "node-excel-export": "^1.4.4",
     "node-sass": "^4.14.1",
