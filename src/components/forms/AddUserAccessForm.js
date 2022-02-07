@@ -80,12 +80,15 @@ function AddUserAccessForm({
         }
         setSubmitting(false);
         dispatch(reset("AddErpUserForm"));
-        const updatedData = { id: role.value, accesses: checkedCheckboxes }
-        Axios.put("/api/erpuser/updaterole", { role: updatedData })
-          .then((res) => res.data)
-          .catch((err) => {
-            console.log(err)
-          })
+        if(role.label!=="Набор") {
+          const updatedData = { id: role.value, accesses: checkedCheckboxes, name: role.label }
+          Axios.put("/api/erpuser/updaterole", { role: updatedData })
+            .then((res) => res.data)
+            .catch((err) => {
+              console.log(err)
+            })
+        }
+     
       })
       .catch((err) => {
         alert.error(
