@@ -229,6 +229,22 @@ export default function IncomeTable({
                   <OrderArrowMaterial ascending={ascending} />
                 )}
               </StyledTableCell>
+              <StyledTableCell align="center">
+                <span className="hand" onClick={() => orderByFunction("datefrom_units")}> 
+                  Остаток на начало
+                </span>
+                {orderBy === "datefrom_units" && (
+                  <OrderArrowMaterial ascending={ascending} />
+                )}
+              </StyledTableCell>
+              <StyledTableCell align="center">
+                <span className="hand" onClick={() => orderByFunction("dateto_units")}> 
+                  Остаток на конец
+                </span>
+                {orderBy === "dateto_units" && (
+                  <OrderArrowMaterial ascending={ascending} />
+                )}
+              </StyledTableCell>
             </TableRow>
           </TableHead>
           <TableBody>
@@ -279,6 +295,12 @@ export default function IncomeTable({
                   </StyledTableCell>
                   <StyledTableCell align="center">
                     {product.nds}
+                  </StyledTableCell>
+                  <StyledTableCell align="center">
+                    {product.datefrom_units}
+                  </StyledTableCell>
+                  <StyledTableCell align="center">
+                    {product.dateto_units}
                   </StyledTableCell>
                 </TableRow>
               ))}
