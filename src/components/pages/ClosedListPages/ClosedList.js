@@ -59,13 +59,6 @@ export default function ClosedList({ mode, isHidden, handleRollback }) {
     Axios.get(api, { params })
       .then((res) => res.data)
       .then((res) => {
-        if (mode === "erpuser") {
-          res.forEach((erpuser) => {
-            erpuser.roles = JSON.parse(
-              "[" + erpuser.roles.replace(/'/g, '"') + "]"
-            );
-          });
-        }
         setResult(res);
         setLoading(false);
       })
@@ -144,7 +137,7 @@ export default function ClosedList({ mode, isHidden, handleRollback }) {
         : mode === "cashboxuser"
         ? "/api/cashboxuser/manage"
         : mode === "erpuser"
-        ? "/api/erpuser/manage"
+        ? "/api/erpuser/new-manage"
         : mode === "cashbox"
         ? "/api/cashbox/manage"
         : mode === "counterparties"

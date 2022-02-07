@@ -1,4 +1,5 @@
 import React, { Fragment } from "react";
+import CustomPopover from "../../ListPages/Popover";
 
 export default function ClosedERPuserTable({ result, handleRollbackFunction }) {
   return (
@@ -8,7 +9,7 @@ export default function ClosedERPuserTable({ result, handleRollbackFunction }) {
           <th />
           <th>ИИН</th>
           <th>ФИО</th>
-          <th>Роли пользователя</th>
+          <th>Доступы пользователя</th>
           <th>Статус</th>
           <th />
         </tr>
@@ -20,12 +21,27 @@ export default function ClosedERPuserTable({ result, handleRollbackFunction }) {
             <td>{res.iin}</td>
             <td>{res.name}</td>
             <td>
-              {res.roles.map((role) => (
-                <Fragment key={res.id + role.id}>
-                  {role.name}
-                  <br />
+              {res.accesses.length > 0 &&
+                <Fragment>
+                  <p style={{
+                    textOverflow: "ellipsis",
+                    whiteSpace: "nowrap",
+                    overflow: "hidden",
+                    width: "25em"
+                  }}>
+                    {res.accesses.map((access) => (
+                      <Fragment
+
+                        key={res.id + access.id}
+                      >
+                        {access.name + " , "}
+                      </Fragment>
+                    ))}
+                  </p>
+                  <CustomPopover erpuser={res} />
                 </Fragment>
-              ))}
+              }
+
             </td>
             <td className="text-danger">Удалён</td>
             <td className="text-right">

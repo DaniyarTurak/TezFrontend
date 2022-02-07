@@ -84,42 +84,50 @@
       {
         "id": 0,
         "name": "Прием нового товара на склад",
-        "route": "product/receive"
+        "route": "product/receive",
+        "code": "contr_newto_whr"
       },
       {
         "id": 1,
         "name": "Перемещение между складами",
-        "route": "product/transfer"
+        "route": "product/transfer",
+        "code": "contr_move_between"
       },
       {
         "id": 2,
         "name": "Списание товара со склада",
-        "route": "product/writeoff"
+        "route": "product/writeoff",
+        "code": "contr_removefrom_whr"
       },
       {
         "id": 3,
         "name": "Печать штрих кода",
-        "route": "product/printbarcode"
+        "route": "product/printbarcode",
+        "code": "contr_barcode_print"
       },
       {
         "id": 4,
         "name": "Ревизия",
-        "route": "product/revision"
+        "route": "product/revision",
+        "code": "contr_revision"
       },
       {
         "id": 5,
         "name": "Весовые товары",
-        "route": "product/productsweight"
+        "route": "product/productsweight",
+        "code": "contr_weigh_prod"
       },
       {
         "id": 6,
         "name": "Номенклатура",
-        "route": "product/productreference"
+        "route": "product/productreference",
+        "code": "contr_nomenclature"
       },
       {
         "id": 7,
         "name": "Сверка",
-        "route": "product/reconciliationpage"
+        "route": "product/reconciliationpage",
+        "code": "contr_reconciliation"
       }
     ]
   },
@@ -131,17 +139,20 @@
       {
         "id": 1,
         "name": "Изменение цен",
-        "route": "prices/changeprice"
+        "route": "prices/changeprice",
+        "code": "price_change"
       },
       {
         "id": 2,
         "route": "prices/pricingmaster",
-        "name": "Мастер ценообразования"
+        "name": "Мастер ценообразования",
+        "code": "price_wizard"
       },
       {
         "id": 3,
         "name": "Предельные цены",
-        "route": "prices/marginalpricepage"
+        "route": "prices/marginalpricepage",
+        "code": "price_marginal"
       }
     ]
   },
@@ -153,22 +164,26 @@
       {
         "id": 1,
         "name": "Создание",
-        "route": "product/createworkorder"
+        "route": "product/createworkorder",
+        "code": "order_create"
       },
       {
         "id": 2,
         "name": "Обработка",
-        "route": "product/acceptworkorder"
+        "route": "product/acceptworkorder",
+        "code": "order_treatment"
       },
       {
         "id": 3,
         "name": "Прием товаров по наряд-заказу",
-        "route": "product/recievebyworkorder"
+        "route": "product/recievebyworkorder",
+        "code": "order_receipt"
       },
       {
         "id": 4,
         "name": "Привязка весовых товаров",
-        "route": "product/bindweightproducts"
+        "route": "product/bindweightproducts",
+        "code": "order_weight_prod"
       }
     ]
   },
@@ -180,27 +195,32 @@
       {
         "id": 1,
         "name": "Купоны",
-        "route": "marketing/couponspage"
+        "route": "marketing/couponspage",
+        "code": "market_coupons"
       },
       {
         "id": 2,
         "name": "Подарочные сертификаты",
-        "route": "marketing/certificates"
+        "route": "marketing/certificates",
+        "code": "market_gift"
       },
       {
         "id": 3,
         "name": "Бонусы",
-        "route": "marketing/bonus"
+        "route": "marketing/bonus",
+        "code": "market_bonuses"
       },
       {
         "id": 4,
         "name": "Создание скидок",
-        "route": "marketing/creatediscounts"
+        "route": "marketing/creatediscounts",
+        "code": "market_create_discount"
       },
       {
         "id": 5,
         "name": "Акции",
-        "route": "marketing/promotionspage"
+        "route": "marketing/promotionspage",
+        "code": "market_stock"
       }
     ]
   }
