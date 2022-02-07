@@ -27,7 +27,7 @@ function PlusSquare(props) {
 }
 
 
-function CategorySelect() {
+function CategorySelect({onCategoryChange, setCategory}) {
 
   useEffect(() => {
     getCategories();
@@ -62,6 +62,7 @@ function CategorySelect() {
   console.log(categories)
   const onChange = (currentNode, selectedNodes) => {
     console.log("path::", currentNode.path);
+    // setCategory(currentNode.value)
   };
   
   const assignObjectPaths = (obj, stack) => {
@@ -92,10 +93,10 @@ function CategorySelect() {
       </TreeView> */}
       <DropdownTreeSelect 
         data={categories} 
-        onChange={onChange} 
-        // className="mdl-demo" 
+        onChange={onChange}
+        className="treeview-selector" 
         mode={"radioSelect"}
-        texts={{placeholder: 'Категория'}}  
+        texts={{label: 'Категории'}}  
       />
 
 

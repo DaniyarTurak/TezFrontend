@@ -337,7 +337,7 @@ export default function ReportSales({ companyProps }) {
   };
 
   const onCategoryChange = (event, c) => {
-    setCategory(c);
+    setCategory(event.value);
   };
 
   const onAttributeChange = (event, a) => {
@@ -617,6 +617,7 @@ export default function ReportSales({ companyProps }) {
         category={category}
         categories={categories}
         changeDate={changeDate}
+        setCategory={setCategory}
         counterparty={counterparty}
         counterparties={counterparties}
         dateFrom={dateFrom}

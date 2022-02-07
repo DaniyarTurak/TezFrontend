@@ -32,6 +32,7 @@
     "babel-runtime": "6.26.0",
     "barcode": "^0.1.0",
     "bootstrap": "^4.3.1",
+    "bootstrap-icons": "^1.8.0",
     "bwip-js": "^2.0.11",
     "case-sensitive-paths-webpack-plugin": "2.1.1",
     "chalk": "^1.1.3",
