@@ -1,14 +1,13 @@
 import React, { Fragment } from "react";
 import FormControlLabel from "@material-ui/core/FormControlLabel";
 import Checkbox from "@material-ui/core/Checkbox";
-import moment from 'moment';
+import moment from "moment";
 import Grid from "@material-ui/core/Grid";
 import TextField from "@material-ui/core/TextField";
 import MaterialDateDefault from "../../../ReusableComponents/MaterialDateDefault";
 import AutocompleteSelect from "../../../ReusableComponents/AutocompleteSelect";
 import Autocomplete from "@material-ui/lab/Autocomplete";
 import CategorySelect from "../../../ReusableComponents/CategorySelect";
-
 
 export default function SalesOptions({
   attrval,
@@ -59,9 +58,9 @@ export default function SalesOptions({
   sellType,
   setSellType,
   clientTypes,
-  sellTypes
+  sellTypes,
+  setCategory
 }) {
-
   return (
     <Fragment>
       <Grid item xs={12}>
@@ -73,7 +72,7 @@ export default function SalesOptions({
           dateToChange={dateToChange}
           searchInvoices={handleSearch}
           disableButton={isSubmitting}
-          maxDate={moment(dateFrom).add(1,'M')}
+          maxDate={moment(dateFrom).add(1, "M")}
           invisibleButton={false}
         />
       </Grid>
@@ -86,11 +85,7 @@ export default function SalesOptions({
           onInputChange={(event, value) => setBarcode(value)}
           options={products.map((option) => option.code)}
           renderInput={(params) => (
-            <TextField
-              {...params}
-              placeholder="Штрих-код"
-              variant="outlined"
-            />
+            <TextField {...params} placeholder="Штрих-код" variant="outlined" />
           )}
         />
       </Grid>
@@ -142,7 +137,7 @@ export default function SalesOptions({
         />
       </Grid>
 
-      {/* <Grid item xs={3}>
+      <Grid item xs={3}>
         <AutocompleteSelect
           value={category}
           onChange={onCategoryChange}
@@ -151,8 +146,7 @@ export default function SalesOptions({
           noOptions="Категории не найдены"
           label="Категории"
         />
-      </Grid> */}
-
+      </Grid>
 
       <Grid item xs={3}>
         <AutocompleteSelect
@@ -231,7 +225,8 @@ export default function SalesOptions({
           }
           label={
             <span style={{ fontSize: ".875rem" }}>
-              Разбить по партийным характеристиками (Например: по цвету, размеру и т.д.)
+              Разбить по партийным характеристиками (Например: по цвету, размеру
+              и т.д.)
             </span>
           }
         />
@@ -253,9 +248,11 @@ export default function SalesOptions({
           }
         />
       </Grid>
-      <Grid item xs={3}>
-        <CategorySelect onCategoryChange={onCategoryChange}/>
-      </Grid> 
+
+      {/* <Grid item xs={3}>
+        <CategorySelect onCategoryChange={onCategoryChange} setCategory={setCategory} />
+      </Grid> */}
+
     </Fragment>
   );
 }
