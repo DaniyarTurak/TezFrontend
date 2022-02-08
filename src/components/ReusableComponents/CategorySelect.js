@@ -5,8 +5,9 @@ import { alpha, styled } from '@mui/material/styles';
 import TreeView from '@mui/lab/TreeView';
 import TreeItem, { treeItemClasses } from '@mui/lab/TreeItem';
 import Collapse from '@mui/material/Collapse';
-// web.cjs is required for IE11 support
+import DropdownTreeSelect from "react-dropdown-tree-select";
 import Axios from '../../../node_modules/axios/index';
+import "./CategorySelect.css";
 import { makeStyles } from "@material-ui/core/styles";
 
 function MinusSquare(props) {
@@ -26,10 +27,11 @@ function PlusSquare(props) {
 }
 
 
-function CategorySelect() {
+function CategorySelect({onCategoryChange, setCategory}) {
 
   useEffect(() => {
-    getCategories()
+    getCategories();
+    assignObjectPaths(categories);
   }, [])
 
   const [categories, setCategories] = useState([])
@@ -38,7 +40,11 @@ function CategorySelect() {
   const getCategories = () => {
     Axios.get("/api/categories/get_categories")
       .then((res) => res.data)
-      .then((data) => { setCategories(data) })
+      .then((data) => {
+       let updatedData = data;
+     
+       setCategories(updatedData)
+      })
       .catch((err) => console.log(err))
   }
 
@@ -52,13 +58,28 @@ function CategorySelect() {
     </TreeItem>
 
   );
-
-
+  
+  console.log(categories)
+  const onChange = (currentNode, selectedNodes) => {
+    console.log("path::", currentNode.path);
+    // setCategory(currentNode.value)
+  };
+  
+  const assignObjectPaths = (obj, stack) => {
+    Object.keys(obj).forEach(k => {
+      const node = obj[k];
+      if (typeof node === "object") {
+        node.path = stack ? `${stack}.${k}` : k;
+        assignObjectPaths(node, node.path);
+      }
+    });
+  };
+  
 
   return (
     <Fragment>
 
-      <TreeView
+      {/* <TreeView
         aria-label="rich object"
         defaultCollapseIcon={<MinusSquare />}
         defaultExpandIcon={<PlusSquare />}
@@ -69,7 +90,14 @@ function CategorySelect() {
             renderTree(category)
           )
         })}
-      </TreeView>
+      </TreeView> */}
+      <DropdownTreeSelect 
+        data={categories} 
+        onChange={onChange}
+        className="treeview-selector" 
+        mode={"radioSelect"}
+        texts={{label: 'Категории'}}  
+      />
 
 
     </Fragment>
