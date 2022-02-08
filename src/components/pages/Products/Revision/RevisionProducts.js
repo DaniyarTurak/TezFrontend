@@ -222,7 +222,11 @@ export default function RevisonProducts({
                 }
             })
             .catch((err) => {
-                console.log(err);
+                Alert.warning(err, {
+                    position: "top-right",
+                    effect: "bouncyflip",
+                    timeout: 2000,
+                });
             });
     }
     const closeModal = () => {
