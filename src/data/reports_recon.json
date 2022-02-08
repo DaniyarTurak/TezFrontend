@@ -145,5 +145,12 @@
     "route": "reconciliation",
     "caption": "Сверка",
     "code": "whs_reconciliation"
+  },
+  {
+    "id": 120,
+    "type": "stockreport",
+    "route": "productreportspertransfer",
+    "caption": "Отчеты по товарам за перевод",
+    "code": "whs_prod_per_trans"
   }
 ]
