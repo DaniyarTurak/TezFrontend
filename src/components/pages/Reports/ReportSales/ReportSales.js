@@ -337,7 +337,7 @@ export default function ReportSales({ companyProps }) {
   };
 
   const onCategoryChange = (event, c) => {
-    setCategory(event.value);
+    setCategory(c);
   };
 
   const onAttributeChange = (event, a) => {

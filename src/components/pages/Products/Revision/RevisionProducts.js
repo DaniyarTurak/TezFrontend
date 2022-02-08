@@ -222,7 +222,7 @@ export default function RevisonProducts({
                 }
             })
             .catch((err) => {
-                Alert.warning(err, {
+                Alert.warning(err.text, {
                     position: "top-right",
                     effect: "bouncyflip",
                     timeout: 2000,
