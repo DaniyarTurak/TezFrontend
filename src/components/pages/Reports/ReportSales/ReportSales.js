@@ -617,6 +617,7 @@ export default function ReportSales({ companyProps }) {
         category={category}
         categories={categories}
         changeDate={changeDate}
+        setCategory={setCategory}
         counterparty={counterparty}
         counterparties={counterparties}
         dateFrom={dateFrom}
