@@ -222,11 +222,16 @@ export default function RevisonProducts({
                 }
             })
             .catch((err) => {
-                Alert.warning(err.text, {
-                    position: "top-right",
-                    effect: "bouncyflip",
-                    timeout: 2000,
-                });
+                Alert.error(
+                    err.response.data.code === "internal_error"
+                      ? "Возникла ошибка при обработке вашего запроса. Мы уже работает над решением. Попробуйте позже"
+                      : err.response.data.text,
+                    {
+                      position: "top-right",
+                      effect: "bouncyflip",
+                      timeout: 2000,
+                    }
+                  );
             });
     }
     const closeModal = () => {
