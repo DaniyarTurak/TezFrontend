@@ -249,9 +249,9 @@ export default function SalesOptions({
         />
       </Grid>
 
-      {/* <Grid item xs={3}>
+      <Grid item xs={3}>
         <CategorySelect onCategoryChange={onCategoryChange} setCategory={setCategory} />
-      </Grid> */}
+      </Grid>
 
     </Fragment>
   );
