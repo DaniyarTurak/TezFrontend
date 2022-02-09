@@ -5,6 +5,7 @@ import Grid from "@material-ui/core/Grid";
 import Button from "@material-ui/core/Button";
 import Paper from "@material-ui/core/Paper";
 import Typography from "@material-ui/core/Typography";
+import CategorySelect from "../../../../ReusableComponents/CategorySelect";
 
 export default function ConsginmentOptions({
   brand,
@@ -12,13 +13,11 @@ export default function ConsginmentOptions({
   category,
   classes,
   consignator,
-  categories,
+  setCategory,
   consignators,
   handleConsignment,
   onBrandChange,
   onBrandListInput,
-  onCategoryChange,
-  onCategoryListInput,
   onConsignatorChange,
   onConsignatorListInput,
 }) {
@@ -84,33 +83,7 @@ export default function ConsginmentOptions({
           />
         </Grid>
         <Grid item xs={3}>
-          <Autocomplete
-            value={category}
-            defaultValue={category}
-            options={categories}
-            onChange={onCategoryChange}
-            onInputChange={onCategoryListInput}
-            disableClearable
-            renderOption={(option) => (
-              <Typography style={{ fontSize: ".875rem" }}>
-                {option.label}
-              </Typography>
-            )}
-            noOptionsText="Категории не найдены"
-            getOptionLabel={(option) => option.label}
-            getOptionSelected={(option) => option.label === category.label}
-            renderInput={(params) => (
-              <TextField
-                {...params}
-                label="Категория"
-                variant="outlined"
-                inputProps={{
-                  ...params.inputProps,
-                  style: { fontSize: ".875rem" },
-                }}
-              />
-            )}
-          />
+          <CategorySelect setCategory={setCategory} category={category} />
         </Grid>
         <Grid item xs={3}>
           <Button

@@ -52,8 +52,7 @@ export default function ReportSales({ companyProps }) {
   const [attributes, setAttributes] = useState([]);
   const [brand, setBrand] = useState({ value: "@", label: "Все" });
   const [brands, setBrands] = useState([]);
-  const [category, setCategory] = useState({ value: "@", label: "Все" });
-  const [categories, setCategories] = useState([]);
+  const [category, setCategory] = useState(undefined);
   const [counterparty, setCounterParty] = useState({
     value: "0",
     label: "Все",
@@ -122,7 +121,6 @@ export default function ReportSales({ companyProps }) {
       getBrands();
       getPoints();
       getCounterparties();
-      getCategories();
       getAttributes();
       clean();
     }
@@ -134,7 +132,6 @@ export default function ReportSales({ companyProps }) {
       getBrands();
       getPoints();
       getCounterparties();
-      getCategories();
       getAttributes();
       getSales();
     }
@@ -243,7 +240,7 @@ export default function ReportSales({ companyProps }) {
     setAttrVal({ value: "", label: "Все" });
     setBarcode("");
     setBrand({ value: "@", label: "Все" });
-    setCategory({ value: "@", label: "Все" });
+    setCategory(undefined);
     setAttribute({ value: "@", label: "Все", format: "" });
   };
 
@@ -336,9 +333,6 @@ export default function ReportSales({ companyProps }) {
     setType(t);
   };
 
-  const onCategoryChange = (event, c) => {
-    setCategory(c);
-  };
 
   const onAttributeChange = (event, a) => {
     setAttribute(a);
@@ -366,9 +360,6 @@ export default function ReportSales({ companyProps }) {
     if (reason === "input") getBrands(b);
   };
 
-  const onCategoryListInput = (event, c, reason) => {
-    if (reason === "input") getCategories(c);
-  };
 
   const getAttributes = () => {
     Axios.get("/api/attributes", { params: { deleted: false, company } })
@@ -430,25 +421,25 @@ export default function ReportSales({ companyProps }) {
       });
   };
 
-  const getCategories = (inputValue) => {
-    Axios.get("/api/categories/search", {
-      params: { deleted: false, category: inputValue, company },
-    })
-      .then((res) => res.data)
-      .then((list) => {
-        const all = [{ label: "Все", value: "@" }];
-        const categoriesList = list.map((result) => {
-          return {
-            label: result.name,
-            value: result.id,
-          };
-        });
-        setCategories([...all, ...categoriesList]);
-      })
-      .catch((err) => {
-        ErrorAlert(err);
-      });
-  };
+  // const getCategories = (inputValue) => {
+  //   Axios.get("/api/categories/search", {
+  //     params: { deleted: false, category: inputValue, company },
+  //   })
+  //     .then((res) => res.data)
+  //     .then((list) => {
+  //       const all = [{ label: "Все", value: "@" }];
+  //       const categoriesList = list.map((result) => {
+  //         return {
+  //           label: result.name,
+  //           value: result.id,
+  //         };
+  //       });
+  //       setCategories([...all, ...categoriesList]);
+  //     })
+  //     .catch((err) => {
+  //       ErrorAlert(err);
+  //     });
+  // };
 
   const getCounterparties = (counterparty) => {
     Axios.get("/api/counterparties/search", {
@@ -525,7 +516,7 @@ export default function ReportSales({ companyProps }) {
         code: barcode,
         counterparty: counterparty.value,
         point: point.value,
-        category: category.value,
+        category: category,
         brand: brand.value,
         transaction_type: type.value,
         sell_type: sellType.value,
@@ -575,7 +566,7 @@ export default function ReportSales({ companyProps }) {
         barcode,
         counterparty: counterparty.value,
         point: point.value,
-        category: category.value,
+        category: category,
         brand: brand.value,
         transaction_type: type.value,
         sell_type: sellType.value,
@@ -615,7 +606,6 @@ export default function ReportSales({ companyProps }) {
         brand={brand}
         brands={brands}
         category={category}
-        categories={categories}
         changeDate={changeDate}
         setCategory={setCategory}
         counterparty={counterparty}
@@ -632,8 +622,6 @@ export default function ReportSales({ companyProps }) {
         onCounterpartieListInput={onCounterpartieListInput}
         onBrandChange={onBrandChange}
         onBrandListInput={onBrandListInput}
-        onCategoryChange={onCategoryChange}
-        onCategoryListInput={onCategoryListInput}
         onTypeChange={onTypeChange}
         onAttributeChange={onAttributeChange}
         onAttributeTypeChange={onAttributeTypeChange}

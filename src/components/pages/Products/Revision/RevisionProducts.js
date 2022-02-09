@@ -227,6 +227,7 @@ export default function RevisonProducts({
             timeout: 2000,
           }
         );
+        setLoading(false);
       });
   };
   const closeModal = () => {

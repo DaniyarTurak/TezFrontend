@@ -18,7 +18,6 @@ export default function SalesOptions({
   brand,
   brands,
   category,
-  categories,
   changeDate,
   counterparty,
   counterparties,
@@ -34,8 +33,6 @@ export default function SalesOptions({
   onCounterpartieListInput,
   onBrandChange,
   onBrandListInput,
-  onCategoryChange,
-  onCategoryListInput,
   onTypeChange,
   onAttributeChange,
   onAttributeTypeChange,
@@ -59,7 +56,7 @@ export default function SalesOptions({
   setSellType,
   clientTypes,
   sellTypes,
-  setCategory
+  setCategory,
 }) {
   return (
     <Fragment>
@@ -137,7 +134,7 @@ export default function SalesOptions({
         />
       </Grid>
 
-      <Grid item xs={3}>
+      {/* <Grid item xs={3}>
         <AutocompleteSelect
           value={category}
           onChange={onCategoryChange}
@@ -146,8 +143,13 @@ export default function SalesOptions({
           noOptions="Категории не найдены"
           label="Категории"
         />
+      </Grid> */}
+      <Grid item xs={3}>
+        <CategorySelect
+          setCategory={setCategory}
+          category={category}
+        />
       </Grid>
-
       <Grid item xs={3}>
         <AutocompleteSelect
           value={type}
@@ -248,11 +250,6 @@ export default function SalesOptions({
           }
         />
       </Grid>
-
-      <Grid item xs={3}>
-        <CategorySelect onCategoryChange={onCategoryChange} setCategory={setCategory} />
-      </Grid>
-
     </Fragment>
   );
 }

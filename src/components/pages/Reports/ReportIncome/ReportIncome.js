@@ -86,8 +86,7 @@ export default function ReportIncome({ companyProps }) {
   const [barcode, setBarcode] = useState("");
   const [brand, setBrand] = useState({ value: "@", label: "Все" });
   const [brands, setBrands] = useState([]);
-  const [category, setCategory] = useState({ value: "@", label: "Все" });
-  const [categories, setCategories] = useState([]);
+  const [category, setCategory] = useState(undefined);
   const [counterparty, setCounterParty] = useState({
     value: "0",
     label: "Все",
@@ -123,7 +122,6 @@ export default function ReportIncome({ companyProps }) {
       getProducts();
       getPoints();
       getCounterparties();
-      getCategories();
       getAttributes();
       clean();
     }
@@ -135,7 +133,6 @@ export default function ReportIncome({ companyProps }) {
       getProducts();
       getPoints();
       getCounterparties();
-      getCategories();
       getAttributes();
     }
   }, []);
@@ -260,9 +257,6 @@ export default function ReportIncome({ companyProps }) {
     setBrand(b);
   };
 
-  const onCategoryChange = (e, c) => {
-    setCategory(c);
-  };
 
   const onAttributeChange = (e, a) => {
     setAttribute(a);
@@ -298,9 +292,6 @@ export default function ReportIncome({ companyProps }) {
     if (reason === "input") getBrands(b);
   };
 
-  const onCategoryListInput = (event, c, reason) => {
-    if (reason === "input") getCategories(c);
-  };
 
   const getAttributes = () => {
     Axios.get("/api/attributes", { params: { deleted: false, company } })
@@ -356,24 +347,6 @@ export default function ReportIncome({ companyProps }) {
           };
         });
         setBrands([...all, ...brandsList]);
-      })
-      .catch((err) => {
-        ErrorAlert(err);
-      });
-  };
-
-  const getCategories = () => {
-    Axios.get("/api/categories/getcategories", { params: { deleted: false, company } })
-      .then((res) => res.data)
-      .then((list) => {
-        const all = [{ label: "Все", value: "@" }];
-        const categoriesList = list.map((result) => {
-          return {
-            label: result.name,
-            value: result.id,
-          };
-        });
-        setCategories([...all, ...categoriesList]);
       })
       .catch((err) => {
         ErrorAlert(err);
@@ -504,7 +477,7 @@ export default function ReportIncome({ companyProps }) {
         company,
         counterparty: counterparty.value,
         point: point.value,
-        category: category.value,
+        category: category,
         brand: brand.value,
         attribute: attribute.value,
         attrval: attribute.format==="TEXT" ? textAttrval : attrval.label === "Все" ? "" : attrval.label,
@@ -546,7 +519,6 @@ export default function ReportIncome({ companyProps }) {
         brand={brand}
         brands={brands}
         category={category}
-        categories={categories}
         changeDate={changeDate}
         counterparty={counterparty}
         counterparties={counterparties}
@@ -568,8 +540,6 @@ export default function ReportIncome({ companyProps }) {
         onBrandListInput={onBrandListInput}
         onCounterpartieChange={onCounterpartieChange}
         onCounterpartieListInput={onCounterpartieListInput}
-        onCategoryChange={onCategoryChange}
-        onCategoryListInput={onCategoryListInput}
         onGroupingChange={onGroupingChange}
         onNdsChange={onNdsChange}
         onProductChange={onProductChange}
@@ -579,6 +549,7 @@ export default function ReportIncome({ companyProps }) {
         points={points}
         products={products}
         productSelectValue={productSelectValue}
+        setCategory={setCategory}
       />
 
       {isLoading && (

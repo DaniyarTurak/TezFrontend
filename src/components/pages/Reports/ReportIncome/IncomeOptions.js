@@ -6,6 +6,7 @@ import TextField from "@material-ui/core/TextField";
 import MaterialDateDefault from "../../../ReusableComponents/MaterialDateDefault";
 import AutocompleteSelect from "../../../ReusableComponents/AutocompleteSelect";
 import AutocompleteProductBarcode from "../../../ReusableComponents/AutocompleteProductBarcode";
+import CategorySelect from "../../../ReusableComponents/CategorySelect";
 
 export default function IncomeOptions({
   attrval,
@@ -16,7 +17,6 @@ export default function IncomeOptions({
   brand,
   brands,
   category,
-  categories,
   changeDate,
   counterparty,
   counterparties,
@@ -38,8 +38,6 @@ export default function IncomeOptions({
   onBrandListInput,
   onCounterpartieChange,
   onCounterpartieListInput,
-  onCategoryChange,
-  onCategoryListInput,
   onGroupingChange,
   onNdsChange,
   onProductChange,
@@ -49,7 +47,8 @@ export default function IncomeOptions({
   points,
   products,
   productSelectValue,
-  textAttrval
+  textAttrval,
+  setCategory
 }) {
   return (
     <Fragment>
@@ -108,7 +107,7 @@ export default function IncomeOptions({
         />
       </Grid>
 
-      <Grid item xs={3}>
+      {/* <Grid item xs={3}>
         <AutocompleteSelect
           value={category}
           onChange={onCategoryChange}
@@ -116,6 +115,12 @@ export default function IncomeOptions({
           onInputChange={onCategoryListInput}
           noOptions="Категории не найдены"
           label="Категории"
+        />
+      </Grid> */}
+      <Grid item xs={3}>
+        <CategorySelect
+          setCategory={setCategory}
+          category={category}
         />
       </Grid>
 
@@ -176,7 +181,8 @@ export default function IncomeOptions({
           }
           label={
             <span style={{ fontSize: ".875rem" }}>
-              Разбить по партийным характеристиками (Например: по цвету, размеру и т.д.)
+              Разбить по партийным характеристиками (Например: по цвету, размеру
+              и т.д.)
             </span>
           }
         />

@@ -37,8 +37,7 @@ export default function ConsginmentProducts({
 }) {
   const [brand, setBrand] = useState({ label: "Все", value: "@" });
   const [brands, setBrands] = useState([]);
-  const [category, setCategory] = useState({ label: "Все", value: "@" });
-  const [categories, setCategories] = useState([]);
+  const [category, setCategory] = useState(undefined);
   const [consignments, setConsignments] = useState([]);
   const [consignator, setConsignator] = useState(
     parameters
@@ -57,7 +56,6 @@ export default function ConsginmentProducts({
 
   useEffect(() => {
     getBrands();
-    getCategories();
     if (!parameters) getJurBuyers();
     getConsignment();
   }, []);
@@ -76,7 +74,7 @@ export default function ConsginmentProducts({
     } else if (!brand.value) {
       AlertFunction("Бренд");
       return;
-    } else if (!category.value) {
+    } else if (category===null) {
       AlertFunction("Категорию");
       return;
     }
@@ -84,7 +82,7 @@ export default function ConsginmentProducts({
     Axios.get("/api/report/consignment", {
       params: {
         brand: brand.value,
-        category: category.value,
+        category: !category? "@" : category,
         consignator: consignator.value,
       },
     })
@@ -119,25 +117,6 @@ export default function ConsginmentProducts({
       });
   };
 
-  const getCategories = (c) => {
-    Axios.get("/api/categories/getcategories", {
-      params: { deleted: false, company: companyProps },
-    })
-      .then((res) => res.data)
-      .then((list) => {
-        const all = [{ label: "Все", value: "@" }];
-        const categoriesList = list.map((result) => {
-          return {
-            label: result.name,
-            value: result.id,
-          };
-        });
-        setCategories([...all, ...categoriesList]);
-      })
-      .catch((err) => {
-        console.log(err);
-      });
-  };
 
   const getJurBuyers = (customer) => {
     Axios.get("/api/buyers", { params: { company: companyProps } })
@@ -169,9 +148,6 @@ export default function ConsginmentProducts({
     setBrand(b);
   };
 
-  const onCategoryChange = (event, c) => {
-    setCategory(c);
-  };
 
   const onConsignatorChange = (event, c) => {
     setConsignator(c);
@@ -183,11 +159,6 @@ export default function ConsginmentProducts({
     }
   };
 
-  const onCategoryListInput = (event, c, reason) => {
-    if (reason === "input") {
-      getCategories(c);
-    }
-  };
 
   const onConsignatorListInput = (event, c, reason) => {
     if (reason === "input") {
@@ -201,15 +172,13 @@ export default function ConsginmentProducts({
         brand={brand}
         brands={brands}
         category={category}
-        categories={categories}
+        setCategory={setCategory}
         classes={classes}
         consignator={consignator}
         consignators={consignators}
         handleConsignment={getConsignment}
         onBrandChange={onBrandChange}
         onBrandListInput={onBrandListInput}
-        onCategoryListInput={onCategoryListInput}
-        onCategoryChange={onCategoryChange}
         onConsignatorChange={onConsignatorChange}
         onConsignatorListInput={onConsignatorListInput}
       />
