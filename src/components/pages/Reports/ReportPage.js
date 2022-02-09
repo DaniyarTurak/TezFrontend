@@ -75,12 +75,12 @@ export default function ReportPage({ type, history, location }) {
       <div className={`row ${reportMode ? "pb-10" : ""}`}>
         {reports_recon.map(
           (report) =>
-            typeMode === report.type && (
+            typeMode === report.type && checkAccess(report.code) && (
               <div className="col-md-3 report-btn-block" key={report.id}>
                 <button
                   className={`btn btn-sm btn-block btn-report ${reportMode === report.route
                     ? "btn-info"
-                    : checkAccess(report.code) ? "btn-outline-info" : "btn-outline-secondary"
+                    :  "btn-outline-info" 
                     }`}
                   name={report.route}
                   onClick={changeReportMode} // disabled={!checkAccess(report.code)}

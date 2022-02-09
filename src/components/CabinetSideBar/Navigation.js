@@ -15,19 +15,7 @@ export default function Navigation({
 
   return (
     disabled ? (
-      <NavLink
-        key={subgroup.name + subgroup.id}
-        style={{ cursor: "default" }}
-        to ={ "#"}
-
-      >
-        <li
-          key={ind}
-          style={{ pointerEvents: "none", opacity: "0.6" }}
-        >
-          {subgroup.name}
-        </li>
-      </NavLink>
+      null
     ) : (
       <NavLink
         key={subgroup.name + subgroup.id}
