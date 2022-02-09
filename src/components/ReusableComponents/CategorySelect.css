@@ -30,10 +30,13 @@
 .ant-select-single.ant-select-show-arrow .ant-select-selection-item,
 .ant-select-single.ant-select-show-arrow .ant-select-selection-placeholder {
   margin-top: 10px;
-  color: #4d4d4d;
+  color: #363636;
   font-size: 14px;
 }
 .ant-select-selection-placeholder {
   max-width: 1000px;
   transition: max-width 100ms cubic-bezier(0, 0, 0.2, 1) 50ms;
+}
+.ant-select-multiple .ant-select-selection-item {
+  font-size: 14px;
 }

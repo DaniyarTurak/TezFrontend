@@ -59,7 +59,7 @@ export default function StockbalanceOptions({
   handleCounterpartyInputChange,
   dateAttrval,
   setDateAttrval,
-  setCategory
+  setCategory,
 }) {
   return (
     <Fragment>
@@ -82,7 +82,7 @@ export default function StockbalanceOptions({
         isLoadingProducts={isLoadingProducts}
       />
 
-      <Grid item xs={3}>
+      <Grid item xs={4}>
         <AutocompleteSelect
           value={selectedStock}
           onChange={onStockChange}
@@ -91,7 +91,7 @@ export default function StockbalanceOptions({
           label="Склад"
         />
       </Grid>
-      <Grid item xs={3}>
+      <Grid item xs={4}>
         <AutocompleteSelect
           value={counterparty}
           options={counterparties}
@@ -102,7 +102,7 @@ export default function StockbalanceOptions({
         />
       </Grid>
 
-      <Grid item xs={3}>
+      <Grid item xs={4}>
         <AutocompleteSelect
           value={brand}
           onChange={onBrandChange}
@@ -123,11 +123,9 @@ export default function StockbalanceOptions({
           label="Категории"
         />
       </Grid> */}
-
-      <Grid item xs={3}>
+      <Grid item xs={12}>
         <CategorySelect setCategory={setCategory} category={category} />
       </Grid>
-
       <Grid item xs={3}>
         <AutocompleteSelect
           value={attribute}
