@@ -6,10 +6,11 @@ import ArrowDropUpIcon from "@mui/icons-material/ArrowDropUp";
 import "antd/dist/antd.css";
 import "./CategorySelect.css";
 
+const { SHOW_PARENT } = TreeSelect;
 const CategorySelect = ({ setCategory, category }) => {
   const [categories, setCategories] = useState([]);
   const onChange = (e) => {
-    setCategory(e);
+    console.log(e)
   };
 
   useEffect(() => {
@@ -33,7 +34,9 @@ const CategorySelect = ({ setCategory, category }) => {
       value={category}
       dropdownStyle={{ maxHeight: 400, overflow: "auto" }}
       allowClear
-      treeLine={{ showLeafIcon: false }}
+      // treeLine={{ showLeafIcon: false }}
+      treeCheckable={true}
+      showCheckedStrategy={SHOW_PARENT}
       onChange={onChange}
       treeData={categories}
       className="tree-select"
