@@ -137,7 +137,7 @@ export default function SalesOptions({
         />
       </Grid>
 
-      {/* <Grid item xs={3}>
+      <Grid item xs={3}>
         <AutocompleteSelect
           value={category}
           onChange={onCategoryChange}
@@ -146,7 +146,7 @@ export default function SalesOptions({
           noOptions="Категории не найдены"
           label="Категории"
         />
-      </Grid> */}
+      </Grid>
 
 
       <Grid item xs={3}>
@@ -249,9 +249,11 @@ export default function SalesOptions({
           }
         />
       </Grid>
-      <Grid item xs={3}>
+
+      {/* <Grid item xs={3}>
         <CategorySelect onCategoryChange={onCategoryChange} setCategory={setCategory} />
-      </Grid>
+      </Grid> */}
+
     </Fragment>
   );
 }
