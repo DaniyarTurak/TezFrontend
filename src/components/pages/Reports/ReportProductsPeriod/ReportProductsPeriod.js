@@ -38,6 +38,7 @@ export default function ReportProductPerTransfer({ companyProps }) {
 
     const classes = useStyles();
     const [date, setDate] = useState(new Date());
+    const [activePage, setActivePage] = useState(0);
     const [attribute, setAttribute] = useState({
         value: "@",
         label: "Все",
@@ -47,7 +48,6 @@ export default function ReportProductPerTransfer({ companyProps }) {
     const [attributeTypes, setAttributeTypes] = useState([]);
     const [attrval, setAttrVal] = useState("");
     const [dateAttrval, setDateAttrval] = useState(null);
-    
     const [selectedStock, setSelectedStock] = useState({
         value: "0",
         label: "Все",
@@ -56,6 +56,10 @@ export default function ReportProductPerTransfer({ companyProps }) {
 
     const [productsperiod, setProductsPeriod] = useState([]);
     const [isLoading, setLoading] = useState(false);
+    const [itemsPerPage, setItemsPerPage] = useState(50);
+    const [isPaginationLoading, setPaginationLoading] = useState(false);
+
+    const [flag, setFlag] = useState(true);
 
     const company = companyProps ? companyProps.value : "";
 
@@ -75,6 +79,14 @@ export default function ReportProductPerTransfer({ companyProps }) {
         }
     }, [company])
 
+    useEffect(() => {
+        if (isPaginationLoading) {
+          handleSearch();
+        }
+        return () => {
+          setPaginationLoading(false);
+        };
+      }, [activePage, itemsPerPage]);
 
     const handleSearch = () => {
         if (Moment(date).isBefore("2019-11-06")) {
@@ -104,14 +116,27 @@ export default function ReportProductPerTransfer({ companyProps }) {
 
         setProductsPeriod([]);
         getProductsPeriod();
-      };
+    };
+
+    const handlePageChange = (event, pN) => {
+        setFlag(false);
+        setPaginationLoading(true);
+        setActivePage(pN);
+    };
+
+    const handleChangeRowsPerPage = (event) => {
+        setFlag(true);
+        setPaginationLoading(true);
+        setItemsPerPage(+event.target.value);
+        setActivePage(0);
+    };
 
     // { params: { 
     //     month: date.getMonth() + 1, // 1
     //     year: date.getFullYear(), // 2021
-    //     //point: 189, //selectedStock.value === 0 ? null : selectedStock.value, // 189 
-    //     //attribute: 1, //attribute.value === '@' ? null : attribute.value, // 1
-    //     //value: 1, //attribute.value !== '@' ? (attribute.format === 'DATE' ? dateAttrval : attrval) : null, // 1
+    //     //point: selectedStock.value === 0 ? null : selectedStock.value, // 189 
+    //     //attribute: attribute.value === '@' ? null : attribute.value, // 1
+    //     //value: attribute.value !== '@' ? (attribute.format === 'DATE' ? dateAttrval : attrval) : null, // 1
     // }}
 
     const getProductsPeriod = () => {
@@ -123,7 +148,10 @@ export default function ReportProductPerTransfer({ companyProps }) {
             val = attrval || '';
         }
 
+        const page = activePage ? activePage + 1 : 1;
+
         Axios.get(`http://tezportal.ddns.net/api/report/movement/product?month=${date.getMonth() + 1}&year=${date.getFullYear()}${selectedStock.value === '0' ? `` : `&point=${selectedStock.value}`}${attribute.value === '@' ? `` : `&attribute=${attribute.value}`}${val ? `&value=${val}` : ``}`)
+        .then((res) => res.data)
         .then((res) => {
             console.log("Res data: ", res.data);
             return res.data;
@@ -131,10 +159,12 @@ export default function ReportProductPerTransfer({ companyProps }) {
         .then((productsList) => {
             setLoading(true);
             setProductsPeriod(productsList);
+            setPaginationLoading(false);
             console.log("Products: ", productsList);
         })
         .catch((err) => {
             console.log("The Errro: ", err)
+            setPaginationLoading(false);
             ErrorAlert(err);
         })
     }
@@ -233,7 +263,7 @@ export default function ReportProductPerTransfer({ companyProps }) {
             products: tableData,
         }).then((res) => {
             console.log('Excel: ', res);
-            Alert.success('Загрузилась', {
+            Alert.success('Excel загрузилась!', {
                 position: "top-right",
                 effect: "bouncyflip",
                 timeout: 3000,
@@ -298,8 +328,11 @@ export default function ReportProductPerTransfer({ companyProps }) {
                 <Fragment>
                     <Grid item xs={12}>
                         <ProductTable
+                        //activePage={activePage}
                         classes={classes}
                         productsperiod={productsperiod}
+                        //itemsPerPage={itemsPerPage}
+                        //isPaginationLoading={isPaginationLoading}
                         />
                     </Grid>
 
