@@ -2,10 +2,12 @@ import React, { Fragment, useState, useEffect } from "react";
 import Box from "@mui/material/Box";
 import Checkbox from "@mui/material/Checkbox";
 import FormControlLabel from "@mui/material/FormControlLabel";
-import CustomSelect from "../ReusableComponents/CustomSelect";
 import alert from "react-s-alert";
 import Axios from "axios";
 import Alert from "@mui/material/Alert";
+import Grid from "@material-ui/core/Grid";
+import { Select } from "antd";
+import "../styles/AddUserAccessForm.css";
 
 function AddUserAccessForm({
   reset,
@@ -23,9 +25,9 @@ function AddUserAccessForm({
     userData ? userData.accesses : []
   );
   const [accessFunctions, setAccessFunctions] = useState([]);
-  const [role, setRole] = useState({ value: "", label: "Набор" });
+  const [role, setRole] = useState({ value: "", label: "Шаблон" });
   const [roles, setRoles] = useState([]);
-
+  const [checkAll, setCheckAll] = useState(false)
   const options = roles.map((role) => {
     return { value: role.id, label: role.name };
   });
@@ -40,6 +42,7 @@ function AddUserAccessForm({
       .then((res) => res.data)
       .then((data) => {
         setAccessFunctions(data);
+        
       });
   };
 
@@ -50,8 +53,8 @@ function AddUserAccessForm({
 
   const handleEditFunction = (data) => {
     setSubmitting(true);
-    edit(data)
-  }
+    edit(data);
+  };
 
   const edit = (data) => {
     data.accesses = [];
@@ -68,7 +71,7 @@ function AddUserAccessForm({
               fromEdit: true,
             },
           });
-        } 
+        }
         setSubmitting(false);
         dispatch(reset("AddErpUserForm"));
         if (role.label !== "Набор") {
@@ -97,7 +100,7 @@ function AddUserAccessForm({
         );
         setSubmitting(false);
       });
-  }
+  };
 
   const submit = (data) => {
     // data.pass = data.user_password || null;
@@ -132,18 +135,6 @@ function AddUserAccessForm({
         }
         setSubmitting(false);
         dispatch(reset("AddErpUserForm"));
-        if (role.label !== "Набор") {
-          const updatedData = {
-            id: role.value,
-            accesses: checkedCheckboxes,
-            name: role.label,
-          };
-          Axios.put("/api/erpuser/updaterole", { role: updatedData })
-            .then((res) => res.data)
-            .catch((err) => {
-              console.log(err);
-            });
-        }
       })
       .catch((err) => {
         alert.error(
@@ -159,6 +150,29 @@ function AddUserAccessForm({
         setSubmitting(false);
       });
   };
+
+  const handleUpdateRole = () => {
+    if (role.label !== "Шаблон") {
+      const updatedData = {
+        id: role.value,
+        accesses: checkedCheckboxes,
+        name: role.label,
+      };
+      Axios.put("/api/erpuser/updaterole", { role: updatedData })
+        .then((res) => res.data)
+        .then((data) => {
+          alert.success("Шаблон успешно сохранен", {
+            position: "top-right",
+            effect: "bouncyflip",
+            timeout: 2000,
+          });
+        })
+        .catch((err) => {
+          console.log(err);
+        });
+    }
+  };
+
   const getRoles = () => {
     Axios.get("/api/erpuser/roles")
       .then((res) => res.data)
@@ -187,10 +201,12 @@ function AddUserAccessForm({
     }
   };
 
-  const roleSelectChangeHandler = (e) => {
-    setRole({ value: e.value, label: e.label });
-    const selectedRole = roles.find((role) => role.id == e.value);
-    setCheckedCheckboxes(selectedRole.accesses);
+  const roleSelectChangeHandler = (e, item) => {
+    if (e !== undefined) {
+      setRole({ value: item.value, label: item.label });
+      const selectedRole = roles.find((role) => role.id == item.value);
+      setCheckedCheckboxes(selectedRole.accesses);
+    }
   };
 
   const children = (data) => {
@@ -220,17 +236,29 @@ function AddUserAccessForm({
           ? `Выберите доступы для пользователя ${userData.name}`
           : `Выберите доступы для пользователя ${userName} `}
       </h6>
-
-      <Alert severity="info">
-        Укажите галочками доступы или выберите из списка готовый набор
+      <Alert severity="info" style={{ padding: "0 10px" }}>
+        <Grid container spacing={2}>
+          <Grid item xs={8}>
+            <p>
+              Укажите галочками доступы или выберите из списка готовый шаблон
+            </p>{" "}
+          </Grid>
+          <Grid item xs={4}>
+            <Select
+              allowClear
+              options={options}
+              value={role}
+              onChange={roleSelectChangeHandler}
+              placeholder={"Набор"}
+              onClear={() => {
+                setRole({ value: "", label: "Шаблон" });
+                setCheckedCheckboxes(userData ? userData.accesses : []);
+              }}
+              style={{ width: "100%", minWidth: "266px" }}
+            />
+          </Grid>
+        </Grid>
       </Alert>
-      <br />
-      <CustomSelect
-        placeholder={"Набор"}
-        options={options}
-        value={role}
-        onChange={roleSelectChangeHandler}
-      />
       <br />
       <div
         style={{
@@ -245,14 +273,24 @@ function AddUserAccessForm({
           return (
             <Fragment key={category.category}>
               <div>
-                <p style={{ fontWeight: "bold" }}>{category.category}</p>
+                <FormControlLabel
+                  label={category.category}
+                  control={
+                    <Checkbox
+                      checked={checkAll}
+                      indeterminate={false}
+                      onChange={(e) => {
+                       
+                      }}
+                    />
+                  }
+                />
                 <div>{category.functions.map((fn) => children(fn))}</div>
               </div>
             </Fragment>
           );
         })}
       </div>
-
       <button
         type="button"
         className="btn btn-secondary"
@@ -262,33 +300,30 @@ function AddUserAccessForm({
       >
         Назад
       </button>
-      {userData ? (
-        <button
-          type="submit"
-          className="btn btn-success"
-          disabled={isSubmitting || submitting}
-          style={{ marginLeft: "10px" }}
-          onClick={handleSubmit(handleEditFunction)}
-        >
-          {isSubmitting
-            ? "Пожалуйста подождите..."
-            : "Сохранить изменения"}
-        </button>
-      ) : (
-        <button
-          type="submit"
-          className="btn btn-success"
-          disabled={isSubmitting || submitting}
-          style={{ marginLeft: "10px" }}
-          onClick={handleSubmit(handleSubmitFunction)}
-        >
-          {isSubmitting
-            ? "Пожалуйста подождите..."
-            : !userData
-            ? "Сохранить"
-            : "Сохранить изменения"}
-        </button>
-      )}
+      <button
+        type="submit"
+        className="btn btn-success"
+        disabled={isSubmitting || submitting}
+        style={{ marginLeft: "10px" }}
+        onClick={
+          userData
+            ? handleSubmit(handleEditFunction)
+            : handleSubmit(handleSubmitFunction)
+        }
+      >
+        {isSubmitting
+          ? "Пожалуйста подождите..."
+          : "Сохранить доступы для выбранного пользователя"}
+      </button>
+      <button
+        type="submit"
+        className="btn btn-success"
+        disabled={role.label === "Шаблон"}
+        style={{ marginLeft: "10px" }}
+        onClick={handleUpdateRole}
+      >
+        {`Сохранить шаблон ${role.label !== "Шаблон" ? `"${role.label}"` : ""}`}
+      </button>
     </div>
   );
 }

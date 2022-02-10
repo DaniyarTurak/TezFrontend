@@ -20,11 +20,12 @@ export default function CustomSelect({
   placeholder,
   disabled,
   value,
-  onInputChange
+  onInputChange,
 }) {
   return (
     <Select
       onInputChange={onInputChange}
+      allowClear
       value={value}
       isDisabled={disabled}
       styles={customStyles}

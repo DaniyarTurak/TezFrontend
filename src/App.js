@@ -4,6 +4,7 @@ import { BrowserRouter as Router, Route, Switch } from "react-router-dom";
 import requireAuth from "./hoc/requireAuth";
 import requireAdminAuth from "./hoc/requireAdminAuth";
 import Content from "./components/Content";
+import "antd/dist/antd.css";
 //import SignInPage from './components/pages/SignInPage';
 import NotFoundPage from "./components/pages/NotFoundPage";
 // import RevisionSignOut from "./components/pages/revision/RevisionSignOut";
