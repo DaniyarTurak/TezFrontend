@@ -38,23 +38,93 @@ const StyledTableCell = withStyles((theme) => ({
   },
 }))(TableCell);
 
+//вся эта функция TablePaginationActions используется исключительно для того чтобы иметь возможность
+//перепригивать между последней и первой страницей в пагинации. Ridiculous.
+function TablePaginationActions(props) {
+  const classes = useStyles1();
+  const theme = useTheme();
+  const { count, page, rowsPerPage, onPageChange } = props;
 
-export default function ProductTable({
-  productstransfer,
-  stock,
+  const handleFirstPageButtonClick = (event) => {
+    onPageChange(event, 0);
+  };
+
+  const handleBackButtonClick = (event) => {
+    onPageChange(event, page - 1);
+  };
+
+  const handleNextButtonClick = (event) => {
+    onPageChange(event, page + 1);
+  };
+
+  const handleLastPageButtonClick = (event) => {
+    onPageChange(event, Math.max(0, Math.ceil(count / rowsPerPage) - 1));
+  };
+
+  return (
+    <div className={classes.root}>
+      <IconButton
+        onClick={handleFirstPageButtonClick}
+        disabled={page === 0}
+        aria-label="first page"
+      >
+        {theme.direction === "rtl" ? <LastPageIcon /> : <FirstPageIcon />}
+      </IconButton>
+      <IconButton
+        onClick={handleBackButtonClick}
+        disabled={page === 0}
+        aria-label="previous page"
+      >
+        {theme.direction === "rtl" ? (
+          <KeyboardArrowRight />
+        ) : (
+          <KeyboardArrowLeft />
+        )}
+      </IconButton>
+      <IconButton
+        onClick={handleNextButtonClick}
+        disabled={page >= Math.ceil(count / rowsPerPage) - 1}
+        aria-label="next page"
+      >
+        {theme.direction === "rtl" ? (
+          <KeyboardArrowLeft />
+        ) : (
+          <KeyboardArrowRight />
+        )}
+      </IconButton>
+      <IconButton
+        onClick={handleLastPageButtonClick}
+        disabled={page >= Math.ceil(count / rowsPerPage) - 1}
+        aria-label="last page"
+      >
+        {theme.direction === "rtl" ? <FirstPageIcon /> : <LastPageIcon />}
+      </IconButton>
+    </div>
+  );
+}
+
+TablePaginationActions.propTypes = {
+  count: PropTypes.number.isRequired,
+  onChangePage: PropTypes.func.isRequired,
+  page: PropTypes.number.isRequired,
+  rowsPerPage: PropTypes.number.isRequired,
+};
+
+function ProductTable({
+  classes,
+  productsperiod,
 }) {
 
-  //console.log('ProductTransfer: ', productstransfer);
-  // console.log('Stock: ', stock);
+  
+  console.log('Table has rendered');
 
-  console.log('My stock: ' ,stock)
   return (
     <Fragment>
-      <TableContainer component={Paper}>
-        <Table id="table-to-xls">
+      <TableContainer component={Paper} className={classes.container}>
+        <Table className={classes.table} id="table-to-xls">
           <TableHead>
             <TableRow>
-              <StyledTableCell align="center">Склад</StyledTableCell>
+              <StyledTableCell />
               <StyledTableCell align="center">
                 Штрих-код
               </StyledTableCell>
@@ -72,11 +142,11 @@ export default function ProductTable({
           </TableHead>
           <TableBody>
             { 
-              productstransfer.map((product, idx) => {
+              productsperiod.map((product, idx) => {
                 return (
                   <TableRow key={idx}>
-                    <StyledTableCell align="center">
-                      {'Центральный склад'}
+                    <StyledTableCell>
+                      {idx + 1}
                     </StyledTableCell>
                     <StyledTableCell align="center">
                       {product.code}
@@ -106,7 +176,8 @@ export default function ProductTable({
           </TableFooter>
         </Table>
       </TableContainer>
-
     </Fragment>
   );
 }
+
+export default React.memo(ProductTable);

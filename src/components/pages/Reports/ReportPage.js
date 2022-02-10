@@ -21,7 +21,7 @@ import AbcXyzPage from "./AbcXyzPage";
 import ShelfLifePage from "./ShelfLifePage";
 import ReconciliationPage from "./ReconciliationPage";
 import ReportDebtPage from "./ReportDebtPage";
-import ReportProductPerTransfer from "./ReportProductPerTransfer"
+import ReportProductsPeriod from "./ReportProductsPeriod"
 
 export default function ReportPage({ type, history, location }) {
   const [parameters, setParameters] = useState("");
@@ -211,8 +211,8 @@ export default function ReportPage({ type, history, location }) {
                 <ReconciliationPage history={history} location={location} />
               )}
 
-              {typeMode === "stockreport" && reportMode === "productreportspertransfer" && (
-                <ReportProductPerTransfer history={history} location={location} />
+              {typeMode === "stockreport" && reportMode === "productreportsperiod" && (
+                <ReportProductsPeriod history={history} location={location} />
               )}
             </div>
           </div>
