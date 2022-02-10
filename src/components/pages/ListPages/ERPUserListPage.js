@@ -9,7 +9,6 @@ import Alert from "react-s-alert";
 import Searching from "../../Searching";
 import CustomPopover from "./Popover";
 
-
 class ERPUserListPage extends Component {
   state = {
     erpusers: [],
@@ -64,7 +63,7 @@ class ERPUserListPage extends Component {
   };
 
   getErpAccesses = () => {
-    Axios.get("/api/erpuser/erpaccesses")
+    Axios.get("/api/erpuser")
       .then((res) => res.data)
       .then((erpusers) => {
         this.setState({
@@ -75,7 +74,7 @@ class ERPUserListPage extends Component {
       .catch((err) => {
         console.log(err);
       });
-  }
+  };
 
   handleDelete = (item) => {
     this.setState({
@@ -198,25 +197,28 @@ class ERPUserListPage extends Component {
                     <td>{erpuser.iin}</td>
                     <td>{erpuser.name}</td>
                     <td>{erpuser.login.toUpperCase()}</td>
-                    <td
-
-                    >
-                      <p style={{
-                        textOverflow: "ellipsis",
-                        whiteSpace: "nowrap",
-                        overflow: "hidden",
-                        width: "25em"
-                      }}>
-                        {erpuser.accesses.map((access) => (
-                          <Fragment
-
-                            key={erpuser.id + access.id}
+                    <td>
+                      {erpuser.accesses? (
+                        <Fragment>
+                          <p
+                            style={{
+                              textOverflow: "ellipsis",
+                              whiteSpace: "nowrap",
+                              overflow: "hidden",
+                              width: "25em",
+                            }}
                           >
-                            {access.name + " , "}
-                          </Fragment>
-                        ))}
-                      </p>
-                      <CustomPopover erpuser={erpuser}/>
+                            {erpuser.accesses.map((access) => (
+                              <Fragment key={erpuser.id + access.id}>
+                                {access.name + " , "}
+                              </Fragment>
+                            ))}
+                          </p>
+                          <CustomPopover erpuser={erpuser} />
+                        </Fragment>
+                      ) : (
+                        null
+                      )}
                     </td>
                     <td className="text-right">
                       <button

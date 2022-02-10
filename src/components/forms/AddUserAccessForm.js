@@ -1,11 +1,11 @@
-import React, { Fragment, useState, useEffect } from 'react';
-import Box from '@mui/material/Box';
-import Checkbox from '@mui/material/Checkbox';
-import FormControlLabel from '@mui/material/FormControlLabel';
+import React, { Fragment, useState, useEffect } from "react";
+import Box from "@mui/material/Box";
+import Checkbox from "@mui/material/Checkbox";
+import FormControlLabel from "@mui/material/FormControlLabel";
 import CustomSelect from "../ReusableComponents/CustomSelect";
 import alert from "react-s-alert";
 import Axios from "axios";
-import Alert from '@mui/material/Alert';
+import Alert from "@mui/material/Alert";
 
 function AddUserAccessForm({
   reset,
@@ -17,49 +17,49 @@ function AddUserAccessForm({
   userData,
   setAccessForm,
   history,
-  userName
+  userName,
 }) {
-
-  const [checkedCheckboxes, setCheckedCheckboxes] = useState(userData ? userData.accesses : []);
+  const [checkedCheckboxes, setCheckedCheckboxes] = useState(
+    userData ? userData.accesses : []
+  );
   const [accessFunctions, setAccessFunctions] = useState([]);
   const [role, setRole] = useState({ value: "", label: "Набор" });
-  const [roles, setRoles] = useState([])
+  const [roles, setRoles] = useState([]);
 
   const options = roles.map((role) => {
-    return { value: role.id, label: role.name }
-  })
+    return { value: role.id, label: role.name };
+  });
 
   useEffect(() => {
-    getAccessFunctions()
-    getRoles()
-  }, [])
+    getAccessFunctions();
+    getRoles();
+  }, []);
 
   const getAccessFunctions = () => {
     Axios.get("/api/erpuser/getaccesses")
       .then((res) => res.data)
       .then((data) => {
-        setAccessFunctions(data)
-      })
-  }
+        setAccessFunctions(data);
+      });
+  };
 
   const handleSubmitFunction = (data) => {
     setSubmitting(true);
     submit(data);
   };
 
-  const submit = (data) => {
-    // data.pass = data.user_password || null;
-    // delete data.user_password;
-    // delete data.confirmUserPassword;
+  const handleEditFunction = (data) => {
+    setSubmitting(true);
+    edit(data)
+  }
 
+  const edit = (data) => {
     data.accesses = [];
     checkedCheckboxes.forEach((access) => {
-      data.accesses.push({ id: access.id, code: access.code })
-    })
-
+      data.accesses.push({ id: access.id, code: access.code });
+    });
     const reqdata = { erpusr: data };
-
-    Axios.post("/api/erpuser/new-manage", reqdata)
+    Axios.put("/api/erpuser/updateuser", reqdata)
       .then(() => {
         if (userData) {
           history.push({
@@ -67,28 +67,22 @@ function AddUserAccessForm({
             state: {
               fromEdit: true,
             },
-          })
-        } else {
-          history.push({
-            pathname: "/usercabinet/options/erpuser"
-          })
-          alert.success("Пользователь ERP успешно создан", {
-            position: "top-right",
-            effect: "bouncyflip",
-            timeout: 2000,
           });
-        }
+        } 
         setSubmitting(false);
         dispatch(reset("AddErpUserForm"));
-        if(role.label!=="Набор") {
-          const updatedData = { id: role.value, accesses: checkedCheckboxes, name: role.label }
+        if (role.label !== "Набор") {
+          const updatedData = {
+            id: role.value,
+            accesses: checkedCheckboxes,
+            name: role.label,
+          };
           Axios.put("/api/erpuser/updaterole", { role: updatedData })
             .then((res) => res.data)
             .catch((err) => {
-              console.log(err)
-            })
+              console.log(err);
+            });
         }
-     
       })
       .catch((err) => {
         alert.error(
@@ -103,15 +97,73 @@ function AddUserAccessForm({
         );
         setSubmitting(false);
       });
+  }
 
+  const submit = (data) => {
+    // data.pass = data.user_password || null;
+    // delete data.user_password;
+    // delete data.confirmUserPassword;
 
+    data.accesses = [];
+    checkedCheckboxes.forEach((access) => {
+      data.accesses.push({ id: access.id, code: access.code });
+    });
 
+    const reqdata = { erpusr: data };
+
+    Axios.post("/api/erpuser/new-manage", reqdata)
+      .then(() => {
+        if (userData) {
+          history.push({
+            pathname: "/usercabinet/options/erpuser",
+            state: {
+              fromEdit: true,
+            },
+          });
+        } else {
+          history.push({
+            pathname: "/usercabinet/options/erpuser",
+          });
+          alert.success("Пользователь ERP успешно создан", {
+            position: "top-right",
+            effect: "bouncyflip",
+            timeout: 2000,
+          });
+        }
+        setSubmitting(false);
+        dispatch(reset("AddErpUserForm"));
+        if (role.label !== "Набор") {
+          const updatedData = {
+            id: role.value,
+            accesses: checkedCheckboxes,
+            name: role.label,
+          };
+          Axios.put("/api/erpuser/updaterole", { role: updatedData })
+            .then((res) => res.data)
+            .catch((err) => {
+              console.log(err);
+            });
+        }
+      })
+      .catch((err) => {
+        alert.error(
+          err.response.data.code === "internal_error"
+            ? "Возникла ошибка при обработке вашего запроса. Мы уже работаем над решением. Попробуйте позже"
+            : err.response.data.text,
+          {
+            position: "top-right",
+            effect: "bouncyflip",
+            timeout: 2000,
+          }
+        );
+        setSubmitting(false);
+      });
   };
   const getRoles = () => {
     Axios.get("/api/erpuser/roles")
       .then((res) => res.data)
       .then((data) => {
-        setRoles(data)
+        setRoles(data);
       })
       .catch((err) => {
         console.log(err);
@@ -119,7 +171,9 @@ function AddUserAccessForm({
   };
 
   const handleCheckboxChange = (data) => {
-    const isChecked = checkedCheckboxes.some(checkedCheckbox => checkedCheckbox.id === data.id)
+    const isChecked = checkedCheckboxes.some(
+      (checkedCheckbox) => checkedCheckbox.id === data.id
+    );
     if (isChecked) {
       setCheckedCheckboxes(
         checkedCheckboxes.filter(
@@ -127,35 +181,44 @@ function AddUserAccessForm({
         )
       );
     } else {
-      setCheckedCheckboxes(checkedCheckboxes.concat({ id: data.id, code: data.code }));
+      setCheckedCheckboxes(
+        checkedCheckboxes.concat({ id: data.id, code: data.code })
+      );
     }
   };
 
   const roleSelectChangeHandler = (e) => {
-    setRole({ value: e.value, label: e.label })
-    const selectedRole = roles.find((role) => role.id == e.value)
-    setCheckedCheckboxes(selectedRole.accesses)
-  }
+    setRole({ value: e.value, label: e.label });
+    const selectedRole = roles.find((role) => role.id == e.value);
+    setCheckedCheckboxes(selectedRole.accesses);
+  };
 
   const children = (data) => {
     return (
-      <Box sx={{ display: 'flex', flexDirection: 'column', ml: 3 }} key={data.id}>
+      <Box
+        sx={{ display: "flex", flexDirection: "column", ml: 3 }}
+        key={data.id}
+      >
         <FormControlLabel
           label={data.name}
           control={
             <Checkbox
-              checked={checkedCheckboxes.some(checkedCheckbox => checkedCheckbox.id === data.id)
-              }
-              onChange={() => handleCheckboxChange(data)} />}
+              checked={checkedCheckboxes.some(
+                (checkedCheckbox) => checkedCheckbox.id === data.id
+              )}
+              onChange={() => handleCheckboxChange(data)}
+            />
+          }
         />
       </Box>
-    )
-
+    );
   };
   return (
     <div style={{ margin: "15px" }}>
-      <h6 className="btn-one-line" >
-        {userData ? `Выберите доступы для пользователя ${userData.name}` : `Выберите доступы для пользователя ${userName} `}
+      <h6 className="btn-one-line">
+        {userData
+          ? `Выберите доступы для пользователя ${userData.name}`
+          : `Выберите доступы для пользователя ${userName} `}
       </h6>
 
       <Alert severity="info">
@@ -169,18 +232,24 @@ function AddUserAccessForm({
         onChange={roleSelectChangeHandler}
       />
       <br />
-      <div style={{ display: "flex", flexDirection: "row", flexWrap: "wrap", gap: "15px", marginBottom: "15px" }}>
+      <div
+        style={{
+          display: "flex",
+          flexDirection: "row",
+          flexWrap: "wrap",
+          gap: "15px",
+          marginBottom: "15px",
+        }}
+      >
         {accessFunctions.map((category) => {
           return (
             <Fragment key={category.category}>
               <div>
                 <p style={{ fontWeight: "bold" }}>{category.category}</p>
-                <div>
-                  {category.functions.map(fn => children(fn))}
-                </div>
+                <div>{category.functions.map((fn) => children(fn))}</div>
               </div>
             </Fragment>
-          )
+          );
         })}
       </div>
 
@@ -188,28 +257,40 @@ function AddUserAccessForm({
         type="button"
         className="btn btn-secondary"
         onClick={() => {
-          setAccessForm(false)
+          setAccessForm(false);
         }}
       >
         Назад
       </button>
-
-      <button
-        type="submit"
-        className="btn btn-success"
-        disabled={isSubmitting || submitting}
-        style={{ marginLeft: "10px" }}
-        onClick={handleSubmit(handleSubmitFunction)}
-      >
-        {isSubmitting
-          ? "Пожалуйста подождите..."
-          : !userData
+      {userData ? (
+        <button
+          type="submit"
+          className="btn btn-success"
+          disabled={isSubmitting || submitting}
+          style={{ marginLeft: "10px" }}
+          onClick={handleSubmit(handleEditFunction)}
+        >
+          {isSubmitting
+            ? "Пожалуйста подождите..."
+            : "Сохранить изменения"}
+        </button>
+      ) : (
+        <button
+          type="submit"
+          className="btn btn-success"
+          disabled={isSubmitting || submitting}
+          style={{ marginLeft: "10px" }}
+          onClick={handleSubmit(handleSubmitFunction)}
+        >
+          {isSubmitting
+            ? "Пожалуйста подождите..."
+            : !userData
             ? "Сохранить"
             : "Сохранить изменения"}
-      </button>
+        </button>
+      )}
     </div>
-  )
+  );
 }
 
 export default AddUserAccessForm;
-
