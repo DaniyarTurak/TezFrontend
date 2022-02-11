@@ -27,10 +27,11 @@ function AddUserAccessForm({
   const [accessFunctions, setAccessFunctions] = useState([]);
   const [role, setRole] = useState({ value: "", label: "Шаблон" });
   const [roles, setRoles] = useState([]);
-  const [checkAll, setCheckAll] = useState(false)
   const options = roles.map((role) => {
     return { value: role.id, label: role.name };
   });
+  const [categoryAccesses, setCategoryAccesses] = useState([]);
+  const [checkAll, setCheckAll] = useState(false);
 
   useEffect(() => {
     getAccessFunctions();
@@ -38,11 +39,22 @@ function AddUserAccessForm({
   }, []);
 
   const getAccessFunctions = () => {
-    Axios.get("/api/erpuser/getaccesses")
+    Axios.get(`/api/erpuser/getaccesses/${userData.id}`)
       .then((res) => res.data)
       .then((data) => {
         setAccessFunctions(data);
-        
+        let updatedData = [];
+        data.forEach((category) => {
+          updatedData.push({
+            id: category.category_id,
+            accessFunctions: category.access_functions,
+            functions: category.functions,
+          });
+        });
+        setCategoryAccesses(updatedData);
+      })
+      .catch((err) => {
+        console.log(err);
       });
   };
 
@@ -74,18 +86,6 @@ function AddUserAccessForm({
         }
         setSubmitting(false);
         dispatch(reset("AddErpUserForm"));
-        if (role.label !== "Набор") {
-          const updatedData = {
-            id: role.value,
-            accesses: checkedCheckboxes,
-            name: role.label,
-          };
-          Axios.put("/api/erpuser/updaterole", { role: updatedData })
-            .then((res) => res.data)
-            .catch((err) => {
-              console.log(err);
-            });
-        }
       })
       .catch((err) => {
         alert.error(
@@ -103,17 +103,11 @@ function AddUserAccessForm({
   };
 
   const submit = (data) => {
-    // data.pass = data.user_password || null;
-    // delete data.user_password;
-    // delete data.confirmUserPassword;
-
     data.accesses = [];
     checkedCheckboxes.forEach((access) => {
       data.accesses.push({ id: access.id, code: access.code });
     });
-
     const reqdata = { erpusr: data };
-
     Axios.post("/api/erpuser/new-manage", reqdata)
       .then(() => {
         if (userData) {
@@ -186,12 +180,12 @@ function AddUserAccessForm({
 
   const handleCheckboxChange = (data) => {
     const isChecked = checkedCheckboxes.some(
-      (checkedCheckbox) => checkedCheckbox.id === data.id
+      (checkedCheckbox) => checkedCheckbox.id == data.id
     );
     if (isChecked) {
       setCheckedCheckboxes(
         checkedCheckboxes.filter(
-          (checkedCheckbox) => checkedCheckbox.id !== data.id
+          (checkedCheckbox) => checkedCheckbox.id != data.id
         )
       );
     } else {
@@ -220,7 +214,7 @@ function AddUserAccessForm({
           control={
             <Checkbox
               checked={checkedCheckboxes.some(
-                (checkedCheckbox) => checkedCheckbox.id === data.id
+                (checkedCheckbox) => checkedCheckbox.id == data.id
               )}
               onChange={() => handleCheckboxChange(data)}
             />
@@ -273,18 +267,34 @@ function AddUserAccessForm({
           return (
             <Fragment key={category.category}>
               <div>
-                <FormControlLabel
+                <p>{category.category}</p>
+                {/* <FormControlLabel
                   label={category.category}
                   control={
                     <Checkbox
-                      checked={checkAll}
-                      indeterminate={false}
+                      checked={
+                        checkAll
+                      }
+                      // indeterminate={true}
                       onChange={(e) => {
-                       
+                        if (e.target.checked) {
+                          let updatedCheckbox = [];
+                          category.functions.forEach((fn) => {
+                            updatedCheckbox.push({ id: fn.id, code: fn.code });
+                          });
+                          setCheckedCheckboxes(
+                            checkedCheckboxes.concat(updatedCheckbox)
+                          );
+                          setCheckAll(true)
+                        } else {
+                          category.functions.forEach((fn) => {
+                            checkedCheckboxes.filter((id) => fn.id!==id);
+                          });
+                        }
                       }}
                     />
                   }
-                />
+                /> */}
                 <div>{category.functions.map((fn) => children(fn))}</div>
               </div>
             </Fragment>
