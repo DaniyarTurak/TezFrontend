@@ -209,7 +209,7 @@ class ERPUserListPage extends Component {
                             }}
                           >
                             {erpuser.accesses.map((access) => (
-                              <Fragment key={erpuser.id + access.id}>
+                              <Fragment key={ access.code + Math.floor(Math.random() * 1000) }>
                                 {access.name + " , "}
                               </Fragment>
                             ))}
