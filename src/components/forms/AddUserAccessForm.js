@@ -9,6 +9,8 @@ import Grid from "@material-ui/core/Grid";
 import { Select } from "antd";
 import "../styles/AddUserAccessForm.css";
 
+const { Option } = Select;
+
 function AddUserAccessForm({
   reset,
   dispatch,
@@ -27,31 +29,33 @@ function AddUserAccessForm({
   const [accessFunctions, setAccessFunctions] = useState([]);
   const [role, setRole] = useState({ value: "", label: "Шаблон" });
   const [roles, setRoles] = useState([]);
-  const options = roles.map((role) => {
-    return { value: role.id, label: role.name };
-  });
-  const [categoryAccesses, setCategoryAccesses] = useState([]);
-  const [checkAll, setCheckAll] = useState(false);
+  const [options, setOptions] = useState([]);
 
   useEffect(() => {
     getAccessFunctions();
     getRoles();
   }, []);
 
+  const getRoles = () => {
+    Axios.get("/api/erpuser/roles")
+      .then((res) => res.data)
+      .then((data) => {
+        setRoles(data);
+        let newOptions = [];
+        data.forEach((role) => {
+          newOptions.push({ value: role.id, label: role.name });
+        });
+        setOptions(newOptions);
+      })
+      .catch((err) => {
+        console.log(err);
+      });
+  };
   const getAccessFunctions = () => {
     Axios.get(`/api/erpuser/getaccesses/${userData.id}`)
       .then((res) => res.data)
       .then((data) => {
         setAccessFunctions(data);
-        let updatedData = [];
-        data.forEach((category) => {
-          updatedData.push({
-            id: category.category_id,
-            accessFunctions: category.access_functions,
-            functions: category.functions,
-          });
-        });
-        setCategoryAccesses(updatedData);
       })
       .catch((err) => {
         console.log(err);
@@ -167,17 +171,6 @@ function AddUserAccessForm({
     }
   };
 
-  const getRoles = () => {
-    Axios.get("/api/erpuser/roles")
-      .then((res) => res.data)
-      .then((data) => {
-        setRoles(data);
-      })
-      .catch((err) => {
-        console.log(err);
-      });
-  };
-
   const handleCheckboxChange = (data) => {
     const isChecked = checkedCheckboxes.some(
       (checkedCheckbox) => checkedCheckbox.id == data.id
@@ -240,8 +233,8 @@ function AddUserAccessForm({
           <Grid item xs={4}>
             <Select
               allowClear
-              options={options}
               value={role}
+              options={options}
               onChange={roleSelectChangeHandler}
               placeholder={"Набор"}
               onClear={() => {
@@ -254,6 +247,7 @@ function AddUserAccessForm({
         </Grid>
       </Alert>
       <br />
+
       <div
         style={{
           display: "flex",
@@ -267,34 +261,7 @@ function AddUserAccessForm({
           return (
             <Fragment key={category.category}>
               <div>
-                <p>{category.category}</p>
-                {/* <FormControlLabel
-                  label={category.category}
-                  control={
-                    <Checkbox
-                      checked={
-                        checkAll
-                      }
-                      // indeterminate={true}
-                      onChange={(e) => {
-                        if (e.target.checked) {
-                          let updatedCheckbox = [];
-                          category.functions.forEach((fn) => {
-                            updatedCheckbox.push({ id: fn.id, code: fn.code });
-                          });
-                          setCheckedCheckboxes(
-                            checkedCheckboxes.concat(updatedCheckbox)
-                          );
-                          setCheckAll(true)
-                        } else {
-                          category.functions.forEach((fn) => {
-                            checkedCheckboxes.filter((id) => fn.id!==id);
-                          });
-                        }
-                      }}
-                    />
-                  }
-                /> */}
+                <p style={{ fontWeight: "bold" }}>{category.category}</p>
                 <div>{category.functions.map((fn) => children(fn))}</div>
               </div>
             </Fragment>

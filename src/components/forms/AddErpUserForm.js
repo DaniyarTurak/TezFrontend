@@ -27,7 +27,8 @@ let AddErpUserForm = ({
   const [isSubmitting, setSubmitting] = useState(false);
   const [accessForm, setAccessForm] = useState(false);
   const [userData, setUserData] = useState(location.state ? location.state.userData : null);
-  const [userName, setUserName] = useState()
+  const [userName, setUserName] = useState();
+  const [roles, setRoles] = useState([]);
   useEffect(() => {
     if (userData) {
       getUserAccesses()
@@ -35,6 +36,7 @@ let AddErpUserForm = ({
     if (userData) {
       dispatch(initialize("AddErpUserForm", userData));
     }
+    getRoles()
   }, []);
 
   const getUserAccesses = () => {
@@ -48,7 +50,16 @@ let AddErpUserForm = ({
       });
   }
 
-
+  const getRoles = () => {
+    Axios.get("/api/erpuser/roles")
+      .then((res) => res.data)
+      .then((data) => {
+        setRoles(data);
+      })
+      .catch((err) => {
+        console.log(err);
+      });
+  };
 
   const IinValidation = (e) => {
     const { value } = e.target;
@@ -101,6 +112,7 @@ let AddErpUserForm = ({
           dispatch={dispatch}
           reset={reset}
           userName={userName}
+          roles={roles}
         />
       ) : (
         <Fragment>
