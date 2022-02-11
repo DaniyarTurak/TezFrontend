@@ -124,6 +124,7 @@ export default function ReportProductPerTransfer({ companyProps }) {
           setLoading(false);
           setProductsPeriod(productsList);
         } else {
+          setLoading(false);
           Alert.warning(`Нету данных по этому времени`, {
             position: "top-right",
             effect: "bouncyflip",
@@ -133,6 +134,7 @@ export default function ReportProductPerTransfer({ companyProps }) {
       })
       .catch((err) => {
         ErrorAlert(err);
+        setLoading(false);
       });
   };
 
@@ -265,7 +267,7 @@ export default function ReportProductPerTransfer({ companyProps }) {
     setCurrentPage(pageNumber);
   };
 
-  const onChangeRowsPerPage = (event) => {
+  const onRowsPerPageChange = (event) => {
     setPostsPerPage(+event.target.value);
     setCurrentPage(0);
   };
@@ -306,7 +308,7 @@ export default function ReportProductPerTransfer({ companyProps }) {
               totalPosts={productsperiod.length}
               paginate={paginate}
               currentPage={currentPage}
-              onChangeRowsPerPage={onChangeRowsPerPage}
+              onRowsPerPageChange={onRowsPerPageChange}
             />
           </Grid>
 
