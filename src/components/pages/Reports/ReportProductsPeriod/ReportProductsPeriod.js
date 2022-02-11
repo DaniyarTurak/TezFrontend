@@ -124,6 +124,7 @@ export default function ReportProductPerTransfer({ companyProps }) {
           setLoading(false);
           setProductsPeriod(productsList);
         } else {
+          setLoading(false);
           Alert.warning(`Нету данных по этому времени`, {
             position: "top-right",
             effect: "bouncyflip",
@@ -133,6 +134,7 @@ export default function ReportProductPerTransfer({ companyProps }) {
       })
       .catch((err) => {
         ErrorAlert(err);
+        setLoading(false);
       });
   };
 
