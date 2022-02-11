@@ -267,7 +267,7 @@ export default function ReportProductPerTransfer({ companyProps }) {
     setCurrentPage(pageNumber);
   };
 
-  const onChangeRowsPerPage = (event) => {
+  const onRowsPerPageChange = (event) => {
     setPostsPerPage(+event.target.value);
     setCurrentPage(0);
   };
@@ -308,7 +308,7 @@ export default function ReportProductPerTransfer({ companyProps }) {
               totalPosts={productsperiod.length}
               paginate={paginate}
               currentPage={currentPage}
-              onChangeRowsPerPage={onChangeRowsPerPage}
+              onRowsPerPageChange={onRowsPerPageChange}
             />
           </Grid>
 
