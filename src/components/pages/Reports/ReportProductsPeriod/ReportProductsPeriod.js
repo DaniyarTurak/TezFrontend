@@ -10,19 +10,19 @@ import { makeStyles } from "@material-ui/core/styles";
 import Alert from "react-s-alert";
 import Moment from "moment";
 
-const customStyles = {
-  content: {
-    top: "50%",
-    left: "50%",
-    right: "auto",
-    bottom: "auto",
-    marginRight: "-50%",
-    transform: "translate(-50%, -50%)",
-    width: "500px",
-    zIndex: 11,
-  },
-  overlay: { zIndex: 10 },
-};
+// const customStyles = {
+//   content: {
+//     top: "50%",
+//     left: "50%",
+//     right: "auto",
+//     bottom: "auto",
+//     marginRight: "-50%",
+//     transform: "translate(-50%, -50%)",
+//     width: "500px",
+//     zIndex: 11,
+//   },
+//   overlay: { zIndex: 10 },
+// };
 
 const useStyles = makeStyles((theme) => ({
   notFound: { textAlign: "center", color: theme.palette.text.secondary },
@@ -48,6 +48,10 @@ export default function ReportProductPerTransfer({ companyProps }) {
   const [attrval, setAttrVal] = useState("");
   const [dateAttrval, setDateAttrval] = useState(null);
   const [selectedStock, setSelectedStock] = useState({
+    value: "0",
+    label: "Все",
+  });
+  const [stockForTable, setStockForTable] = useState({
     value: "0",
     label: "Все",
   });
@@ -90,21 +94,40 @@ export default function ReportProductPerTransfer({ companyProps }) {
 
   const getProductsPeriod = () => {
     setLoading(true);
-    let val;
-    if (attribute.format === "DATE") {
-      val = dateAttrval || "";
-    } else {
-      val = attrval || "";
+    const parameters = {
+      month: date.getMonth() + 1,
+      year: date.getFullYear(),
+      point: selectedStock.value,
+    };
+
+    const val = attrval || dateAttrval;
+
+    if (attribute.value !== "@") {
+      parameters["attribute"] = attribute.value;
+    }
+    if (val) {
+      parameters["value"] = val.label;
     }
 
-    Axios.get(
-      `/api/report/movement/product?month=${date.getMonth() +
-        1}&year=${date.getFullYear()}${
-        selectedStock.value === "0" ? `` : `&point=${selectedStock.value}`
-      }${attribute.value === "@" ? `` : `&attribute=${attribute.value}`}${
-        val ? `&value=${val}` : ``
-      }`
-    )
+    console.log(parameters);
+
+    // let val;
+    // if (attribute.format === "DATE") {
+    //   val = dateAttrval || "";
+    // } else {
+    //   val = attrval || "";
+    // }
+
+    // ?month=${date.getMonth() +
+    //   1}&year=${date.getFullYear()}${
+    //   selectedStock.value === "0" ? `` : `&point=${selectedStock.value}`
+    // }${attribute.value === "@" ? `` : `&attribute=${attribute.value}`}${
+    //   val.label !== "Все" ? `&value=${val.label}` : ``
+    // }
+
+    Axios.get(`http://tezportal.ddns.net/api/report/movement/product`, {
+      params: parameters,
+    })
       .then((res) => {
         return res.data;
       })
@@ -112,6 +135,7 @@ export default function ReportProductPerTransfer({ companyProps }) {
         if (productsList.length > 0) {
           setLoading(false);
           setProductsPeriod(productsList);
+          setStockForTable(selectedStock);
         } else {
           setLoading(false);
           Alert.warning(`Нету данных по этому времени`, {
@@ -306,11 +330,12 @@ export default function ReportProductPerTransfer({ companyProps }) {
           <Grid item xs={12}>
             <ProductTable
               classes={classes}
+              currentPage={currentPage}
+              paginate={paginate}
               productsperiod={currentPosts}
               postsPerPage={postsPerPage}
               totalPosts={productsperiod.length}
-              paginate={paginate}
-              currentPage={currentPage}
+              selectedStock={stockForTable}
               onRowsPerPageChange={onRowsPerPageChange}
             />
           </Grid>

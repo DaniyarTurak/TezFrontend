@@ -110,13 +110,15 @@ TablePaginationActions.propTypes = {
 
 function ProductTable({
   classes,
+  currentPage,
+  paginate,
   productsperiod,
   postsPerPage,
   totalPosts,
-  paginate,
-  currentPage,
+  selectedStock,
   onRowsPerPageChange,
 }) {
+  console.log("SelectedStock: ", selectedStock);
   return (
     <Fragment>
       <TableContainer component={Paper} className={classes.container}>
@@ -124,6 +126,7 @@ function ProductTable({
           <TableHead>
             <TableRow>
               <StyledTableCell />
+              <StyledTableCell>Склад</StyledTableCell>
               <StyledTableCell align="center">Штрих-код</StyledTableCell>
               <StyledTableCell align="center">Наименование</StyledTableCell>
               <StyledTableCell align="center">
@@ -142,6 +145,7 @@ function ProductTable({
                   <StyledTableCell>
                     {idx + 1 + currentPage * postsPerPage}
                   </StyledTableCell>
+                  <StyledTableCell>{"1"}</StyledTableCell>
                   <StyledTableCell align="center">
                     {product.code}
                   </StyledTableCell>

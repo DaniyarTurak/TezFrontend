@@ -71,9 +71,26 @@ export default function ProductOptions({
 
       {attribute.format === "TEXT" && (
         <Grid item xs={3}>
-          <TextField
+          {/* <TextField
             value={attrval}
             onChange={onAttributeTextFieldChange}
+            label="Значение Атрибута"
+          /> */}
+          <AutocompleteSelect
+            value={attrval}
+            onChange={onAttributeTypeChange}
+            options={attributeTypes.map((attr, idx) => {
+              const temp = attr.label;
+              if (idx !== 0) {
+                return {
+                  label: `${parseInt(temp.split(".")[0])}`,
+                  value: attribute.value,
+                  deleted: attr.deleted,
+                };
+              }
+              return attr;
+            })}
+            noOptions="Атрибут не найден"
             label="Значение Атрибута"
           />
         </Grid>
