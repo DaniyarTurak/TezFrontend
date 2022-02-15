@@ -63,7 +63,6 @@ export default function ReportProductPerTransfer({ companyProps }) {
 
   useEffect(() => {
     getAttributes();
-    //getProductsPeriod();
     getStockList();
   }, [company]);
 
@@ -85,19 +84,9 @@ export default function ReportProductPerTransfer({ companyProps }) {
       });
     }
 
-    console.log("Attribute value: ", attrval);
-
     setProductsPeriod([]);
     getProductsPeriod();
   };
-
-  // { params: {
-  //     month: date.getMonth() + 1, // 1
-  //     year: date.getFullYear(), // 2021
-  //     //point: selectedStock.value === 0 ? null : selectedStock.value, // 189
-  //     //attribute: attribute.value === '@' ? null : attribute.value, // 1
-  //     //value: attribute.value !== '@' ? (attribute.format === 'DATE' ? dateAttrval : attrval) : null, // 1
-  // }}
 
   const getProductsPeriod = () => {
     setLoading(true);
@@ -150,7 +139,6 @@ export default function ReportProductPerTransfer({ companyProps }) {
             format: point.format,
           };
         });
-
         setAttributes([...all, ...attr]);
       })
       .catch((err) => {
@@ -159,7 +147,7 @@ export default function ReportProductPerTransfer({ companyProps }) {
   };
 
   const getAttributeTypes = (sprid) => {
-    if (Number.isInteger(sprid)) {
+    if (isNumeric(sprid)) {
       Axios.get("/api/attributes/getsprattr", { params: { sprid, company } })
         .then((res) => res.data)
         .then((attributeTypes) => {
@@ -216,13 +204,24 @@ export default function ReportProductPerTransfer({ companyProps }) {
       }
     );
 
-    Axios.post("http://tezportal.ddns.net/api/report/movement/product/excel", {
-      dat: `${today.getFullYear()}.${today.getMonth()}.${today.getDate()}`,
-      company: company,
-      products: tableData,
+    Axios({
+      method: "POST",
+      url: "/api/report/movement/product/excel",
+      data: {
+        dat: `${today.getFullYear()}.${today.getMonth()}.${today.getDay()}`,
+        company: company,
+        products: tableData,
+      },
+      responseType: "blob",
     })
+      .then((res) => res.data)
       .then((res) => {
-        console.log("Excel: ", res);
+        const link = document.createElement("a");
+        link.href = window.URL.createObjectURL(new Blob([res]));
+        link.download = `Отчет по товарам за период ${date}.xlsx`;
+        document.body.appendChild(link);
+        link.click();
+
         Alert.success("Excel загрузилась!", {
           position: "top-right",
           effect: "bouncyflip",
@@ -272,6 +271,10 @@ export default function ReportProductPerTransfer({ companyProps }) {
     setCurrentPage(0);
   };
 
+  const isNumeric = (value) => {
+    return /^\d+$/.test(value);
+  };
+
   return (
     <Grid container spacing={2}>
       <ProductOptions
@@ -315,7 +318,6 @@ export default function ReportProductPerTransfer({ companyProps }) {
           <Grid item xs={12}>
             <button
               className="btn btn-sm btn-outline-success"
-              //disabled={isExcelLoading}
               onClick={postProductsPeriodExcel}
             >
               Выгрузить в excel

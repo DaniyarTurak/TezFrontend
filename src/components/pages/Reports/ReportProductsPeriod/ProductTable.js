@@ -117,8 +117,6 @@ function ProductTable({
   currentPage,
   onRowsPerPageChange,
 }) {
-  console.log("Current Page: ", currentPage);
-
   return (
     <Fragment>
       <TableContainer component={Paper} className={classes.container}>
@@ -165,19 +163,21 @@ function ProductTable({
           </TableBody>
         </Table>
       </TableContainer>
-      <TablePagination
-        rowsPerPageOptions={[20, 50, 100]}
-        component="div"
-        count={totalPosts}
-        backIconButtonText="Предыдущая страница"
-        labelRowsPerPage="Строк в странице"
-        nextIconButtonText="Следующая страница"
-        page={currentPage}
-        onPageChange={paginate}
-        rowsPerPage={postsPerPage}
-        onRowsPerPageChange={onRowsPerPageChange}
-        ActionsComponent={TablePaginationActions}
-      />
+      {typeof paginate !== "undefined" && (
+        <TablePagination
+          rowsPerPageOptions={[20, 50, 100]}
+          component="div"
+          count={totalPosts}
+          backIconButtonText="Предыдущая страница"
+          labelRowsPerPage="Строк в странице"
+          nextIconButtonText="Следующая страница"
+          page={currentPage}
+          onPageChange={paginate}
+          rowsPerPage={postsPerPage}
+          onRowsPerPageChange={onRowsPerPageChange}
+          ActionsComponent={TablePaginationActions}
+        />
+      )}
     </Fragment>
   );
 }

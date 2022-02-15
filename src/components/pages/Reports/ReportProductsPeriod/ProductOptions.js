@@ -135,7 +135,6 @@ export default function ProductOptions({
           variant="outlined"
           color="primary"
           fullWidth
-          //disabled={isLoading}
           size="large"
           onClick={handleSearch}
         >

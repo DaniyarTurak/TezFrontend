@@ -51,7 +51,7 @@ export default function ReportStockBalance({ companyProps }) {
   const [attributes, setAttributes] = useState([]);
   const [attributeTypes, setAttributeTypes] = useState([]);
   const [attrval, setAttrVal] = useState("");
-  const [dateAttrval, setDateAttrval] = useState(null)
+  const [dateAttrval, setDateAttrval] = useState(null);
   const [barcode, setBarcode] = useState("");
   const [brand, setBrand] = useState({ value: "@", label: "Все" });
   const [brands, setBrands] = useState([]);
@@ -104,12 +104,36 @@ export default function ReportStockBalance({ companyProps }) {
   ];
   const pageRangeDisplayed = 5;
 
-  useEffect(
-    () => {
-      if (debouncedCounterparty) {
-        if (debouncedCounterparty.trim().length === 0 || debouncedCounterparty.trim() === "Все") {
+  useEffect(() => {
+    if (debouncedCounterparty) {
+      if (
+        debouncedCounterparty.trim().length === 0 ||
+        debouncedCounterparty.trim() === "Все"
+      ) {
+        Axios.get("/api/counterparties/search", {
+          params: { counterparty: "" },
+        })
+          .then((res) => res.data)
+          .then((list) => {
+            const all = [{ label: "Все", value: "0" }];
+            const counterpartiesList = list.map((result) => {
+              return {
+                label: result.name,
+                value: result.id,
+              };
+            });
+            setCounterparties([...all, ...counterpartiesList]);
+          })
+          .catch((err) => {
+            ErrorAlert(err);
+          });
+      } else {
+        if (
+          debouncedCounterparty.trim().length >= 2 &&
+          debouncedCounterparty.trim() !== "Все"
+        ) {
           Axios.get("/api/counterparties/search", {
-            params: { counterparty: "" },
+            params: { counterparty: inputCounterparty },
           })
             .then((res) => res.data)
             .then((list) => {
@@ -126,31 +150,9 @@ export default function ReportStockBalance({ companyProps }) {
               ErrorAlert(err);
             });
         }
-        else {
-          if (debouncedCounterparty.trim().length >= 2 && debouncedCounterparty.trim() !== "Все") {
-            Axios.get("/api/counterparties/search", {
-              params: { counterparty: inputCounterparty },
-            })
-              .then((res) => res.data)
-              .then((list) => {
-                const all = [{ label: "Все", value: "0" }];
-                const counterpartiesList = list.map((result) => {
-                  return {
-                    label: result.name,
-                    value: result.id,
-                  };
-                });
-                setCounterparties([...all, ...counterpartiesList]);
-              })
-              .catch((err) => {
-                ErrorAlert(err);
-              });
-          };
-        }
       }
-    },
-    [debouncedCounterparty]
-  );
+    }
+  }, [debouncedCounterparty]);
 
   useEffect(() => {
     if (!company) {
@@ -257,21 +259,21 @@ export default function ReportStockBalance({ companyProps }) {
   const onAttributeChange = (event, a) => {
     setAttribute(a);
     getAttributeTypes(a.value);
-    setAttrVal("")
+    setAttrVal("");
   };
 
   const onAttributeTypeChange = (event, a) => {
-    setAttrVal({value: a.value, label: a.label})
+    setAttrVal({ value: a.value, label: a.label });
   };
 
   const onAttributeTextFieldChange = (event) => {
-    event.preventDefault()
+    event.preventDefault();
     setAttrVal(event.target.value);
-  }
+  };
   const onGroupingChange = (event) => {
     setGrouping(event.target.checked);
-    if(event.target.checked===false) {
-      clean()
+    if (event.target.checked === false) {
+      clean();
     }
   };
 
@@ -507,23 +509,29 @@ export default function ReportStockBalance({ companyProps }) {
       const page = activePage ? activePage + 1 : 1;
       setLoading(true);
       Axios.post("/api/report/stockbalance", {
-          attribute: attribute.value,
-          attrval: attrval.label === "Все" ? "" : attribute.format === "SPR" ? attrval.label : attribute.format === "DATE" ? dateAttrval : attrval,
-          barcode,
-          brand: brand.value,
-          category: category.value,
-          counterparty: counterparty.value,
-          company,
-          consignment,
-          date: Moment(date).format("YYYY-MM-DD"),
-          flag,
-          itemsPerPage,
-          notattr,
-          nds: nds.value,
-          pageNumber: page,
-          stockID: selectedStock.value,
-        },
-      )
+        attribute: attribute.value,
+        attrval:
+          attrval.label === "Все"
+            ? ""
+            : attribute.format === "SPR"
+            ? attrval.label
+            : attribute.format === "DATE"
+            ? dateAttrval
+            : attrval,
+        barcode,
+        brand: brand.value,
+        category: category.value,
+        counterparty: counterparty.value,
+        company,
+        consignment,
+        date: Moment(date).format("YYYY-MM-DD"),
+        flag,
+        itemsPerPage,
+        notattr,
+        nds: nds.value,
+        pageNumber: page,
+        stockID: selectedStock.value,
+      })
         .then((res) => res.data)
         .then((stockbalanceList) => {
           if (!totalprice || flag === true) {
@@ -673,14 +681,14 @@ export default function ReportStockBalance({ companyProps }) {
         onCategoryChange={onCategoryChange}
         onCategoryListInput={onCategoryListInput}
         onAttributeChange={onAttributeChange}
-        onAttributeTextFieldChange = {onAttributeTextFieldChange}
+        onAttributeTextFieldChange={onAttributeTextFieldChange}
         productSelectValue={productSelectValue}
         products={products}
         selectedStock={selectedStock}
         stockList={stockList}
         handleCounterpartyChange={handleCounterpartyChange}
         handleCounterpartyInputChange={handleCounterpartyInputChange}
-        clean = {clean}
+        clean={clean}
       />
 
       {!isLoading && stockbalance.length === 0 && (

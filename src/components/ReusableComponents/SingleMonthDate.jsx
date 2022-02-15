@@ -17,7 +17,7 @@ export default function SingleMonthDate({
           views={['year', 'month']}
           label="Год и Мес."
           minDate={new Date('2020-01-01')}
-          maxDate={new Date('2022-12-01')}
+          maxDate={new Date('2022-05-20')}
           value={date}
           onChange={onDateChange}
           renderInput={(params) => <TextField {...params} helperText={null} />}
