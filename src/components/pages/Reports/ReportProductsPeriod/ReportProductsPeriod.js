@@ -98,7 +98,7 @@ export default function ReportProductPerTransfer({ companyProps }) {
     }
 
     Axios.get(
-      `http://tezportal.ddns.net/api/report/movement/product?month=${date.getMonth() +
+      `/api/report/movement/product?month=${date.getMonth() +
         1}&year=${date.getFullYear()}${
         selectedStock.value === "0" ? `` : `&point=${selectedStock.value}`
       }${attribute.value === "@" ? `` : `&attribute=${attribute.value}`}${
