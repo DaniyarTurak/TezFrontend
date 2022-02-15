@@ -118,7 +118,8 @@ function ProductTable({
   selectedStock,
   onRowsPerPageChange,
 }) {
-  console.log("SelectedStock: ", selectedStock);
+  console.log("SelectedStock: ", selectedStock.value);
+
   return (
     <Fragment>
       <TableContainer component={Paper} className={classes.container}>
@@ -145,7 +146,11 @@ function ProductTable({
                   <StyledTableCell>
                     {idx + 1 + currentPage * postsPerPage}
                   </StyledTableCell>
-                  <StyledTableCell>{"1"}</StyledTableCell>
+                  <StyledTableCell>
+                    {selectedStock.value === "0"
+                      ? "Торговая точка"
+                      : selectedStock.label}
+                  </StyledTableCell>
                   <StyledTableCell align="center">
                     {product.code}
                   </StyledTableCell>
@@ -186,4 +191,4 @@ function ProductTable({
   );
 }
 
-export default React.memo(ProductTable);
+export default ProductTable;

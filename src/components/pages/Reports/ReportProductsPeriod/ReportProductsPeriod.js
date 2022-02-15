@@ -51,10 +51,7 @@ export default function ReportProductPerTransfer({ companyProps }) {
     value: "0",
     label: "Все",
   });
-  const [stockForTable, setStockForTable] = useState({
-    value: "0",
-    label: "Все",
-  });
+  const [selectedTableStock, setSelectedTableStock] = useState(false);
   const [stockList, setStockList] = useState([]);
 
   const [productsperiod, setProductsPeriod] = useState([]);
@@ -109,8 +106,6 @@ export default function ReportProductPerTransfer({ companyProps }) {
       parameters["value"] = val.label;
     }
 
-    console.log(parameters);
-
     // let val;
     // if (attribute.format === "DATE") {
     //   val = dateAttrval || "";
@@ -135,7 +130,7 @@ export default function ReportProductPerTransfer({ companyProps }) {
         if (productsList.length > 0) {
           setLoading(false);
           setProductsPeriod(productsList);
-          setStockForTable(selectedStock);
+          setSelectedTableStock(selectedStock);
         } else {
           setLoading(false);
           Alert.warning(`Нету данных по этому времени`, {
@@ -335,7 +330,7 @@ export default function ReportProductPerTransfer({ companyProps }) {
               productsperiod={currentPosts}
               postsPerPage={postsPerPage}
               totalPosts={productsperiod.length}
-              selectedStock={stockForTable}
+              selectedStock={selectedTableStock}
               onRowsPerPageChange={onRowsPerPageChange}
             />
           </Grid>
