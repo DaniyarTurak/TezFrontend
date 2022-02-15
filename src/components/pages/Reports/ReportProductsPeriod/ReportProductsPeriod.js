@@ -106,21 +106,7 @@ export default function ReportProductPerTransfer({ companyProps }) {
       parameters["value"] = val.label;
     }
 
-    // let val;
-    // if (attribute.format === "DATE") {
-    //   val = dateAttrval || "";
-    // } else {
-    //   val = attrval || "";
-    // }
-
-    // ?month=${date.getMonth() +
-    //   1}&year=${date.getFullYear()}${
-    //   selectedStock.value === "0" ? `` : `&point=${selectedStock.value}`
-    // }${attribute.value === "@" ? `` : `&attribute=${attribute.value}`}${
-    //   val.label !== "Все" ? `&value=${val.label}` : ``
-    // }
-
-    Axios.get(`http://tezportal.ddns.net/api/report/movement/product`, {
+    Axios.get(`/api/report/movement/product`, {
       params: parameters,
     })
       .then((res) => {

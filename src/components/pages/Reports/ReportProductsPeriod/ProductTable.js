@@ -118,8 +118,6 @@ function ProductTable({
   selectedStock,
   onRowsPerPageChange,
 }) {
-  console.log("SelectedStock: ", selectedStock.value);
-
   return (
     <Fragment>
       <TableContainer component={Paper} className={classes.container}>
