@@ -156,7 +156,7 @@ export default function ReportProductPerTransfer({ companyProps }) {
       Axios.get("/api/attributes/getsprattr", { params: { sprid, company } })
         .then((res) => res.data)
         .then((attributeTypes) => {
-          const all = [{ label: "Все", value: -1 }];
+          //const all = [{ label: "Все", value: -1 }];
           const attrtype = attributeTypes.map((attrtype) => {
             return {
               value: attrtype.id,
@@ -168,7 +168,7 @@ export default function ReportProductPerTransfer({ companyProps }) {
           newattrtype = attrtype.filter((value) => {
             return value.deleted === false;
           });
-          setAttributeTypes([...all, ...newattrtype]);
+          setAttributeTypes([...newattrtype]);
         })
         .catch((err) => {
           ErrorAlert(err);
