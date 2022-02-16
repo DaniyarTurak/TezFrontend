@@ -41,7 +41,7 @@ let AddErpUserForm = ({
   }, []);
 
   const getUserAccesses = () => {
-    Axios.get(`/api/erpuser/getuseraccesses/${userData.id}`)
+    Axios.get(`/api/erpuser/getuseraccesses?id=${userData.id}`)
       .then((res) => res.data)
       .then((data) => {
         setUserData((prev) => {
