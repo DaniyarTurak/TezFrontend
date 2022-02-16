@@ -52,7 +52,11 @@ function AddUserAccessForm({
       });
   };
   const getAccessFunctions = () => {
-    Axios.get(`/api/erpuser/getaccesses/${userData.id}`)
+    let id = "";
+    if (userData) {
+      id = userData.id;
+    }
+    Axios.get(`/api/erpuser/getaccesses?id=${id}`)
       .then((res) => res.data)
       .then((data) => {
         setAccessFunctions(data);

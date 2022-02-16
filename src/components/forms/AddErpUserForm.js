@@ -2,7 +2,6 @@ import React, { useState, useEffect, Fragment } from "react";
 import { Field, reduxForm, initialize } from "redux-form";
 import Axios from "axios";
 
-
 import { InputField, SelectField } from "../fields";
 import {
   RequiredField,
@@ -26,29 +25,33 @@ let AddErpUserForm = ({
   // const userData = location.state ? location.state.userData : null;
   const [isSubmitting, setSubmitting] = useState(false);
   const [accessForm, setAccessForm] = useState(false);
-  const [userData, setUserData] = useState(location.state ? location.state.userData : null);
+  const [userData, setUserData] = useState(
+    location.state ? location.state.userData : null
+  );
   const [userName, setUserName] = useState();
   const [roles, setRoles] = useState([]);
   useEffect(() => {
     if (userData) {
-      getUserAccesses()
-    };
+      getUserAccesses();
+    }
     if (userData) {
       dispatch(initialize("AddErpUserForm", userData));
     }
-    getRoles()
+    getRoles();
   }, []);
 
   const getUserAccesses = () => {
     Axios.get(`/api/erpuser/getuseraccesses/${userData.id}`)
-      .then(res => res.data)
+      .then((res) => res.data)
       .then((data) => {
-        setUserData((prev) => { return { ...prev, accesses: data[0].accesses } })
+        setUserData((prev) => {
+          return { ...prev, accesses: data[0].accesses };
+        });
       })
       .catch((err) => {
         console.log(err);
       });
-  }
+  };
 
   const getRoles = () => {
     Axios.get("/api/erpuser/roles")
@@ -68,14 +71,10 @@ let AddErpUserForm = ({
     if (value.length > 12) e.preventDefault();
   };
 
-
-
   const handleNextFunction = (data) => {
-    setUserName(data.name)
-    setAccessForm(true)
-  }
-
-
+    setUserName(data.name);
+    setAccessForm(true);
+  };
 
   return (
     <div id="addErpUser">
@@ -116,7 +115,7 @@ let AddErpUserForm = ({
         />
       ) : (
         <Fragment>
-          <form >
+          <form>
             <div className="loader">
               <div className="icon" />
             </div>
@@ -185,8 +184,6 @@ let AddErpUserForm = ({
               )}
             </dl>
 
-
-
             <button
               type="submit"
               className="btn btn-success"
@@ -209,7 +206,6 @@ let AddErpUserForm = ({
           </form>
         </Fragment>
       )}
-
     </div>
   );
 };

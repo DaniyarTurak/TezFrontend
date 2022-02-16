@@ -81,14 +81,11 @@ export default function ProductOptions({
             onChange={onAttributeTypeChange}
             options={attributeTypes.map((attr, idx) => {
               const temp = attr.label;
-              if (idx !== 0) {
-                return {
-                  label: `${parseInt(temp.split(".")[0])}`,
-                  value: attribute.value,
-                  deleted: attr.deleted,
-                };
-              }
-              return attr;
+              return {
+                label: `${parseInt(temp.split(".")[0])}`,
+                value: attribute.value,
+                deleted: attr.deleted,
+              };
             })}
             noOptions="Атрибут не найден"
             label="Значение Атрибута"
