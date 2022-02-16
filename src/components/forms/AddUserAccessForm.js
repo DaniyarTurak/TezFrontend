@@ -52,14 +52,19 @@ function AddUserAccessForm({
       });
   };
   const getAccessFunctions = () => {
-    let id = "";
-    if (userData) {
-      id = userData.id;
+    let currentId = history.location.state.userData.id;
+    if (!currentId) {
+      currentId = "";
     }
-    Axios.get(`/api/erpuser/getaccesses?id=${id}`)
+    Axios.get(`/api/erpuser/getaccesses?id=${currentId}`)
       .then((res) => res.data)
       .then((data) => {
         setAccessFunctions(data);
+        const accesses = data
+          .map((item) => item.access_functions)
+          .filter((item) => item.length > 0)
+          .flat(2);
+        setCheckedCheckboxes(accesses);
       })
       .catch((err) => {
         console.log(err);
@@ -196,6 +201,7 @@ function AddUserAccessForm({
     if (e !== undefined) {
       setRole({ value: item.value, label: item.label });
       const selectedRole = roles.find((role) => role.id == item.value);
+      //console.log("SelectedRoles: ", selectedRole.accesses); // [{id, code}]
       setCheckedCheckboxes(selectedRole.accesses);
     }
   };
@@ -220,6 +226,7 @@ function AddUserAccessForm({
       </Box>
     );
   };
+
   return (
     <div style={{ margin: "15px" }}>
       <h6 className="btn-one-line">
