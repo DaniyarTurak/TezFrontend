@@ -8,6 +8,7 @@ import Alert from "@mui/material/Alert";
 import Grid from "@material-ui/core/Grid";
 import { Select } from "antd";
 import "../styles/AddUserAccessForm.css";
+import CheckBoxList from "./CheckBoxList";
 
 const { Option } = Select;
 
@@ -227,6 +228,33 @@ function AddUserAccessForm({
     );
   };
 
+  const setAllChecks = (e, accesses) => {
+    const isChecked = e.target.checked;
+
+    const functionForCategory = accessFunctions
+      .map((a) => a.functions)
+      .flat(2)
+      .filter((a) => accesses.includes(a.id.toString()))
+      .map((a) => ({ id: a.id, code: a.code }));
+
+    if (isChecked) {
+      setCheckedCheckboxes(checkedCheckboxes.concat(functionForCategory));
+    } else {
+      setCheckedCheckboxes(
+        checkedCheckboxes.filter((a) => {
+          let isNotEqual = true;
+          for (let i in functionForCategory) {
+            if (functionForCategory[i].id === a.id) {
+              isNotEqual = false;
+              break;
+            }
+          }
+          return isNotEqual;
+        })
+      );
+    }
+  };
+
   return (
     <div style={{ margin: "15px" }}>
       <h6 className="btn-one-line">
@@ -269,13 +297,20 @@ function AddUserAccessForm({
         }}
       >
         {accessFunctions.map((category) => {
+          //console.log("Category: ", category);
           return (
-            <Fragment key={category.category}>
-              <div>
-                <p style={{ fontWeight: "bold" }}>{category.category}</p>
-                <div>{category.functions.map((fn) => children(fn))}</div>
-              </div>
-            </Fragment>
+            <CheckBoxList
+              key={category.category}
+              category={category.category}
+              functions={category.functions.map((fn) => children(fn))}
+              setAllChecks={setAllChecks}
+            />
+            // <Fragment key={category.category}>
+            //   <div>
+            //     <p style={{ fontWeight: "bold" }}>{category.category}</p>
+            //     <div>{category.functions.map((fn) => children(fn))}</div>
+            //   </div>
+            // </Fragment>
           );
         })}
       </div>

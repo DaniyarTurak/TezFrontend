@@ -188,9 +188,7 @@ export default function IncomeTable({
                   <OrderArrowMaterial ascending={ascending} />
                 )}
               </StyledTableCell>
-              <StyledTableCell align="center">
-                Наценка
-              </StyledTableCell>
+              <StyledTableCell align="center">Наценка</StyledTableCell>
               <StyledTableCell align="center">
                 <span
                   className="hand"
@@ -230,7 +228,10 @@ export default function IncomeTable({
                 )}
               </StyledTableCell>
               <StyledTableCell align="center">
-                <span className="hand" onClick={() => orderByFunction("datefrom_units")}> 
+                <span
+                  className="hand"
+                  onClick={() => orderByFunction("datefrom_units")}
+                >
                   Остаток на начало
                 </span>
                 {orderBy === "datefrom_units" && (
@@ -238,7 +239,10 @@ export default function IncomeTable({
                 )}
               </StyledTableCell>
               <StyledTableCell align="center">
-                <span className="hand" onClick={() => orderByFunction("dateto_units")}> 
+                <span
+                  className="hand"
+                  onClick={() => orderByFunction("dateto_units")}
+                >
                   Остаток на конец
                 </span>
                 {orderBy === "dateto_units" && (
@@ -256,7 +260,9 @@ export default function IncomeTable({
                   key={idx}
                   onClick={() => setSelectedID(idx)}
                 >
-                  <StyledTableCell>{idx + 1}</StyledTableCell>
+                  <StyledTableCell>
+                    {idx + 1 + page * rowsPerPage}
+                  </StyledTableCell>
                   <StyledTableCell>{product.name}</StyledTableCell>
                   <StyledTableCell align="center">
                     {product.code}
@@ -278,9 +284,17 @@ export default function IncomeTable({
                   </StyledTableCell>
 
                   <StyledTableCell align="center">
-                    {parseFloat((product.salesamount - product.cost) / (Number(product.salesamount) === 0 ? 1 : product.salesamount) * 100).toLocaleString("ru", {
-                      minimumFractionDigits: 1, maximumFractionDigits: 2
-                    })} %
+                    {parseFloat(
+                      ((product.salesamount - product.cost) /
+                        (Number(product.salesamount) === 0
+                          ? 1
+                          : product.salesamount)) *
+                        100
+                    ).toLocaleString("ru", {
+                      minimumFractionDigits: 1,
+                      maximumFractionDigits: 2,
+                    })}{" "}
+                    %
                   </StyledTableCell>
                   <StyledTableCell align="center">
                     {parseFloat(product.gross_profit).toLocaleString("ru", {
