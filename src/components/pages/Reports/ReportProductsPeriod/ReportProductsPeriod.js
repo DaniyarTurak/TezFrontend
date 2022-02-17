@@ -119,7 +119,7 @@ export default function ReportProductPerTransfer({ companyProps }) {
           setSelectedTableStock(selectedStock);
         } else {
           setLoading(false);
-          Alert.warning(`Нету данных по этому времени`, {
+          Alert.warning(`Нет данных`, {
             position: "top-right",
             effect: "bouncyflip",
             timeout: 3000,

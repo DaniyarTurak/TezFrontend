@@ -52,11 +52,11 @@ function AddUserAccessForm({
       });
   };
   const getAccessFunctions = () => {
-    let currentId = history.location.state.userData.id;
-    if (!currentId) {
-      currentId = "";
+    let id = "";
+    if (userData) {
+      id = userData.id;
     }
-    Axios.get(`/api/erpuser/getaccesses?id=${currentId}`)
+    Axios.get(`/api/erpuser/getaccesses?id=${id}`)
       .then((res) => res.data)
       .then((data) => {
         setAccessFunctions(data);
