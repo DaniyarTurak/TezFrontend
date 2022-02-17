@@ -8,7 +8,7 @@ import Alert from "@mui/material/Alert";
 import Grid from "@material-ui/core/Grid";
 import { Select } from "antd";
 import "../styles/AddUserAccessForm.css";
-import CheckBoxList from "./CheckBoxList";
+import CheckBoxList from "../ReusableComponents/CheckBoxList";
 
 const { Option } = Select;
 
