@@ -91,63 +91,70 @@
     "code": "rep_buyers"
   },
   {
-    "id": 24,
+    "id": 14,
+    "type": "report",
+    "route": "reportsaledproducts",
+    "caption": "Отчет по проданным товарам",
+    "code": "rep_saled_products"
+  },
+  {
+    "id": 101,
     "type": "stockreport",
     "route": "reportstockbalance",
     "caption": "Остаток на складе",
     "code": "whs_leftovers"
   },
   {
-    "id": 15,
+    "id": 102,
     "type": "stockreport",
     "route": "reportinvoicehistory",
     "caption": "История по накладным",
     "code": "whs_inv_history"
   },
   {
-    "id": 18,
+    "id": 103,
     "type": "stockreport",
     "route": "reportproductmovement",
     "caption": "Движение товара",
     "code": "whs_prod_move"
   },
   {
-    "id": 19,
+    "id": 104,
     "type": "stockreport",
     "route": "revision",
     "caption": "Ревизия",
     "code": "whs_revision"
   },
   {
-    "id": 115,
+    "id": 105,
     "type": "stockreport",
     "route": "reportholdingpage",
     "caption": "Холдинги",
     "code": "whs_holdings"
   },
   {
-    "id": 116,
+    "id": 106,
     "type": "stockreport",
     "route": "consignmentreports",
     "caption": "Консигнация",
     "code": "whs_consignment"
   },
   {
-    "id": 118,
+    "id": 108,
     "type": "stockreport",
     "route": "shelflife",
     "caption": "Сроки годности",
     "code": "whs_exp_dates"
   },
   {
-    "id": 119,
+    "id": 109,
     "type": "stockreport",
     "route": "reconciliation",
     "caption": "Сверка",
     "code": "whs_reconciliation"
   },
   {
-    "id": 120,
+    "id": 100,
     "type": "stockreport",
     "route": "productreportsperiod",
     "caption": "Отчеты по товарам за период",
