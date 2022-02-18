@@ -8,14 +8,15 @@ import SingleMaterialDate from "../../../ReusableComponents/SingleMaterialDate";
 import Moment from "moment";
 import TextField from "@material-ui/core/TextField";
 import Button from "@material-ui/core/Button";
-import ruLocale from 'date-fns/locale/ru';
+import ruLocale from "date-fns/locale/ru";
 import ClearIcon from "@material-ui/icons/Clear";
 import {
   MuiPickersUtilsProvider,
   KeyboardDatePicker,
 } from "@material-ui/pickers";
 import DateFnsUtils from "@date-io/date-fns";
-import IconButton from '@material-ui/core/IconButton';
+import IconButton from "@material-ui/core/IconButton";
+import CategorySelect from "../../../ReusableComponents/CategorySelect";
 
 export default function StockbalanceOptions({
   attrval,
@@ -26,7 +27,6 @@ export default function StockbalanceOptions({
   brand,
   brands,
   category,
-  categories,
   consignment,
   counterparty,
   counterparties,
@@ -48,13 +48,8 @@ export default function StockbalanceOptions({
   onProductListInput,
   onStockChange,
   onAttributeTextFieldChange,
-  onAttributeDateChange,
-  onCounterpartieChange,
-  onCounterpartieListInput,
   onBrandChange,
   onBrandListInput,
-  onCategoryChange,
-  onCategoryListInput,
   onAttributeChange,
   productSelectValue,
   products,
@@ -64,7 +59,7 @@ export default function StockbalanceOptions({
   handleCounterpartyInputChange,
   dateAttrval,
   setDateAttrval,
-  clean
+  setCategory,
 }) {
   return (
     <Fragment>
@@ -87,7 +82,7 @@ export default function StockbalanceOptions({
         isLoadingProducts={isLoadingProducts}
       />
 
-      <Grid item xs={3}>
+      <Grid item xs={4}>
         <AutocompleteSelect
           value={selectedStock}
           onChange={onStockChange}
@@ -96,7 +91,7 @@ export default function StockbalanceOptions({
           label="Склад"
         />
       </Grid>
-      <Grid item xs={3}>
+      <Grid item xs={4}>
         <AutocompleteSelect
           value={counterparty}
           options={counterparties}
@@ -107,7 +102,7 @@ export default function StockbalanceOptions({
         />
       </Grid>
 
-      <Grid item xs={3}>
+      <Grid item xs={4}>
         <AutocompleteSelect
           value={brand}
           onChange={onBrandChange}
@@ -117,7 +112,7 @@ export default function StockbalanceOptions({
           label="Бренды"
         />
       </Grid>
-
+      {/* 
       <Grid item xs={3}>
         <AutocompleteSelect
           value={category}
@@ -127,6 +122,9 @@ export default function StockbalanceOptions({
           noOptions="Категория не найдена"
           label="Категории"
         />
+      </Grid> */}
+      <Grid item xs={12}>
+        <CategorySelect setCategory={setCategory} category={category} />
       </Grid>
       <Grid item xs={3}>
         <AutocompleteSelect
