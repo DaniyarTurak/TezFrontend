@@ -1,101 +1,47 @@
-
-.react-dropdown-tree-select .dropdown {
-  position: relative;
-  display: table;
+.ant-select-focused:not(.ant-select-disabled).ant-select:not(.ant-select-customize-input)
+  .ant-select-selector {
+  border-color: #3f51b5;
+  box-shadow: 0 0 0 1px #3f51b5;
 }
-.react-dropdown-tree-select .dropdown .dropdown-trigger {
-  padding: 4px;
-  line-height: 20px;
-  max-height: 200px;
-  display: inline-block;
+
+.tree-select:hover {
+  border-color: black;
+}
+.ant-select-show-search.ant-select:not(.ant-select-customize-input)
+  .ant-select-selector:hover {
+  border-color: black;
+}
+.ant-select-focused:not(.ant-select-disabled).ant-select:not(.ant-select-customize-input)
+  .ant-select-selector:hover {
+  border-color: #3f51b5;
+  box-shadow: 0 0 0 1px #3f51b5;
+}
+.ant-select-show-search.ant-select:not(.ant-select-customize-input)
+  .ant-select-selector {
+  min-height: 54px;
+  max-height: 87px;
   overflow: auto;
-  border: 1px solid #b9b9b9;
+  border: 1px solid #c4c4c4;
   border-radius: 4px;
 }
-.react-dropdown-tree-select .dropdown .dropdown-trigger.arrow {
-  cursor: pointer;
+.ant-select:not(.ant-select-customize-input)
+  .ant-select-selector
+  .ant-select-selection-search-input {
+  margin: 10px 0 10px 0;
 }
-.tag-list {
-  display: inline;
-  padding: 0;
-  margin: 0;
-  color: black;
+.ant-select-single.ant-select-show-arrow .ant-select-selection-item,
+.ant-select-single.ant-select-show-arrow .ant-select-selection-placeholder {
+  margin-top: 10px;
+  color: #363636;
+  font-size: 14px;
 }
-.react-dropdown-tree-select .dropdown .dropdown-trigger.arrow.top:after {
-  content: "\25B2";
-  vertical-align: middle;
-  color: #757575;
-  margin-right: 2px;
-  font-size: 12px;
+.ant-select-selection-placeholder {
+  max-width: 1000px;
+  transition: max-width 100ms cubic-bezier(0, 0, 0.2, 1) 50ms;
 }
-.react-dropdown-tree-select .dropdown .dropdown-trigger.arrow.bottom:after {
-  content: "\25BC";
-  vertical-align: middle;
-  color: #757575;
-  margin-right: 2px;
-  font-size: 12px;
+.ant-select-multiple .ant-select-selection-item {
+  font-size: 14px;
 }
-.tag-item:last-child {
-  margin-right: 4px;
-}
-.tag-item {
-  display: inline-block;
-  margin: 4px;
-}
-.tag-item .search {
-  border: none;
-  border-bottom: 1px solid #ccc;
-  outline: none;
-}
-.treeview-selector input[type="checkbox"],
-input[type="radio"] {
-  display: none;
-}
-.treeview-selector .toggle {
-  font: normal normal normal 12px/1 "Material Icons";
-  color: #555;
-}
-.treeview-selector .toggle.collapsed::after {
-  content: "\+";
-  font-size: 20px;
-  font-weight: 900;
-}
-.treeview-selector .toggle.expanded::after {
-  content: "\-";
-  font-size: 20px;
-  font-weight: 900;
-}
-.tag {
-  background-color: #f4f4f4;
-  border: 1px solid #e9e9e9;
-  padding: 2px 0 2px 2px;
-  border-radius: 2px;
-  display: inline-block;
-}
-.tag-remove {
-  color: #a0a0a0;
-  font-size: 75%;
-  line-height: 100%;
-  cursor: pointer;
-  background-color: transparent;
-  border: none;
-  outline: none;
-}
-.react-dropdown-tree-select .dropdown .dropdown-content {
-  position: absolute;
-  padding: 4px;
-  z-index: 1;
-  background: #fff;
-  border-top: 1px solid rgba(0, 0, 0, 0.05);
-  -webkit-box-shadow: 0 5px 8px rgb(0 0 0 / 15%);
-  box-shadow: 0 5px 8px rgb(0 0 0 / 15%);
-}
-.react-dropdown-tree-select .dropdown .dropdown-content ul {
-  margin: 0;
-  padding: 0;
-}
-.node {
-  list-style: none;
-  white-space: nowrap;
-  padding: 4px;
+.anticon-close svg {
+  vertical-align: unset;
 }

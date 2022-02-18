@@ -55,8 +55,7 @@ export default function ReportStockBalance({ companyProps }) {
   const [barcode, setBarcode] = useState("");
   const [brand, setBrand] = useState({ value: "@", label: "Все" });
   const [brands, setBrands] = useState([]);
-  const [category, setCategory] = useState({ value: "@", label: "Все" });
-  const [categories, setCategories] = useState([]);
+  const [category, setCategory] = useState(undefined);
   const [consignment, setConsignment] = useState(false);
   const [counterparty, setCounterparty] = useState({
     value: "0",
@@ -158,7 +157,6 @@ export default function ReportStockBalance({ companyProps }) {
     if (!company) {
       getAttributes();
       getBrands();
-      getCategories();
       getCounterparties();
       getProducts();
       getStockList();
@@ -170,7 +168,6 @@ export default function ReportStockBalance({ companyProps }) {
     if (company) {
       getAttributes();
       getBrands();
-      getCategories();
       getCounterparties();
       getProducts();
       getStockList();
@@ -203,7 +200,7 @@ export default function ReportStockBalance({ companyProps }) {
     setAttrVal("");
     setBarcode("");
     setBrand({ value: "@", label: "Все" });
-    setCategory({ value: "@", label: "Все" });
+    setCategory(undefined);
     setCounterparty({ value: "0", label: "Все" });
     setDate(Moment().format("YYYY-MM-DD"));
     setStockbalance([]);
@@ -252,10 +249,6 @@ export default function ReportStockBalance({ companyProps }) {
     setBrand(b);
   };
 
-  const onCategoryChange = (event, c) => {
-    setCategory(c);
-  };
-
   const onAttributeChange = (event, a) => {
     setAttribute(a);
     getAttributeTypes(a.value);
@@ -299,9 +292,6 @@ export default function ReportStockBalance({ companyProps }) {
     if (reason === "input") getBrands(b);
   };
 
-  const onCategoryListInput = (event, c, reason) => {
-    if (reason === "input") getCategories(c);
-  };
 
   const getAttributes = () => {
     Axios.get("/api/attributes", { params: { deleted: false, company } })
@@ -362,25 +352,6 @@ export default function ReportStockBalance({ companyProps }) {
       });
   };
 
-  const getCategories = (inputValue) => {
-    Axios.get("/api/categories/search", {
-      params: { deleted: false, company, category: inputValue },
-    })
-      .then((res) => res.data)
-      .then((list) => {
-        const all = [{ label: "Все", value: "@" }];
-        const categoriesList = list.map((result) => {
-          return {
-            label: result.name,
-            value: result.id,
-          };
-        });
-        setCategories([...all, ...categoriesList]);
-      })
-      .catch((err) => {
-        ErrorAlert(err);
-      });
-  };
 
   const handleCounterpartyChange = (event, p) => {
     setCounterparty(p);
@@ -520,7 +491,7 @@ export default function ReportStockBalance({ companyProps }) {
             : attrval,
         barcode,
         brand: brand.value,
-        category: category.value,
+        category: category,
         counterparty: counterparty.value,
         company,
         consignment,
@@ -653,7 +624,6 @@ export default function ReportStockBalance({ companyProps }) {
         brand={brand}
         brands={brands}
         category={category}
-        categories={categories}
         consignment={consignment}
         counterparty={counterparty}
         counterparties={counterparties}
@@ -678,8 +648,6 @@ export default function ReportStockBalance({ companyProps }) {
         onCounterpartieListInput={onCounterpartieListInput}
         onBrandChange={onBrandChange}
         onBrandListInput={onBrandListInput}
-        onCategoryChange={onCategoryChange}
-        onCategoryListInput={onCategoryListInput}
         onAttributeChange={onAttributeChange}
         onAttributeTextFieldChange={onAttributeTextFieldChange}
         productSelectValue={productSelectValue}
@@ -689,6 +657,7 @@ export default function ReportStockBalance({ companyProps }) {
         handleCounterpartyChange={handleCounterpartyChange}
         handleCounterpartyInputChange={handleCounterpartyInputChange}
         clean={clean}
+        setCategory={setCategory}
       />
 
       {!isLoading && stockbalance.length === 0 && (
