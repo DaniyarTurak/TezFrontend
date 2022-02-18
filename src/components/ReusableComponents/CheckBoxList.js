@@ -3,7 +3,7 @@ import Checkbox from "@mui/material/Checkbox";
 
 const CheckBoxList = ({ category, functions, setAllChecks }) => {
   //console.log("Category: ", category);
-  //console.log("Functions: ", functions);<Checkbox onChange={() => setAllChecks()} />
+  //console.log("Functions: ", functions);
 
   return (
     <div>
