@@ -146,7 +146,11 @@ class CabinetSideBar extends Component {
   Can = (page) => {
     const userAccesses =
       JSON.parse(sessionStorage.getItem("isme-user-accesses")) || [];
-    return userAccesses.some((access) => access.code == page.code);
+    if (page.code) {
+      return userAccesses.some((access) => access.code == page.code);
+    } else {
+      return userAccesses.some((access) => access.category == page);
+    }
   };
 
   showTab = (index) => {
@@ -188,54 +192,55 @@ class CabinetSideBar extends Component {
             </NavLink>
 
             {this.state.topics.map((topic) =>
-              !topic.group ? (
-                <NavLink
-                  key={topic.id}
-                  activeClassName="nav-active"
-                  to={`/usercabinet/${topic.route}`}
-                >
-                  <li>{topic.name}</li>
-                </NavLink>
-              ) : (
-                this.getAccessPages(topic.group) && (
-                  <Fragment key={topic.id}>
-                    <li
-                      className="group-tab"
-                      onClick={() => this.showTab(topic.id)}
+              !topic.group
+                ? this.Can(topic.name) && (
+                    <NavLink
+                      key={topic.id}
+                      activeClassName="nav-active"
+                      to={`/usercabinet/${topic.route}`}
                     >
-                      {topic.groupName}
-                      <i
-                        className={`${
-                          topic.status === "active" ? "up" : "down"
+                      <li>{topic.name}</li>
+                    </NavLink>
+                  )
+                : this.getAccessPages(topic.group) && (
+                    <Fragment key={topic.id}>
+                      <li
+                        className="group-tab"
+                        onClick={() => this.showTab(topic.id)}
+                      >
+                        {topic.groupName}
+                        <i
+                          className={`${
+                            topic.status === "active" ? "up" : "down"
+                          }`}
+                        ></i>
+                      </li>
+                      <ul
+                        className={`subgroups-container ${
+                          topic.status === "active" ? "slide-down" : "slide-up"
                         }`}
-                      ></i>
-                    </li>
-                    <ul
-                      className={`subgroups-container ${
-                        topic.status === "active" ? "slide-down" : "slide-up"
-                      }`}
-                    >
-                      {topic.group.map((subgroup, ind) => (
-                        //если путь "ревизия" он будет в неё же и обращаться, иначе будет пробовать зайти в "/usercabinet/другойпуть"
-                        <Navigation
-                          key={ind}
-                          subgroup={subgroup}
-                          ind={ind}
-                          reportMode={reportMode}
-                          changeReportMode={this.changeReportMode}
-                          newsLoaded={() => newsLoaded()}
-                          disabled={!this.Can(subgroup)}
-                        />
-                      ))}
-                    </ul>
-                  </Fragment>
-                )
-              )
+                      >
+                        {topic.group.map((subgroup, ind) => (
+                          //если путь "ревизия" он будет в неё же и обращаться, иначе будет пробовать зайти в "/usercabinet/другойпуть"
+                          <Navigation
+                            key={ind}
+                            subgroup={subgroup}
+                            ind={ind}
+                            reportMode={reportMode}
+                            changeReportMode={this.changeReportMode}
+                            newsLoaded={() => newsLoaded()}
+                            disabled={!this.Can(subgroup)}
+                          />
+                        ))}
+                      </ul>
+                    </Fragment>
+                  )
             )}
-
-            <NavLink activeClassName="nav-active" to="/usercabinet/esf">
-              <li>ЭСФ</li>
-            </NavLink>
+            {this.Can("ЭСФ") && (
+              <NavLink activeClassName="nav-active" to="/usercabinet/esf">
+                <li>ЭСФ</li>
+              </NavLink>
+            )}
 
             <NavLink activeClassName="nav-active" to="/usercabinet/news">
               <li>Новости</li>

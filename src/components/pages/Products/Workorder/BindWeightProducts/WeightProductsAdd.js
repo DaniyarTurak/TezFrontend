@@ -1,22 +1,12 @@
 import React, { Fragment, useState, useEffect } from 'react'
-import { Field, reduxForm, reset, change } from "redux-form";
+import { reduxForm, reset} from "redux-form";
 import { makeStyles, createStyles } from '@material-ui/core/styles';
-import { InputField, InputGroup, SelectField } from "../../../../fields";
 import Grid from '@material-ui/core/Grid';
 import Axios from "axios";
 import Autocomplete from "@material-ui/lab/Autocomplete";
 import TextField from "@material-ui/core/TextField";
-import Button from "@material-ui/core/Button";
-import Typography from "@material-ui/core/Typography";
-import Box from "@material-ui/core/Box";
 import ErrorAlert from "../../../../ReusableComponents/ErrorAlert";
 import Alert from "react-s-alert";
-import Paper from '@material-ui/core/Paper';
-import { RequiredField, NoMoreThan13 } from "../../../../../validation";
-import Divider from '@material-ui/core/Divider';
-import SearchIcon from '@material-ui/icons/Search';
-import IconButton from '@material-ui/core/IconButton';
-import { CommonSeriesSettingsHoverStyle } from '../../../../../../node_modules/devextreme-react/chart';
 
 function WeightProductsAdd({ scale, getWeightProductsList }) {
     const useStylesAC = makeStyles(theme =>
@@ -72,7 +62,6 @@ function WeightProductsAdd({ scale, getWeightProductsList }) {
     const [weightProductsList, setWeightProductsList] = useState([])
     const [weightProdName, setWeightProdName] = useState("")
     const [weightProdId, setWeightProdId] = useState();
-    const [selectedProd, setSelectedProd] = useState(null);
     const [isLoading, setLoading] = useState(false);
     const [barcode, setBarcode] = useState("Сгенерируйте штрих код")
 
@@ -114,13 +103,6 @@ function WeightProductsAdd({ scale, getWeightProductsList }) {
             .catch((err) => {
                 ErrorAlert(err);
             })
-    }
-    const isSubmitting = () => {
-        console.log("")
-    }
-
-    const clean = () => {
-        console.log("")
     }
 
     const handleAdd = () => {

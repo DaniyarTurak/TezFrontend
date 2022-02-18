@@ -4,8 +4,6 @@ import Select from "react-select";
 import Alert from "react-s-alert";
 import ErrorAlert from "../../../../ReusableComponents/ErrorAlert";
 import WarningDelete from "../../../ProductsWeight/Alerts/WarningDelete";
-import SweetAlert from "react-bootstrap-sweetalert";
-import Grid from '@material-ui/core/Grid';
 import WeightProductsAdd from './WeightProductsAdd';
 import WeightProductsTable from './WeightProductsTable';
 import WeightProductsSave from './WeightProductsSave';
@@ -37,14 +35,11 @@ function BindWeightProducts() {
         overlay: { zIndex: 10 },
     };
 
-
-    const [stock, setStock] = useState("");
     const [points, setPoints] = useState([]);
     const [point, setPoint] = useState("");
     const [scale, setScale] = useState("");
     const [scales, setScales] = useState([]);
     const [isSubmitting, setSubmitting] = useState(false);
-    const [sweetalert, setSweetAlert] = useState("");
     const [isWeightProductAdd, setIsWeightProductAdd] = useState(false)
     const [weightProductsList, setWeightProductsList] = useState([]);
     const [editingProduct, setEditingProduct] = useState("");
@@ -52,7 +47,6 @@ function BindWeightProducts() {
     const [isEditing, setEditing] = useState(false);
     const [isModalOpen, setModalOpen] = useState(false);
     const [isDeleteModalOpen, setDeleteModalOpen] = useState(false);
-    const [inStock, setInStock] = useState(false)
 
     useEffect(() => {
         getPoints();
@@ -254,10 +248,6 @@ function BindWeightProducts() {
             });
     };
 
-    const clear = () => {
-        setScale("");
-        setPoint(""); setSubmitting(false);
-    };
 
     const onScaleChange = (s) => {
         setScale(s);

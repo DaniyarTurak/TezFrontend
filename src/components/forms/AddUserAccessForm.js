@@ -191,6 +191,7 @@ function AddUserAccessForm({
           (checkedCheckbox) => checkedCheckbox.id != data.id
         )
       );
+
     } else {
       setCheckedCheckboxes(
         checkedCheckboxes.concat({ id: data.id, code: data.code })
@@ -228,9 +229,8 @@ function AddUserAccessForm({
     );
   };
 
-  const setAllChecks = (e, accesses) => {
+  const setAllChecks = (e, accesses, setCheckedAll) => {
     const isChecked = e.target.checked;
-
     const functionForCategory = accessFunctions
       .map((a) => a.functions)
       .flat(2)
@@ -239,6 +239,7 @@ function AddUserAccessForm({
 
     if (isChecked) {
       setCheckedCheckboxes(checkedCheckboxes.concat(functionForCategory));
+      setCheckedAll(true)
     } else {
       setCheckedCheckboxes(
         checkedCheckboxes.filter((a) => {
@@ -252,6 +253,7 @@ function AddUserAccessForm({
           return isNotEqual;
         })
       );
+      setCheckedAll(false)
     }
   };
 
@@ -304,6 +306,7 @@ function AddUserAccessForm({
               category={category.category}
               functions={category.functions.map((fn) => children(fn))}
               setAllChecks={setAllChecks}
+              accessFunctions={category.access_functions}
             />
             // <Fragment key={category.category}>
             //   <div>
