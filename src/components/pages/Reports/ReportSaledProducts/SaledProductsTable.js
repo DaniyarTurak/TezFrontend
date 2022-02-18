@@ -108,7 +108,15 @@ TablePaginationActions.propTypes = {
   rowsPerPage: PropTypes.number.isRequired,
 };
 
-function SaledProductsTable({ classes, products }) {
+function SaledProductsTable({
+  classes,
+  saledProducts,
+  currentPage,
+  postsPerPage,
+  totalPosts,
+  onPaginate,
+  onRowsPerPageChange,
+}) {
   return (
     <Fragment>
       <TableContainer component={Paper} className={classes.container}>
@@ -130,10 +138,12 @@ function SaledProductsTable({ classes, products }) {
             </TableRow>
           </TableHead>
           <TableBody>
-            {products.map((product, idx) => {
+            {saledProducts.map((product, idx) => {
               return (
                 <TableRow key={idx}>
-                  <StyledTableCell>{idx + 1}</StyledTableCell>
+                  <StyledTableCell>
+                    {idx + 1 + currentPage * postsPerPage}
+                  </StyledTableCell>
                   <StyledTableCell align="center">
                     {product.pointname}
                   </StyledTableCell>
@@ -164,39 +174,10 @@ function SaledProductsTable({ classes, products }) {
                 </TableRow>
               );
             })}
-            {/* {productsperiod.map((product, idx) => {
-              return (
-                <TableRow key={idx}>
-                  <StyledTableCell>
-                    {idx + 1 + currentPage * postsPerPage}
-                  </StyledTableCell>
-                  <StyledTableCell>
-                    {selectedStock.value === "0"
-                      ? "Торговая точка"
-                      : selectedStock.label}
-                  </StyledTableCell>
-                  <StyledTableCell align="center">
-                    {product.code}
-                  </StyledTableCell>
-                  <StyledTableCell align="center">
-                    {product.name}
-                  </StyledTableCell>
-                  <StyledTableCell align="center">
-                    {product.income}
-                  </StyledTableCell>
-                  <StyledTableCell align="center">
-                    {product.outcome}
-                  </StyledTableCell>
-                  <StyledTableCell align="center">
-                    {product.units}
-                  </StyledTableCell>
-                </TableRow>
-              );
-            })} */}
           </TableBody>
         </Table>
       </TableContainer>
-      {/* {typeof paginate !== "undefined" && (
+      {typeof onPaginate !== "undefined" && (
         <TablePagination
           rowsPerPageOptions={[20, 50, 100]}
           component="div"
@@ -205,12 +186,12 @@ function SaledProductsTable({ classes, products }) {
           labelRowsPerPage="Строк в странице"
           nextIconButtonText="Следующая страница"
           page={currentPage}
-          onPageChange={paginate}
+          onPageChange={onPaginate}
           rowsPerPage={postsPerPage}
           onRowsPerPageChange={onRowsPerPageChange}
           ActionsComponent={TablePaginationActions}
         />
-      )} */}
+      )}
     </Fragment>
   );
 }
