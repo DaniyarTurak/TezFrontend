@@ -103,46 +103,40 @@ export default function ReportPage({ type, history, location }) {
 
           <div className="row mt-10">
             <div className="col-md-12">
-              {typeMode === "report" &&
-              reportMode === "certificatespage" && ( //&& checkAccess("rep_certificates")
-                  <CertificatesPage
-                    history={history}
-                    location={location}
-                    parameters={parameters}
-                  />
-                )}
+              {typeMode === "report" && reportMode === "certificatespage" && (
+                <CertificatesPage
+                  history={history}
+                  location={location}
+                  parameters={parameters}
+                />
+              )}
+
+              {typeMode === "report" && reportMode === "reportcashboxstate" && (
+                <ReportCashboxState history={history} location={location} />
+              )}
+
+              {typeMode === "report" && reportMode === "reportsalessection" && (
+                <ReportSalesSection history={history} location={location} />
+              )}
+
+              {typeMode === "report" && reportMode === "reporttransactions" && (
+                <ReportTransactions
+                  history={history}
+                  location={location}
+                  parameters={parameters}
+                />
+              )}
+
+              {typeMode === "report" && reportMode === "reportsales" && (
+                <ReportSales history={history} location={location} />
+              )}
+
+              {typeMode === "report" && reportMode === "reportsalesplan" && (
+                <ReportSalesPlan history={history} location={location} />
+              )}
 
               {typeMode === "report" &&
-              reportMode === "reportcashboxstate" && ( //&& checkAccess("rep_checkout")
-                  <ReportCashboxState history={history} location={location} />
-                )}
-
-              {typeMode === "report" &&
-              reportMode === "reportsalessection" && ( //&& checkAccess("rep_sales")
-                  <ReportSalesSection history={history} location={location} />
-                )}
-
-              {typeMode === "report" &&
-              reportMode === "reporttransactions" && ( // && checkAccess("rep_checks")
-                  <ReportTransactions
-                    history={history}
-                    location={location}
-                    parameters={parameters}
-                  />
-                )}
-
-              {typeMode === "report" &&
-              reportMode === "reportsales" && ( //&& checkAccess("rep_prod_solds")
-                  <ReportSales history={history} location={location} />
-                )}
-
-              {typeMode === "report" &&
-              reportMode === "reportsalesplan" && ( //&& checkAccess("rep_single_bonus")
-                  <ReportSalesPlan history={history} location={location} />
-                )}
-
-              {typeMode === "report" &&
-              reportMode === "reportsalesplanteam" && ( //&& checkAccess("rep_team_bonus")
+                reportMode === "reportsalesplanteam" && (
                   <ReportSalesPlanTeam
                     holding={false}
                     companyProps={""}
@@ -151,54 +145,48 @@ export default function ReportPage({ type, history, location }) {
                   />
                 )}
 
-              {typeMode === "report" &&
-              reportMode === "reportincome" && ( //&& checkAccess("rep_gross_profit")
-                  <ReportIncome history={history} location={location} />
-                )}
+              {typeMode === "report" && reportMode === "reportincome" && (
+                <ReportIncome history={history} location={location} />
+              )}
 
-              {typeMode === "report" &&
-              reportMode === "reportdiscounts" && ( //&& checkAccess("rep_discounts")
-                  <ReportDiscounts history={history} location={location} />
-                )}
+              {typeMode === "report" && reportMode === "reportdiscounts" && (
+                <ReportDiscounts history={history} location={location} />
+              )}
 
-              {typeMode === "report" &&
-              reportMode === "reportconsultants" && ( //&& checkAccess("rep_consultants")
-                  <ReportConsultants history={history} location={location} />
-                )}
+              {typeMode === "report" && reportMode === "reportconsultants" && (
+                <ReportConsultants history={history} location={location} />
+              )}
 
-              {typeMode === "report" &&
-              reportMode === "reportFizCustomers" && ( //&& checkAccess("rep_buyers")
-                  <ReportFizCustomers
-                    holding={false}
-                    company={""}
-                    history={history}
-                    location={location}
-                  />
-                )}
-              {typeMode === "report" &&
-              reportMode === "reportdebtpage" && ( //&& checkAccess("rep_debt_book")
-                  <ReportDebtPage history={history} location={location} />
-                )}
-              {typeMode === "report" &&
-              reportMode === "abcxyz" && ( //&& checkAccess("rep_abc_xyz")
-                  <AbcXyzPage history={history} location={location} />
-                )}
-              {typeMode === "report" &&
+              {typeMode === "report" && reportMode === "reportFizCustomers" && (
+                <ReportFizCustomers
+                  holding={false}
+                  company={""}
+                  history={history}
+                  location={location}
+                />
+              )}
+              {typeMode === "report" && reportMode === "reportdebtpage" && (
+                <ReportDebtPage history={history} location={location} />
+              )}
+              {typeMode === "report" && reportMode === "abcxyz" && (
+                <AbcXyzPage history={history} location={location} />
+              )}
+              {/* {typeMode === "report" &&
                 reportMode === "reportsaledproducts" && (
                   <ReportSaledProducts history={history} location={location} />
-                )}
+                )} */}
 
               {typeMode === "stockreport" &&
-              reportMode === "reportholdingpage" && ( //&& checkAccess("whs_holdings")
+                reportMode === "reportholdingpage" && (
                   <ReportHoldingPage history={history} location={location} />
                 )}
               {typeMode === "stockreport" &&
-              reportMode === "reportstockbalance" && ( //&& checkAccess("whs_leftovers")
+                reportMode === "reportstockbalance" && (
                   <ReportStockBalance history={history} location={location} />
                 )}
 
               {typeMode === "stockreport" &&
-              reportMode === "reportinvoicehistory" && ( //&& checkAccess("whs_inv_history")
+                reportMode === "reportinvoicehistory" && (
                   <ReportInvoiceHistory
                     history={history}
                     location={location}
@@ -207,7 +195,7 @@ export default function ReportPage({ type, history, location }) {
                 )}
 
               {typeMode === "stockreport" &&
-              reportMode === "reportproductmovement" && ( //&& checkAccess("whs_prod_move")
+                reportMode === "reportproductmovement" && (
                   <ReportProductMovement
                     history={history}
                     location={location}
@@ -215,13 +203,12 @@ export default function ReportPage({ type, history, location }) {
                   />
                 )}
 
-              {typeMode === "stockreport" &&
-              reportMode === "revision" && ( //&& checkAccess("whs_revision")
-                  <ReportRevision history={history} location={location} />
-                )}
+              {typeMode === "stockreport" && reportMode === "revision" && (
+                <ReportRevision history={history} location={location} />
+              )}
 
               {typeMode === "stockreport" &&
-              reportMode === "consignmentreports" && ( //&& checkAccess("whs_consignment")
+                reportMode === "consignmentreports" && (
                   <ConsignmentReports
                     history={history}
                     location={location}
@@ -229,12 +216,11 @@ export default function ReportPage({ type, history, location }) {
                   />
                 )}
 
+              {typeMode === "stockreport" && reportMode === "shelflife" && (
+                <ShelfLifePage history={history} location={location} />
+              )}
               {typeMode === "stockreport" &&
-              reportMode === "shelflife" && ( //&& checkAccess("whs_exp_dates")
-                  <ShelfLifePage history={history} location={location} />
-                )}
-              {typeMode === "stockreport" &&
-              reportMode === "reconciliation" && ( //&& checkAccess("whs_reconciliation")
+                reportMode === "reconciliation" && (
                   <ReconciliationPage history={history} location={location} />
                 )}
 

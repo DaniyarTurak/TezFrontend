@@ -25,6 +25,8 @@ export default function ReportSaledProducts({ companyProps }) {
   const company = companyProps ? companyProps.value : "";
   const classes = useStyles();
   const [barcode, setBarcode] = useState("");
+  const [brand, setBrand] = useState({ value: "@", label: "Все" });
+  const [brands, setBrands] = useState([]);
   const [counterparty, setCounterparty] = useState({
     value: "0",
     label: "Все",
@@ -49,6 +51,10 @@ export default function ReportSaledProducts({ companyProps }) {
 
   useEffect(() => {
     getTableData();
+    getBrands();
+    getCounterparties();
+    getProducts();
+    getStockList();
   }, [company]);
 
   const getTableData = () => {
@@ -143,6 +149,24 @@ export default function ReportSaledProducts({ companyProps }) {
       });
   };
 
+  const getBrands = (inputValue) => {
+    Axios.get("/api/brand/search", { params: { brand: inputValue, company } })
+      .then((res) => res.data)
+      .then((list) => {
+        const all = [{ label: "Все", value: "@" }];
+        const brandsList = list.map((result) => {
+          return {
+            label: result.brand,
+            value: result.id,
+          };
+        });
+        setBrands([...all, ...brandsList]);
+      })
+      .catch((err) => {
+        ErrorAlert(err);
+      });
+  };
+
   // Get current posts
   const indexOfLastPost = (currentPage + 1) * postsPerPage;
   const indexOfFirstPost = indexOfLastPost - postsPerPage;
@@ -170,6 +194,14 @@ export default function ReportSaledProducts({ companyProps }) {
 
   const onBarcodeKeyDown = (e) => {
     if (e.keyCode === 13) getProductByBarcode(barcode);
+  };
+
+  const onBrandChange = (event, b) => {
+    setBrand(b);
+  };
+
+  const onBrandListInput = (event, b, reason) => {
+    if (reason === "input") getBrands(b);
   };
 
   const onCounterpartieChange = (event, c) => {
@@ -206,6 +238,12 @@ export default function ReportSaledProducts({ companyProps }) {
     <Grid container spacing={2}>
       <SaledProductsOptions
         barcode={barcode}
+        brand={brand}
+        brands={brands}
+        counterparty={counterparty}
+        counterparties={counterparties}
+        handleCounterpartyChange={handleCounterpartyChange}
+        handleCounterpartyInputChange={handleCounterpartyInputChange}
         productSelectValue={productSelectValue}
         products={products}
         saledProducts={saledProducts}
@@ -213,6 +251,7 @@ export default function ReportSaledProducts({ companyProps }) {
         stockList={stockList}
         onBarcodeChange={onBarcodeChange}
         onBarcodeKeyDown={onBarcodeKeyDown}
+        onBrandChange={onBrandChange}
         onStockChange={onStockChange}
         onProductChange={onProductChange}
         onProductListInput={onProductListInput}

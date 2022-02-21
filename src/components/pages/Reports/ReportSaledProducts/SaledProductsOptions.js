@@ -19,6 +19,10 @@ import IconButton from "@material-ui/core/IconButton";
 
 export default function SaledProductsOptions({
   barcode,
+  counterparty,
+  counterparties,
+  handleCounterpartyChange,
+  handleCounterpartyInputChange,
   products,
   productSelectValue,
   selectedStock,
@@ -51,7 +55,7 @@ export default function SaledProductsOptions({
           label="Склад"
         />
       </Grid>
-      {/* <Grid item xs={3}>
+      <Grid item xs={3}>
         <AutocompleteSelect
           value={counterparty}
           options={counterparties}
@@ -62,7 +66,7 @@ export default function SaledProductsOptions({
         />
       </Grid>
 
-      <Grid item xs={3}>
+      {/* <Grid item xs={3}>
         <AutocompleteSelect
           value={brand}
           onChange={onBrandChange}
@@ -100,7 +104,7 @@ export default function SaledProductsOptions({
         >
           Поиск
         </Button>
-      </Grid> */}
+      </Grid>  */}
     </Fragment>
   );
 }
