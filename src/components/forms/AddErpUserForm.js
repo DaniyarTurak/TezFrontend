@@ -1,16 +1,11 @@
 import React, { useState, useEffect, Fragment } from "react";
 import { Field, reduxForm, initialize } from "redux-form";
 import Axios from "axios";
-
-import { InputField, SelectField } from "../fields";
+import { InputField} from "../fields";
 import {
   RequiredField,
-  matchPasswords,
-  passwordLength,
   ValidateIDN,
 } from "../../validation";
-
-import Alert from "react-s-alert";
 import AddUserAccessForm from "./AddUserAccessForm";
 
 let AddErpUserForm = ({
@@ -29,7 +24,6 @@ let AddErpUserForm = ({
     location.state ? location.state.userData : null
   );
   const [userName, setUserName] = useState();
-  const [roles, setRoles] = useState([]);
   useEffect(() => {
     if (userData) {
       getUserAccesses();
@@ -37,7 +31,6 @@ let AddErpUserForm = ({
     if (userData) {
       dispatch(initialize("AddErpUserForm", userData));
     }
-    getRoles();
   }, []);
 
   const getUserAccesses = () => {
@@ -47,17 +40,6 @@ let AddErpUserForm = ({
         setUserData((prev) => {
           return { ...prev, accesses: data[0].accesses };
         });
-      })
-      .catch((err) => {
-        console.log(err);
-      });
-  };
-
-  const getRoles = () => {
-    Axios.get("/api/erpuser/roles")
-      .then((res) => res.data)
-      .then((data) => {
-        setRoles(data);
       })
       .catch((err) => {
         console.log(err);
@@ -111,7 +93,6 @@ let AddErpUserForm = ({
           dispatch={dispatch}
           reset={reset}
           userName={userName}
-          roles={roles}
         />
       ) : (
         <Fragment>
@@ -156,30 +137,6 @@ let AddErpUserForm = ({
                       validate={[RequiredField]}
                     />
                   </dd>
-
-                  {/* <dt>Пароль</dt>
-                  <dd>
-                    <Field
-                      name="user_password"
-                      component={InputField}
-                      type="password"
-                      placeholder="6 и более символов"
-                      className="form-control"
-                      validate={[RequiredField, passwordLength, matchPasswords]}
-                    />
-                  </dd>
-
-                  <dt>Подтвердите пароль</dt>
-                  <dd>
-                    <Field
-                      name="confirmUserPassword"
-                      component={InputField}
-                      type="password"
-                      placeholder="Введите пароль еще раз"
-                      className="form-control"
-                      validate={[RequiredField, matchPasswords]}
-                    />
-                  </dd> */}
                 </Fragment>
               )}
             </dl>

@@ -25,7 +25,7 @@ function AddUserAccessForm({
   userName,
 }) {
   const [checkedCheckboxes, setCheckedCheckboxes] = useState(
-    userData ? userData.accesses : []
+    userData ? userData.accesses? userData.accesses: [] : []
   );
   const [accessFunctions, setAccessFunctions] = useState([]);
   const [role, setRole] = useState({ value: "", label: "Шаблон" });
@@ -229,7 +229,7 @@ function AddUserAccessForm({
     );
   };
 
-  const setAllChecks = (e, accesses, setCheckedAll) => {
+  const setAllChecks = (e, accesses) => {
     const isChecked = e.target.checked;
     const functionForCategory = accessFunctions
       .map((a) => a.functions)
@@ -239,7 +239,6 @@ function AddUserAccessForm({
 
     if (isChecked) {
       setCheckedCheckboxes(checkedCheckboxes.concat(functionForCategory));
-      setCheckedAll(true)
     } else {
       setCheckedCheckboxes(
         checkedCheckboxes.filter((a) => {
@@ -253,7 +252,6 @@ function AddUserAccessForm({
           return isNotEqual;
         })
       );
-      setCheckedAll(false)
     }
   };
 
@@ -306,7 +304,8 @@ function AddUserAccessForm({
               category={category.category}
               functions={category.functions.map((fn) => children(fn))}
               setAllChecks={setAllChecks}
-              accessFunctions={category.access_functions}
+              checkedCheckboxes={checkedCheckboxes}
+              allFunctions={category.functions}
             />
             // <Fragment key={category.category}>
             //   <div>
