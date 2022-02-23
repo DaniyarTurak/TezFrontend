@@ -130,6 +130,7 @@ function SaledProductsTable({
               </StyledTableCell>
               <StyledTableCell align="center">Штрих-код</StyledTableCell>
               <StyledTableCell align="center">Цена продажи</StyledTableCell>
+              <StyledTableCell align="center">Цена закупки</StyledTableCell>
               <StyledTableCell align="center">Количество</StyledTableCell>
               <StyledTableCell align="center">Бренд</StyledTableCell>
               <StyledTableCell align="center">Категория</StyledTableCell>
@@ -155,6 +156,9 @@ function SaledProductsTable({
                   </StyledTableCell>
                   <StyledTableCell align="center">
                     {product.price}
+                  </StyledTableCell>
+                  <StyledTableCell align="center">
+                    {product.purchaseprice}
                   </StyledTableCell>
                   <StyledTableCell align="center">
                     {product.units}

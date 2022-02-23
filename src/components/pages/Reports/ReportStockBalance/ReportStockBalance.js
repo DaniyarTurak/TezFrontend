@@ -40,7 +40,7 @@ const useStyles = makeStyles((theme) => ({
   },
 }));
 
-export default function ReportStockBalance({ companyProps }) {
+export default function ReportStockBalance({ companyProps, pageChange }) {
   const classes = useStyles();
   const [activePage, setActivePage] = useState(0);
   const [attribute, setAttribute] = useState({
@@ -292,7 +292,6 @@ export default function ReportStockBalance({ companyProps }) {
     if (reason === "input") getBrands(b);
   };
 
-
   const getAttributes = () => {
     Axios.get("/api/attributes", { params: { deleted: false, company } })
       .then((res) => res.data)
@@ -351,7 +350,6 @@ export default function ReportStockBalance({ companyProps }) {
         ErrorAlert(err);
       });
   };
-
 
   const handleCounterpartyChange = (event, p) => {
     setCounterparty(p);
@@ -658,6 +656,7 @@ export default function ReportStockBalance({ companyProps }) {
         handleCounterpartyInputChange={handleCounterpartyInputChange}
         clean={clean}
         setCategory={setCategory}
+        pageChange={pageChange}
       />
 
       {!isLoading && stockbalance.length === 0 && (

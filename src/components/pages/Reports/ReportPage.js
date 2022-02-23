@@ -11,7 +11,7 @@ import ReportInvoiceHistory from "./ReportInvoiceHistory";
 import ReportFizCustomers from "./ReportFizCustomers";
 import ReportProductMovement from "./ReportProductMovement";
 import ReportRevision from "./ReportRevision";
-import ReportStockBalance from "./ReportStockBalance";
+//import ReportStockBalance from "./ReportStockBalance";
 import ReportSalesSection from "./ReportSalesSection";
 import ReportSalesPlan from "./ReportSalesPlan";
 import ReportSalesPlanTeam from "./ReportSalesPlanTeam";
@@ -22,7 +22,7 @@ import ShelfLifePage from "./ShelfLifePage";
 import ReconciliationPage from "./ReconciliationPage";
 import ReportDebtPage from "./ReportDebtPage";
 import ReportProductsPeriod from "./ReportProductsPeriod";
-import ReportSaledProducts from "./ReportSaledProducts/ReportSaledProducts";
+import ReportStockBalanceParent from "./ReportStockBalanceParent";
 
 export default function ReportPage({ type, history, location }) {
   const [parameters, setParameters] = useState("");
@@ -172,10 +172,10 @@ export default function ReportPage({ type, history, location }) {
                 <AbcXyzPage history={history} location={location} />
               )}
 
-              {typeMode === "report" &&
+              {/* {typeMode === "report" &&
                 reportMode === "reportsaledproducts" && (
                   <ReportSaledProducts history={history} location={location} />
-                )}
+                )} */}
 
               {typeMode === "stockreport" &&
                 reportMode === "reportholdingpage" && (
@@ -183,7 +183,12 @@ export default function ReportPage({ type, history, location }) {
                 )}
               {typeMode === "stockreport" &&
                 reportMode === "reportstockbalance" && (
-                  <ReportStockBalance history={history} location={location} />
+                  //<ReportStockBalance history={history} location={location} />
+                  //<ReportSaledProducts history={history} location={location} />
+                  <ReportStockBalanceParent
+                    history={history}
+                    location={location}
+                  />
                 )}
 
               {typeMode === "stockreport" &&

@@ -91,13 +91,6 @@
     "code": "rep_buyers"
   },
   {
-    "id": 14,
-    "type": "report",
-    "route": "reportsaledproducts",
-    "caption": "Отчет по проданным товарам",
-    "code": "rep_saled_products"
-  },
-  {
     "id": 101,
     "type": "stockreport",
     "route": "reportstockbalance",
