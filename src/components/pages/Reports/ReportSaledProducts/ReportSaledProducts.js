@@ -27,56 +27,122 @@ export default function ReportSaledProducts({ companyProps }) {
   const [barcode, setBarcode] = useState("");
   const [brand, setBrand] = useState({ value: "@", label: "Все" });
   const [brands, setBrands] = useState([]);
+  const [category, setCategory] = useState(undefined);
   const [counterparty, setCounterparty] = useState({
     value: "0",
     label: "Все",
   });
   const [counterparties, setCounterparties] = useState([]);
+
   const [products, setProducts] = useState([]);
   const [productSelectValue, setProductSelectValue] = useState({
     value: "",
     label: "Все",
   });
-  const [inputCounterparty, setInputCounterparty] = useState("");
-  const debouncedCounterparty = useDebounce(inputCounterparty, 500);
   const [saledProducts, setSaledProducts] = useState([]);
   const [selectedStock, setSelectedStock] = useState({
     value: "0",
     label: "Все",
   });
   const [stockList, setStockList] = useState([]);
+  const [isLoading, setIsLoading] = useState(false);
+
+  const [inputCounterparty, setInputCounterparty] = useState("");
+  const debouncedCounterparty = useDebounce(inputCounterparty, 500);
 
   const [currentPage, setCurrentPage] = useState(0);
   const [postsPerPage, setPostsPerPage] = useState(50);
 
   useEffect(() => {
-    getTableData();
+    //getTableData();
     getBrands();
     getCounterparties();
     getProducts();
     getStockList();
   }, [company]);
 
+  useEffect(() => {
+    if (debouncedCounterparty) {
+      if (
+        debouncedCounterparty.trim().length === 0 ||
+        debouncedCounterparty.trim() === "Все"
+      ) {
+        Axios.get("/api/counterparties/search", {
+          params: { counterparty: "" },
+        })
+          .then((res) => res.data)
+          .then((list) => {
+            const all = [{ label: "Все", value: "0" }];
+            const counterpartiesList = list.map((result) => {
+              return {
+                label: result.name,
+                value: result.id,
+              };
+            });
+            setCounterparties([...all, ...counterpartiesList]);
+          })
+          .catch((err) => {
+            ErrorAlert(err);
+          });
+      } else {
+        if (
+          debouncedCounterparty.trim().length >= 2 &&
+          debouncedCounterparty.trim() !== "Все"
+        ) {
+          Axios.get("/api/counterparties/search", {
+            params: { counterparty: inputCounterparty },
+          })
+            .then((res) => res.data)
+            .then((list) => {
+              const all = [{ label: "Все", value: "0" }];
+              const counterpartiesList = list.map((result) => {
+                return {
+                  label: result.name,
+                  value: result.id,
+                };
+              });
+              setCounterparties([...all, ...counterpartiesList]);
+            })
+            .catch((err) => {
+              ErrorAlert(err);
+            });
+        }
+      }
+    }
+  }, [debouncedCounterparty]);
+
   const getTableData = () => {
-    Axios.get("/api/report/stockbalance/saledproducts")
+    setIsLoading(true);
+    const params = {
+      barcode: barcode,
+      brand: brand.value,
+      category: category,
+      stockID: selectedStock.value,
+      counterparty: counterparty.value,
+      company: company,
+    };
+
+    console.log("Parameters: ", params);
+    Axios.post("/api/stockcurrent/saledproducts", params)
       .then((res) => res.data)
       .then((data) => {
+        console.log(data);
         setSaledProducts(data);
+        setCurrentPage(0);
+        setIsLoading(false);
       })
       .catch((err) => {
         ErrorAlert(err);
+        setIsLoading(false);
       });
   };
-
   const getProducts = (productName) => {
-    //setLoadingProducts(true);
     Axios.get("/api/products", {
       params: { productName, company, report: true },
     })
       .then((res) => res.data)
       .then((list) => {
         const all = [{ label: "Все", value: "" }];
-        //setLoadingProducts(false);
         const productsList = list.map((product) => {
           return {
             label: product.name,
@@ -87,13 +153,11 @@ export default function ReportSaledProducts({ companyProps }) {
         setProducts([...all, ...productsList]);
       })
       .catch((err) => {
-        ///setLoadingProducts(false);
         ErrorAlert(err);
       });
   };
 
   const getProductByBarcode = (b) => {
-    //setLoadingProducts(true);
     Axios.get("/api/products/barcode", { params: { barcode: b, company } })
       .then((res) => res.data)
       .then((res) => {
@@ -103,11 +167,9 @@ export default function ReportSaledProducts({ companyProps }) {
           code: res.code,
         };
         setProductSelectValue(selected);
-        //setLoadingProducts(false);
       })
       .catch((err) => {
         ErrorAlert(err);
-        //setLoadingProducts(false);
       });
   };
 
@@ -167,6 +229,63 @@ export default function ReportSaledProducts({ companyProps }) {
       });
   };
 
+  const postExcel = () => {
+    let today = new Date();
+    const tableData = saledProducts.map(
+      ({
+        pointname,
+        code,
+        productname,
+        price,
+        units,
+        brand,
+        category,
+        counterparty,
+        nds,
+      }) => {
+        return {
+          point: pointname,
+          code,
+          name: productname,
+          price,
+          units,
+          brand,
+          category,
+          counterparty,
+          nds,
+        };
+      }
+    );
+
+    Axios({
+      method: "POST",
+      url: "/api/stockcurrent/saledproducts/excel",
+      data: {
+        dat: `${today.getFullYear()}.${today.getMonth()}.${today.getDay()}`,
+        company: company,
+        products: tableData,
+      },
+      responseType: "blob",
+    })
+      .then((res) => res.data)
+      .then((res) => {
+        const link = document.createElement("a");
+        link.href = window.URL.createObjectURL(new Blob([res]));
+        link.download = `Отчет.xlsx`;
+        document.body.appendChild(link);
+        link.click();
+
+        Alert.success("Excel загрузилась!", {
+          position: "top-right",
+          effect: "bouncyflip",
+          timeout: 3000,
+        });
+      })
+      .catch((err) => {
+        ErrorAlert(err);
+      });
+  };
+
   // Get current posts
   const indexOfLastPost = (currentPage + 1) * postsPerPage;
   const indexOfFirstPost = indexOfLastPost - postsPerPage;
@@ -208,6 +327,18 @@ export default function ReportSaledProducts({ companyProps }) {
     setCounterparty(c);
   };
 
+  const onCounterpartieListInput = (event, c, reason) => {
+    if (reason === "input") getCounterparties(c);
+  };
+
+  const handleCounterpartyChange = (event, p) => {
+    setCounterparty(p);
+  };
+
+  const handleCounterpartyInputChange = (event, p) => {
+    setInputCounterparty(p);
+  };
+
   const onProductChange = (event, p) => {
     if (!p.code) {
       setProductSelectValue({ value: "", label: "Все" });
@@ -226,12 +357,8 @@ export default function ReportSaledProducts({ companyProps }) {
     setSelectedStock(s);
   };
 
-  const handleCounterpartyChange = (event, p) => {
-    setCounterparty(p);
-  };
-
-  const handleCounterpartyInputChange = (event, p) => {
-    setInputCounterparty(p);
+  const handleSearch = () => {
+    getTableData();
   };
 
   return (
@@ -240,36 +367,59 @@ export default function ReportSaledProducts({ companyProps }) {
         barcode={barcode}
         brand={brand}
         brands={brands}
+        category={category}
         counterparty={counterparty}
         counterparties={counterparties}
-        handleCounterpartyChange={handleCounterpartyChange}
-        handleCounterpartyInputChange={handleCounterpartyInputChange}
         productSelectValue={productSelectValue}
         products={products}
+        handleSearch={handleSearch}
+        handleCounterpartyChange={handleCounterpartyChange}
+        handleCounterpartyInputChange={handleCounterpartyInputChange}
         saledProducts={saledProducts}
         selectedStock={selectedStock}
+        setCategory={setCategory}
         stockList={stockList}
         onBarcodeChange={onBarcodeChange}
         onBarcodeKeyDown={onBarcodeKeyDown}
         onBrandChange={onBrandChange}
+        onBrandListInput={onBrandListInput}
+        onCounterpartieChange={onCounterpartieChange}
+        onCounterpartieListInput={onCounterpartieListInput}
         onStockChange={onStockChange}
         onProductChange={onProductChange}
         onProductListInput={onProductListInput}
       />
 
-      <Fragment>
+      {isLoading && (
         <Grid item xs={12}>
-          <SaledProductsTable
-            classes={classes}
-            saledProducts={currentPosts}
-            currentPage={currentPage}
-            postsPerPage={postsPerPage}
-            totalPosts={saledProducts.length}
-            onPaginate={onPaginate}
-            onRowsPerPageChange={onRowsPerPageChange}
-          />
+          <SkeletonTable />
         </Grid>
-      </Fragment>
+      )}
+
+      {!isLoading && saledProducts.length > 0 && (
+        <Fragment>
+          <Grid item xs={12}>
+            <SaledProductsTable
+              classes={classes}
+              saledProducts={currentPosts}
+              currentPage={currentPage}
+              postsPerPage={postsPerPage}
+              totalPosts={saledProducts.length}
+              onPaginate={onPaginate}
+              onRowsPerPageChange={onRowsPerPageChange}
+            />
+          </Grid>
+
+          <Grid item xs={12}>
+            <button
+              className="btn btn-sm btn-outline-success"
+              onClick={postExcel}
+            >
+              Выгрузить в excel
+            </button>
+          </Grid>
+        </Fragment>
+      )}
     </Grid>
   );
 }

@@ -196,4 +196,4 @@ function SaledProductsTable({
   );
 }
 
-export default SaledProductsTable;
+export default React.memo(SaledProductsTable);
