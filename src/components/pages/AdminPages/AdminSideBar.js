@@ -69,7 +69,7 @@ export default function AdminSideBar({
                 // если был нажат "Зарегистрироваться" или "Выход" (id 8 и 12 соответсвенно),
                 // то в URL-ле adminpage/ не прописывается.
                 to={`/${
-                  topic.id !== 8 && topic.id !== 12 && topic.id !== 3
+                  topic.id !== 8 && topic.id !== 13 && topic.id !== 3
                     ? "adminpage/"
                     : ""
                 }${topic.route}`}
