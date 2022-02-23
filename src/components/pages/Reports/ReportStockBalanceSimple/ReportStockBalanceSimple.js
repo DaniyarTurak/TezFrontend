@@ -126,29 +126,9 @@ export default function ReportSaledProducts({
       company: company,
     };
 
-    //console.log("Parameters: ", params);
     Axios.post("/api/stockcurrent/saledproducts", params)
       .then((res) => res.data)
       .then((data) => {
-        console.log("Not filtered: ", data);
-        data = data.filter(
-          (value, index, self) =>
-            index ===
-            self.findIndex(
-              (t) =>
-                t.point_id === value.point_id &&
-                t.productname === value.productname &&
-                t.code === value.code &&
-                t.price === value.price &&
-                t.purchaseprice === value.purchaseprice &&
-                t.units === value.units &&
-                t.brand === value.brand &&
-                t.category_id === value.category_id &&
-                t.counterparty_id === value.counterparty_id &&
-                t.nds === value.nds
-            )
-        );
-        console.log("Filtered: ", data);
         setSaledProducts(data);
         setCurrentPage(0);
         setIsLoading(false);
