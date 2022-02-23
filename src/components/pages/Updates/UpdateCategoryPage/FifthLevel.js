@@ -53,7 +53,7 @@ export default function Fifth({ subcategories, number, number2, number3, number4
     };
 
     const deleteCategory = (cat) => {
-        if (cat.child.length > 0) {
+        if (cat.child && cat.child.length > 0) {
             Alert.warning("Сначала необходимо удалить все подкатегории", {
                 position: "top-right",
                 effect: "bouncyflip",
