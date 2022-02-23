@@ -29,6 +29,7 @@ export default function SaledProductsOptions({
   onProductChange,
   onProductListInput,
   onStockChange,
+  pageChange,
 }) {
   return (
     <Fragment>
@@ -43,7 +44,7 @@ export default function SaledProductsOptions({
         //isLoadingProducts={isLoadingProducts}
       />
 
-      <Grid item xs={3}>
+      <Grid item xs={4}>
         <AutocompleteSelect
           value={selectedStock}
           onChange={onStockChange}
@@ -52,7 +53,7 @@ export default function SaledProductsOptions({
           label="Склад"
         />
       </Grid>
-      <Grid item xs={3}>
+      <Grid item xs={4}>
         <AutocompleteSelect
           value={counterparty}
           onChange={handleCounterpartyChange}
@@ -63,7 +64,7 @@ export default function SaledProductsOptions({
         />
       </Grid>
 
-      <Grid item xs={3}>
+      <Grid item xs={4}>
         <AutocompleteSelect
           value={brand}
           onChange={onBrandChange}
@@ -85,7 +86,7 @@ export default function SaledProductsOptions({
         />
       </Grid> */}
 
-      <Grid item xs={3}>
+      <Grid item xs={12}>
         <CategorySelect setCategory={setCategory} category={category} />
       </Grid>
 
@@ -104,6 +105,22 @@ export default function SaledProductsOptions({
           onClick={handleSearch}
         >
           Поиск
+        </Button>
+      </Grid>
+
+      <Grid item xs={3}>
+        <Button
+          style={{
+            minHeight: "3.5rem",
+            fontSize: ".875rem",
+            textTransform: "none",
+          }}
+          variant="outlined"
+          color="primary"
+          size="large"
+          onClick={pageChange}
+        >
+          Расширенная версия
         </Button>
       </Grid>
     </Fragment>

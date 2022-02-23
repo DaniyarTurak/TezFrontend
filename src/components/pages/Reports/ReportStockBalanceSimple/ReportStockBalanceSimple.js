@@ -1,7 +1,7 @@
 import React, { useState, useEffect, Fragment } from "react";
 import Axios from "axios";
-import SaledProductsTable from "./SaledProductsTable";
-import SaledProductsOptions from "./SaledProductsOptions";
+import SimpleStockTable from "./SimpleStockTable";
+import SimpleStockOptions from "./SimpleStockOptions";
 import SkeletonTable from "../../../Skeletons/TableSkeleton";
 import ErrorAlert from "../../../ReusableComponents/ErrorAlert";
 import Grid from "@material-ui/core/Grid";
@@ -21,7 +21,11 @@ const useStyles = makeStyles((theme) => ({
   },
 }));
 
-export default function ReportSaledProducts({ companyProps }) {
+export default function ReportSaledProducts({
+  companyProps,
+  history,
+  pageChange,
+}) {
   const company = companyProps ? companyProps.value : "";
   const classes = useStyles();
   const [barcode, setBarcode] = useState("");
@@ -54,11 +58,11 @@ export default function ReportSaledProducts({ companyProps }) {
   const [postsPerPage, setPostsPerPage] = useState(50);
 
   useEffect(() => {
-    //getTableData();
     getBrands();
     getCounterparties();
     getProducts();
     getStockList();
+    getTableData();
   }, [company]);
 
   useEffect(() => {
@@ -122,11 +126,29 @@ export default function ReportSaledProducts({ companyProps }) {
       company: company,
     };
 
-    console.log("Parameters: ", params);
+    //console.log("Parameters: ", params);
     Axios.post("/api/stockcurrent/saledproducts", params)
       .then((res) => res.data)
       .then((data) => {
-        console.log(data);
+        console.log("Not filtered: ", data);
+        data = data.filter(
+          (value, index, self) =>
+            index ===
+            self.findIndex(
+              (t) =>
+                t.point_id === value.point_id &&
+                t.productname === value.productname &&
+                t.code === value.code &&
+                t.price === value.price &&
+                t.purchaseprice === value.purchaseprice &&
+                t.units === value.units &&
+                t.brand === value.brand &&
+                t.category_id === value.category_id &&
+                t.counterparty_id === value.counterparty_id &&
+                t.nds === value.nds
+            )
+        );
+        console.log("Filtered: ", data);
         setSaledProducts(data);
         setCurrentPage(0);
         setIsLoading(false);
@@ -363,7 +385,7 @@ export default function ReportSaledProducts({ companyProps }) {
 
   return (
     <Grid container spacing={2}>
-      <SaledProductsOptions
+      <SimpleStockOptions
         barcode={barcode}
         brand={brand}
         brands={brands}
@@ -388,6 +410,7 @@ export default function ReportSaledProducts({ companyProps }) {
         onStockChange={onStockChange}
         onProductChange={onProductChange}
         onProductListInput={onProductListInput}
+        pageChange={pageChange}
       />
 
       {isLoading && (
@@ -399,7 +422,7 @@ export default function ReportSaledProducts({ companyProps }) {
       {!isLoading && saledProducts.length > 0 && (
         <Fragment>
           <Grid item xs={12}>
-            <SaledProductsTable
+            <SimpleStockTable
               classes={classes}
               saledProducts={currentPosts}
               currentPage={currentPage}

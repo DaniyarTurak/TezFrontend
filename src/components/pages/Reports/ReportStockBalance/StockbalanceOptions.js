@@ -60,6 +60,7 @@ export default function StockbalanceOptions({
   dateAttrval,
   setDateAttrval,
   setCategory,
+  pageChange,
 }) {
   return (
     <Fragment>
@@ -258,6 +259,22 @@ export default function StockbalanceOptions({
           onClick={handleSearch}
         >
           Поиск
+        </Button>
+      </Grid>
+
+      <Grid item xs={3}>
+        <Button
+          style={{
+            minHeight: "3.5rem",
+            fontSize: ".875rem",
+            textTransform: "none",
+          }}
+          variant="outlined"
+          color="primary"
+          size="large"
+          onClick={pageChange}
+        >
+          Упрощенная версия
         </Button>
       </Grid>
     </Fragment>
