@@ -1,34 +1,31 @@
 import React, { Fragment } from "react";
-import FormControlLabel from "@material-ui/core/FormControlLabel";
-import Checkbox from "@material-ui/core/Checkbox";
 import Grid from "@material-ui/core/Grid";
 import AutocompleteSelect from "../../../ReusableComponents/AutocompleteSelect";
 import AutocompleteProductBarcode from "../../../ReusableComponents/AutocompleteProductBarcode";
-import SingleMaterialDate from "../../../ReusableComponents/SingleMaterialDate";
-import Moment from "moment";
-import TextField from "@material-ui/core/TextField";
+import CategorySelect from "../../../ReusableComponents/CategorySelect";
 import Button from "@material-ui/core/Button";
-import ruLocale from "date-fns/locale/ru";
-import ClearIcon from "@material-ui/icons/Clear";
-import {
-  MuiPickersUtilsProvider,
-  KeyboardDatePicker,
-} from "@material-ui/pickers";
-import DateFnsUtils from "@date-io/date-fns";
-import IconButton from "@material-ui/core/IconButton";
 
 export default function SaledProductsOptions({
   barcode,
+  brand,
+  brands,
+  category,
   counterparty,
   counterparties,
-  handleCounterpartyChange,
-  handleCounterpartyInputChange,
   products,
   productSelectValue,
+  handleSearch,
+  handleCounterpartyChange,
+  handleCounterpartyInputChange,
   selectedStock,
+  setCategory,
   stockList,
   onBarcodeChange,
   onBarcodeKeyDown,
+  onBrandChange,
+  onBrandListInput,
+  onCounterpartieChange,
+  onCounterpartieListInput,
   onProductChange,
   onProductListInput,
   onStockChange,
@@ -58,15 +55,15 @@ export default function SaledProductsOptions({
       <Grid item xs={3}>
         <AutocompleteSelect
           value={counterparty}
-          options={counterparties}
           onChange={handleCounterpartyChange}
+          options={counterparties}
           onInputChange={handleCounterpartyInputChange}
-          noOptions="Контрагент не найден"
+          noOptions="Контрагенты не найдены"
           label="Контрагенты"
         />
       </Grid>
 
-      {/* <Grid item xs={3}>
+      <Grid item xs={3}>
         <AutocompleteSelect
           value={brand}
           onChange={onBrandChange}
@@ -77,7 +74,7 @@ export default function SaledProductsOptions({
         />
       </Grid>
 
-      <Grid item xs={3}>
+      {/* <Grid item xs={3}>
         <AutocompleteSelect
           value={category}
           onChange={onCategoryChange}
@@ -86,6 +83,10 @@ export default function SaledProductsOptions({
           noOptions="Категория не найдена"
           label="Категории"
         />
+      </Grid> */}
+
+      <Grid item xs={3}>
+        <CategorySelect setCategory={setCategory} category={category} />
       </Grid>
 
       <Grid item xs={3}>
@@ -98,13 +99,13 @@ export default function SaledProductsOptions({
           variant="outlined"
           color="primary"
           fullWidth
-          disabled={isLoading}
+          //disabled={isLoading}
           size="large"
           onClick={handleSearch}
         >
           Поиск
         </Button>
-      </Grid>  */}
+      </Grid>
     </Fragment>
   );
 }

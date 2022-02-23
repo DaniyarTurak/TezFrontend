@@ -8,7 +8,7 @@ const CategorySelect = ({ setCategory, category }) => {
   const [categories, setCategories] = useState([]);
   const onChange = (e) => {
     setCategory(e);
-    console.log(e);
+    //console.log(e);
   };
 
   useEffect(() => {

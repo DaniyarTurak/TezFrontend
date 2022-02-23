@@ -171,10 +171,11 @@ export default function ReportPage({ type, history, location }) {
               {typeMode === "report" && reportMode === "abcxyz" && (
                 <AbcXyzPage history={history} location={location} />
               )}
-              {/* {typeMode === "report" &&
+
+              {typeMode === "report" &&
                 reportMode === "reportsaledproducts" && (
                   <ReportSaledProducts history={history} location={location} />
-                )} */}
+                )}
 
               {typeMode === "stockreport" &&
                 reportMode === "reportholdingpage" && (
