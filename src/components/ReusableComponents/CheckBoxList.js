@@ -5,13 +5,9 @@ const CheckBoxList = ({
   category,
   functions,
   setAllChecks,
-  accessFunctions,
+  allFunctions,
+  checkedCheckboxes
 }) => {
-  //console.log("Category: ", category);
-  //console.log("Functions: ", functions);<Checkbox onChange={() => setAllChecks()} />
-  const [checkedAll, setCheckedAll] = useState(
-    functions.length == accessFunctions.length
-  );
 
   return (
     <div>
@@ -21,10 +17,11 @@ const CheckBoxList = ({
             setAllChecks(
               e,
               functions.map((access) => access.key),
-              setCheckedAll
             )
           }
-          checked={checkedAll}
+          checked={allFunctions.every((fn) => {
+            return checkedCheckboxes.some((ch) => ch.id==fn.id)
+          })}
         />
         {category}
       </div>
