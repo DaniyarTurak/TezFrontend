@@ -10,7 +10,6 @@ import { Select } from "antd";
 import "../styles/AddUserAccessForm.css";
 import CheckBoxList from "../ReusableComponents/CheckBoxList";
 
-const { Option } = Select;
 
 function AddUserAccessForm({
   reset,
