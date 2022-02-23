@@ -20,6 +20,7 @@ import Cashbox from "../ListPages/Cashbox";
 
 import ImpNomenclature from "./ImpNomenclature";
 import ConsolidatedReports from "./ConsolidatedReports";
+import CompanySettings from "./CompanySettings/CompanySettings";
 
 export default function AdminRightBar({
   mode,
@@ -51,6 +52,9 @@ export default function AdminRightBar({
               <CreateInvoicePage history={history} location={location} />
               :
               <NotAllowed />);
+
+        case "settings": 
+            return <CompanySettings history={history} location={location} />
         case "createprefix":
           return <CreatePrefix history={history} location={location} />
 

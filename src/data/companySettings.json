@@ -1,0 +1,23 @@
+[
+    {
+      "id": 0,
+      "route": "point",
+      "caption": "Торговая точка"
+    },
+    {
+      "id": 1,
+      "route": "cashbox",
+      "caption": "Касса"
+    },
+    {
+        "id": 2,
+        "route": "stock",
+        "caption": "Склад"
+    },
+    {
+        "id": 3,
+        "route": "createprefix",
+        "caption": "Префикс весов"
+    }
+  ]
+  
