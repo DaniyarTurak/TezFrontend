@@ -36,7 +36,7 @@
     "route": "updateattribute"
   },
   {
-    "id": 13,
+    "id": 16,
     "route": "createprefix",
     "name": "Префикс весов"
   },
@@ -67,21 +67,26 @@
   },
   {
     "id": 9,
+    "route": "settings",
+    "name": "Настройка компании"
+  },
+  {
+    "id": 10,
     "route": "nomenclature",
     "name": "Загрузить Номенклатуру"
   },
   {
-    "id": 10,
+    "id": 11,
     "route": "uploadfile",
     "name": "Выгрузить файл"
   },
   {
-    "id": 11,
+    "id": 12,
     "route": "changepass",
     "name": "Сменить пароль"
   },
   {
-    "id": 12,
+    "id": 13,
     "route": "signout",
     "name": "Выход"
   }

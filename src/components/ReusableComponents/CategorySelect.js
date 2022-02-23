@@ -25,7 +25,7 @@ const CategorySelect = ({ setCategory, category }) => {
   };
 
   return (
-    <Fragment className="category-select">
+    <div className="category-select">
       <TreeSelect
         showSearch
         treeNodeFilterProp="label"
@@ -40,7 +40,7 @@ const CategorySelect = ({ setCategory, category }) => {
         className="tree-select"
         placeholder="Категории"
       />
-    </Fragment>
+    </div>
   );
 };
 

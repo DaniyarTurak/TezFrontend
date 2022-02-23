@@ -16,6 +16,7 @@ import ExpandMore from "@material-ui/icons/ExpandMore";
 import Collapse from "@material-ui/core/Collapse";
 import ExitToAppIcon from "@material-ui/icons/ExitToApp";
 import LockOpenIcon from "@material-ui/icons/LockOpen";
+import SettingsIcon from '@mui/icons-material/Settings';
 
 export default function AdminSideBar({
   classes,
@@ -75,13 +76,13 @@ export default function AdminSideBar({
                 button
                 key={topic.id}
               >
-                {topic.id === 12 && (
+                {topic.id === 13 && (
                   <ListItemIcon className={classes.icon}>
                     <ExitToAppIcon />
                   </ListItemIcon>
                 )}
 
-                {topic.id === 8 && (
+                {topic.id === 12 && (
                   <ListItemIcon className={classes.icon}>
                     <LockOpenIcon />
                   </ListItemIcon>
