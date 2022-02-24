@@ -129,6 +129,13 @@ export default function ReportSaledProducts({
     Axios.post("/api/stockcurrent/saledproducts", params)
       .then((res) => res.data)
       .then((data) => {
+        if (data.length === 0) {
+          Alert.warning(`Нет данных`, {
+            position: "top-right",
+            effect: "bouncyflip",
+            timeout: 3000,
+          });
+        }
         setSaledProducts(data);
         setCurrentPage(0);
         setIsLoading(false);
@@ -138,6 +145,7 @@ export default function ReportSaledProducts({
         setIsLoading(false);
       });
   };
+
   const getProducts = (productName) => {
     Axios.get("/api/products", {
       params: { productName, company, report: true },
@@ -391,6 +399,7 @@ export default function ReportSaledProducts({
         onProductChange={onProductChange}
         onProductListInput={onProductListInput}
         pageChange={pageChange}
+        isLoading={isLoading}
       />
 
       {isLoading && (

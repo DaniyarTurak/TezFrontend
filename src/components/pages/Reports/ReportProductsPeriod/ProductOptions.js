@@ -30,6 +30,7 @@ export default function ProductOptions({
   onAttributeTypeChange,
   onDateChange,
   onStockChange,
+  isLoading,
 }) {
   return (
     <Fragment>
@@ -151,6 +152,7 @@ export default function ProductOptions({
           fullWidth
           size="large"
           onClick={handleSearch}
+          disabled={isLoading}
         >
           Поиск
         </Button>
