@@ -18,10 +18,11 @@ let AddPointForm = ({
   pristine,
   reset,
   submitting,
+  pointData
 }) => {
   const [isSubmiting, setSubmitting] = useState(false);
 
-  const pointData = location.state ? location.state.pointData : null;
+  // const pointData = location.state ? location.state.pointData : null;
 
   useEffect(() => {
     if (pointData) {

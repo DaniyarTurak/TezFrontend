@@ -1,12 +1,12 @@
-import React, { Component } from "react";
+import React, { Component, Fragment } from "react";
 import Axios from "axios";
 
-import ShowInactive from "../ClosedListPages/ShowInactive";
-
-import AlertBox from "../../AlertBox";
+import ShowInactive from "../../ClosedListPages/ShowInactive";
+import AddPointForm from "../../../forms/AddPointForm";
+import AlertBox from "../../../AlertBox";
 import SweetAlert from "react-bootstrap-sweetalert";
 import Alert from "react-s-alert";
-import Searching from "../../Searching";
+import Searching from "../../../Searching";
 
 class PointList extends Component {
   state = {
@@ -41,12 +41,11 @@ class PointList extends Component {
       },
     },
     sweetalert: null,
-    admin: false,
+    edit: false,
+    pointData: null,
   };
 
   componentDidMount() {
-    this.getPoints();
-
     if (this.props.location.state && this.props.location.state.fromEdit) {
       Alert.success(this.state.alert.successEdit, {
         position: "top-right",
@@ -54,32 +53,12 @@ class PointList extends Component {
         timeout: 2000,
       });
     }
-    Axios.get("/api/auth")
-      .then((resp) => {
-        if (resp.data.role === 1) {
-          this.setState({ admin: true })
-        };
-      });
   }
 
   hideAlert = () => {
     this.setState({
       sweetalert: null,
     });
-  };
-
-  getPoints = () => {
-    Axios.get("/api/point")
-      .then((res) => res.data)
-      .then((points) => {
-        this.setState({
-          points,
-          isLoading: false,
-        });
-      })
-      .catch((err) => {
-        console.log(err);
-      });
   };
 
   handleDelete = (item) => {
@@ -141,10 +120,11 @@ class PointList extends Component {
   };
 
   handleEdit = (pointData) => {
-    this.props.history.push({
-      pathname: "point/manage",
-      state: { pointData },
-    });
+    // this.props.history.push({
+    //   state: { pointData },
+    // });
+    this.setState({pointData: pointData});
+    this.setState({ edit: true });
   };
 
   handleRollback = (newPoint) => {
@@ -164,100 +144,98 @@ class PointList extends Component {
   };
 
   render() {
-    const {points, isLoading, label, sweetalert } = this.state;
+    const { label, sweetalert } = this.state;
+    const { points, isLoading } = this.props;
 
     return (
       <div className="point-list">
         {sweetalert}
+        {this.state.edit ? (
+          <AddPointForm pointData={this.state.pointData} />
+        ) : (
+          <Fragment>
+            <div className="row">
+              <div className="col-md-6">
+                <h6 className="btn-one-line">{label.list}</h6>
+              </div>
 
-        <div className="row">
-          <div className="col-md-6">
-            <h6 className="btn-one-line">{label.list}</h6>
-          </div>
-          {this.state.admin &&
-            <div className="col-md-6 text-right">
-              <button
-                className="btn btn-link btn-sm"
-                onClick={() => this.props.history.push("point/manage")}
-              >
-                {label.add}
-              </button>
+              <div className="col-md-6 text-right">
+                <button
+                  className="btn btn-link btn-sm"
+                  onClick={() => this.props.history.push("point/manage")}
+                >
+                  {label.add}
+                </button>
+              </div>
             </div>
-          }
 
-        </div>
+            {isLoading && <Searching />}
 
-        {isLoading && <Searching />}
+            {!isLoading && <div className="empty-space" />}
 
-        {!isLoading && <div className="empty-space" />}
+            {!isLoading && points.length === 0 && (
+              <AlertBox text={label.empty} />
+            )}
 
-        {/* <div className={`active-content ${isLoading ? 'is-loading' : ''}`}>
-					<div className="loader">
-						<div className="icon"></div>
-					</div> */}
-
-        {!isLoading && points.length === 0 && <AlertBox text={label.empty} />}
-
-        {!isLoading && points.length > 0 && (
-          <div>
-            <table className="table table-hover">
-              <thead>
-                <tr>
-                  <th style={{ width: "1%" }} />
-                  <th style={{ width: "30%" }}>{label.name}</th>
-                  <th style={{ width: "30%" }}>{label.address}</th>
-                  <th style={{ width: "18%" }}>{label.is_minus}</th>
-                  <th style={{ width: "15%" }} />
-                </tr>
-              </thead>
-              <tbody>
-                {points.map((point, idx) => (
-                  <tr key={point.id}>
-                    <td>{idx + 1}</td>
-                    <td>{point.name}</td>
-                    <td>{point.address}</td>
-                    <td>{point.is_minus ? "Да" : "Нет"}</td>
-                    <td className="text-right"></td>
-                    {/* <button className="btn btn-w-icon detail-item" title={label.title.detail}
+            {!isLoading && points.length > 0 && (
+              <div>
+                <table className="table table-hover">
+                  <thead>
+                    <tr>
+                      <th style={{ width: "1%" }} />
+                      <th style={{ width: "30%" }}>{label.name}</th>
+                      <th style={{ width: "30%" }}>{label.address}</th>
+                      <th style={{ width: "18%" }}>{label.is_minus}</th>
+                      <th style={{ width: "15%" }} />
+                    </tr>
+                  </thead>
+                  <tbody>
+                    {points.map((point, idx) => (
+                      <tr key={point.id}>
+                        <td>{idx + 1}</td>
+                        <td>{point.name}</td>
+                        <td>{point.address}</td>
+                        <td>{point.is_minus ? "Да" : "Нет"}</td>
+                        <td className="text-right"></td>
+                        {/* <button className="btn btn-w-icon detail-item" title={label.title.detail}
 													onClick={() => { this.handleDetail(point) }}>
 												</button> */}
-                    
-                      <td className="text-right">
+
+                        <td className="text-right">
+                          {point.point_type !== 0 ? (
+                            <button
+                              className="btn btn-w-icon edit-item"
+                              title={label.title.edit}
+                              onClick={() => {
+                                this.handleEdit(point);
+                              }}
+                            />
+                          ) : (
+                            ""
+                          )}
+                        </td>
+
                         {point.point_type !== 0 ? (
                           <button
-                            className="btn btn-w-icon edit-item"
-                            title={label.title.edit}
+                            className="btn btn-w-icon delete-item"
+                            title={label.title.delete}
                             onClick={() => {
-                              this.handleEdit(point);
+                              this.handleDelete(point);
                             }}
                           />
                         ) : (
                           ""
                         )}
-                      </td>
-                    
-
-                    {/* {point.point_type !== 0 ? (
-                        <button
-                          className="btn btn-w-icon delete-item"
-                          title={label.title.delete}
-                          onClick={() => {
-                            this.handleDelete(point);
-                          }}
-                        />
-                      ) : (
-                        ""
-                      )} */}
-
-                  </tr>
-                ))}
-              </tbody>
-            </table>
-          </div>
-        )}
-
-        {!isLoading && (
-          <ShowInactive callback={this.handleRollback} mode="point" />
+                      </tr>
+                    ))}
+                  </tbody>
+                </table>
+              </div>
+            )}
+            {!isLoading && (
+              <ShowInactive callback={this.handleRollback} mode="point" />
+            )}
+          </Fragment>
         )}
       </div>
     );

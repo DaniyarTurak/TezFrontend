@@ -1,33 +1,31 @@
 import React, { Component } from "react";
 import Axios from "axios";
 
-import ShowInactive from "../ClosedListPages/ShowInactive";
+import ShowInactive from "../../../../ClosedListPages/ShowInactive";
 
-import AlertBox from "../../AlertBox";
+import AlertBox from "../../../../../AlertBox";
 import SweetAlert from "react-bootstrap-sweetalert";
 import Alert from "react-s-alert";
-import Searching from "../../Searching";
+import Searching from "../../../../../Searching";
 
-class PointList extends Component {
+export default class CashboxListPage extends Component {
   state = {
-    points: [],
+    cashboxes: [],
     isLoading: true,
     label: {
-      list: "Список активных торговых точек",
-      add: "Добавить новую торговую точку",
-      empty: "Cписок торговых точек пуст",
-      name: "Наименование",
-      address: "Адрес",
-      is_minus: "Отрицательный учет",
+      list: "Список активных касс",
+      add: "Добавить новую кассу",
+      empty: "Список активных касс пуст",
+      cashboxName: "Наименование кассы",
+      pointName: "Наименование торговой точки",
       title: {
         edit: "Редактировать",
         delete: "Удалить",
-        detail: "Детали",
       },
     },
     alert: {
-      confirmDelete: "Вы действительно хотите удалить торговую точку?",
-      successDelete: "Торговая точка успешно удалена",
+      confirmDelete: "Вы действительно хотите удалить кассу?",
+      successDelete: "Касса успешно удалена",
       successEdit: "Изменения сохранены",
       raiseError:
         "Возникла ошибка при обработке вашего запроса. Мы уже работает над решением. Попробуйте позже",
@@ -45,7 +43,7 @@ class PointList extends Component {
   };
 
   componentDidMount() {
-    this.getPoints();
+    this.getCashboxes();
 
     if (this.props.location.state && this.props.location.state.fromEdit) {
       Alert.success(this.state.alert.successEdit, {
@@ -68,12 +66,12 @@ class PointList extends Component {
     });
   };
 
-  getPoints = () => {
-    Axios.get("/api/point")
+  getCashboxes = () => {
+    Axios.get("/api/cashbox")
       .then((res) => res.data)
-      .then((points) => {
+      .then((cashboxes) => {
         this.setState({
-          points,
+          cashboxes,
           isLoading: false,
         });
       })
@@ -103,19 +101,17 @@ class PointList extends Component {
   };
 
   delete = (item) => {
-    const newPointsList = this.state.points.filter((pointsList) => {
-      console.log(pointsList);
-      console.log(item.status);
-      return pointsList !== item;
+    const newCashboxList = this.state.cashboxes.filter((cashboxlist) => {
+      return cashboxlist !== item;
     });
-    //  console.log(newPointsList);
-    item.status = "CLOSE";
-    const req = { point: item };
 
-    Axios.post("/api/point/change", req)
+    item.deleted = 1;
+    const req = { cashbox: item };
+
+    Axios.post("/api/cashbox/manage", req)
       .then(() => {
         this.setState({
-          points: newPointsList,
+          cashboxes: newCashboxList,
         });
 
         Alert.success(this.state.alert.successDelete, {
@@ -140,34 +136,26 @@ class PointList extends Component {
     this.hideAlert();
   };
 
-  handleEdit = (pointData) => {
+  handleEdit = (cashboxData) => {
     this.props.history.push({
-      pathname: "point/manage",
-      state: { pointData },
+      pathname: "cashbox/manage",
+      state: { cashboxData },
     });
   };
 
   handleRollback = (newPoint) => {
-    let list = this.state.points;
+    let list = this.state.cashboxes;
     list.push(newPoint);
 
     this.setState({
-      points: list,
-    });
-  };
-
-  handleDetail = (point) => {
-    this.props.history.push({
-      pathname: "point/page",
-      state: { point },
+      cashboxes: list,
     });
   };
 
   render() {
-    const {points, isLoading, label, sweetalert } = this.state;
-
+    const { cashboxes, isLoading, label, sweetalert } = this.state;
     return (
-      <div className="point-list">
+      <div className="cashbox-list">
         {sweetalert}
 
         <div className="row">
@@ -178,7 +166,7 @@ class PointList extends Component {
             <div className="col-md-6 text-right">
               <button
                 className="btn btn-link btn-sm"
-                onClick={() => this.props.history.push("point/manage")}
+                onClick={() => this.props.history.push("cashbox/manage")}
               >
                 {label.add}
               </button>
@@ -191,64 +179,46 @@ class PointList extends Component {
 
         {!isLoading && <div className="empty-space" />}
 
-        {/* <div className={`active-content ${isLoading ? 'is-loading' : ''}`}>
-					<div className="loader">
-						<div className="icon"></div>
-					</div> */}
+        {!isLoading && cashboxes.length === 0 && (
+          <AlertBox text={label.empty} />
+        )}
 
-        {!isLoading && points.length === 0 && <AlertBox text={label.empty} />}
-
-        {!isLoading && points.length > 0 && (
+        {!isLoading && cashboxes.length > 0 && (
           <div>
             <table className="table table-hover">
               <thead>
                 <tr>
                   <th style={{ width: "1%" }} />
-                  <th style={{ width: "30%" }}>{label.name}</th>
-                  <th style={{ width: "30%" }}>{label.address}</th>
-                  <th style={{ width: "18%" }}>{label.is_minus}</th>
-                  <th style={{ width: "15%" }} />
+                  <th style={{ width: "45%" }}>{label.cashboxName}</th>
+                  <th style={{ width: "45%" }}>{label.pointName}</th>
+                  <th />
                 </tr>
               </thead>
               <tbody>
-                {points.map((point, idx) => (
-                  <tr key={point.id}>
+                {cashboxes.map((cashbox, idx) => (
+                  <tr key={cashbox.id}>
                     <td>{idx + 1}</td>
-                    <td>{point.name}</td>
-                    <td>{point.address}</td>
-                    <td>{point.is_minus ? "Да" : "Нет"}</td>
+                    <td>{cashbox.name}</td>
+                    <td>{cashbox.point_name}</td>
                     <td className="text-right"></td>
-                    {/* <button className="btn btn-w-icon detail-item" title={label.title.detail}
-													onClick={() => { this.handleDetail(point) }}>
-												</button> */}
-                    
+                    {this.state.admin &&
                       <td className="text-right">
-                        {point.point_type !== 0 ? (
-                          <button
-                            className="btn btn-w-icon edit-item"
-                            title={label.title.edit}
-                            onClick={() => {
-                              this.handleEdit(point);
-                            }}
-                          />
-                        ) : (
-                          ""
-                        )}
-                      </td>
-                    
-
-                    {/* {point.point_type !== 0 ? (
+                        <button
+                          className="btn btn-w-icon edit-item"
+                          title={label.title.edit}
+                          onClick={() => {
+                            this.handleEdit(cashbox);
+                          }}
+                        />
                         <button
                           className="btn btn-w-icon delete-item"
                           title={label.title.delete}
                           onClick={() => {
-                            this.handleDelete(point);
+                            this.handleDelete(cashbox);
                           }}
                         />
-                      ) : (
-                        ""
-                      )} */}
-
+                      </td>
+                    }
                   </tr>
                 ))}
               </tbody>
@@ -257,11 +227,9 @@ class PointList extends Component {
         )}
 
         {!isLoading && (
-          <ShowInactive callback={this.handleRollback} mode="point" />
+          <ShowInactive callback={this.handleRollback} mode="cashbox" />
         )}
       </div>
     );
   }
 }
-
-export default PointList;
