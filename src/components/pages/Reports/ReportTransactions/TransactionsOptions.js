@@ -19,6 +19,7 @@ export default function InvoiceOptions({
   onConsignatorChange,
   handleSearch,
   options,
+  isLoading
 }) {
   return (
     <Fragment>
@@ -30,6 +31,7 @@ export default function InvoiceOptions({
           dateFromChange={dateFromChange}
           dateToChange={dateToChange}
           searchInvoices={handleSearch}
+          disableButton={isLoading}
         />
       </Grid>
       <Grid item xs={3}>

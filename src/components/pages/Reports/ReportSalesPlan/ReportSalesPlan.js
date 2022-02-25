@@ -205,6 +205,7 @@ export default function ReportSalesPlan({ companyProps }) {
         planType={planType}
         setPlanType={setPlanType}
         setBonusResult={setBonusResult}
+        isLoading={isLoading}
       />
       {isLoading && (
         <Grid item xs={12}>

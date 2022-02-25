@@ -16,6 +16,7 @@ export default function ReportOptions({
   handleSearch,
   filter,
   filterType,
+  isLoading
 }) {
   const options = [
     { value: "cashboxFiz", label: "По физ. лицам" },
@@ -69,6 +70,7 @@ export default function ReportOptions({
           dateFromChange={dateFromChange}
           dateToChange={dateToChange}
           searchInvoices={handleSearch}
+          disableButton={isLoading}
         />
       </Grid>
       <Grid item xs={3}>

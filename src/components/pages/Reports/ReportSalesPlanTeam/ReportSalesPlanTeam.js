@@ -305,6 +305,7 @@ export default function ReportSalesPlanTeam({ companyProps, holding }) {
         points={points}
         planType={planType}
         setPlanType={setPlanType}
+        isLoading={isLoading}
       />
 
       {isLoading && (

@@ -16,7 +16,8 @@ export default function SalesPlanOptions({
   isSubmitting,
   planType,
   setPlanType,
-  setBonusResult
+  setBonusResult,
+  isLoading
 }) {
   const planTypes = [
     { value: 1, label: "Ежедневный" },
@@ -34,7 +35,7 @@ export default function SalesPlanOptions({
           dateFromChange={dateFromChange}
           dateToChange={dateToChange}
           searchInvoices={getBonus}
-          disableButton={isSubmitting}
+          disableButton={isLoading}
         />
       </Grid>
 

@@ -21,7 +21,8 @@ export default function SalesPlanTeamOptions({
   point,
   points,
   planType,
-  setPlanType
+  setPlanType,
+  isLoading
 }) {
 
   const planTypes = [
@@ -60,6 +61,7 @@ export default function SalesPlanTeamOptions({
             dateFromChange={dateFromChange}
             dateToChange={dateToChange}
             searchInvoices={handleSearch}
+            disableButton={isLoading}
           />
         </Grid>
       )}
@@ -83,6 +85,7 @@ export default function SalesPlanTeamOptions({
             variant="outlined"
             color="primary"
             onClick={handleSearch}
+            disabled={isLoading}
           >
             Поиск
           </Button>

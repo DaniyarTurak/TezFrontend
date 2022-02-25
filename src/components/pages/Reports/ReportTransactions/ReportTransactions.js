@@ -406,6 +406,7 @@ export default function ReportTransactions({
           onConsignatorChange={onConsignatorChange}
           handleSearch={handleSearch}
           options={options}
+          isLoading={isLoading}
         />
 
         {isLoading && (

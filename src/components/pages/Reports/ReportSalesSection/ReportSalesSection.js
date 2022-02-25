@@ -121,6 +121,7 @@ export default function ReportSalesSection({ companyProps, holding }) {
   };
 
   const getCashboxuserBonus = () => {
+    setLoading(true)
     Axios.get("/api/report/sales/cashboxuser", {
       params: { dateFrom, dateTo, client, company, holding },
     })
@@ -136,6 +137,7 @@ export default function ReportSalesSection({ companyProps, holding }) {
   };
 
   const getCashboxBonus = () => {
+    setLoading(true)
     Axios.get("/api/report/sales/cashbox", {
       params: { dateFrom, dateTo, client, company, holding },
     })
@@ -161,6 +163,7 @@ export default function ReportSalesSection({ companyProps, holding }) {
   };
 
   const getCashboxuserBonusNDS = () => {
+    setLoading(true)
     Axios.get("/api/report/sales/ndscashboxuser", {
       params: { dateFrom, dateTo, client, company, holding },
     })
@@ -176,6 +179,7 @@ export default function ReportSalesSection({ companyProps, holding }) {
   };
 
   const getCashboxBonusNDS = () => {
+    setLoading(true)
     Axios.get("/api/report/sales/ndscashbox", {
       params: { dateFrom, dateTo, client, company, holding },
     })
@@ -276,6 +280,7 @@ export default function ReportSalesSection({ companyProps, holding }) {
         handleSearch={handleSearch}
         filter={filter}
         filterType={filterType}
+        isLoading={isLoading}
       />
 
       {isLoading && (

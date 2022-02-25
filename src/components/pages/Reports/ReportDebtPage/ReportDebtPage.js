@@ -72,6 +72,7 @@ function ReportDebtPage() {
 
   
   const getDebtData = (date) => {
+      setLoading(true)
       Axios.get("/api/report/fizcustomers/debt_book", { params: { date: date } })
                 .then((res) => res.data)
                 .then((result) => {
@@ -132,7 +133,7 @@ function ReportDebtPage() {
                     variant="outlined"
                     color="primary"
                     className={classes.button}
-                    disabled={!date}
+                    disabled={!date || isLoading}
                     onClick={() => {
                       const Date =
                         date.getFullYear() +

@@ -174,6 +174,7 @@ export default function ReportCertificateSold({ companyProps, classes }) {
             dateFromChange={dateFromChange}
             dateToChange={dateToChange}
             searchInvoices={getCertificates}
+            disableButton={isLoading}
           />
         </Grid>
         {isLoading &&
