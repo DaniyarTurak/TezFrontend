@@ -128,7 +128,9 @@ export default function ReportFizCustomers({ companyProps, holding }) {
   const [customerInfo, setCustomerInfo] = useState("");
   const [debtModalIsOpen, setDebtModalIsOpen] = useState(false);
   const [dateFrom, setDateFrom] = useState(
-    Moment().startOf("month").format("YYYY-MM-DD")
+    Moment()
+      .startOf("month")
+      .format("YYYY-MM-DD")
   );
   const [dateTo, setDateTo] = useState(Moment().format("YYYY-MM-DD"));
   const [fizProductModalIsOpen, setFizProductModalIsOpen] = useState(false);
@@ -205,7 +207,11 @@ export default function ReportFizCustomers({ companyProps, holding }) {
 
   const backToList = () => {
     setToggleDetails(false);
-    setDateFrom(Moment().startOf("month").format("YYYY-MM-DD"));
+    setDateFrom(
+      Moment()
+        .startOf("month")
+        .format("YYYY-MM-DD")
+    );
     setDateTo(Moment().format("YYYY-MM-DD"));
   };
 
@@ -223,7 +229,9 @@ export default function ReportFizCustomers({ companyProps, holding }) {
       dF = Moment().format("YYYY-MM-DD");
       dT = Moment().format("YYYY-MM-DD");
     } else if (dateStr === "month") {
-      dF = Moment().startOf("month").format("YYYY-MM-DD");
+      dF = Moment()
+        .startOf("month")
+        .format("YYYY-MM-DD");
       dT = Moment().format("YYYY-MM-DD");
     }
     setDateFrom(dF);

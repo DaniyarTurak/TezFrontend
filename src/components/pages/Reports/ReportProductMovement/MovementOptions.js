@@ -33,6 +33,7 @@ export default function MovementOptions({
           dateFromChange={dateFromChange}
           dateToChange={dateToChange}
           searchInvoices={handleSearch}
+          isLoading={isLoadingProducts}
         />
       </Grid>
       <AutocompleteProductBarcode

@@ -28,7 +28,9 @@ export default function CounterpartiesReport({
   const [counterparties, setCounterparties] = useState([]);
   const [consignments, setConsignments] = useState([]);
   const [dateFrom, setDateFrom] = useState(
-    Moment().startOf("month").format("YYYY-MM-DD")
+    Moment()
+      .startOf("month")
+      .format("YYYY-MM-DD")
   );
   const [dateTo, setDateTo] = useState(Moment().format("YYYY-MM-DD"));
   const [isDateChanging, setDateChanging] = useState(false);
@@ -70,7 +72,9 @@ export default function CounterpartiesReport({
       dF = Moment().format("YYYY-MM-DD");
       dT = Moment().format("YYYY-MM-DD");
     } else if (dateStr === "month") {
-      dF = Moment().startOf("month").format("YYYY-MM-DD");
+      dF = Moment()
+        .startOf("month")
+        .format("YYYY-MM-DD");
       dT = Moment().format("YYYY-MM-DD");
     }
     setDateFrom(dF);
@@ -130,6 +134,7 @@ export default function CounterpartiesReport({
           dateFromChange={dateFromChange}
           dateToChange={dateToChange}
           searchInvoices={getHistory}
+          isLoading={isLoading}
         />
       </Grid>
       <Grid item xs={4}>

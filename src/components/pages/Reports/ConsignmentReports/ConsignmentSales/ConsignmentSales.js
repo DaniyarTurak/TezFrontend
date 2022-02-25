@@ -19,7 +19,9 @@ const useStyles = makeStyles({
 export default function ConsignmentSales({ companyProps }) {
   const classes = useStyles();
   const [dateFrom, setDateFrom] = useState(
-    Moment().startOf("month").format("YYYY-MM-DD")
+    Moment()
+      .startOf("month")
+      .format("YYYY-MM-DD")
   );
   const [dateTo, setDateTo] = useState(Moment().format("YYYY-MM-DD"));
   const [isSalesLoading, setSalesLoading] = useState(false);
@@ -54,7 +56,9 @@ export default function ConsignmentSales({ companyProps }) {
       dF = Moment().format("YYYY-MM-DD");
       dT = Moment().format("YYYY-MM-DD");
     } else if (dateStr === "month") {
-      dF = Moment().startOf("month").format("YYYY-MM-DD");
+      dF = Moment()
+        .startOf("month")
+        .format("YYYY-MM-DD");
       dT = Moment().format("YYYY-MM-DD");
     }
     setDateFrom(dF);
@@ -105,6 +109,7 @@ export default function ConsignmentSales({ companyProps }) {
         dateFromChange={dateFromChange}
         dateToChange={dateToChange}
         searchInvoices={handleSearch}
+        isLoading={isSalesLoading}
       />
       {isSalesLoading ? (
         <TableSkeleton />
