@@ -452,7 +452,7 @@ export default function ReportSales({ companyProps }) {
 
   const getCounterparties = (counterparty) => {
     Axios.get("/api/counterparties/search", {
-      params: { counterparty, company },
+      params: { counterparty: counterparty, company: company },
     })
       .then((res) => res.data)
       .then((list) => {
