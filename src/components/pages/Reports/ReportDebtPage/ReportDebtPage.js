@@ -136,7 +136,6 @@ function ReportDebtPage() {
                       "-" +
                       date.getDate();
                     setFilterDate(Date);
-                    setLoading(true);
                     getDebtData(Date);
                   }}
                 >
