@@ -134,7 +134,7 @@ export default function CounterpartiesReport({
           dateFromChange={dateFromChange}
           dateToChange={dateToChange}
           searchInvoices={getHistory}
-          isLoading={isLoading}
+          disableButton={isLoading}
         />
       </Grid>
       <Grid item xs={4}>

@@ -45,7 +45,7 @@ export default function InvoiceOptions({
           dateFromChange={dateFromChange}
           dateToChange={dateToChange}
           searchInvoices={handleSearch}
-          isLoading={isLoadingProducts}
+          disableButton={isLoadingProducts}
         />
       </Grid>
       <AutocompleteProductBarcode

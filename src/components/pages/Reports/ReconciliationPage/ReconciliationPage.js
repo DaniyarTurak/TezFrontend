@@ -86,7 +86,7 @@ export default function ReconciliationPage() {
             dateFromChange={dateFromChange}
             dateToChange={dateToChange}
             searchInvoices={getReconciliations}
-            isLoading={isLoading}
+            disableButton={isLoading}
           />
         </Grid>
         {isLoading && (

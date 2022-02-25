@@ -109,7 +109,7 @@ export default function ConsignmentSales({ companyProps }) {
         dateFromChange={dateFromChange}
         dateToChange={dateToChange}
         searchInvoices={handleSearch}
-        isLoading={isSalesLoading}
+        disableButton={isSalesLoading}
       />
       {isSalesLoading ? (
         <TableSkeleton />
