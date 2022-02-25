@@ -6,12 +6,12 @@ import Alert from "react-s-alert";
 import { InputField } from "../fields";
 import { RequiredField, ValidateIDN } from "../../validation";
 import ReactModal from "react-modal";
-import { withStyles } from '@material-ui/core/styles';
+import { withStyles } from "@material-ui/core/styles";
 
 import GeneralDetails from "./GeneralDetails";
-import Switch from '@material-ui/core/Switch';
-import FormGroup from '@material-ui/core/FormGroup';
-import FormControlLabel from '@material-ui/core/FormControlLabel';
+import Switch from "@material-ui/core/Switch";
+import FormGroup from "@material-ui/core/FormGroup";
+import FormControlLabel from "@material-ui/core/FormControlLabel";
 
 const customStyles = {
   content: {
@@ -32,10 +32,10 @@ const customStyles = {
 const PurpleSwitch = withStyles({
   switchBase: {
     color: "#28a745",
-    '&$checked': {
+    "&$checked": {
       color: "#28a745",
     },
-    '&$checked + $track': {
+    "&$checked + $track": {
       backgroundColor: "#28a745",
     },
   },
@@ -47,7 +47,11 @@ class GeneralInfo extends Component {
   company_data = JSON.parse(sessionStorage.getItem("isme-company-data"));
   state = {
     companyData: JSON.parse(sessionStorage.getItem("isme-company-data")) || {},
-    wholesale: JSON.parse(sessionStorage.getItem("isme-company-data")) && JSON.parse(sessionStorage.getItem("isme-company-data")).wholesale ? JSON.parse(sessionStorage.getItem("isme-company-data")).wholesale : false,
+    wholesale:
+      JSON.parse(sessionStorage.getItem("isme-company-data")) &&
+      JSON.parse(sessionStorage.getItem("isme-company-data")).wholesale
+        ? JSON.parse(sessionStorage.getItem("isme-company-data")).wholesale
+        : false,
     isEdit: false,
     isEdited: false,
     modalIsOpen: false,
@@ -92,6 +96,9 @@ class GeneralInfo extends Component {
   };
 
   componentDidMount() {
+    this.setState = (state, callback) => {
+      return;
+    };
     if (this.props.location.state && this.props.location.state.changepass) {
       Alert.success(this.state.alert.successChangePass, {
         position: "top-right",
@@ -239,7 +246,11 @@ class GeneralInfo extends Component {
 
   handleCancel = () => {
     this.setState({
-      wholesale: JSON.parse(sessionStorage.getItem("isme-company-data")) && JSON.parse(sessionStorage.getItem("isme-company-data")).wholesale ? JSON.parse(sessionStorage.getItem("isme-company-data")).wholesale : false,
+      wholesale:
+        JSON.parse(sessionStorage.getItem("isme-company-data")) &&
+        JSON.parse(sessionStorage.getItem("isme-company-data")).wholesale
+          ? JSON.parse(sessionStorage.getItem("isme-company-data")).wholesale
+          : false,
       isEdit: false,
       grouping: false,
       field: {
@@ -260,8 +271,7 @@ class GeneralInfo extends Component {
 
   wholeSalesChange = (event) => {
     console.log(event.target.checked);
-
-  }
+  };
 
   render() {
     const { handleSubmit, submitting } = this.props;
@@ -274,7 +284,7 @@ class GeneralInfo extends Component {
       editEnabled,
       modalIsOpen,
       grouping,
-      wholesale
+      wholesale,
     } = this.state;
 
     return (
@@ -424,13 +434,19 @@ class GeneralInfo extends Component {
                 >
                   <FormGroup row>
                     <FormControlLabel
-                      control={<PurpleSwitch
-                        disabled={!isEdit}
-                        checked={wholesale}
-                        onChange={(event) => this.setState({ [event.target.name]: event.target.checked })}
-                        color="primary"
-                        name="wholesale"
-                      />}
+                      control={
+                        <PurpleSwitch
+                          disabled={!isEdit}
+                          checked={wholesale}
+                          onChange={(event) =>
+                            this.setState({
+                              [event.target.name]: event.target.checked,
+                            })
+                          }
+                          color="primary"
+                          name="wholesale"
+                        />
+                      }
                       label={wholesale ? "Включено" : "Выключено"}
                     />
                   </FormGroup>
@@ -473,10 +489,11 @@ class GeneralInfo extends Component {
                 >
                   <td style={{ width: "12rem" }}>
                     <div
-                      className={`${isEdit && !companyData.certificateseries
-                        ? "edit-general-info-title"
-                        : ""
-                        }`}
+                      className={`${
+                        isEdit && !companyData.certificateseries
+                          ? "edit-general-info-title"
+                          : ""
+                      }`}
                     >
                       {label.hasNds}
                     </div>
@@ -486,8 +503,9 @@ class GeneralInfo extends Component {
                       </div>
                     ) : (
                       <div
-                        className={`bold-text ${isEdit ? "edit-general-info" : ""
-                          }`}
+                        className={`bold-text ${
+                          isEdit ? "edit-general-info" : ""
+                        }`}
                       >
                         <Field
                           name="certificateseries"
@@ -502,10 +520,11 @@ class GeneralInfo extends Component {
                   </td>
                   <td style={{ width: "12rem" }}>
                     <div
-                      className={`${isEdit && !companyData.certificateseries
-                        ? "edit-general-info-title"
-                        : ""
-                        }`}
+                      className={`${
+                        isEdit && !companyData.certificateseries
+                          ? "edit-general-info-title"
+                          : ""
+                      }`}
                     >
                       {label.ndsRegisterNumber}
                     </div>
@@ -515,8 +534,9 @@ class GeneralInfo extends Component {
                       </div>
                     ) : (
                       <div
-                        className={`bold-text ${isEdit ? "edit-general-info" : ""
-                          }`}
+                        className={`bold-text ${
+                          isEdit ? "edit-general-info" : ""
+                        }`}
                       >
                         <Field
                           name="certificatenum"
@@ -531,10 +551,11 @@ class GeneralInfo extends Component {
                   </td>
                   <td style={{ width: "12rem" }}>
                     <div
-                      className={`${isEdit && !companyData.certificateseries
-                        ? "edit-general-info-title"
-                        : ""
-                        }`}
+                      className={`${
+                        isEdit && !companyData.certificateseries
+                          ? "edit-general-info-title"
+                          : ""
+                      }`}
                     >
                       {label.ndsDate}
                     </div>

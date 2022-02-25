@@ -27,8 +27,6 @@ let AddErpUserForm = ({
   useEffect(() => {
     if (userData) {
       getUserAccesses();
-    }
-    if (userData) {
       dispatch(initialize("AddErpUserForm", userData));
     }
   }, []);
