@@ -10,7 +10,7 @@ import Searching from "../../../Searching";
 
 class PointList extends Component {
   state = {
-    points: [],
+    points: this.props.points,
     isLoading: true,
     label: {
       list: "Список активных торговых точек",
@@ -46,6 +46,7 @@ class PointList extends Component {
   };
 
   componentDidMount() {
+    console.log(this.props.points)
     if (this.props.location.state && this.props.location.state.fromEdit) {
       Alert.success(this.state.alert.successEdit, {
         position: "top-right",
@@ -87,16 +88,11 @@ class PointList extends Component {
       console.log(item.status);
       return pointsList !== item;
     });
-    //  console.log(newPointsList);
-    item.status = "CLOSE";
-    const req = { point: item };
-
-    Axios.post("/api/point/change", req)
+    Axios.delete(`/api/companysettings/storepoint/delete?id=${item.id}`)
       .then(() => {
         this.setState({
           points: newPointsList,
         });
-
         Alert.success(this.state.alert.successDelete, {
           position: "top-right",
           effect: "bouncyflip",
@@ -104,16 +100,17 @@ class PointList extends Component {
         });
       })
       .catch((err) => {
-        Alert.error(
-          err.response.data.code === "internal_error"
-            ? this.state.alert.raiseError
-            : err.response.data.text,
-          {
-            position: "top-right",
-            effect: "bouncyflip",
-            timeout: 2000,
-          }
-        );
+        // Alert.error(
+        //   err.response.data.code === "internal_error"
+        //     ? this.state.alert.raiseError
+        //     : err.response.data.text,
+        //   {
+        //     position: "top-right",
+        //     effect: "bouncyflip",
+        //     timeout: 2000,
+        //   }
+        // );
+        console.log(err);
       });
 
     this.hideAlert();
@@ -123,7 +120,7 @@ class PointList extends Component {
     // this.props.history.push({
     //   state: { pointData },
     // });
-    this.setState({pointData: pointData});
+    this.setState({ pointData: pointData });
     this.setState({ edit: true });
   };
 
@@ -142,16 +139,19 @@ class PointList extends Component {
       state: { point },
     });
   };
-
+  
   render() {
-    const { label, sweetalert } = this.state;
-    const { points, isLoading } = this.props;
+    const { points, label, sweetalert } = this.state;
+    const { isLoading } = this.props;
 
     return (
       <div className="point-list">
         {sweetalert}
         {this.state.edit ? (
-          <AddPointForm pointData={this.state.pointData} />
+          <AddPointForm
+            pointData={this.state.pointData}
+            company={this.props.companySelect}
+          />
         ) : (
           <Fragment>
             <div className="row">
@@ -162,7 +162,7 @@ class PointList extends Component {
               <div className="col-md-6 text-right">
                 <button
                   className="btn btn-link btn-sm"
-                  onClick={() => this.props.history.push("point/manage")}
+                  onClick={() => this.setState({ edit: true })}
                 >
                   {label.add}
                 </button>
@@ -197,10 +197,6 @@ class PointList extends Component {
                         <td>{point.address}</td>
                         <td>{point.is_minus ? "Да" : "Нет"}</td>
                         <td className="text-right"></td>
-                        {/* <button className="btn btn-w-icon detail-item" title={label.title.detail}
-													onClick={() => { this.handleDetail(point) }}>
-												</button> */}
-
                         <td className="text-right">
                           {point.point_type !== 0 ? (
                             <button
@@ -210,22 +206,21 @@ class PointList extends Component {
                                 this.handleEdit(point);
                               }}
                             />
+                          ) : null}
+                        </td>
+                        <td>
+                          {point.point_type !== 0 ? (
+                            <button
+                              className="btn btn-w-icon delete-item"
+                              title={label.title.delete}
+                              onClick={() => {
+                                this.handleDelete(point);
+                              }}
+                            />
                           ) : (
                             ""
                           )}
                         </td>
-
-                        {point.point_type !== 0 ? (
-                          <button
-                            className="btn btn-w-icon delete-item"
-                            title={label.title.delete}
-                            onClick={() => {
-                              this.handleDelete(point);
-                            }}
-                          />
-                        ) : (
-                          ""
-                        )}
                       </tr>
                     ))}
                   </tbody>

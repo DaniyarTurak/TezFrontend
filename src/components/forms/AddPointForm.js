@@ -18,7 +18,8 @@ let AddPointForm = ({
   pristine,
   reset,
   submitting,
-  pointData
+  pointData,
+  company
 }) => {
   const [isSubmiting, setSubmitting] = useState(false);
 
@@ -46,23 +47,38 @@ let AddPointForm = ({
 
   const submit = (data) => {
     data.is_minus = data.is_minus.value;
-    data.point_type = "2";
-    const reqdata = { point: data };
-
-    Axios.post(pointData ? "/api/point/change" : "/api/point/manage", reqdata)
+    const reqdata = { id: data.id, address: data.address, is_minus: data.is_minus, name: data.name };
+    if (pointData) {
+      Axios.put("/api/companysettings/storepoint/edit", reqdata)
       .then(() => {
-        pointData
-          ? history.push({
-              pathname: "/usercabinet/point",
-              state: {
-                fromEdit: true,
-              },
-            })
-          : Alert.success("Торговая точка успешно создана", {
-              position: "top-right",
-              effect: "bouncyflip",
-              timeout: 2000,
-            });
+        Alert.success("Изменения успешно сохранены", {
+          position: "top-right",
+          effect: "bouncyflip",
+          timeout: 2000,
+        });
+        setSubmitting(false);
+      })
+      .catch((err) => {
+        Alert.error(
+          err.response.data.code === "internal_error"
+            ? "Возникла ошибка при обработке вашего запроса. Мы уже работает над решением. Попробуйте позже"
+            : err.response.data.text,
+          {
+            position: "top-right",
+            effect: "bouncyflip",
+            timeout: 2000,
+          }
+        );
+        setSubmitting(false);
+      });
+    } else {
+      Axios.post("/api/companysettings/storepoint/create", {...reqdata, company: company.value })
+      .then(() => {
+        Alert.success("Торговая точка успешно создана", {
+          position: "top-right",
+          effect: "bouncyflip",
+          timeout: 2000,
+        });
         setSubmitting(false);
         dispatch(reset("addpointform"));
       })
@@ -79,6 +95,7 @@ let AddPointForm = ({
         );
         setSubmitting(false);
       });
+    }
   };
 
   return (

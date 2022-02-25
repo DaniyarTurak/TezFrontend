@@ -120,6 +120,7 @@ function CompanySettings({history, location}) {
                         location={location} 
                         points={points}
                         isLoading={isLoading}
+                        companySelect={companySelect}
                         />
                     )}
                     {pageMode === "cashbox" && (
