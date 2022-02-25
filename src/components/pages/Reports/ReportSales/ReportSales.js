@@ -161,7 +161,7 @@ export default function ReportSales({ companyProps }) {
     // category,
     // dateFrom,
     // dateTo,
-    grouping,
+    // grouping,
     // point,
     // type,
   ]);

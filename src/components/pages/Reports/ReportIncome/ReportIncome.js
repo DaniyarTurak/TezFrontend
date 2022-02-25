@@ -154,7 +154,7 @@ export default function ReportIncome({ companyProps }) {
     // brand,
     // attribute,
     // attrval,
-    grouping,
+    // grouping,
     // nds,
     // dateFrom,
     // dateTo,
