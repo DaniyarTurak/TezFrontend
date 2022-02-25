@@ -154,16 +154,16 @@ export default function ReportSales({ companyProps }) {
       setDateChanging(false);
     };
   }, [
-    attribute,
-    attrval,
-    brand,
-    counterparty,
-    category,
-    dateFrom,
-    dateTo,
+    // attribute,
+    // attrval,
+    // brand,
+    // counterparty,
+    // category,
+    // dateFrom,
+    // dateTo,
     grouping,
-    point,
-    type,
+    // point,
+    // type,
   ]);
 
   useEffect(

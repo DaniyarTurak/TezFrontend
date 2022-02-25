@@ -148,16 +148,16 @@ export default function ReportIncome({ companyProps }) {
       setDateChanging(false);
     };
   }, [    
-    point,
-    counterparty,
-    category,
-    brand,
-    attribute,
-    attrval,
-    grouping,
-    nds,
-    dateFrom,
-    dateTo,
+    // point,
+    // counterparty,
+    // category,
+    // brand,
+    // attribute,
+    // attrval,
+    // grouping,
+    // nds,
+    // dateFrom,
+    // dateTo,
   ]);
 
   const clean = () => {
@@ -382,7 +382,7 @@ export default function ReportIncome({ companyProps }) {
 
   const getCounterparties = (counterparty) => {
     Axios.get("/api/counterparties/search", {
-      params: { counterparty: counterparty, company: company },
+      params: { counterparty, company },
     })
       .then((res) => res.data)
       .then((list) => {
