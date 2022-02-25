@@ -123,13 +123,13 @@ export default function ReportRevision({ companyProps }) {
         ? textA < textB
           ? -1
           : textA > textB
-            ? 1
-            : 0
+          ? 1
+          : 0
         : textB < textA
-          ? -1
-          : textB > textA
-            ? 1
-            : 0;
+        ? -1
+        : textB > textA
+        ? 1
+        : 0;
       return res;
     });
     setRevisions(revisionsChanged);
@@ -186,7 +186,11 @@ export default function ReportRevision({ companyProps }) {
 
   const getRevisionDetails = (revisionnumber) => {
     Axios.get("/api/report/revision/details", {
-      params: { revisionnumber: revisionnumber, parametr , onlyDiff: onlyDiff ? 1 : 0 }
+      params: {
+        revisionnumber: revisionnumber,
+        parametr,
+        onlyDiff: onlyDiff ? 1 : 0,
+      },
     })
       .then((res) => res.data)
       .then((res) => {
@@ -286,6 +290,7 @@ export default function ReportRevision({ companyProps }) {
           variant="outlined"
           color="primary"
           onClick={handleSearch}
+          disabled={isLoading}
         >
           Показать Ревизии
         </Button>

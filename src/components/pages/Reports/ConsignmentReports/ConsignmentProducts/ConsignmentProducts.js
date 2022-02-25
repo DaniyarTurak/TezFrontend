@@ -212,6 +212,7 @@ export default function ConsginmentProducts({
         onCategoryChange={onCategoryChange}
         onConsignatorChange={onConsignatorChange}
         onConsignatorListInput={onConsignatorListInput}
+        isLoading={isLoading}
       />
 
       {consignments.length > 0 && !isLoading ? (

@@ -30,6 +30,7 @@ export default function SaledProductsOptions({
   onProductListInput,
   onStockChange,
   pageChange,
+  isLoading,
 }) {
   return (
     <Fragment>
@@ -100,9 +101,9 @@ export default function SaledProductsOptions({
           variant="outlined"
           color="primary"
           fullWidth
-          //disabled={isLoading}
           size="large"
           onClick={handleSearch}
+          disabled={isLoading}
         >
           Поиск
         </Button>

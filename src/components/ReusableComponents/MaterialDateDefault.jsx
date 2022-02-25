@@ -46,7 +46,8 @@ export default function MaterialDateDefault({
   searchInvoices,
   disableButton,
   maxDate,
-  invisibleButton
+  invisibleButton,
+  isLoading
 }) {
   const classes = useStyles();
 
@@ -143,7 +144,7 @@ export default function MaterialDateDefault({
             className={invisibleButton? classes.button_invisible : classes.button}
             variant="outlined"
             color="primary"
-            disabled={disableButton}
+            disabled={disableButton && isLoading}
             // onClick={searchInvoices}
             onClick={checkDates}
 

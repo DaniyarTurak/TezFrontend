@@ -298,6 +298,7 @@ export default function ReportProductPerTransfer({ companyProps }) {
         onAttributeTypeChange={onAttributeTypeChange}
         onDateChange={onDateChange}
         onStockChange={onStockChange}
+        isLoading={isLoading}
       />
 
       {isLoading && (

@@ -21,6 +21,7 @@ export default function ConsginmentOptions({
   onCategoryListInput,
   onConsignatorChange,
   onConsignatorListInput,
+  isLoading,
 }) {
   return (
     <Paper className={classes.paper}>
@@ -124,6 +125,7 @@ export default function ConsginmentOptions({
             fullWidth
             size="large"
             onClick={handleConsignment}
+            disabled={isLoading}
           >
             Поиск
           </Button>

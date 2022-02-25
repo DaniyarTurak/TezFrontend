@@ -5,11 +5,10 @@ import SkeletonTable from "../../../Skeletons/TableSkeleton";
 import Grid from "@material-ui/core/Grid";
 import ErrorAlert from "../../../ReusableComponents/ErrorAlert";
 import Moment from "moment";
-import ReconciliationTable from './ReconciliationTable';
-import DetailsTable from './DetailsTable';
+import ReconciliationTable from "./ReconciliationTable";
+import DetailsTable from "./DetailsTable";
 
 export default function ReconciliationPage() {
-
   const [dateFrom, setDateFrom] = useState(Moment().format("YYYY-MM-DD"));
   const [dateTo, setDateTo] = useState(Moment().format("YYYY-MM-DD"));
   const [isLoading, setLoading] = useState(false);
@@ -24,7 +23,9 @@ export default function ReconciliationPage() {
       dF = Moment().format("YYYY-MM-DD");
       dT = Moment().format("YYYY-MM-DD");
     } else if (dateStr === "month") {
-      dF = Moment().startOf("month").format("YYYY-MM-DD");
+      dF = Moment()
+        .startOf("month")
+        .format("YYYY-MM-DD");
       dT = Moment().format("YYYY-MM-DD");
     }
     setDateFrom(dF);
@@ -44,7 +45,12 @@ export default function ReconciliationPage() {
     setSelectedID(null);
     setShowDetails(false);
     setDetails({});
-    Axios.get("/api/report/reconciliation/list", { params: { dateFrom: Moment(dateFrom).format("YYYY-MM-DD"), dateTo: Moment(dateTo).format("YYYY-MM-DD") } })
+    Axios.get("/api/report/reconciliation/list", {
+      params: {
+        dateFrom: Moment(dateFrom).format("YYYY-MM-DD"),
+        dateTo: Moment(dateTo).format("YYYY-MM-DD"),
+      },
+    })
       .then((res) => res.data)
       .then((recons) => {
         setReconciliations(recons);
@@ -61,13 +67,13 @@ export default function ReconciliationPage() {
     if (data.status !== 2 && data.status !== 0) {
       setDetails(data);
       setShowDetails(true);
-    };
+    }
   };
 
   const closeDetails = () => {
     setShowDetails(false);
     setDetails([]);
-  }
+  };
 
   return (
     <Fragment>
@@ -80,20 +86,24 @@ export default function ReconciliationPage() {
             dateFromChange={dateFromChange}
             dateToChange={dateToChange}
             searchInvoices={getReconciliations}
+            isLoading={isLoading}
           />
         </Grid>
-        {isLoading &&
+        {isLoading && (
           <Grid item xs={12}>
             <SkeletonTable />
           </Grid>
-        }
-        {!isLoading && reconciliations.length > 0 && !isShowDetails &&
-          <ReconciliationTable reconciliations={reconciliations} getDetails={getDetails} selectedID={selectedID} />
-        }
-        {
-          !isLoading && isShowDetails && details.result.result.length > 0 &&
+        )}
+        {!isLoading && reconciliations.length > 0 && !isShowDetails && (
+          <ReconciliationTable
+            reconciliations={reconciliations}
+            getDetails={getDetails}
+            selectedID={selectedID}
+          />
+        )}
+        {!isLoading && isShowDetails && details.result.result.length > 0 && (
           <DetailsTable details={details} closeDetails={closeDetails} />
-        }
+        )}
       </Grid>
     </Fragment>
   );
