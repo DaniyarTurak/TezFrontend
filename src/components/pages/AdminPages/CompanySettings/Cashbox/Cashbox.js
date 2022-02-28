@@ -1,7 +1,7 @@
 import React, { Component, Fragment } from "react";
-import CashboxListPage from "./CashboxListPage";
+import CashboxList from "./CashboxListPage";
 import EditCashbox from "./EditCashbox";
-import cashboxes from "../../../../../data/cashboxes";
+import cashboxesMode from "../../../../../data/cashboxes";
 
 export default class Cashbox extends Component {
   state = {
@@ -17,7 +17,7 @@ export default class Cashbox extends Component {
     return (
       <div className="report">
         <div className={`row ${cashboxMode ? "pb-10" : ""}`}>
-          {cashboxes.map(cashbox => (
+          {cashboxesMode.map(cashbox => (
             <div className="col-md-3 report-btn-block" key={cashbox.id}>
               <button
                 className={`btn btn-sm btn-block btn-report ${
@@ -41,18 +41,23 @@ export default class Cashbox extends Component {
             <div className="row mt-10">
               <div className="col-md-12">
                 {cashboxMode === "CashboxListPage" && (
-                  <CashboxListPage
+                  <CashboxList
                     history={this.props.history}
                     location={this.props.location}
+                    cashboxes={this.props.cashboxes}
+                    isLoading={this.props.isLoading}
+                    setCashboxes={this.props.setCashboxes}
+                    companySelect={this.props.companySelect}
+                    getCashboxes={this.props.getCashboxes}
                   />
                 )}
 
-                {cashboxMode === "EditCashbox" && (
+                {/* {cashboxMode === "EditCashbox" && (
                   <EditCashbox
                     history={this.props.history}
                     location={this.props.location}
                   />
-                )}
+                )} */}
               </div>
             </div>
           </Fragment>

@@ -1,31 +1,29 @@
-import React, { useState, Fragment, useEffect } from "react";
+import React, { useState, useEffect, Fragment } from "react";
 import Axios from "axios";
 
-import ShowInactive from "../../ClosedListPages/ShowInactive";
-import AddPointForm from "../../../forms/AddPointForm";
-import AlertBox from "../../../AlertBox";
+import ShowInactive from "../../../../ClosedListPages/ShowInactive";
+import AddCashboxForm from "./AddCashboxForm";
+import AlertBox from "../../../../../AlertBox";
 import SweetAlert from "react-bootstrap-sweetalert";
 import Alert from "react-s-alert";
-import Searching from "../../../Searching";
+import Searching from "../../../../../Searching";
 
-function PointPage({points, companySelect, isLoading, setPoints, getPoints}) {
+function CashboxList({ cashboxes, setCashboxes, isLoading, getCashboxes, companySelect }) {
   const state = {
     label: {
-      list: "Список активных торговых точек",
-      add: "Добавить новую торговую точку",
-      empty: "Cписок торговых точек пуст",
-      name: "Наименование",
-      address: "Адрес",
-      is_minus: "Отрицательный учет",
+      list: "Список активных касс",
+      add: "Добавить новую кассу",
+      empty: "Список активных касс пуст",
+      cashboxName: "Наименование кассы",
+      pointName: "Наименование торговой точки",
       title: {
         edit: "Редактировать",
         delete: "Удалить",
-        detail: "Детали",
       },
     },
     alert: {
-      confirmDelete: "Вы действительно хотите удалить торговую точку?",
-      successDelete: "Торговая точка успешно удалена",
+      confirmDelete: "Вы действительно хотите удалить кассу?",
+      successDelete: "Касса успешно удалена",
       successEdit: "Изменения сохранены",
       raiseError:
         "Возникла ошибка при обработке вашего запроса. Мы уже работает над решением. Попробуйте позже",
@@ -40,16 +38,16 @@ function PointPage({points, companySelect, isLoading, setPoints, getPoints}) {
     },
   };
 
-  const [sweetalert, setSweetalert] = useState(null);
-  const [pointData, setPointData] = useState(null);
-  const [edit, setEdit] = useState(false)
+  const [sweetAlert, setSweetAlert] = useState(null);
+  const [edit, setEdit] = useState(false);
+  const [cashboxData, setCashboxData] = useState(null);
 
   const hideAlert = () => {
-    setSweetalert(null);
+    setSweetAlert(null);
   };
 
   const handleDelete = (item) => {
-    setSweetalert(
+    setSweetAlert(
       <SweetAlert
         warning
         showCancel
@@ -67,13 +65,13 @@ function PointPage({points, companySelect, isLoading, setPoints, getPoints}) {
   };
 
   const Delete = (item) => {
-    const newPointsList = points.filter((pointsList) => {
-      return pointsList !== item;
+    const newCashboxesList = cashboxes.filter((cashboxesList) => {
+      return cashboxesList !== item;
     });
-    Axios.delete(`/api/companysettings/storepoint/delete?id=${item.id}`)
+    Axios.delete(`/api/companysettings/cashbox/delete?id=${item.id}`)
       .then(() => {
-        setPoints(newPointsList)
-        Alert.success(this.state.alert.successDelete, {
+        setCashboxes(newCashboxesList);
+        Alert.success(state.alert.successDelete, {
           position: "top-right",
           effect: "bouncyflip",
           timeout: 2000,
@@ -94,29 +92,28 @@ function PointPage({points, companySelect, isLoading, setPoints, getPoints}) {
       });
 
     hideAlert();
-  }
+  };
 
-  const handleEdit = (pointData) => {
-    setPointData(pointData);
+  const handleEdit = (cashboxData) => {
+    setCashboxData(cashboxData);
     setEdit(true);
-  }
-
+  };
   const handleRollback = (newPoint) => {
-    let list = points;
+    let list = cashboxes;
     list.push(newPoint);
-    setPoints(list);
-  }
+    setCashboxes(list);
+  };
 
   return (
-    <div className="point-list">
-      {sweetalert}
+    <div className="cashbox-list">
+      {sweetAlert}
       {edit ? (
-        <AddPointForm
-          pointData={pointData}
+        <AddCashboxForm
+          cashboxData={cashboxData}
           company={companySelect}
           setEdit={setEdit}
-          setPointData={setPointData}
-          getPoints={getPoints}
+          setCashboxData={setCashboxData}
+          getCashboxes={getCashboxes}
         />
       ) : (
         <Fragment>
@@ -139,53 +136,44 @@ function PointPage({points, companySelect, isLoading, setPoints, getPoints}) {
 
           {!isLoading && <div className="empty-space" />}
 
-          {!isLoading && points.length === 0 && (
+          {!isLoading && cashboxes.length === 0 && (
             <AlertBox text={state.label.empty} />
           )}
 
-          {!isLoading && points.length > 0 && (
+          {!isLoading && cashboxes.length > 0 && (
             <div>
               <table className="table table-hover">
                 <thead>
                   <tr>
                     <th style={{ width: "1%" }} />
-                    <th style={{ width: "30%" }}>{state.label.name}</th>
-                    <th style={{ width: "30%" }}>{state.label.address}</th>
-                    <th style={{ width: "18%" }}>{state.label.is_minus}</th>
-                    <th style={{ width: "15%" }} />
+                    <th style={{ width: "45%" }}>{state.label.cashboxName}</th>
+                    <th style={{ width: "45%" }}>{state.label.pointName}</th>
+                    <th />
                   </tr>
                 </thead>
                 <tbody>
-                  {points.map((point, idx) => (
-                    <tr key={point.id}>
+                  {cashboxes.map((cashbox, idx) => (
+                    <tr key={cashbox.id}>
                       <td>{idx + 1}</td>
-                      <td>{point.name}</td>
-                      <td>{point.address}</td>
-                      <td>{point.is_minus ? "Да" : "Нет"}</td>
+                      <td>{cashbox.name}</td>
+                      <td>{cashbox.point_name}</td>
                       <td className="text-right"></td>
+
                       <td className="text-right">
-                        {point.point_type !== 0 ? (
-                          <button
-                            className="btn btn-w-icon edit-item"
-                            title={state.label.title.edit}
-                            onClick={() => {
-                              handleEdit(point);
-                            }}
-                          />
-                        ) : null}
-                      </td>
-                      <td>
-                        {point.point_type !== 0 ? (
-                          <button
-                            className="btn btn-w-icon delete-item"
-                            title={state.label.title.delete}
-                            onClick={() => {
-                              handleDelete(point);
-                            }}
-                          />
-                        ) : (
-                          ""
-                        )}
+                        <button
+                          className="btn btn-w-icon edit-item"
+                          title={state.label.title.edit}
+                          onClick={() => {
+                            handleEdit(cashbox);
+                          }}
+                        />
+                        <button
+                          className="btn btn-w-icon delete-item"
+                          title={state.label.title.delete}
+                          onClick={() => {
+                            handleDelete(cashbox);
+                          }}
+                        />
                       </td>
                     </tr>
                   ))}
@@ -194,7 +182,7 @@ function PointPage({points, companySelect, isLoading, setPoints, getPoints}) {
             </div>
           )}
           {!isLoading && (
-            <ShowInactive callback={handleRollback} mode="point" />
+            <ShowInactive callback={handleRollback} mode="cashbox" />
           )}
         </Fragment>
       )}
@@ -202,4 +190,4 @@ function PointPage({points, companySelect, isLoading, setPoints, getPoints}) {
   );
 }
 
-export default PointPage;
+export default CashboxList;

@@ -10,7 +10,6 @@ import Searching from "../../../../../Searching";
 
 export default class CashboxListPage extends Component {
   state = {
-    cashboxes: [],
     isLoading: true,
     label: {
       list: "Список активных касс",
@@ -44,7 +43,6 @@ export default class CashboxListPage extends Component {
 
   componentDidMount() {
     this.getCashboxes();
-
     if (this.props.location.state && this.props.location.state.fromEdit) {
       Alert.success(this.state.alert.successEdit, {
         position: "top-right",
@@ -65,21 +63,16 @@ export default class CashboxListPage extends Component {
       sweetalert: null,
     });
   };
-
   getCashboxes = () => {
     Axios.get("/api/cashbox")
       .then((res) => res.data)
       .then((cashboxes) => {
-        this.setState({
-          cashboxes,
-          isLoading: false,
-        });
+        console.log(cashboxes)
       })
       .catch((err) => {
         console.log(err);
       });
   };
-
   handleDelete = (item) => {
     this.setState({
       sweetalert: (
@@ -153,11 +146,11 @@ export default class CashboxListPage extends Component {
   };
 
   render() {
-    const { cashboxes, isLoading, label, sweetalert } = this.state;
+    const { label, sweetalert } = this.state;
+    const { cashboxes, isLoading } = this.props
     return (
       <div className="cashbox-list">
         {sweetalert}
-
         <div className="row">
           <div className="col-md-6">
             <h6 className="btn-one-line">{label.list}</h6>

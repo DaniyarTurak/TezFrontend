@@ -19,9 +19,13 @@ let AddPointForm = ({
   reset,
   submitting,
   pointData,
-  company
+  company,
+  setEdit,
+  setPointData,
+  getPoints
 }) => {
   const [isSubmiting, setSubmitting] = useState(false);
+
 
   // const pointData = location.state ? location.state.pointData : null;
 
@@ -37,7 +41,7 @@ let AddPointForm = ({
         pointDataChanged.point_type_name
       );
       dispatch(initialize("addpointform", pointDataChanged));
-    }
+    } 
   }, []);
 
   const handleSubmitFunction = (data) => {
@@ -57,6 +61,8 @@ let AddPointForm = ({
           timeout: 2000,
         });
         setSubmitting(false);
+        setEdit(false);
+        getPoints(company.value);
       })
       .catch((err) => {
         Alert.error(
@@ -70,6 +76,7 @@ let AddPointForm = ({
           }
         );
         setSubmitting(false);
+        
       });
     } else {
       Axios.post("/api/companysettings/storepoint/create", {...reqdata, company: company.value })
@@ -81,6 +88,8 @@ let AddPointForm = ({
         });
         setSubmitting(false);
         dispatch(reset("addpointform"));
+        setEdit(false)
+        getPoints(company.value)
       })
       .catch((err) => {
         Alert.error(
@@ -112,7 +121,10 @@ let AddPointForm = ({
         <div className="col-md-4 text-right">
           <button
             className="btn btn-link btn-sm"
-            onClick={() => history.push("../point")}
+            onClick={() => {
+              setEdit(false) 
+              setPointData(null)
+            }}
           >
             Список торговых точек
           </button>

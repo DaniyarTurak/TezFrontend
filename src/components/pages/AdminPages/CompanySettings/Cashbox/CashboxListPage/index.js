@@ -1,3 +1,3 @@
-import CashboxListPage from "./CashboxListPage";
+import CashboxList from "./CashboxList";
 
-export default CashboxListPage;
+export default CashboxList;

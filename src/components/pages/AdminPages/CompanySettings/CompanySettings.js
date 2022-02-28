@@ -4,10 +4,10 @@ import Axios from "axios";
 import companySettings from "../../../../data/companySettings";
 import Searching from "../../../Searching";
 import { makeStyles } from "@material-ui/core/styles";
-import PointListPage from "./PointListPage";
+import PointPage from "./PointPage";
 import Cashbox from "./Cashbox";
 import CreatePrefix from "./CreatePrefix";
-import StockListPage from "../../ListPages/StockListPage"
+import StockListPage from "../../ListPages/StockListPage";
 
 const useStyles = makeStyles((theme) => ({
   root: {
@@ -26,13 +26,14 @@ const useStyles = makeStyles((theme) => ({
   },
 }));
 
-function CompanySettings({history, location}) {
+function CompanySettings({ history, location }) {
   const classes = useStyles();
   const [companySelect, setCompanySelect] = useState("");
   const [companies, setCompanies] = useState([]);
   const [isLoading, setLoading] = useState(false);
   const [pageMode, setPageMode] = useState("point");
-  const [points, setPoints] = useState([])
+  const [points, setPoints] = useState([]);
+  const [cashboxes, setCashboxes] = useState([]);
 
   useEffect(() => {
     getCompaniesInfo();
@@ -40,7 +41,8 @@ function CompanySettings({history, location}) {
 
   const onCompanyChange = (c) => {
     setCompanySelect(c);
-    getPoints(c.value)
+    getPoints(c.value);
+    getCashboxes(c.value)
   };
 
   const getCompaniesInfo = () => {
@@ -66,22 +68,33 @@ function CompanySettings({history, location}) {
     setPageMode(e.target.name);
   };
 
-
   const getPoints = (id) => {
     Axios.get(`/api/companysettings/storepoint?company=${id}`)
-    .then((res) => res.data)
-    .then((list) => {
-      setPoints(list)
-    })
-    .catch((err) => {
-      console.log(err);
-    });
-  }
+      .then((res) => res.data)
+      .then((list) => {
+        setPoints(list);
+      })
+      .catch((err) => {
+        console.log(err);
+      });
+  };
 
+  const getCashboxes = (id) => {
+    setLoading(true)
+    Axios.get(`/api/companysettings/cashbox?company=${id}`)
+      .then((res) => res.data)
+      .then((list) => {
+        setCashboxes(list);
+        setLoading(false)
+      })
+      .catch((err) => {
+        console.log(err);
+        setLoading(false)
+      });
+  };
 
   return (
     <div className={classes.root1}>
-      {isLoading && <Searching />}
       <div className="col-md-12">
         <Select
           name="companySelect"
@@ -115,16 +128,26 @@ function CompanySettings({history, location}) {
                 <div className="row mt-10">
                   <div className="col-md-12">
                     {pageMode === "point" && (
-                      <PointListPage 
-                        history={history} 
-                        location={location} 
+                      <PointPage
+                        history={history}
+                        location={location}
                         points={points}
                         isLoading={isLoading}
                         companySelect={companySelect}
-                        />
+                        setPoints={setPoints}
+                        getPoints={getPoints}
+                      />
                     )}
                     {pageMode === "cashbox" && (
-                       <Cashbox history={history} location={location} />
+                      <Cashbox
+                        history={history}
+                        location={location}
+                        cashboxes={cashboxes}
+                        setCashboxes={setCashboxes}
+                        getCashboxes={getCashboxes}
+                        isLoading={isLoading}
+                        companySelect={companySelect}
+                      />
                     )}
                     {pageMode === "createprefix" && (
                       <CreatePrefix history={history} location={location} />
@@ -132,7 +155,6 @@ function CompanySettings({history, location}) {
                     {pageMode === "stock" && (
                       <StockListPage history={history} location={location} />
                     )}
-
                   </div>
                 </div>
               </Fragment>
