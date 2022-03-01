@@ -162,7 +162,7 @@ export default class CashboxListPage extends Component {
           <div className="col-md-6">
             <h6 className="btn-one-line">{label.list}</h6>
           </div>
-          {this.state.admin &&
+         
             <div className="col-md-6 text-right">
               <button
                 className="btn btn-link btn-sm"
@@ -171,7 +171,7 @@ export default class CashboxListPage extends Component {
                 {label.add}
               </button>
             </div>
-          }
+          
 
         </div>
 
@@ -201,7 +201,7 @@ export default class CashboxListPage extends Component {
                     <td>{cashbox.name}</td>
                     <td>{cashbox.point_name}</td>
                     <td className="text-right"></td>
-                    {this.state.admin &&
+                   
                       <td className="text-right">
                         <button
                           className="btn btn-w-icon edit-item"
@@ -218,7 +218,7 @@ export default class CashboxListPage extends Component {
                           }}
                         />
                       </td>
-                    }
+                    
                   </tr>
                 ))}
               </tbody>

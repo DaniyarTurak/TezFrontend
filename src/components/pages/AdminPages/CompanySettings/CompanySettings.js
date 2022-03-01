@@ -2,12 +2,10 @@ import React, { useState, useEffect, Fragment } from "react";
 import Select from "react-select";
 import Axios from "axios";
 import companySettings from "../../../../data/companySettings";
-import Searching from "../../../Searching";
 import { makeStyles } from "@material-ui/core/styles";
 import PointPage from "./PointPage";
 import Cashbox from "./Cashbox";
 import CreatePrefix from "./CreatePrefix";
-import StockListPage from "../../ListPages/StockListPage";
 
 const useStyles = makeStyles((theme) => ({
   root: {
@@ -84,7 +82,10 @@ function CompanySettings({ history, location }) {
     Axios.get(`/api/companysettings/cashbox?company=${id}`)
       .then((res) => res.data)
       .then((list) => {
-        setCashboxes(list);
+        let newList = list.filter((cashbox) => {
+          return cashbox.deleted == false
+        })
+        setCashboxes(newList);
         setLoading(false)
       })
       .catch((err) => {
@@ -147,13 +148,11 @@ function CompanySettings({ history, location }) {
                         getCashboxes={getCashboxes}
                         isLoading={isLoading}
                         companySelect={companySelect}
+                        points={points}
                       />
                     )}
                     {pageMode === "createprefix" && (
                       <CreatePrefix history={history} location={location} />
-                    )}
-                    {pageMode === "stock" && (
-                      <StockListPage history={history} location={location} />
                     )}
                   </div>
                 </div>

@@ -22,9 +22,9 @@ let AddCashBoxForm = ({
   setEdit,
   setCashboxData,
   getCashboxes,
-  company
+  company,
+  points
 }) => {
-  const [points, setPoints] = useState([]);
   const [isLoading, setLoading] = useState(false);
   const [isSubmiting, setSubmitting] = useState(false);
 
@@ -45,15 +45,11 @@ let AddCashBoxForm = ({
   };
 
   const submit = (data) => {
-    data.point = data.point.value;
-    const reqdata = { 
-      id: data.id, 
-      address: data.address, 
-      is_minus: data.is_minus, 
-      name: data.name 
-    };
+    data.point_name = data.point.label
+    data.point = data.point.value;  
+    console.log(data)
     if(cashboxData) {
-      Axios.put("/api/companysettings/cashbox/edit", reqdata)
+      Axios.put("/api/companysettings/cashbox/edit", data)
       .then(() => {
         Alert.success("Изменения успешно сохранены", {
           position: "top-right",
@@ -63,6 +59,7 @@ let AddCashBoxForm = ({
         setSubmitting(false);
         setEdit(false);
         getCashboxes(company.value);
+        setCashboxData(null)
       })
       .catch((err) => {
         Alert.error(
@@ -79,7 +76,7 @@ let AddCashBoxForm = ({
         
       });
     } else {
-      Axios.post("/api/companysettings/storepoint/create", {...reqdata, company: company.value })
+      Axios.post("/api/companysettings/cashbox/create", {name: data.name, point: data.point })
       .then(() => {
         Alert.success("Касса успешно создана", {
           position: "top-right",

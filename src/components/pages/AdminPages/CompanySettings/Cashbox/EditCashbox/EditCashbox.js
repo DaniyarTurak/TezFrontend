@@ -6,7 +6,6 @@ import SwitchStyle from "./SwitchStyle";
 import Axios from "axios";
 import { Progress } from "reactstrap";
 import Select from "react-select";
-//import { ContentFlag } from "material-ui/svg-icons";
 
 export default class EditCashbox extends Component {
   state = {
@@ -21,34 +20,18 @@ export default class EditCashbox extends Component {
     NDS: true,
     point: "",
     pointID: "",
-    points: [],
+    points: this.props.points.map((point) => {
+      return {
+        label: point.name,
+        value: point.id,
+        address: point.address,
+        name: point.name
+      }
+    }),
     RNM: true,
     thanksMessage: "Спасибо за покупку.",
     ticketInformation: "",
     ZNM: true,
-  };
-
-  componentDidMount() {
-    this.getPoints();
-  }
-
-  getPoints = () => {
-    Axios.get("/api/point")
-      .then((res) => res.data)
-      .then((res) => {
-        const points = res.map((point) => {
-          return {
-            label: point.name,
-            value: point.id,
-            address: point.address,
-            name: point.name,
-          };
-        });
-        this.setState({ points });
-      })
-      .catch((err) => {
-        console.log(err);
-      });
   };
 
   onPointIDChange = (pointID) => {
@@ -326,8 +309,8 @@ export default class EditCashbox extends Component {
       displayFile,
       NDS,
       point,
-      pointID,
       points,
+      pointID,
       RNM,
       thanksMessage,
       ZNM,

@@ -49,15 +49,17 @@ export default class Cashbox extends Component {
                     setCashboxes={this.props.setCashboxes}
                     companySelect={this.props.companySelect}
                     getCashboxes={this.props.getCashboxes}
+                    points={this.props.points}
                   />
                 )}
 
-                {/* {cashboxMode === "EditCashbox" && (
+                {cashboxMode === "EditCashbox" && (
                   <EditCashbox
                     history={this.props.history}
                     location={this.props.location}
+                    points={this.props.points}
                   />
-                )} */}
+                )}
               </div>
             </div>
           </Fragment>

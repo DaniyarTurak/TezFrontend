@@ -8,7 +8,14 @@ import SweetAlert from "react-bootstrap-sweetalert";
 import Alert from "react-s-alert";
 import Searching from "../../../../../Searching";
 
-function CashboxList({ cashboxes, setCashboxes, isLoading, getCashboxes, companySelect }) {
+function CashboxList({ 
+    cashboxes, 
+    setCashboxes, 
+    isLoading, 
+    getCashboxes, 
+    companySelect,
+    points
+}) {
   const state = {
     label: {
       list: "Список активных касс",
@@ -114,6 +121,7 @@ function CashboxList({ cashboxes, setCashboxes, isLoading, getCashboxes, company
           setEdit={setEdit}
           setCashboxData={setCashboxData}
           getCashboxes={getCashboxes}
+          points={points}
         />
       ) : (
         <Fragment>
