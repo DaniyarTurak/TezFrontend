@@ -2,13 +2,13 @@ import React, { useState, useEffect, Fragment } from "react";
 import Axios from "axios";
 import SimpleStockTable from "./SimpleStockTable";
 import SimpleStockOptions from "./SimpleStockOptions";
-import SkeletonTable from "../../../../../Skeletons/TableSkeleton";
-import ErrorAlert from "../../../../../ReusableComponents/ErrorAlert";
+import SkeletonTable from "../../../../Skeletons/TableSkeleton";
+import ErrorAlert from "../../../../ReusableComponents/ErrorAlert";
 import Grid from "@material-ui/core/Grid";
 import { makeStyles } from "@material-ui/core/styles";
 import Alert from "react-s-alert";
 import Moment from "moment";
-import useDebounce from "../../../../../ReusableComponents/useDebounce";
+import useDebounce from "../../../../ReusableComponents/useDebounce";
 
 const useStyles = makeStyles((theme) => ({
   notFound: { textAlign: "center", color: theme.palette.text.secondary },

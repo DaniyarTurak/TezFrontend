@@ -1,17 +1,17 @@
 import React, { useState, useEffect, Fragment } from "react";
 import Axios from "axios";
-import Searching from "../../../../../Searching";
+import Searching from "../../../../Searching";
 import Alert from "react-s-alert";
 import ReactModal from "react-modal";
-import ProductDetails from "../../../../Products/ProductDetails";
+import ProductDetails from "../../../Products/ProductDetails";
 import Moment from "moment";
 import Grid from "@material-ui/core/Grid";
 import StockbalanceOptions from "./StockbalanceOptions";
 import { makeStyles } from "@material-ui/core/styles";
-import SkeletonTable from "../../../../../Skeletons/TableSkeleton";
+import SkeletonTable from "../../../../Skeletons/TableSkeleton";
 import StockbalanceTable from "./StockbalanceTable";
-import ErrorAlert from "../../../../../ReusableComponents/ErrorAlert";
-import useDebounce from "../../../../../ReusableComponents/useDebounce";
+import ErrorAlert from "../../../../ReusableComponents/ErrorAlert";
+import useDebounce from "../../../../ReusableComponents/useDebounce";
 
 const customStyles = {
   content: {
