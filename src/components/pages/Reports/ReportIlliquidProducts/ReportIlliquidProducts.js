@@ -122,7 +122,7 @@ const ReportIlliquidProducts = ({ companyProps }) => {
       .then((res) => {
         const link = document.createElement("a");
         link.href = window.URL.createObjectURL(new Blob([res]));
-        link.download = `Отчет.xlsx`;
+        link.download = `Отчет по неликвидным товарам за период ${dateFrom} - ${dateTo}.xlsx`;
         document.body.appendChild(link);
         link.click();
 

@@ -278,7 +278,7 @@ export default function ReportSaledProducts({ companyProps }) {
       .then((res) => {
         const link = document.createElement("a");
         link.href = window.URL.createObjectURL(new Blob([res]));
-        link.download = `Отчет.xlsx`;
+        link.download = `Остаток на складе ${selectedStock.label}.xlsx`;
         document.body.appendChild(link);
         link.click();
 
