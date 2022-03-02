@@ -180,7 +180,9 @@ class CabinetSideBar extends Component {
             <NavLink to="/usercabinet">
               <li style={{ display: "flex", padding: "10px 0px" }}>
                 <div className="company-logo" />
-                <p style={{ margin: "auto 0px" }}>Tez Portal <LocalFloristIcon style={{position: "absolute", top: "21px", right: "127px"}} /> </p>
+                <p style={{ margin: "auto 0px" }}>Tez Portal 
+                {/* <LocalFloristIcon style={{position: "absolute", top: "21px", right: "127px"}} /> */}
+                </p> 
               </li>
             </NavLink>
             <NavLink activeClassName="nav-active" to="/usercabinet/general">

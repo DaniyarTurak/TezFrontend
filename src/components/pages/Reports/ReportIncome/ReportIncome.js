@@ -113,7 +113,7 @@ export default function ReportIncome({ companyProps }) {
 
   const company = companyProps ? companyProps.value : "";
   const ndses = [
-    { value: "@", label: "Все" },
+    { value: "-1", label: "Все" },
     { value: "0", label: "Без НДС" },
     { value: "1", label: "С НДС" },
   ];
