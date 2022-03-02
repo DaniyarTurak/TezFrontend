@@ -23,6 +23,7 @@ import ReconciliationPage from "./ReconciliationPage";
 import ReportDebtPage from "./ReportDebtPage";
 import ReportProductsPeriod from "./ReportProductsPeriod";
 import ReportStockBalanceParent from "./ReportStockBalanceParent";
+import ReportIlliquidProducts from "./ReportIlliquidProducts";
 
 export default function ReportPage({ type, history, location }) {
   const [parameters, setParameters] = useState("");
@@ -171,11 +172,13 @@ export default function ReportPage({ type, history, location }) {
               {typeMode === "report" && reportMode === "abcxyz" && (
                 <AbcXyzPage history={history} location={location} />
               )}
-
-              {/* {typeMode === "report" &&
-                reportMode === "reportsaledproducts" && (
-                  <ReportSaledProducts history={history} location={location} />
-                )} */}
+              {typeMode === "report" &&
+                reportMode === "reportilliquidproducts" && (
+                  <ReportIlliquidProducts
+                    history={history}
+                    location={location}
+                  />
+                )}
 
               {typeMode === "stockreport" &&
                 reportMode === "reportholdingpage" && (
@@ -183,8 +186,6 @@ export default function ReportPage({ type, history, location }) {
                 )}
               {typeMode === "stockreport" &&
                 reportMode === "reportstockbalance" && (
-                  //<ReportStockBalance history={history} location={location} />
-                  //<ReportSaledProducts history={history} location={location} />
                   <ReportStockBalanceParent
                     history={history}
                     location={location}
