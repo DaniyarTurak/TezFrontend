@@ -11,7 +11,6 @@ import ReportInvoiceHistory from "./ReportInvoiceHistory";
 import ReportFizCustomers from "./ReportFizCustomers";
 import ReportProductMovement from "./ReportProductMovement";
 import ReportRevision from "./ReportRevision";
-//import ReportStockBalance from "./ReportStockBalance";
 import ReportSalesSection from "./ReportSalesSection";
 import ReportSalesPlan from "./ReportSalesPlan";
 import ReportSalesPlanTeam from "./ReportSalesPlanTeam";
@@ -22,7 +21,7 @@ import ShelfLifePage from "./ShelfLifePage";
 import ReconciliationPage from "./ReconciliationPage";
 import ReportDebtPage from "./ReportDebtPage";
 import ReportProductsPeriod from "./ReportProductsPeriod";
-import ReportStockBalanceParent from "./ReportStockBalanceParent";
+import ReportStockBalance from "./ReportStockBalance";
 import ReportIlliquidProducts from "./ReportIlliquidProducts";
 
 export default function ReportPage({ type, history, location }) {
@@ -172,10 +171,7 @@ export default function ReportPage({ type, history, location }) {
                 )}
               {typeMode === "stockreport" &&
                 reportMode === "reportstockbalance" && (
-                  <ReportStockBalanceParent
-                    history={history}
-                    location={location}
-                  />
+                  <ReportStockBalance history={history} location={location} />
                 )}
 
               {typeMode === "stockreport" &&

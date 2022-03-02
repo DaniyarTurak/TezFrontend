@@ -1,8 +1,8 @@
 import React, { Fragment } from "react";
 import Grid from "@material-ui/core/Grid";
-import AutocompleteSelect from "../../../ReusableComponents/AutocompleteSelect";
-import AutocompleteProductBarcode from "../../../ReusableComponents/AutocompleteProductBarcode";
-import CategorySelect from "../../../ReusableComponents/CategorySelect";
+import AutocompleteSelect from "../../../../ReusableComponents/AutocompleteSelect";
+import AutocompleteProductBarcode from "../../../../ReusableComponents/AutocompleteProductBarcode";
+import CategorySelect from "../../../../ReusableComponents/CategorySelect";
 import Button from "@material-ui/core/Button";
 
 export default function SaledProductsOptions({
@@ -29,7 +29,6 @@ export default function SaledProductsOptions({
   onProductChange,
   onProductListInput,
   onStockChange,
-  pageChange,
   isLoading,
 }) {
   return (
@@ -106,22 +105,6 @@ export default function SaledProductsOptions({
           disabled={isLoading}
         >
           Поиск
-        </Button>
-      </Grid>
-
-      <Grid item xs={3}>
-        <Button
-          style={{
-            minHeight: "3.5rem",
-            fontSize: ".875rem",
-            textTransform: "none",
-          }}
-          variant="outlined"
-          color="primary"
-          size="large"
-          onClick={pageChange}
-        >
-          Расширенная версия
         </Button>
       </Grid>
     </Fragment>

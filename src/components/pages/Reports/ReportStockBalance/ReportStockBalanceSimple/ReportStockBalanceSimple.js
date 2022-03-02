@@ -2,13 +2,13 @@ import React, { useState, useEffect, Fragment } from "react";
 import Axios from "axios";
 import SimpleStockTable from "./SimpleStockTable";
 import SimpleStockOptions from "./SimpleStockOptions";
-import SkeletonTable from "../../../Skeletons/TableSkeleton";
-import ErrorAlert from "../../../ReusableComponents/ErrorAlert";
+import SkeletonTable from "../../../../../Skeletons/TableSkeleton";
+import ErrorAlert from "../../../../../ReusableComponents/ErrorAlert";
 import Grid from "@material-ui/core/Grid";
 import { makeStyles } from "@material-ui/core/styles";
 import Alert from "react-s-alert";
 import Moment from "moment";
-import useDebounce from "../../../ReusableComponents/useDebounce";
+import useDebounce from "../../../../../ReusableComponents/useDebounce";
 
 const useStyles = makeStyles((theme) => ({
   notFound: { textAlign: "center", color: theme.palette.text.secondary },
@@ -21,11 +21,7 @@ const useStyles = makeStyles((theme) => ({
   },
 }));
 
-export default function ReportSaledProducts({
-  companyProps,
-  history,
-  pageChange,
-}) {
+export default function ReportSaledProducts({ companyProps }) {
   const company = companyProps ? companyProps.value : "";
   const classes = useStyles();
   const [barcode, setBarcode] = useState("");
@@ -56,7 +52,7 @@ export default function ReportSaledProducts({
 
   const [currentPage, setCurrentPage] = useState(0);
   const [postsPerPage, setPostsPerPage] = useState(50);
-  const [isSearched, setSearched] = useState(false)
+  const [isSearched, setSearched] = useState(false);
 
   useEffect(() => {
     getBrands();
@@ -116,7 +112,7 @@ export default function ReportSaledProducts({
   }, [debouncedCounterparty]);
 
   const getTableData = () => {
-    setSearched(true)
+    setSearched(true);
     setIsLoading(true);
     const params = {
       barcode: barcode,
@@ -369,7 +365,7 @@ export default function ReportSaledProducts({
   };
 
   const handleSearch = () => {
-    setSearched(true)
+    setSearched(true);
     getTableData();
   };
 
@@ -400,7 +396,6 @@ export default function ReportSaledProducts({
         onStockChange={onStockChange}
         onProductChange={onProductChange}
         onProductListInput={onProductListInput}
-        pageChange={pageChange}
         isLoading={isLoading}
       />
 
