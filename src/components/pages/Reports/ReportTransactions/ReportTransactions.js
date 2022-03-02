@@ -97,6 +97,7 @@ export default function ReportTransactions({
   const [points, setPoints] = useState([]);
   const [transaction, setTransaction] = useState("");
   const [transactions, setTransactions] = useState([]);
+  const [isSearched, setSearched] = useState(false);
 
   const company = companyProps ? companyProps.value : "";
   const options = [
@@ -128,19 +129,19 @@ export default function ReportTransactions({
     getJurBuyers();
   }, []);
 
-  useEffect(() => {
-    if (!isDateChanging && point.value) {
-      getTransactions();
-    }
-    return () => {
-      setDateChanging(false);
-    };
-  }, [dateFrom, dateTo, point]);
+  // useEffect(() => {
+  //   if (!isDateChanging && point.value) {
+  //     getTransactions();
+  //   }
+  //   return () => {
+  //     setDateChanging(false);
+  //   };
+  // }, [dateFrom, dateTo, point]);
 
-  useEffect(() => {
-    if (!point.value) return;
-    handleSearch();
-  }, [filter]);
+  // useEffect(() => {
+  //   if (!point.value) return;
+  //   handleSearch();
+  // }, [filter]);
 
   const clean = () => {
     setTransactions([]);
@@ -153,6 +154,7 @@ export default function ReportTransactions({
       value: "fiz",
       label: "По физ. лицам",
     });
+    setSearched(false)
   };
 
   const getPoints = () => {
@@ -214,10 +216,14 @@ export default function ReportTransactions({
 
   const onConsignatorChange = (event, c) => {
     setConsignator(c);
+    setTransactions([])
+    setSearched(false)
   };
 
   const onPointsChange = (event, p) => {
     setPoint(p);
+    setTransactions([]);
+    setSearched(false);
   };
 
   const onFilterChange = (event, filterr) => {
@@ -225,6 +231,7 @@ export default function ReportTransactions({
     setFilter(filterr);
     setConsignator({ label: "Все", value: "0" });
     setTransaction([]);
+    setSearched(false);
   };
 
   const changeDate = (dateStr) => {
@@ -241,6 +248,7 @@ export default function ReportTransactions({
   };
 
   const handleSearch = () => {
+    setSearched(true);
     if (!point.value) {
       return Alert.warning("Выберите торговую точку", {
         position: "top-right",
@@ -415,13 +423,13 @@ export default function ReportTransactions({
           </Grid>
         )}
 
-        {!isLoading && !point && transactions.length === 0 && (
+        {!isLoading && !point && transactions.length === 0 && isSearched && (
           <Grid item xs={12}>
             <p className={classes.notFound}>Выберите торговую точку</p>
           </Grid>
         )}
 
-        {!isLoading && point && transactions.length === 0 && (
+        {!isLoading && point && transactions.length === 0 && isSearched && (
           <Grid item xs={12}>
             <p className={classes.notFound}>
               С выбранными фильтрами ничего не найдено

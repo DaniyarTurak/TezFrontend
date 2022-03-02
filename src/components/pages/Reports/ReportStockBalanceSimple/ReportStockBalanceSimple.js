@@ -56,13 +56,13 @@ export default function ReportSaledProducts({
 
   const [currentPage, setCurrentPage] = useState(0);
   const [postsPerPage, setPostsPerPage] = useState(50);
+  const [isSearched, setSearched] = useState(false)
 
   useEffect(() => {
     getBrands();
     getCounterparties();
     getProducts();
     getStockList();
-    getTableData();
   }, [company]);
 
   useEffect(() => {
@@ -116,6 +116,7 @@ export default function ReportSaledProducts({
   }, [debouncedCounterparty]);
 
   const getTableData = () => {
+    setSearched(true)
     setIsLoading(true);
     const params = {
       barcode: barcode,
@@ -368,6 +369,7 @@ export default function ReportSaledProducts({
   };
 
   const handleSearch = () => {
+    setSearched(true)
     getTableData();
   };
 

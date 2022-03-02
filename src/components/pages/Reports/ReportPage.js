@@ -26,13 +26,7 @@ import ReportStockBalanceParent from "./ReportStockBalanceParent";
 
 export default function ReportPage({ type, history, location }) {
   const [parameters, setParameters] = useState("");
-  const [reportMode, setReportMode] = useState(
-    type === "report"
-      ? "reportcashboxstate"
-      : location.state
-      ? location.state
-      : "reportstockbalance"
-  );
+  const [reportMode, setReportMode] = useState(null);
   const [typeMode, setTypeMode] = useState(type ? type : "report");
   const [userAccesses, setUserAccesses] = useState(
     JSON.parse(sessionStorage.getItem("isme-user-accesses")) || []
@@ -40,15 +34,7 @@ export default function ReportPage({ type, history, location }) {
 
   useEffect(() => {
     setTypeMode(type);
-    setReportMode(
-      type === "report"
-        ? reportMode === "reporttransactions"
-          ? "reporttransactions"
-          : "reportcashboxstate"
-        : location.state
-        ? location.state
-        : "reportstockbalance"
-    );
+    setReportMode(null);
   }, [type]);
 
   // componentWillMount() {

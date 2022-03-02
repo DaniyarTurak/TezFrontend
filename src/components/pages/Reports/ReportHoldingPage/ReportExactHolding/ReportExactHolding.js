@@ -103,7 +103,7 @@ export default function ReportExactHolding() {
                 <ReportBonuses company={companySelect} holding={false} />
               )}
               {reportMode === "reportsalesplanteam" && (
-                <ReportSalesPlanTeam company={companySelect} holding={false} />
+                <ReportSalesPlanTeam companyProps={companySelect} holding={false} />
               )}
               {reportMode === "reportsalessection" && (
                 <ReportSalesSection

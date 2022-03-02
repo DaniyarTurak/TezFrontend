@@ -75,6 +75,7 @@ export default function ReportSales({ companyProps }) {
   const [name, setName] = useState("");
   const [barcode, setBarcode] = useState("");
   const [products, setProducts] = useState([]);
+  const [isSearched, setSearched] = useState(false)
 
   const [sellType, setSellType] = useState({ value: "@", label: "Все" });
   const sellTypes = [
@@ -136,35 +137,34 @@ export default function ReportSales({ companyProps }) {
       getCounterparties();
       getCategories();
       getAttributes();
-      getSales();
     }
   }, []);
 
-  useEffect(() => {
-    if (!isDateChanging) {
-      if (withoutDate) {
-        getWithoutDate();
-      }
-      else {
-        getSales();
+  // useEffect(() => {
+  //   if (!isDateChanging) {
+  //     if (withoutDate) {
+  //       getWithoutDate();
+  //     }
+  //     else {
+  //       getSales();
 
-      }
-    }
-    return () => {
-      setDateChanging(false);
-    };
-  }, [
-    // attribute,
-    // attrval,
-    // brand,
-    // counterparty,
-    // category,
-    // dateFrom,
-    // dateTo,
-    // grouping,
-    // point,
-    // type,
-  ]);
+  //     }
+  //   }
+  //   return () => {
+  //     setDateChanging(false);
+  //   };
+  // }, [
+  //   // attribute,
+  //   // attrval,
+  //   // brand,
+  //   // counterparty,
+  //   // category,
+  //   // dateFrom,
+  //   // dateTo,
+  //   // grouping,
+  //   // point,
+  //   // type,
+  // ]);
 
   useEffect(
     () => {
@@ -245,6 +245,7 @@ export default function ReportSales({ companyProps }) {
     setBrand({ value: "@", label: "Все" });
     setCategory({ value: "@", label: "Все" });
     setAttribute({ value: "@", label: "Все", format: "" });
+    setSearched(false)
   };
 
   const changeDate = (dateStr) => {
@@ -481,7 +482,6 @@ export default function ReportSales({ companyProps }) {
             value: point.id,
           };
         });
-
         setPoints([...all, ...pointsList]);
       })
       .catch((err) => {
@@ -489,6 +489,7 @@ export default function ReportSales({ companyProps }) {
       });
   };
   const handleSearch = () => {
+    setSearched(true)
     if (!dateFrom || !dateTo) {
       const text = !dateFrom ? "Дата с" : !dateTo ? "Дата по" : "Фильтр";
       return Alert.warning(`Заполните поле  ${text}`, {
@@ -558,12 +559,12 @@ export default function ReportSales({ companyProps }) {
 
   const onWithoutDateChange = (e) => {
     setWithoutDate(e.target.checked);
-    if (e.target.checked) {
-      getWithoutDate();
-    }
-    else {
-      getSales();
-    }
+    // if (e.target.checked) {
+    //   getWithoutDate();
+    // }
+    // else {
+    //   getSales();
+    // }
   };
 
   const getWithoutDate = () => {
@@ -665,13 +666,13 @@ export default function ReportSales({ companyProps }) {
         </Grid>
       )}
 
-      {!isLoading && !point && sales.length === 0 && (
+      {!isLoading && !point && sales.length === 0 && isSearched && (
         <Grid item xs={12}>
           <p className={classes.notFound}>Выберите торговую точку</p>
         </Grid>
       )}
 
-      {!isLoading && point && sales.length === 0 && (
+      {!isLoading && point && sales.length === 0 && isSearched && (
         <Grid item xs={12}>
           <p className={classes.notFound}>
             С выбранными фильтрами ничего не найдено

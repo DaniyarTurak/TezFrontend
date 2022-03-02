@@ -58,6 +58,7 @@ export default function ReportSalesPlanTeam({ companyProps, holding }) {
   const [totalAward, setTotalAward] = useState(0);
   const [uniqueSold, setUniqueSold] = useState([]);
   const [planType, setPlanType] = useState({ value: 1, label: "Ежедневный" });
+  const [isSearched, setSearched] = useState(false)
 
   const company = JSON.parse(sessionStorage.getItem("isme-user-data"))
     ? JSON.parse(sessionStorage.getItem("isme-user-data")).companyname
@@ -84,6 +85,8 @@ export default function ReportSalesPlanTeam({ companyProps, holding }) {
     setIndBonusResultRowspan("");
     setTotalAward(0);
     setUniqueSold([]);
+    setSearched(false)
+
   };
 
   const getPoints = () => {
@@ -143,6 +146,7 @@ export default function ReportSalesPlanTeam({ companyProps, holding }) {
       });
     }
     setPoint(p);
+    setSearched(false)
     // resetDate();
   };
 
@@ -189,6 +193,7 @@ export default function ReportSalesPlanTeam({ companyProps, holding }) {
   };
 
   const handleSearch = () => {
+    setSearched(true)
     if (point === "") {
       return Alert.warning("Выберите торговую точку", {
         position: "top-right",
@@ -314,13 +319,13 @@ export default function ReportSalesPlanTeam({ companyProps, holding }) {
         </Grid>
       )}
 
-      {!isLoading && !point && bonusResult.length === 0 && (
+      {!isLoading && !point && bonusResult.length === 0 && isSearched && (
         <Grid item xs={12}>
           <p className={classes.notFound}>Выберите торговую точку</p>
         </Grid>
       )}
 
-      {!isLoading && point && bonusResult.length === 0 && (
+      {!isLoading && point && bonusResult.length === 0 && isSearched && (
         <Grid item xs={12}>
           <p className={classes.notFound}>
             С выбранными фильтрами ничего не найдено

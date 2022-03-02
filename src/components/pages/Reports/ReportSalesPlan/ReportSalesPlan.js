@@ -50,7 +50,7 @@ export default function ReportSalesPlan({ companyProps }) {
   const [dateTo, setDateTo] = useState(Moment().format("YYYY-MM-DD"));
   const [isDateChanging, setDateChanging] = useState(false);
   const [isLoading, setLoading] = useState(false);
-
+  const [isSearched, setSearched] = useState(false)
   const company = companyProps ? companyProps.value : "";
   const companyData = JSON.parse(sessionStorage.getItem("isme-user-data"))
     ? JSON.parse(sessionStorage.getItem("isme-user-data")).companyname
@@ -60,17 +60,10 @@ export default function ReportSalesPlan({ companyProps }) {
 
   useEffect(() => {
     getCashboxUsers();
-    getDailyBonus();
+    // getDailyBonus();
   }, []);
 
-  useEffect(() => {
-    if (!isDateChanging) {
-      getDailyBonus();
-    }
-    return () => {
-      setDateChanging(false);
-    };
-  }, [cashboxuser]);
+
 
   const getCashboxUsers = () => {
     Axios.get("/api/cashboxuser/individual/bonus", { params: { company } })
@@ -175,6 +168,7 @@ export default function ReportSalesPlan({ companyProps }) {
   };
 
   const getBonus = () => {
+    setSearched(true)
     switch (planType.value) {
       case 1:
         getDailyBonus();
@@ -206,6 +200,7 @@ export default function ReportSalesPlan({ companyProps }) {
         setPlanType={setPlanType}
         setBonusResult={setBonusResult}
         isLoading={isLoading}
+        setSearched={setSearched}
       />
       {isLoading && (
         <Grid item xs={12}>
@@ -213,7 +208,7 @@ export default function ReportSalesPlan({ companyProps }) {
         </Grid>
       )}
 
-      {!isLoading && bonusResult.length === 0 && (
+      {!isLoading && bonusResult.length === 0 && isSearched && (
         <Grid item xs={12}>
           <p className={classes.notFound}>
             С выбранными фильтрами ничего не найдено

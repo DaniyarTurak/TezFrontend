@@ -43,7 +43,7 @@ export default function ReportSalesSection({ companyProps, holding }) {
   const [isExcelLoading, setExcelLoading] = useState(false);
   const [salesResult, setSalesResult] = useState([]);
   const [salesResultNDS, setSalesResultNDS] = useState([]);
-
+  const [isSearched, setSearched] = useState(false)
   const company = companyProps ? companyProps.value : "";
 
   // const companyData = JSON.parse(sessionStorage.getItem("isme-user-data"))
@@ -61,20 +61,20 @@ export default function ReportSalesSection({ companyProps, holding }) {
     holding = false;
   }
 
-  useEffect(() => {
-    if (!company) {
-      handleSearch();
-    }
-  }, []);
+  // useEffect(() => {
+  //   if (!company) {
+  //     handleSearch();
+  //   }
+  // }, []);
 
-  useEffect(() => {
-    if (!isDateChanging) {
-      handleSearch();
-    }
-    return () => {
-      setDateChanging(false);
-    };
-  }, [filterType, filter, dateFrom, dateTo, company]);
+  // useEffect(() => {
+  //   if (!isDateChanging) {
+  //     handleSearch();
+  //   }
+  //   return () => {
+  //     setDateChanging(false);
+  //   };
+  // }, [filterType, filter, dateFrom, dateTo, company]);
 
   useEffect(() => {
     if (filterType.value === "cashbox" && client) {
@@ -93,6 +93,7 @@ export default function ReportSalesSection({ companyProps, holding }) {
   const cleanSales = () => {
     setSalesResult([]);
     setSalesResultNDS([]);
+    setSearched(false)
   };
 
   const handleSearch = () => {
@@ -104,6 +105,7 @@ export default function ReportSalesSection({ companyProps, holding }) {
         timeout: 3000,
       });
     }
+    setSearched(true)
     setLoading(true);
     cleanSales();
     switch (filter.value) {
@@ -289,7 +291,7 @@ export default function ReportSalesSection({ companyProps, holding }) {
         </Grid>
       )}
 
-      {!isLoading && salesResult.length === 0 && salesResultNDS.length === 0 && (
+      {!isLoading && salesResult.length === 0 && salesResultNDS.length === 0 && isSearched &&(
         <Grid item xs={12}>
           <p className={classes.notFound}>
             С выбранными фильтрами ничего не найдено

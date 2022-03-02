@@ -47,6 +47,7 @@ export default function ConsginmentProducts({
   );
   const [consignators, setConsignators] = useState([]);
   const [isLoading, setLoading] = useState(false);
+  const [isSearched, setSearched] = useState(false);
   const classes = useStyles();
 
   useEffect(() => {
@@ -59,7 +60,6 @@ export default function ConsginmentProducts({
     getBrands();
     getCategories();
     if (!parameters) getJurBuyers();
-    getConsignment();
   }, []);
 
   const AlertFunction = (name) => {
@@ -70,6 +70,7 @@ export default function ConsginmentProducts({
     });
   };
   const getConsignment = () => {
+    setSearched(true);
     if (!consignator.value) {
       AlertFunction("Контрагента");
       return;
@@ -215,17 +216,18 @@ export default function ConsginmentProducts({
         isLoading={isLoading}
       />
 
-      {consignments.length > 0 && !isLoading ? (
+      {consignments.length > 0 && !isLoading && (
         <ConsignmentTable
           classes={classes}
           consignments={consignments}
           changeParentReportMode={changeParentReportMode}
         />
-      ) : consignments.length === 0 && !isLoading ? (
-        <div className={classes.notFound}>Товары не найдены</div>
-      ) : (
-        <TableSkeleton />
       )}
+      {consignments.length === 0 && !isLoading && isSearched && (
+        <div className={classes.notFound}>Товары не найдены</div>
+      )}
+
+      {isLoading && <TableSkeleton />}
     </Box>
   );
 }

@@ -90,10 +90,9 @@ export default function ReportStockBalance({ companyProps, pageChange }) {
   const [totalcost, setTotalcost] = useState(0);
   const [totalunits, setTotalunits] = useState(0);
   const [itemsPerPage, setItemsPerPage] = useState(50);
-
+  const [isSearched, setSearched] = useState(false);
   const [inputCounterparty, setInputCounterparty] = useState("");
   const debouncedCounterparty = useDebounce(inputCounterparty, 500);
-
   const company = companyProps ? companyProps.value : "";
 
   const ndses = [
@@ -171,20 +170,19 @@ export default function ReportStockBalance({ companyProps, pageChange }) {
       getCounterparties();
       getProducts();
       getStockList();
-      handleSearch();
       clean();
       setDateChanging(true);
     }
   }, [company]);
 
-  useEffect(() => {
-    if (!isDateChanging && !isPaginationLoading) {
-      handleSearch();
-    }
-    return () => {
-      setDateChanging(false);
-    };
-  }, [grouping]);
+  // useEffect(() => {
+  //   if (!isDateChanging && !isPaginationLoading) {
+  //     handleSearch();
+  //   }
+  //   return () => {
+  //     setDateChanging(false);
+  //   };
+  // }, [grouping]);
 
   useEffect(() => {
     if (isPaginationLoading) {
@@ -207,6 +205,7 @@ export default function ReportStockBalance({ companyProps, pageChange }) {
     setSelectedStock({ value: "0", label: "Все" });
     setProductSelectValue({ value: "", label: "Все" });
     setProduct({ value: "", label: "Все" });
+    setSearched(false)
   };
 
   const onDateChange = (date) => {
@@ -441,6 +440,7 @@ export default function ReportStockBalance({ companyProps, pageChange }) {
   };
 
   const handleSearch = () => {
+    setSearched(true)
     if (Moment(date).isBefore("2019-11-06")) {
       return Alert.warning(
         `Дата для запроса слишком старая. Исторические данные доступны, начиная с 25 ноября 2019 года`,
@@ -659,7 +659,7 @@ export default function ReportStockBalance({ companyProps, pageChange }) {
         pageChange={pageChange}
       />
 
-      {!isLoading && stockbalance.length === 0 && (
+      {!isLoading && stockbalance.length === 0 && isSearched &&(
         <Grid item xs={12}>
           <p className={classes.notFound}>
             {(selectedStock.length === 0 && "Выберите склад или товар") ||

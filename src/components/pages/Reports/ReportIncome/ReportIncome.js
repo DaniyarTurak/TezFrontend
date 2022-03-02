@@ -109,6 +109,7 @@ export default function ReportIncome({ companyProps }) {
     label: "Все",
   });
   const [sales, setSales] = useState([]);
+  const [isSearched, setSearched] = useState(false);
 
   const company = companyProps ? companyProps.value : "";
   const ndses = [
@@ -140,25 +141,25 @@ export default function ReportIncome({ companyProps }) {
     }
   }, []);
 
-  useEffect(() => {
-    if (!isDateChanging) {
-      getSales();
-    }
-    return () => {
-      setDateChanging(false);
-    };
-  }, [    
-    // point,
-    // counterparty,
-    // category,
-    // brand,
-    // attribute,
-    // attrval,
-    // grouping,
-    // nds,
-    // dateFrom,
-    // dateTo,
-  ]);
+  // useEffect(() => {
+  //   if (!isDateChanging) {
+  //     getSales();
+  //   }
+  //   return () => {
+  //     setDateChanging(false);
+  //   };
+  // }, [    
+  //   // point,
+  //   // counterparty,
+  //   // category,
+  //   // brand,
+  //   // attribute,
+  //   // attrval,
+  //   // grouping,
+  //   // nds,
+  //   // dateFrom,
+  //   // dateTo,
+  // ]);
 
   const clean = () => {
     setSales([]);
@@ -167,6 +168,7 @@ export default function ReportIncome({ companyProps }) {
     setAttributeTypes([]);
     setAttribute({ value: "@", label: "Все", format: "" });
     setNds({ value: "@", label: "Все" });
+    setSearched(false)
   };
 
   const changeDate = (dateStr) => {
@@ -463,6 +465,7 @@ export default function ReportIncome({ companyProps }) {
   };
 
   const handleSearch = () => {
+    setSearched(true)
     if (Moment(dateFrom).isBefore("2019-10-01")) {
       return Alert.warning(
         `Дата для запроса слишком старая. Исторические данные доступны, начиная с 1 октября 2019 года`,
@@ -587,13 +590,13 @@ export default function ReportIncome({ companyProps }) {
         </Grid>
       )}
 
-      {!isLoading && !point && sales.length === 0 && (
+      {!isLoading && !point && sales.length === 0 && isSearched && (
         <Grid item xs={12}>
           <p className={classes.notFound}>Выберите торговую точку</p>
         </Grid>
       )}
 
-      {!isLoading && point && sales.length === 0 && (
+      {!isLoading && point && sales.length === 0 && isSearched && (
         <Grid item xs={12}>
           <p className={classes.notFound}>
             С выбранными фильтрами ничего не найдено

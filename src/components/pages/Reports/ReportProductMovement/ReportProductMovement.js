@@ -34,6 +34,7 @@ export default function ReportProductMovement({ company, parameters }) {
   const [points, setPoints] = useState([]);
   const [products, setProducts] = useState([]);
   const [productSelectValue, setProductSelectValue] = useState("");
+  const [isSearched, setSearched] = useState(false);
 
   useEffect(
     () => {
@@ -62,14 +63,14 @@ export default function ReportProductMovement({ company, parameters }) {
     }
   }, [parameters, points]);
 
-  useEffect(() => {
-    if (!isDateChanging && barcode && selectedPoint) {
-      getProductMovement();
-    }
-    return () => {
-      setDateChanging(false);
-    };
-  }, [barcode, selectedPoint]);
+  // useEffect(() => {
+  //   if (!isDateChanging && barcode && selectedPoint) {
+  //     getProductMovement();
+  //   }
+  //   return () => {
+  //     setDateChanging(false);
+  //   };
+  // }, [barcode, selectedPoint]);
 
   const clean = () => {
     setBarcode("");
@@ -77,6 +78,7 @@ export default function ReportProductMovement({ company, parameters }) {
     setProductSelectValue("");
     setMovementDetails([]);
     setUnchangedMovementDetails([]);
+    setSearched(false)
   };
 
   const getPointList = () => {
@@ -197,6 +199,7 @@ export default function ReportProductMovement({ company, parameters }) {
   };
 
   const handleSearch = () => {
+    setSearched(true)
     if (!barcode || !selectedPoint || !dateFrom || !dateTo) {
       return Alert.warning("Заполните все поля", {
         position: "top-right",
@@ -273,7 +276,7 @@ export default function ReportProductMovement({ company, parameters }) {
         </Grid>
       )}
 
-      {!isLoading && unchangedMovementDetails.length === 0 && (
+      {!isLoading && unchangedMovementDetails.length === 0 && isSearched && (
         <Grid item xs={12}>
           <p className={classes.notFound}>
             С выбранными фильтрами ничего не найдено

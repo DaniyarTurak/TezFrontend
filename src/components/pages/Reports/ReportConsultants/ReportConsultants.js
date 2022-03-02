@@ -84,17 +84,17 @@ export default function ReportConsultants({ companyProps }) {
   const [isDateChanging, setDateChanging] = useState(false);
   const [isLoading, setLoading] = useState(false);
   const [selectedID, setSelectedID] = React.useState(null);
-
+  const [isSearched, setSearched] = useState(false)
   const company = companyProps ? companyProps.value : "";
   const companyName = JSON.parse(sessionStorage.getItem("isme-user-data"))
     .companyname;
   const now = Moment().format("DD.MM.YYYY HH:mm:ss");
 
-  useEffect(() => {
-    if (!company) {
-      getConsultants();
-    }
-  }, []);
+  // useEffect(() => {
+  //   if (!company) {
+  //     getConsultants();
+  //   }
+  // }, []);
 
   useEffect(() => {
     if (company) {
@@ -104,9 +104,9 @@ export default function ReportConsultants({ companyProps }) {
   }, [company]);
 
   useEffect(() => {
-    if (!isDateChanging) {
-      getConsultants();
-    }
+    // if (!isDateChanging) {
+    //   getConsultants();
+    // }
     return () => {
       setDateChanging(false);
     };
@@ -142,6 +142,7 @@ export default function ReportConsultants({ companyProps }) {
   };
 
   const getConsultants = () => {
+    setSearched(true)
     setLoading(true);
     Axios.get("/api/report/transactions/consultants", {
       params: { dateFrom, dateTo, company },
@@ -191,7 +192,7 @@ export default function ReportConsultants({ companyProps }) {
         </Grid>
       )}
 
-      {!isLoading && consultants.length === 0 && (
+      {!isLoading && consultants.length === 0 && isSearched &&(
         <Grid item xs={12}>
           <p className={classes.notFound}>
             С выбранными фильтрами ничего не найдено
