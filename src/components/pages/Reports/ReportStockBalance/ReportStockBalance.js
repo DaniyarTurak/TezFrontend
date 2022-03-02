@@ -1,6 +1,6 @@
 import React, { Fragment, useState } from "react";
-import ReportStockBalanceExtended from "../ReportStockBalanceExtended";
-import ReportStockBalanceSimple from "../ReportStockBalanceSimple";
+import ReportStockBalanceExtended from "./ReportStockBalanceExtended";
+import ReportStockBalanceSimple from "./ReportStockBalanceSimple";
 import stockbalance from "../../../../data/stockbalance.json";
 
 const ReportStockBalance = ({ history, location }) => {
