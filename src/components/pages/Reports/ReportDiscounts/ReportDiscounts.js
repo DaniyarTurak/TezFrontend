@@ -105,11 +105,11 @@ export default function ReportDiscounts({ companyProps }) {
   const [point, setPoint] = useState({ value: "0", label: "Все" });
   const [points, setPoints] = useState([]);
   const [transaction, setTransaction] = useState(null);
+  const [isSearched, setSearched] = useState(false)
   const company = companyProps ? companyProps.value : "";
 
   useEffect(() => {
     if (!company) {
-      getDiscounts();
       getCashboxUsers();
       getPoints();
     }
@@ -117,21 +117,20 @@ export default function ReportDiscounts({ companyProps }) {
 
   useEffect(() => {
     if (company) {
-      getDiscounts();
       getCashboxUsers();
       getPoints();
       clean();
     }
   }, [company]);
 
-  useEffect(() => {
-    if (!isDateChanging) {
-      getDiscounts();
-    }
-    return () => {
-      setDateChanging(false);
-    };
-  }, [dateFrom, dateTo]);
+  // useEffect(() => {
+  //   if (!isDateChanging) {
+  //     getDiscounts();
+  //   }
+  //   return () => {
+  //     setDateChanging(false);
+  //   };
+  // }, [dateFrom, dateTo]);
 
   const clean = () => {
     setCashier({ value: "@", label: "Все", pointName: "" });
@@ -140,6 +139,7 @@ export default function ReportDiscounts({ companyProps }) {
     setDateTo(Moment().format("YYYY-MM-DD"));
     setDiscounts([]);
     setPoint({ value: "0", label: "Все" });
+    setSearched(false)
   };
 
   const onCashierChange = (e, c) => {
@@ -174,7 +174,6 @@ export default function ReportDiscounts({ companyProps }) {
   };
 
   const getCashboxUsers = () => {
-    setLoading(true);
     Axios.get("/api/cashboxuser", { params: { company } })
       .then((res) => res.data)
       .then((cashiersList) => {
@@ -187,10 +186,8 @@ export default function ReportDiscounts({ companyProps }) {
           };
         });
         setCashiers([...all, ...cashboxusers]);
-        setLoading(false);
       })
       .catch((err) => {
-        setLoading(false);
         console.log(err);
       });
   };
@@ -237,6 +234,7 @@ export default function ReportDiscounts({ companyProps }) {
 
   const handleSearch = () => {
     setLoading(true);
+    setSearched(true)
     getDiscounts();
   };
 
@@ -288,7 +286,7 @@ export default function ReportDiscounts({ companyProps }) {
         </Grid>
       )}
 
-      {!isLoading && discounts.length === 0 && (
+      {!isLoading && discounts.length === 0 && isSearched &&(
         <Grid item xs={12}>
           <p className={classes.notFound}>Скидки не найдены</p>
         </Grid>

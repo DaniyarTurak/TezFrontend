@@ -92,13 +92,10 @@ class GeneralInfo extends Component {
     },
     grouping: false,
     isLoading: false,
-    editEnabled: false,
+    editEnabled: true,
   };
 
   componentDidMount() {
-    this.setState = (state, callback) => {
-      return;
-    };
     if (this.props.location.state && this.props.location.state.changepass) {
       Alert.success(this.state.alert.successChangePass, {
         position: "top-right",
@@ -106,19 +103,6 @@ class GeneralInfo extends Component {
         timeout: 2000,
       });
     }
-    Axios.get("/api/erpuser/user/roles")
-      .then((res) => res.data)
-      .then((roles) => {
-        const userRoles = roles.map((role) => {
-          return role.id;
-        });
-
-        if (userRoles.includes("1")) this.setState({ editEnabled: true });
-      })
-      .catch((err) => {
-        console.log(err);
-      });
-
     this.getGeneralInfo();
   }
 
@@ -128,6 +112,12 @@ class GeneralInfo extends Component {
       certificatenum: "",
       certificatedate: "",
     });
+  }
+  componentWillUnmount() {
+    // fix Warning: Can't perform a React state update on an unmounted component
+    this.setState = (state, callback) => {
+      return;
+    };
   }
 
   hideAlert = () => {

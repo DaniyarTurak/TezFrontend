@@ -26,24 +26,23 @@ export default function CounterpartiesReport({
   const classes = useStyles();
   const [counterparty, setCounterparty] = useState("");
   const [counterparties, setCounterparties] = useState([]);
-  const [consignments, setConsignments] = useState([]);
+  const [consignments, setConsignments] = useState(null);
   const [dateFrom, setDateFrom] = useState(
-    Moment()
-      .startOf("month")
-      .format("YYYY-MM-DD")
+    Moment().startOf("month").format("YYYY-MM-DD")
   );
   const [dateTo, setDateTo] = useState(Moment().format("YYYY-MM-DD"));
   const [isDateChanging, setDateChanging] = useState(false);
   const [isLoading, setLoading] = useState(false);
+  const [isSearched, setSearched] = useState(false);
 
-  useEffect(() => {
-    if (!isDateChanging && counterparty) {
-      getHistory();
-    }
-    return () => {
-      setDateChanging(false);
-    };
-  }, [dateFrom, dateTo, counterparty]);
+  // useEffect(() => {
+  //   if (!isDateChanging && counterparty) {
+  //     getHistory();
+  //   }
+  //   return () => {
+  //     setDateChanging(false);
+  //   };
+  // }, [dateFrom, dateTo, counterparty]);
 
   useEffect(() => {
     getCounterparties();
@@ -72,9 +71,7 @@ export default function CounterpartiesReport({
       dF = Moment().format("YYYY-MM-DD");
       dT = Moment().format("YYYY-MM-DD");
     } else if (dateStr === "month") {
-      dF = Moment()
-        .startOf("month")
-        .format("YYYY-MM-DD");
+      dF = Moment().startOf("month").format("YYYY-MM-DD");
       dT = Moment().format("YYYY-MM-DD");
     }
     setDateFrom(dF);
@@ -101,6 +98,7 @@ export default function CounterpartiesReport({
   };
 
   const getHistory = () => {
+    setSearched(true);
     if (!counterparty) {
       return Alert.warning("Выберите контрагента", {
         position: "top-right",
@@ -167,11 +165,13 @@ export default function CounterpartiesReport({
           )}
         />
       </Grid>
-      {isLoading ? (
+      {isLoading && (
         <Grid item xs={12}>
           <TableSkeleton />
         </Grid>
-      ) : consignments.length === 0 ? (
+      )}
+
+      {!isLoading && !consignments && isSearched && (
         <Grid item xs={12}>
           <p
             style={{
@@ -184,7 +184,9 @@ export default function CounterpartiesReport({
             данные по контрагенту не найдены
           </p>
         </Grid>
-      ) : (
+      )}
+
+      {!isLoading && consignments &&
         <Grid item xs={12}>
           <HistoryTable
             consignments={consignments}
@@ -193,7 +195,7 @@ export default function CounterpartiesReport({
             changeCurrentReportMode={changeCurrentReportMode}
           />
         </Grid>
-      )}
+      }
     </Grid>
   );
 }

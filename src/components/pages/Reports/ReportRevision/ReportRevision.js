@@ -54,6 +54,7 @@ export default function ReportRevision({ companyProps }) {
   const [revtype, setRevtype] = useState(1);
   const [revtypeName, setRevtypeName] = useState("По всем товарам");
   const [revnumber, setRevnumber] = useState("");
+  const [isSearched, setSearched] = useState(false)
 
   const company = companyProps ? companyProps.value : "";
   const companyData =
@@ -80,6 +81,7 @@ export default function ReportRevision({ companyProps }) {
     setAscending(true);
     setDateRev("");
     setUsername("");
+    setSearched(false)
   };
 
   useEffect(() => {
@@ -139,13 +141,10 @@ export default function ReportRevision({ companyProps }) {
 
   const pointsChange = (event, p) => {
     setPoint(p);
-    if (p.value) {
-      setLoading(true);
-      getRevisions(p.value);
-    }
   };
 
   const handleSearch = () => {
+    setSearched(true)
     if (!point.value) {
       return Alert.warning("Выберите торговую точку", {
         position: "top-right",
@@ -303,13 +302,13 @@ export default function ReportRevision({ companyProps }) {
         </Grid>
       )}
 
-      {!isLoading && !point && revisions.length === 0 && (
+      {!isLoading && !point &&  revisions.length === 0 && (
         <Grid item xs={12}>
           <p className={classes.notFound}>Выберите торговую точку</p>
         </Grid>
       )}
 
-      {!isLoading && point && revisions.length === 0 && (
+      {!isLoading && point && revisions.length === 0 && isSearched &&(
         <Grid item xs={12}>
           <p className={classes.notFound}>
             Ревизии по данной точке отсутствуют

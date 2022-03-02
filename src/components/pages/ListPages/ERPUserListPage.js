@@ -198,7 +198,7 @@ class ERPUserListPage extends Component {
                     <td>{erpuser.name}</td>
                     <td>{erpuser.login.toUpperCase()}</td>
                     <td>
-                      {erpuser.accesses? (
+                      {erpuser.accesses ? (
                         <Fragment>
                           <p
                             style={{
@@ -209,16 +209,18 @@ class ERPUserListPage extends Component {
                             }}
                           >
                             {erpuser.accesses.map((access) => (
-                              <Fragment key={ access.code + Math.floor(Math.random() * 1000) }>
+                              <Fragment
+                                key={
+                                  access.code + Math.floor(Math.random() * 1000)
+                                }
+                              >
                                 {access.name + " , "}
                               </Fragment>
                             ))}
                           </p>
                           <CustomPopover erpuser={erpuser} />
                         </Fragment>
-                      ) : (
-                        null
-                      )}
+                      ) : null}
                     </td>
                     <td className="text-right">
                       <button

@@ -17,7 +17,8 @@ export default function SalesPlanOptions({
   planType,
   setPlanType,
   setBonusResult,
-  isLoading
+  isLoading,
+  setSearched
 }) {
   const planTypes = [
     { value: 1, label: "Ежедневный" },
@@ -51,7 +52,11 @@ export default function SalesPlanOptions({
       <Grid item xs={3}>
         <AutocompleteSelect
           value={planType}
-          onChange={(e, value) => { setPlanType(value); setBonusResult([]); }}
+          onChange={(e, value) => { 
+            setPlanType(value);  
+            setSearched(false);
+            setBonusResult([]);
+          }}
           options={planTypes}
           noOptions=""
           label="Тип плана"

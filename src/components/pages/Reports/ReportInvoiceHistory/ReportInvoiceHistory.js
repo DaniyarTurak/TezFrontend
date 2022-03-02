@@ -88,6 +88,7 @@ export default function ReportInvoiceHistory({ companyProps, parameters }) {
   const [stockTo, setStockTo] = useState({ label: "Все", value: 0 });
   const [inputCounterparty, setInputCounterparty] = useState("");
   const debouncedCounterparty = useDebounce(inputCounterparty, 500);
+  const [isSearched, setSearched] = useState(false)
 
   const company = companyProps ? companyProps.value : "";
 
@@ -120,24 +121,24 @@ export default function ReportInvoiceHistory({ companyProps, parameters }) {
     }
   }, [paramState]);
 
-  useEffect(() => {
-    if (invoicetype.value && details.length === 0) {
-      searchInvoices();
-    }
-    setInvoices([]);
-    setDetails([]);
-  }, [company]);
+  // useEffect(() => {
+  //   if (invoicetype.value && details.length === 0) {
+  //     searchInvoices();
+  //   }
+  //   setInvoices([]);
+  //   setDetails([]);
+  // }, [company]);
 
-  useEffect(() => {
-    if (!isDateChanging && invoicetype.value) {
-      searchInvoices();
-      setParamState("");
-    }
+  // useEffect(() => {
+  //   if (!isDateChanging && invoicetype.value) {
+  //     searchInvoices();
+  //     setParamState("");
+  //   }
 
-    return () => {
-      setDateChanging(false);
-    };
-  }, [invoicetype, dateFrom, dateTo, productSelectValue]);
+  //   return () => {
+  //     setDateChanging(false);
+  //   };
+  // }, [invoicetype, dateFrom, dateTo, productSelectValue]);
 
   useEffect(
     () => {
@@ -261,12 +262,14 @@ export default function ReportInvoiceHistory({ companyProps, parameters }) {
     !paramState && setDetails([]);
     setConsignator({ label: "Все", value: 0 });
     setCounterparty({ label: "Все", value: 0 });
-    if (inv.value === "2") {
-      getCounterparties();
-    }
-    if (inv.value === "16" || inv.value === "17") {
-      getJurBuyers();
-    }
+    setInvoices([]);
+    setSearched(false)
+    // if (inv.value === "2") {
+    //   getCounterparties();
+    // }
+    // if (inv.value === "16" || inv.value === "17") {
+    //   getJurBuyers();
+    // }
   };
 
   const handleStockFromChange = (event, s) => {
@@ -331,6 +334,7 @@ export default function ReportInvoiceHistory({ companyProps, parameters }) {
   };
 
   const handleSearch = () => {
+    setSearched(true)
     searchInvoices();
   };
 
@@ -523,7 +527,7 @@ export default function ReportInvoiceHistory({ companyProps, parameters }) {
       )}
       {!isLoading &&
         invoices.length === 0 &&
-        (!paramState || paramState.isCounterparties) && (
+        (!paramState || paramState.isCounterparties) && isSearched && (
           <Grid item xs={12}>
             <p className={classes.notFound}>Накладные не найдены</p>
           </Grid>
