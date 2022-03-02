@@ -5,6 +5,8 @@ import Topics from "../../data/sidebar";
 import rules from "../../rbacRules";
 import Navigation from "./Navigation";
 import { isThisSecond } from "date-fns";
+import LocalFloristIcon from '@mui/icons-material/LocalFlorist';
+import FilterVintageTwoToneIcon from '@mui/icons-material/FilterVintageTwoTone';
 
 const ConvertRoles = (roles) => {
   try {
@@ -178,10 +180,9 @@ class CabinetSideBar extends Component {
             <NavLink to="/usercabinet">
               <li style={{ display: "flex", padding: "10px 0px" }}>
                 <div className="company-logo" />
-                <p style={{ margin: "auto 0px" }}>Tez Portal</p>
+                <p style={{ margin: "auto 0px" }}>Tez Portal <LocalFloristIcon style={{position: "absolute", top: "21px", right: "127px"}} /> </p>
               </li>
             </NavLink>
-
             <NavLink activeClassName="nav-active" to="/usercabinet/general">
               <li className="sidebar-brand">
                 {this.state.user && this.state.user.name}
@@ -198,8 +199,9 @@ class CabinetSideBar extends Component {
                       key={topic.id}
                       activeClassName="nav-active"
                       to={`/usercabinet/${topic.route}`}
-                    >
+                    > 
                       <li>{topic.name}</li>
+                      {/* <FilterVintageTwoToneIcon /> */}
                     </NavLink>
                   )
                 : this.getAccessPages(topic.group) && (
