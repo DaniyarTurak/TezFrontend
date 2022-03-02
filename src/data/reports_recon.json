@@ -91,6 +91,13 @@
     "code": "rep_buyers"
   },
   {
+    "id": 14,
+    "type": "report",
+    "route": "reportilliquidproducts",
+    "caption": "Отчет по неликвидным товарам",
+    "code": "rep_illiquid_products"
+  },
+  {
     "id": 101,
     "type": "stockreport",
     "route": "reportstockbalance",

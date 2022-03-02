@@ -47,6 +47,7 @@ export default function MaterialDateDefault({
   disableButton,
   maxDate,
   invisibleButton,
+  maxDateMessage,
 }) {
   const classes = useStyles();
 
@@ -134,7 +135,7 @@ export default function MaterialDateDefault({
                 "aria-label": "change date",
               }}
               maxDate={maxDate}
-              maxDateMessage={"Период можно задавать не более 1 месяца"}
+              maxDateMessage={maxDateMessage || "Период можно задавать не более 1 месяца"}
             />
           </MuiPickersUtilsProvider>
         </Grid>
