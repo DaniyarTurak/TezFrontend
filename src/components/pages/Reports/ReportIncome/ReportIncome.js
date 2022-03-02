@@ -73,10 +73,10 @@ const useStyles = makeStyles((theme) => ({
 
 export default function ReportIncome({ companyProps }) {
   const classes = useStyles();
-  const [attrval, setAttrVal] = useState({ value: "", label: "Все" });
+  const [attrval, setAttrVal] = useState({ value: "-1", label: "Все" });
   const [textAttrval, setTextAttrval] = useState("");
   const [attribute, setAttribute] = useState({
-    value: "@",
+    value: -1,
     label: "Все",
     format: "",
   });
@@ -84,12 +84,12 @@ export default function ReportIncome({ companyProps }) {
   const [attributeTypes, setAttributeTypes] = useState([]);
   const [ascending, setAscending] = useState(true);
   const [barcode, setBarcode] = useState("");
-  const [brand, setBrand] = useState({ value: "@", label: "Все" });
+  const [brand, setBrand] = useState({ value: -1, label: "Все" });
   const [brands, setBrands] = useState([]);
-  const [category, setCategory] = useState({ value: "@", label: "Все" });
+  const [category, setCategory] = useState({ value: -1, label: "Все" });
   const [categories, setCategories] = useState([]);
   const [counterparty, setCounterParty] = useState({
-    value: "0",
+    value: -1,
     label: "Все",
   });
   const [counterparties, setCounterparties] = useState([]);
@@ -99,11 +99,11 @@ export default function ReportIncome({ companyProps }) {
   const [isLoading, setLoading] = useState(false);
   const [isLoadingProducts, setLoadingProducts] = useState(false);
   const [isDateChanging, setDateChanging] = useState(false);
-  const [nds, setNds] = useState({ value: "@", label: "Все" });
+  const [nds, setNds] = useState({ value: -1, label: "Все" });
   const [orderBy, setOrderBy] = useState("");
   const [points, setPoints] = useState([]);
   const [products, setProducts] = useState([]);
-  const [point, setPoint] = useState({ value: "0", label: "Все" });
+  const [point, setPoint] = useState({ value: -1, label: "Все" });
   const [productSelectValue, setProductSelectValue] = useState({
     value: "",
     label: "Все",
@@ -163,12 +163,13 @@ export default function ReportIncome({ companyProps }) {
 
   const clean = () => {
     setSales([]);
-    setAttrVal({ value: "", label: "Все" });
+    setAttrVal({ value: "-1", label: "Все" });
     setBarcode("");
     setAttributeTypes([]);
-    setAttribute({ value: "@", label: "Все", format: "" });
-    setNds({ value: "@", label: "Все" });
+    setAttribute({ value: "-1", label: "Все", format: "" });
+    setNds({ value: "-1", label: "Все" });
     setSearched(false)
+    setTextAttrval("")
   };
 
   const changeDate = (dateStr) => {
@@ -308,7 +309,7 @@ export default function ReportIncome({ companyProps }) {
     Axios.get("/api/attributes", { params: { deleted: false, company } })
       .then((res) => res.data)
       .then((attributesList) => {
-        const all = [{ label: "Все", value: "@" }];
+        const all = [{ label: "Все", value: "-1" }];
         const attr = attributesList.map((point) => {
           return {
             value: point.id,
@@ -327,7 +328,7 @@ export default function ReportIncome({ companyProps }) {
     Axios.get("/api/attributes/getsprattr", { params: { sprid, company } })
       .then((res) => res.data)
       .then((list) => {
-        const all = [{ label: "Все", value: "" }];
+        const all = [{ label: "Все", value: "-1" }];
         const attrtype = list.map((attrtype) => {
           return {
             value: attrtype.id,
@@ -350,7 +351,7 @@ export default function ReportIncome({ companyProps }) {
     Axios.get("/api/brand/search", { params: { brand: inputValue, company } })
       .then((res) => res.data)
       .then((list) => {
-        const all = [{ label: "Все", value: "@" }];
+        const all = [{ label: "Все", value: "-1" }];
         const brandsList = list.map((result) => {
           return {
             label: result.brand,
@@ -368,7 +369,7 @@ export default function ReportIncome({ companyProps }) {
     Axios.get("/api/categories/getcategories", { params: { deleted: false, company } })
       .then((res) => res.data)
       .then((list) => {
-        const all = [{ label: "Все", value: "@" }];
+        const all = [{ label: "Все", value: "-1" }];
         const categoriesList = list.map((result) => {
           return {
             label: result.name,
@@ -388,7 +389,7 @@ export default function ReportIncome({ companyProps }) {
     })
       .then((res) => res.data)
       .then((list) => {
-        const all = [{ label: "Все", value: "0" }];
+        const all = [{ label: "Все", value: "-1" }];
         const counterpartiesList = list.map((result) => {
           return {
             label: result.name,
@@ -406,7 +407,7 @@ export default function ReportIncome({ companyProps }) {
     Axios.get("/api/point", { params: { company } })
       .then((res) => res.data)
       .then((list) => {
-        const all = [{ label: "Все", value: "0" }];
+        const all = [{ label: "Все", value: "-1" }];
         const pointsList = list.map((point) => {
           return {
             label: point.name,
@@ -447,7 +448,7 @@ export default function ReportIncome({ companyProps }) {
     })
       .then((res) => res.data)
       .then((list) => {
-        const all = [{ label: "Все", value: "" }];
+        const all = [{ label: "Все", value: "-1" }];
         setLoadingProducts(false);
         const productsList = list.map((product) => {
           return {
@@ -493,16 +494,49 @@ export default function ReportIncome({ companyProps }) {
     getSales();
   };
 
+  // const getSales = () => {
+  //   let notattr;
+  //   if (grouping === false) {
+  //     notattr = 0;
+  //   } else notattr = 1;
+  //   setLoading(true);
+  //   Axios.get("/api/report/grossprofit", {
+  //     params: {
+  //       dateFrom,
+  //       dateTo,
+  //       barcode,
+  //       company,
+  //       counterparty: counterparty.value,
+  //       point: point.value,
+  //       category: category.value,
+  //       brand: brand.value,
+  //       attribute: attribute.value,
+  //       attrval: attribute.format==="TEXT" ? textAttrval : attrval.label === "Все" ? "" : attrval.label,
+  //       notattr,
+  //       nds: nds.value,
+  //     },
+  //   })
+  //     .then((res) => res.data)
+  //     .then((salesRes) => {
+  //       setSales(salesRes);
+  //       setLoading(false);
+  //       setOrderBy("");
+  //     })
+  //     .catch((err) => {
+  //       setLoading(false);
+  //       ErrorAlert(err);
+  //     });
+  // };
   const getSales = () => {
     let notattr;
     if (grouping === false) {
       notattr = 0;
     } else notattr = 1;
     setLoading(true);
-    Axios.get("/api/report/grossprofit", {
+    Axios.get("/api/report/grossprofit/stock", {
       params: {
-        dateFrom,
-        dateTo,
+        startdate: Moment(dateFrom).format("YYYY-MM-DD"),
+        enddate: Moment(dateTo).format("YYYY-MM-DD"),
         barcode,
         company,
         counterparty: counterparty.value,
@@ -510,9 +544,8 @@ export default function ReportIncome({ companyProps }) {
         category: category.value,
         brand: brand.value,
         attribute: attribute.value,
-        attrval: attribute.format==="TEXT" ? textAttrval : attrval.label === "Все" ? "" : attrval.label,
-        notattr,
-        nds: nds.value,
+        attrval: attribute.format==="TEXT" ? textAttrval === "" ? "-1" : textAttrval : attrval.label? attrval.label === "Все" ? "-1" : attrval.label : "-1",
+        tax: nds.value,
       },
     })
       .then((res) => res.data)
@@ -552,7 +585,7 @@ export default function ReportIncome({ companyProps }) {
         categories={categories}
         changeDate={changeDate}
         counterparty={counterparty}
-        counterparties={counterparties}
+        counterparties={counterparties} 
         dateFrom={dateFrom}
         dateTo={dateTo}
         dateFromChange={dateFromChange}
