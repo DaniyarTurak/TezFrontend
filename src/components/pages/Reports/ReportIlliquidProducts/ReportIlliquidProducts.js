@@ -79,9 +79,7 @@ const ReportIlliquidProducts = ({ companyProps }) => {
       dateTo: Moment(dateTo).format("L"),
     };
 
-    console.log(params);
-
-    Axios.get(`/api/illiquidproducts`, { params: params })
+    Axios.get(`/api/report/illiquidproducts`, { params: params })
       .then((res) => res.data)
       .then((illiquidList) => {
         if (illiquidList.length === 0) {
@@ -120,7 +118,7 @@ const ReportIlliquidProducts = ({ companyProps }) => {
 
     Axios({
       method: "POST",
-      url: "/api/illiquidproducts/excel",
+      url: "/api/report/illiquidproducts/excel",
       data: {
         dat: `${today.getFullYear()}.${today.getMonth()}.${today.getDay()}`,
         company: company,
@@ -305,6 +303,12 @@ const ReportIlliquidProducts = ({ companyProps }) => {
         onProductListInput={onProductListInput}
         onStockChange={onStockChange}
       />
+
+      {isLoading && (
+        <Grid item xs={12}>
+          <SkeletonTable />
+        </Grid>
+      )}
 
       {!isLoading && typeof illiquidProducts !== "undefined" && (
         <Grid item xs={12}>

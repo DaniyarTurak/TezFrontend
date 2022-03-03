@@ -123,7 +123,7 @@ export default function ReportSaledProducts({ companyProps }) {
       company: company,
     };
 
-    Axios.post("/api/stockcurrent/saledproducts", params)
+    Axios.post("/api/report/stockbalance/simple", params)
       .then((res) => res.data)
       .then((data) => {
         if (data.length === 0) {
@@ -266,7 +266,7 @@ export default function ReportSaledProducts({ companyProps }) {
 
     Axios({
       method: "POST",
-      url: "/api/stockcurrent/saledproducts/excel",
+      url: "/api/report/stockbalance/simple/excel",
       data: {
         dat: `${today.getFullYear()}.${today.getMonth()}.${today.getDay()}`,
         company: company,
