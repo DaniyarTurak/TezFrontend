@@ -19,6 +19,11 @@ const ReportIlliquidProducts = ({ companyProps }) => {
     value: "",
     label: "Все",
   });
+  const [selectedStock, setSelectedStock] = useState({
+    value: "0",
+    label: "Все",
+  });
+  const [stockList, setStockList] = useState([]);
   const [isLoading, setIsLoading] = useState(false);
 
   const [currentPage, setCurrentPage] = useState(0);
@@ -55,6 +60,7 @@ const ReportIlliquidProducts = ({ companyProps }) => {
   useEffect(() => {
     getBrands();
     getProducts();
+    getStockList();
   }, [company]);
 
   const handleSearch = () => {
@@ -68,11 +74,12 @@ const ReportIlliquidProducts = ({ companyProps }) => {
       barcode: barcode,
       brand: brand.value,
       category: category,
+      stockID: selectedStock.value,
       dateFrom: Moment(dateFrom).format("L"),
       dateTo: Moment(dateTo).format("L"),
     };
 
-    Axios.get(`/api/illiquidproducts`, { params: params })
+    Axios.get(`/api/report/illiquidproducts`, { params: params })
       .then((res) => res.data)
       .then((illiquidList) => {
         if (illiquidList.length === 0) {
@@ -97,10 +104,11 @@ const ReportIlliquidProducts = ({ companyProps }) => {
   const postExcel = () => {
     let today = new Date();
     const tableData = illiquidProducts.map(
-      ({ id, code, product_name, category, brand }) => {
+      ({ id, code, point_name, product_name, category, brand }) => {
         return {
           id,
           code,
+          point_name,
           product_name,
           category,
           brand,
@@ -110,7 +118,7 @@ const ReportIlliquidProducts = ({ companyProps }) => {
 
     Axios({
       method: "POST",
-      url: "/api/illiquidproducts/excel",
+      url: "/api/report/illiquidproducts/excel",
       data: {
         dat: `${today.getFullYear()}.${today.getMonth()}.${today.getDay()}`,
         company: company,
@@ -122,7 +130,7 @@ const ReportIlliquidProducts = ({ companyProps }) => {
       .then((res) => {
         const link = document.createElement("a");
         link.href = window.URL.createObjectURL(new Blob([res]));
-        link.download = `Отчет.xlsx`;
+        link.download = `Отчет по неликвидным товарам за период ${dateFrom} - ${dateTo}.xlsx`;
         document.body.appendChild(link);
         link.click();
 
@@ -152,6 +160,24 @@ const ReportIlliquidProducts = ({ companyProps }) => {
           };
         });
         setProducts([...all, ...productsList]);
+      })
+      .catch((err) => {
+        ErrorAlert(err);
+      });
+  };
+
+  const getStockList = () => {
+    Axios.get("/api/stock", { params: { company } })
+      .then((res) => res.data)
+      .then((stockList) => {
+        const options = stockList.map((stock) => {
+          return {
+            value: stock.id,
+            label: stock.name,
+          };
+        });
+        const allStock = [{ value: "0", label: "Все" }];
+        setStockList([...allStock, ...options]);
       })
       .catch((err) => {
         ErrorAlert(err);
@@ -246,6 +272,10 @@ const ReportIlliquidProducts = ({ companyProps }) => {
     if (reason === "input") getProducts(p);
   };
 
+  const onStockChange = (event, s) => {
+    setSelectedStock(s);
+  };
+
   return (
     <Grid container spacing={2}>
       <IlliquidOptions
@@ -263,13 +293,22 @@ const ReportIlliquidProducts = ({ companyProps }) => {
         products={products}
         productSelectValue={productSelectValue}
         setCategory={setCategory}
+        selectedStock={selectedStock}
+        stockList={stockList}
         onBarcodeChange={onBarcodeChange}
         onBarcodeKeyDown={onBarcodeKeyDown}
         onBrandChange={onBrandChange}
         onBrandListInput={onBrandListInput}
         onProductChange={onProductChange}
         onProductListInput={onProductListInput}
+        onStockChange={onStockChange}
       />
+
+      {isLoading && (
+        <Grid item xs={12}>
+          <SkeletonTable />
+        </Grid>
+      )}
 
       {!isLoading && typeof illiquidProducts !== "undefined" && (
         <Grid item xs={12}>

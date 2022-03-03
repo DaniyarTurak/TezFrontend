@@ -2,9 +2,9 @@ import React, { Fragment } from "react";
 import FormControlLabel from "@material-ui/core/FormControlLabel";
 import Checkbox from "@material-ui/core/Checkbox";
 import Grid from "@material-ui/core/Grid";
-import AutocompleteSelect from "../../../ReusableComponents/AutocompleteSelect";
-import AutocompleteProductBarcode from "../../../ReusableComponents/AutocompleteProductBarcode";
-import SingleMaterialDate from "../../../ReusableComponents/SingleMaterialDate";
+import AutocompleteSelect from "../../../../ReusableComponents/AutocompleteSelect";
+import AutocompleteProductBarcode from "../../../../ReusableComponents/AutocompleteProductBarcode";
+import SingleMaterialDate from "../../../../ReusableComponents/SingleMaterialDate";
 import Moment from "moment";
 import TextField from "@material-ui/core/TextField";
 import Button from "@material-ui/core/Button";
@@ -16,7 +16,7 @@ import {
 } from "@material-ui/pickers";
 import DateFnsUtils from "@date-io/date-fns";
 import IconButton from "@material-ui/core/IconButton";
-import CategorySelect from "../../../ReusableComponents/CategorySelect";
+import CategorySelect from "../../../../ReusableComponents/CategorySelect";
 
 export default function StockbalanceOptions({
   attrval,
@@ -60,7 +60,6 @@ export default function StockbalanceOptions({
   dateAttrval,
   setDateAttrval,
   setCategory,
-  pageChange,
 }) {
   return (
     <Fragment>
@@ -259,22 +258,6 @@ export default function StockbalanceOptions({
           onClick={handleSearch}
         >
           Поиск
-        </Button>
-      </Grid>
-
-      <Grid item xs={3}>
-        <Button
-          style={{
-            minHeight: "3.5rem",
-            fontSize: ".875rem",
-            textTransform: "none",
-          }}
-          variant="outlined"
-          color="primary"
-          size="large"
-          onClick={pageChange}
-        >
-          Упрощенная версия
         </Button>
       </Grid>
     </Fragment>

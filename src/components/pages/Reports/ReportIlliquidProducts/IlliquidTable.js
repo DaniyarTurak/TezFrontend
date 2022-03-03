@@ -124,6 +124,7 @@ const IlliquidTable = ({
           <TableHead>
             <TableRow>
               <StyledTableCell />
+              <StyledTableCell align="center">Склад</StyledTableCell>
               <StyledTableCell align="center">Штрих-код</StyledTableCell>
               <StyledTableCell align="center">Наименование</StyledTableCell>
               <StyledTableCell align="center">Категория</StyledTableCell>
@@ -136,6 +137,9 @@ const IlliquidTable = ({
                 <TableRow key={idx}>
                   <StyledTableCell>
                     {idx + 1 + currentPage * postsPerPage}
+                  </StyledTableCell>
+                  <StyledTableCell align="center">
+                    {product.point_name}
                   </StyledTableCell>
                   <StyledTableCell align="center">
                     {product.code}

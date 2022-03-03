@@ -22,6 +22,8 @@ const IlliquidOptions = ({
   category,
   productSelectValue,
   setCategory,
+  selectedStock,
+  stockList,
   products,
   onBarcodeChange,
   onBarcodeKeyDown,
@@ -29,6 +31,7 @@ const IlliquidOptions = ({
   onBrandListInput,
   onProductChange,
   onProductListInput,
+  onStockChange,
 }) => {
   return (
     <Fragment>
@@ -55,6 +58,26 @@ const IlliquidOptions = ({
         products={products}
         //isLoadingProducts={isLoadingProducts}
       />
+
+      <Grid item xs={6}>
+        <AutocompleteSelect
+          value={selectedStock}
+          onChange={onStockChange}
+          options={stockList}
+          noOptions="Склад не найден"
+          label="Склад"
+        />
+      </Grid>
+      <Grid item xs={6}>
+        <AutocompleteSelect
+          value={brand}
+          onChange={onBrandChange}
+          options={brands}
+          onInputChange={onBrandListInput}
+          noOptions="Бренд не найден"
+          label="Бренды"
+        />
+      </Grid>
 
       <Grid item xs={12}>
         <CategorySelect setCategory={setCategory} category={category} />

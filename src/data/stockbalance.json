@@ -1,0 +1,13 @@
+[
+    {
+      "id": 0,
+      "route": "ReportStockBalanceSimple",
+      "caption": "Упрощенный"
+    },
+    {
+      "id": 1,
+      "route": "ReportStockBalanceExtended",
+      "caption": "Расширенный"
+    }
+]
+  
