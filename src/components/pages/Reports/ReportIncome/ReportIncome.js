@@ -365,8 +365,8 @@ export default function ReportIncome({ companyProps }) {
       });
   };
 
-  const getCategories = () => {
-    Axios.get("/api/categories/getcategories", { params: { deleted: false, company } })
+  const getCategories = (inputValue) => {
+    Axios.get("/api/categories/search", { params: { deleted: false, category: inputValue } })
       .then((res) => res.data)
       .then((list) => {
         const all = [{ label: "Все", value: "-1" }];
@@ -646,7 +646,7 @@ export default function ReportIncome({ companyProps }) {
             dateTo={dateTo}
             orderBy={orderBy}
             orderByFunction={orderByFunction}
-            point={points}
+            point={point}
             sales={sales}
           />
         </Grid>

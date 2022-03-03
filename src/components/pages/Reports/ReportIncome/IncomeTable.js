@@ -1,4 +1,4 @@
-import React, { Fragment } from "react";
+import React, { Fragment, useRef } from "react";
 import PropTypes from "prop-types";
 import Table from "@material-ui/core/Table";
 import { withStyles, makeStyles, useTheme } from "@material-ui/core/styles";
@@ -20,7 +20,9 @@ import Grid from "@material-ui/core/Grid";
 import Moment from "moment";
 import OrderArrowMaterial from "../../../ReusableComponents/OrderArrowMaterial";
 import "moment/locale/ru";
+import ExportExcelFile from "../../../ReusableComponents/ExportExcelFile";
 Moment.locale("ru");
+
 const useStyles1 = makeStyles((theme) => ({
   root: {
     flexShrink: 0,
@@ -48,22 +50,22 @@ const StyledTableCell = withStyles((theme) => ({
 function TablePaginationActions(props) {
   const classes = useStyles1();
   const theme = useTheme();
-  const { count, page, rowsPerPage, onChangePage } = props;
+  const { count, page, rowsPerPage, onPageChange } = props;
 
   const handleFirstPageButtonClick = (event) => {
-    onChangePage(event, 0);
+    onPageChange(event, 0);
   };
 
   const handleBackButtonClick = (event) => {
-    onChangePage(event, page - 1);
+    onPageChange(event, page - 1);
   };
 
   const handleNextButtonClick = (event) => {
-    onChangePage(event, page + 1);
+    onPageChange(event, page + 1);
   };
 
   const handleLastPageButtonClick = (event) => {
-    onChangePage(event, Math.max(0, Math.ceil(count / rowsPerPage) - 1));
+    onPageChange(event, Math.max(0, Math.ceil(count / rowsPerPage) - 1));
   };
 
   return (
@@ -110,7 +112,7 @@ function TablePaginationActions(props) {
 
 TablePaginationActions.propTypes = {
   count: PropTypes.number.isRequired,
-  onChangePage: PropTypes.func.isRequired,
+  onPageChange: PropTypes.func.isRequired,
   page: PropTypes.number.isRequired,
   rowsPerPage: PropTypes.number.isRequired,
 };
@@ -132,11 +134,80 @@ export default function IncomeTable({
   const handleChangePage = (event, newPage) => {
     setPage(newPage);
   };
-
   const handleChangeRowsPerPage = (event) => {
     setRowsPerPage(+event.target.value);
     setPage(0);
   };
+  const dataToExcel = sales.map((sale, idx) => {
+    return {
+      "№": idx + 1,
+      "Наименование товара": sale.prod_name,
+      Штрихкод: sale.code,
+      Количество: parseFloat(sale.units).toLocaleString("ru", {
+        minimumFractionDigits: 2,
+      }),
+      "Себестоимость проданного товара": sale.cost,
+      "Сумма реализации": sale.salesamount,
+      Наценка:
+        parseFloat(
+          ((sale.salesamount - sale.cost) /
+            (Number(sale.salesamount) === 0 ? 1 : sale.salesamount)) *
+            100
+        ).toLocaleString("ru", {
+          minimumFractionDigits: 1,
+          maximumFractionDigits: 2,
+        }) + "%",
+      "Валовая прибыль": sale.gross_profit,
+      Бренд: sale.brand,
+      Категория: sale.category,
+      НДС: sale.nds,
+      "Остаток на начало": sale.datefrom_units,
+      "Остаток на конец": sale.dateto_units,
+    };
+  });
+
+  const ExcelData = [
+    ...dataToExcel,
+    {
+      "№": "Итого",
+      "Наименование товара": "",
+      Штрихкод: "",
+      Количество: sales
+        .reduce((prev, cur) => {
+          return prev + parseFloat(cur.units);
+        }, 0)
+        .toLocaleString("ru", { minimumFractionDigits: 2 }),
+      "Себестоимость проданного товара": sales
+        .reduce((prev, cur) => {
+          return prev + parseFloat(cur.salesamount);
+        }, 0)
+        .toLocaleString("ru", { minimumFractionDigits: 2 }),
+      "Сумма реализации": sales
+        .reduce((prev, cur) => {
+          return prev + parseFloat(cur.cost);
+        }, 0)
+        .toLocaleString("ru", { minimumFractionDigits: 2 }),
+      Наценка: "",
+      "Валовая прибыль": sales
+        .reduce((prev, cur) => {
+          return prev + parseFloat(cur.gross_profit);
+        }, 0)
+        .toLocaleString("ru", { minimumFractionDigits: 2 }),
+      Бренд: "",
+      Категория: "",
+      НДС: "",
+      "Остаток на начало": sales
+        .reduce((prev, cur) => {
+          return prev + parseFloat(cur.datefrom_units);
+        }, 0)
+        .toLocaleString("ru", { minimumFractionDigits: 2 }),
+      "Остаток на конец": sales
+        .reduce((prev, cur) => {
+          return prev + parseFloat(cur.dateto_units);
+        }, 0)
+        .toLocaleString("ru", { minimumFractionDigits: 2 }),
+    },
+  ];
 
   return (
     <Fragment>
@@ -367,14 +438,14 @@ export default function IncomeTable({
           nextIconButtonText="Следующая страница"
           rowsPerPage={rowsPerPage}
           page={page}
-          onChangePage={handleChangePage}
-          onChangeRowsPerPage={handleChangeRowsPerPage}
+          onPageChange={handleChangePage}
+          onRowsPerPageChange={handleChangeRowsPerPage}
           ActionsComponent={TablePaginationActions}
         />
       )}
 
       <Grid item xs={12}>
-        <ReactHTMLTableToExcel
+        {/* <ReactHTMLTableToExcel
           className="btn btn-sm btn-outline-success"
           table="table-to-xls"
           filename={`Валовая прибыль "(${point.label})" с ${Moment(
@@ -382,6 +453,12 @@ export default function IncomeTable({
           ).format("DD.MM.YYYY")} по ${Moment(dateTo).format("DD.MM.YYYY")}`}
           sheet="tablexls"
           buttonText="Выгрузить в excel"
+        /> */}
+        <ExportExcelFile
+          csvData={ExcelData}
+          fileName={`Валовая прибыль "(${point.label})" с ${Moment(
+            dateFrom
+          ).format("DD.MM.YYYY")} по ${Moment(dateTo).format("DD.MM.YYYY")}`}
         />
       </Grid>
     </Fragment>
