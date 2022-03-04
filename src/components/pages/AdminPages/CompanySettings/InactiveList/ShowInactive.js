@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from "react";
 import ClosedList from "./ClosedList";
 
-export default function ShowInactive({ callback, mode }) {
+export default function ShowInactive({ callback, mode, companySelect }) {
   const [caption, setCaption] = useState("");
   const [isHidden, setHidden] = useState(true);
 
@@ -31,7 +31,7 @@ export default function ShowInactive({ callback, mode }) {
   };
   const setBody = () => {
     return (
-      <ClosedList mode={mode} handleRollback={callback} isHidden={isHidden} />
+      <ClosedList mode={mode} handleRollback={callback} isHidden={isHidden} companySelect={companySelect}/>
     );
   };
 

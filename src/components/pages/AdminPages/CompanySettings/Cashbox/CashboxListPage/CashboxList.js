@@ -1,7 +1,7 @@
 import React, { useState, useEffect, Fragment } from "react";
 import Axios from "axios";
 
-import ShowInactive from "../../../../ClosedListPages/ShowInactive";
+import ShowInactive from "../../InactiveList/ShowInactive";
 import AddCashboxForm from "./AddCashboxForm";
 import AlertBox from "../../../../../AlertBox";
 import SweetAlert from "react-bootstrap-sweetalert";
@@ -105,10 +105,8 @@ function CashboxList({
     setCashboxData(cashboxData);
     setEdit(true);
   };
-  const handleRollback = (newPoint) => {
-    let list = cashboxes;
-    list.push(newPoint);
-    setCashboxes(list);
+  const handleRollback = () => {
+    getCashboxes(companySelect.value)
   };
 
   return (
@@ -190,7 +188,7 @@ function CashboxList({
             </div>
           )}
           {!isLoading && (
-            <ShowInactive callback={handleRollback} mode="cashbox" />
+            <ShowInactive callback={handleRollback} mode="cashbox" companySelect={companySelect} />
           )}
         </Fragment>
       )}

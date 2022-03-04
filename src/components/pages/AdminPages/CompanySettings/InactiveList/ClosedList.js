@@ -9,25 +9,31 @@ import ErrorAlert from "../../../../ReusableComponents/ErrorAlert";
 import ClosedPointTable from "./ClosedTables/ClosedPointTable";
 import ClosedCashboxTable from "./ClosedTables/ClosedCashboxTable";
 
-export default function ClosedList({ mode, isHidden, handleRollback }) {
+export default function ClosedList({ mode, isHidden, handleRollback, companySelect }) {
   const [result, setResult] = useState([]);
   const [isLoading, setLoading] = useState(false);
   const [sweetalert, setSweetalert] = useState(null);
 
   useEffect(() => {
-    if (!isHidden) getClosedInfo();
+    if (!isHidden && companySelect) {
+      getClosedInfo()
+    };
+      
   }, [isHidden]);
 
   const hideAlert = () => {
     setSweetalert(null);
   };
 
+
   const getClosedInfo = (info) => {
     setLoading(true);
     const api =
-      mode === "point"
-        ? "/api/companysettings/storepoint/inactive"
-        : "/api/companysettings/cashbox/inactive"
+      mode === "point" ? 
+        `/api/companysettings/storepoint/inactive?company=${companySelect.value}`
+        : mode === "cashbox" ? 
+        `/api/companysettings/cashbox/inactive?company=${companySelect.value}`
+        : null
 
     Axios.get(api)
       .then((res) => res.data)
@@ -63,67 +69,16 @@ export default function ClosedList({ mode, isHidden, handleRollback }) {
     const newResultsList = result.filter((res) => {
       return res !== item;
     });
-
-    if (
-      mode === "brand" ||
-      mode === "counterparties" ||
-      mode === "buyers" ||
-      mode === "attributeupdate"
-    ) {
-      item.deleted = false;
-    } else if (mode === "cashboxuser" || mode === "cashbox") {
-      item.deleted = 0;
-    } else if (mode === "erpuser") {
-      item.deleted = 0;
-      item.status = "ACTIVE";
-    } else {
-      item.status = "ACTIVE";
-    }
-
-    const req =
-      mode === "brand"
-        ? { brand: item }
-        : mode === "cashboxuser"
-        ? { cashboxusr: item }
-        : mode === "erpuser"
-        ? { erpusr: item }
-        : mode === "cashbox"
-        ? { cashbox: item }
-        : mode === "counterparties"
-        ? { counterparties: item }
-        : mode === "buyers"
-        ? { customers: item }
-        : mode === "attributeupdate"
-        ? {
-            attributes: {
-              id: item.id,
-              name: item.values,
-              deleted: item.deleted,
-              format: item.format,
-            },
-          }
-        : { point: item };
-
     const api =
-      mode === "brand"
-        ? "/api/brand/manage"
-        : mode === "cashboxuser"
-        ? "/api/cashboxuser/manage"
-        : mode === "erpuser"
-        ? "/api/erpuser/new-manage"
-        : mode === "cashbox"
-        ? "/api/cashbox/manage"
-        : mode === "counterparties"
-        ? "/api/counterparties/manage"
-        : mode === "buyers"
-        ? "/api/buyers/manage"
-        : mode === "attributeupdate"
-        ? "/api/adminpage/updateattributeslist"
-        : "/api/point/change";
+      mode === "point" ? 
+        `/api/companysettings/storepoint/active?id=${item.id}`
+        : mode === "cashbox" ? 
+        `/api/companysettings/cashbox/active?id=${item.id}`
+        : null
 
-    Axios.post(api, req)
+    Axios.put(api)
       .then(() => {
-        handleRollback(item);
+        handleRollback();
         setResult(newResultsList);
         hideAlert();
 

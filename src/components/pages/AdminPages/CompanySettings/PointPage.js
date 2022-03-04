@@ -105,6 +105,7 @@ function PointPage({points, companySelect, isLoading, setPoints, getPoints}) {
     let list = points;
     list.push(newPoint);
     setPoints(list);
+    getPoints(companySelect.value)
   }
 
   return (
@@ -194,7 +195,7 @@ function PointPage({points, companySelect, isLoading, setPoints, getPoints}) {
             </div>
           )}
           {!isLoading && (
-            <ShowInactive callback={handleRollback} mode="point" />
+            <ShowInactive callback={handleRollback} mode="point" companySelect={companySelect}/>
           )}
         </Fragment>
       )}

@@ -32,6 +32,7 @@ function CompanySettings({ history, location }) {
   const [pageMode, setPageMode] = useState("point");
   const [points, setPoints] = useState([]);
   const [cashboxes, setCashboxes] = useState([]);
+  const [prefix, setPrefix] = useState(undefined);
 
   useEffect(() => {
     getCompaniesInfo();
@@ -41,6 +42,7 @@ function CompanySettings({ history, location }) {
     setCompanySelect(c);
     getPoints(c.value);
     getCashboxes(c.value)
+    getPrefix(c.value)
   };
 
   const getCompaniesInfo = () => {
@@ -93,6 +95,15 @@ function CompanySettings({ history, location }) {
         setLoading(false)
       });
   };
+
+  const getPrefix = (id) => {
+    Axios.get(`/api/companysettings/prefix?company=${id}`)
+    .then((res) => res.data )
+    .then((data) => {
+      setPrefix(data[0].productsweight_prefix)
+    })
+    .catch((err) => console.log(err))
+  }
 
   return (
     <div className={classes.root1}>
@@ -152,7 +163,7 @@ function CompanySettings({ history, location }) {
                       />
                     )}
                     {pageMode === "createprefix" && (
-                      <CreatePrefix history={history} location={location} />
+                      <CreatePrefix history={history} location={location} companySelect={companySelect} prefix={prefix} setPrefix={setPrefix} getPrefix={getPrefix}/>
                     )}
                   </div>
                 </div>
