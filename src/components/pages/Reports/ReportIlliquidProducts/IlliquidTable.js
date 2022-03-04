@@ -115,12 +115,12 @@ const IlliquidTable = ({
   totalPosts,
   onPaginate,
   onRowsPerPageChange,
+  classes,
 }) => {
-  //className={classes.container} className={classes.table}
   return (
     <Fragment>
-      <TableContainer component={Paper}>
-        <Table id="table-to-xls">
+      <TableContainer component={Paper} className={classes.container}>
+        <Table className={classes.table} id="table-to-xls">
           <TableHead>
             <TableRow>
               <StyledTableCell />
