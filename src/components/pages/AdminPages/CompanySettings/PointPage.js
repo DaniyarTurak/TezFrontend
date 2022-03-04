@@ -1,7 +1,7 @@
 import React, { useState, Fragment, useEffect } from "react";
 import Axios from "axios";
 
-import ShowInactive from "../../ClosedListPages/ShowInactive";
+import ShowInactive from "./InactiveList/ShowInactive";
 import AddPointForm from "../../../forms/AddPointForm";
 import AlertBox from "../../../AlertBox";
 import SweetAlert from "react-bootstrap-sweetalert";
