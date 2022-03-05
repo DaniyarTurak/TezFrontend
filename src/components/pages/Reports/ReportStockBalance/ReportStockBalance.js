@@ -22,7 +22,7 @@ const ReportStockBalance = ({ history, location }) => {
           <div className="col-md-3 report-btn-block" key={st.id}>
             <button
               className={`btn btn-sm btn-block btn-report ${
-                mode === st.route ? "btn-danger" : "btn-outline-danger"
+                mode === st.route ? "btn-secondary" : "btn-outline-secondary"
               }`}
               name={st.route}
               onClick={changeReportMode}

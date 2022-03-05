@@ -7,8 +7,72 @@ import Moment from "moment";
 import Alert from "react-s-alert";
 import IlliquidTable from "./IlliquidTable";
 import IlliquidOptions from "./IlliquidOptions";
+import AccordionAlert from "../../../ReusableComponents/AccordionAlert";
+import { makeStyles } from "@material-ui/core/styles";
+
+const useStyles = makeStyles((theme) => ({
+  notFound: {
+    marginTop: "1rem",
+    opacity: "60%",
+    display: "flex",
+    justifyContent: "center",
+  },
+  hover: {
+    cursor: "pointer",
+    color: "#162ece",
+    "&:hover": {
+      color: "#09135b",
+    },
+  },
+  paper: {
+    padding: theme.spacing(2),
+    color: theme.palette.text.secondary,
+  },
+  heading: {
+    display: "flex",
+    marginTop: "0.2rem",
+    flexDirection: "row",
+    flexBasis: "95%",
+    fontSize: "0.875rem",
+    fontWeight: theme.typography.fontWeightRegular,
+  },
+  secondaryHeading: {
+    fontSize: "0.875rem",
+    color: "#0d3c61",
+    marginLeft: "2rem",
+  },
+  thirdHeading: {
+    marginTop: "0.2rem",
+    fontSize: "0.875rem",
+    color: theme.palette.text.secondary,
+  },
+  accordion: {
+    backgroundColor: "#e8f4fd",
+    fontSize: "0.875rem",
+    fontWeight: theme.typography.fontWeightRegular,
+  },
+  root: {
+    justifyContent: "space-between",
+  },
+  icon: {
+    color: "#35a0f4",
+  },
+  label: {
+    color: "orange",
+    fontSize: ".875rem",
+  },
+  invoiceOptions: {
+    fontSize: ".875rem",
+  },
+  button: {
+    minHeight: "3.5rem",
+    fontSize: ".875rem",
+    textTransform: "none",
+  },
+}));
 
 const ReportIlliquidProducts = ({ companyProps }) => {
+  const classes = useStyles();
   const [illiquidProducts, setIlliquidProducts] = useState();
   const [barcode, setBarcode] = useState("");
   const [brand, setBrand] = useState({ value: "@", label: "Все" });
@@ -278,6 +342,14 @@ const ReportIlliquidProducts = ({ companyProps }) => {
 
   return (
     <Grid container spacing={2}>
+      <Grid item xs={12}>
+        <AccordionAlert
+          classes={classes}
+          text={`- отчет предназначен для выявления непроданных товаров за указанный период времени; 
+- с помощью фильтров Вы можете посмотреть неликвидные товары в различных разрезах, например, по неликвидности товаров в определенной торговой точке, по неликвидностям в конкретной категории, по неликвидности конкретного бренда, по определенным товарам с поиском по штрихкоду или по названию;`}
+          title={`Пояснение к отчёту`}
+        />
+      </Grid>
       <IlliquidOptions
         barcode={barcode}
         brand={brand}
@@ -315,6 +387,7 @@ const ReportIlliquidProducts = ({ companyProps }) => {
           <IlliquidTable
             data={currentPosts}
             totalPosts={illiquidProducts.length}
+            classes={classes}
             currentPage={currentPage}
             postsPerPage={postsPerPage}
             onPaginate={onPaginate}
