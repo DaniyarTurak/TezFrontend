@@ -17,6 +17,7 @@ import NewsInformation from "../News/NewsInformation";
 import ReportAdminPage from "./ReportAdminPage";
 import PointListPage from "../ListPages/PointListPage";
 import Cashbox from "../ListPages/Cashbox";
+import AddPointForm from "../../forms/AddPointForm";
 
 import ImpNomenclature from "./ImpNomenclature";
 import ConsolidatedReports from "./ConsolidatedReports";
@@ -58,8 +59,6 @@ export default function AdminRightBar({
         case "createprefix":
           return <CreatePrefix history={history} location={location} />
 
-        case "point":
-          return <PointListPage history={history} location={location} />
         case "cashbox":
           return <Cashbox history={history} location={location} />
 

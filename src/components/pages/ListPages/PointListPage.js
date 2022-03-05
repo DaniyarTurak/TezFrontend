@@ -164,7 +164,8 @@ class PointList extends Component {
   };
 
   render() {
-    const { points, isLoading, label, sweetalert } = this.state;
+    const {points, isLoading, label, sweetalert } = this.state;
+
     return (
       <div className="point-list">
         {sweetalert}
@@ -173,17 +174,6 @@ class PointList extends Component {
           <div className="col-md-6">
             <h6 className="btn-one-line">{label.list}</h6>
           </div>
-          {this.state.admin &&
-            <div className="col-md-6 text-right">
-              <button
-                className="btn btn-link btn-sm"
-                onClick={() => this.props.history.push("point/manage")}
-              >
-                {label.add}
-              </button>
-            </div>
-          }
-
         </div>
 
         {isLoading && <Searching />}
@@ -217,37 +207,6 @@ class PointList extends Component {
                     <td>{point.address}</td>
                     <td>{point.is_minus ? "Да" : "Нет"}</td>
                     <td className="text-right"></td>
-                    {/* <button className="btn btn-w-icon detail-item" title={label.title.detail}
-													onClick={() => { this.handleDetail(point) }}>
-												</button> */}
-                    {this.state.admin &&
-                      <td className="text-right">
-                        {point.point_type !== 0 ? (
-                          <button
-                            className="btn btn-w-icon edit-item"
-                            title={label.title.edit}
-                            onClick={() => {
-                              this.handleEdit(point);
-                            }}
-                          />
-                        ) : (
-                          ""
-                        )}
-                      </td>
-                    }
-
-                    {/* {point.point_type !== 0 ? (
-                        <button
-                          className="btn btn-w-icon delete-item"
-                          title={label.title.delete}
-                          onClick={() => {
-                            this.handleDelete(point);
-                          }}
-                        />
-                      ) : (
-                        ""
-                      )} */}
-
                   </tr>
                 ))}
               </tbody>
