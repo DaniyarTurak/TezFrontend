@@ -244,10 +244,14 @@ let AddBrandForm = ({
     setSending(true);
     let reqdata;
     if (id.id === 1) {
+      let brandId = null;
+      if (brandData) {
+        brandId = brandData.id;
+      }
       reqdata = {
         brand: [
           {
-            id: brandData.id,
+            id: brandId,
             brand: brand || brandData.brand,
             manufacturer: manufacturer || brandData.manufacturer,
             deleted: false,
