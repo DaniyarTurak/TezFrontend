@@ -36,21 +36,6 @@
     "route": "updateattribute"
   },
   {
-    "id": 16,
-    "route": "createprefix",
-    "name": "Префикс весов"
-  },
-  {
-    "id": 14,
-    "name": "Торговая точка",
-    "route": "point"
-  },
-  {
-    "id": 15,
-    "name": "Касса",
-    "route": "cashbox"
-  },
-  {
     "id": 6,
     "route": "news",
     "name": "Новости"

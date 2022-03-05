@@ -2,12 +2,10 @@ import React, { useState, useEffect, Fragment } from "react";
 import Select from "react-select";
 import Axios from "axios";
 import companySettings from "../../../../data/companySettings";
-import Searching from "../../../Searching";
 import { makeStyles } from "@material-ui/core/styles";
-import PointListPage from "../../ListPages/PointListPage";
-import Cashbox from "../../ListPages/Cashbox";
-import CreatePrefix from "../../ProductsWeight/CreatePrefix";
-import StockListPage from "../../ListPages/StockListPage"
+import PointPage from "./PointPage";
+import Cashbox from "./Cashbox";
+import CreatePrefix from "./CreatePrefix";
 
 const useStyles = makeStyles((theme) => ({
   root: {
@@ -26,12 +24,15 @@ const useStyles = makeStyles((theme) => ({
   },
 }));
 
-function CompanySettings({history, location}) {
+function CompanySettings({ history, location }) {
   const classes = useStyles();
   const [companySelect, setCompanySelect] = useState("");
   const [companies, setCompanies] = useState([]);
   const [isLoading, setLoading] = useState(false);
   const [pageMode, setPageMode] = useState("point");
+  const [points, setPoints] = useState([]);
+  const [cashboxes, setCashboxes] = useState([]);
+  const [prefix, setPrefix] = useState(undefined);
 
   useEffect(() => {
     getCompaniesInfo();
@@ -39,6 +40,9 @@ function CompanySettings({history, location}) {
 
   const onCompanyChange = (c) => {
     setCompanySelect(c);
+    getPoints(c.value);
+    getCashboxes(c.value)
+    getPrefix(c.value)
   };
 
   const getCompaniesInfo = () => {
@@ -64,9 +68,45 @@ function CompanySettings({history, location}) {
     setPageMode(e.target.name);
   };
 
+  const getPoints = (id) => {
+    Axios.get(`/api/companysettings/storepoint?company=${id}`)
+      .then((res) => res.data)
+      .then((list) => {
+        setPoints(list);
+      })
+      .catch((err) => {
+        console.log(err);
+      });
+  };
+
+  const getCashboxes = (id) => {
+    setLoading(true)
+    Axios.get(`/api/companysettings/cashbox?company=${id}`)
+      .then((res) => res.data)
+      .then((list) => {
+        let newList = list.filter((cashbox) => {
+          return cashbox.deleted == false
+        })
+        setCashboxes(newList);
+        setLoading(false)
+      })
+      .catch((err) => {
+        console.log(err);
+        setLoading(false)
+      });
+  };
+
+  const getPrefix = (id) => {
+    Axios.get(`/api/companysettings/prefix?company=${id}`)
+    .then((res) => res.data )
+    .then((data) => {
+      setPrefix(data[0].productsweight_prefix)
+    })
+    .catch((err) => console.log(err))
+  }
+
   return (
     <div className={classes.root1}>
-      {isLoading && <Searching />}
       <div className="col-md-12">
         <Select
           name="companySelect"
@@ -100,18 +140,31 @@ function CompanySettings({history, location}) {
                 <div className="row mt-10">
                   <div className="col-md-12">
                     {pageMode === "point" && (
-                      <PointListPage history={history} location={location} />
+                      <PointPage
+                        history={history}
+                        location={location}
+                        points={points}
+                        isLoading={isLoading}
+                        companySelect={companySelect}
+                        setPoints={setPoints}
+                        getPoints={getPoints}
+                      />
                     )}
                     {pageMode === "cashbox" && (
-                       <Cashbox history={history} location={location} />
+                      <Cashbox
+                        history={history}
+                        location={location}
+                        cashboxes={cashboxes}
+                        setCashboxes={setCashboxes}
+                        getCashboxes={getCashboxes}
+                        isLoading={isLoading}
+                        companySelect={companySelect}
+                        points={points}
+                      />
                     )}
                     {pageMode === "createprefix" && (
-                      <CreatePrefix history={history} location={location} />
+                      <CreatePrefix history={history} location={location} companySelect={companySelect} prefix={prefix} setPrefix={setPrefix} getPrefix={getPrefix}/>
                     )}
-                    {pageMode === "stock" && (
-                      <StockListPage history={history} location={location} />
-                    )}
-
                   </div>
                 </div>
               </Fragment>
