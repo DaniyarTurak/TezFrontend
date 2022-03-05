@@ -56,11 +56,6 @@ export default function AdminRightBar({
 
         case "settings": 
             return <CompanySettings history={history} location={location} />
-        case "createprefix":
-          return <CreatePrefix history={history} location={location} />
-
-        case "cashbox":
-          return <Cashbox history={history} location={location} />
 
         case "consolidated":
           return (user.login === "admin" ?
