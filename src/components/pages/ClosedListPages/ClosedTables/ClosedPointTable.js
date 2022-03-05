@@ -21,15 +21,6 @@ export default function ClosedPointTable({ result, handleRollbackFunction }) {
             <td>{res.address}</td>
             <td>{res.is_minus ? "Да" : "Нет"}</td>
             <td className="text-danger">Удалён</td>
-            <td className="text-right">
-              <button
-                className="btn btn-w-icon rollback-item"
-                title="Вернуть в список"
-                onClick={() => {
-                  handleRollbackFunction(res);
-                }}
-              />
-            </td>
           </tr>
         ))}
       </tbody>

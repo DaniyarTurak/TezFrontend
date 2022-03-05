@@ -80,77 +80,77 @@ export default class CashboxListPage extends Component {
       });
   };
 
-  handleDelete = (item) => {
-    this.setState({
-      sweetalert: (
-        <SweetAlert
-          warning
-          showCancel
-          confirmBtnText={this.state.alert.label.sure}
-          cancelBtnText={this.state.alert.label.cancel}
-          confirmBtnBsStyle="success"
-          cancelBtnBsStyle="default"
-          title={this.state.alert.label.areyousure}
-          onConfirm={() => this.delete(item)}
-          onCancel={() => this.hideAlert()}
-        >
-          {this.state.alert.confirmDelete}
-        </SweetAlert>
-      ),
-    });
-  };
+  // handleDelete = (item) => {
+  //   this.setState({
+  //     sweetalert: (
+  //       <SweetAlert
+  //         warning
+  //         showCancel
+  //         confirmBtnText={this.state.alert.label.sure}
+  //         cancelBtnText={this.state.alert.label.cancel}
+  //         confirmBtnBsStyle="success"
+  //         cancelBtnBsStyle="default"
+  //         title={this.state.alert.label.areyousure}
+  //         onConfirm={() => this.delete(item)}
+  //         onCancel={() => this.hideAlert()}
+  //       >
+  //         {this.state.alert.confirmDelete}
+  //       </SweetAlert>
+  //     ),
+  //   });
+  // };
 
-  delete = (item) => {
-    const newCashboxList = this.state.cashboxes.filter((cashboxlist) => {
-      return cashboxlist !== item;
-    });
+  // delete = (item) => {
+  //   const newCashboxList = this.state.cashboxes.filter((cashboxlist) => {
+  //     return cashboxlist !== item;
+  //   });
 
-    item.deleted = 1;
-    const req = { cashbox: item };
+  //   item.deleted = 1;
+  //   const req = { cashbox: item };
 
-    Axios.post("/api/cashbox/manage", req)
-      .then(() => {
-        this.setState({
-          cashboxes: newCashboxList,
-        });
+  //   Axios.post("/api/cashbox/manage", req)
+  //     .then(() => {
+  //       this.setState({
+  //         cashboxes: newCashboxList,
+  //       });
 
-        Alert.success(this.state.alert.successDelete, {
-          position: "top-right",
-          effect: "bouncyflip",
-          timeout: 2000,
-        });
-      })
-      .catch((err) => {
-        Alert.error(
-          err.response.data.code === "internal_error"
-            ? this.state.alert.raiseError
-            : err.response.data.text,
-          {
-            position: "top-right",
-            effect: "bouncyflip",
-            timeout: 2000,
-          }
-        );
-      });
+  //       Alert.success(this.state.alert.successDelete, {
+  //         position: "top-right",
+  //         effect: "bouncyflip",
+  //         timeout: 2000,
+  //       });
+  //     })
+  //     .catch((err) => {
+  //       Alert.error(
+  //         err.response.data.code === "internal_error"
+  //           ? this.state.alert.raiseError
+  //           : err.response.data.text,
+  //         {
+  //           position: "top-right",
+  //           effect: "bouncyflip",
+  //           timeout: 2000,
+  //         }
+  //       );
+  //     });
 
-    this.hideAlert();
-  };
+  //   this.hideAlert();
+  // };
 
-  handleEdit = (cashboxData) => {
-    this.props.history.push({
-      pathname: "cashbox/manage",
-      state: { cashboxData },
-    });
-  };
+  // handleEdit = (cashboxData) => {
+  //   this.props.history.push({
+  //     pathname: "cashbox/manage",
+  //     state: { cashboxData },
+  //   });
+  // };
 
-  handleRollback = (newPoint) => {
-    let list = this.state.cashboxes;
-    list.push(newPoint);
+  // handleRollback = (newPoint) => {
+  //   let list = this.state.cashboxes;
+  //   list.push(newPoint);
 
-    this.setState({
-      cashboxes: list,
-    });
-  };
+  //   this.setState({
+  //     cashboxes: list,
+  //   });
+  // };
 
   render() {
     const { cashboxes, isLoading, label, sweetalert } = this.state;
@@ -163,15 +163,6 @@ export default class CashboxListPage extends Component {
             <h6 className="btn-one-line">{label.list}</h6>
           </div>
          
-            <div className="col-md-6 text-right">
-              <button
-                className="btn btn-link btn-sm"
-                onClick={() => this.props.history.push("cashbox/manage")}
-              >
-                {label.add}
-              </button>
-            </div>
-          
 
         </div>
 
@@ -201,24 +192,6 @@ export default class CashboxListPage extends Component {
                     <td>{cashbox.name}</td>
                     <td>{cashbox.point_name}</td>
                     <td className="text-right"></td>
-                   
-                      <td className="text-right">
-                        <button
-                          className="btn btn-w-icon edit-item"
-                          title={label.title.edit}
-                          onClick={() => {
-                            this.handleEdit(cashbox);
-                          }}
-                        />
-                        <button
-                          className="btn btn-w-icon delete-item"
-                          title={label.title.delete}
-                          onClick={() => {
-                            this.handleDelete(cashbox);
-                          }}
-                        />
-                      </td>
-                    
                   </tr>
                 ))}
               </tbody>
@@ -227,7 +200,7 @@ export default class CashboxListPage extends Component {
         )}
 
         {!isLoading && (
-          <ShowInactive callback={this.handleRollback} mode="cashbox" />
+          <ShowInactive  mode="cashbox" />
         )}
       </div>
     );

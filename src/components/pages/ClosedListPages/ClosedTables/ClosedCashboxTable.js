@@ -19,15 +19,6 @@ export default function ClosedCashboxTable({ result, handleRollbackFunction }) {
             <td>{res.name}</td>
             <td>{res.point_name}</td>
             <td className="text-danger">Удалён</td>
-            <td className="text-right">
-              <button
-                className="btn btn-w-icon rollback-item"
-                title="Вернуть в список"
-                onClick={() => {
-                  handleRollbackFunction(res);
-                }}
-              />
-            </td>
           </tr>
         ))}
       </tbody>
