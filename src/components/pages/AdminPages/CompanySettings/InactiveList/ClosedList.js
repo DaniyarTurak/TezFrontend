@@ -103,7 +103,7 @@ export default function ClosedList({ mode, isHidden, handleRollback, companySele
       {!isLoading && result.length === 0 && <AlertBox text="Список пуст" />}
 
       {!isLoading && result.length > 0 && (
-        <table className="table table-hover">
+        <table className="table table-hover" style={{marginBottom: "120px"}}>
           {mode === "point" && (
             <ClosedPointTable
               result={result}
