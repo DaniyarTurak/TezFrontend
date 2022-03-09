@@ -157,13 +157,22 @@ let AddBrandForm = ({
   const [brand, setBrand] = useState("");
   const [manufacturer, setManufacturer] = useState("");
   const [isSending, setSending] = useState(false);
+  const [isEmpty, setIsEmpty] = useState(true);
 
   useEffect(() => {
+    setValues();
     if (brandData) {
       const brandDataChanged = brandData;
       dispatch(initialize("addbrandform", brandDataChanged));
     }
   }, []);
+
+  const setValues = () => {
+    if (brandData) {
+      setBrand(brandData.brand);
+      setManufacturer(brandData.manufacturer);
+    }
+  };
 
   const handleSelectedFile = (event) => {
     setSelectedFile(event.target.files[0]);
@@ -543,6 +552,9 @@ let AddBrandForm = ({
               <Field
                 value={brand}
                 onChange={(e) => {
+                  e.target.value.trim() !== ""
+                    ? setIsEmpty(false)
+                    : setIsEmpty(true);
                   setBrand(e.target.value);
                 }}
                 name="brand"
@@ -558,6 +570,9 @@ let AddBrandForm = ({
               <Field
                 value={manufacturer}
                 onChange={(e) => {
+                  e.target.value.trim() !== ""
+                    ? setIsEmpty(false)
+                    : setIsEmpty(true);
                   setManufacturer(e.target.value);
                 }}
                 name="manufacturer"
@@ -572,7 +587,7 @@ let AddBrandForm = ({
           <button
             onClick={() => saveBrands({ id: 1 })}
             className="btn btn-success"
-            disabled={isSending || pristine || submitting}
+            disabled={isSending || pristine || submitting || isEmpty}
           >
             {isSending
               ? "Пожалуйста подождите..."
