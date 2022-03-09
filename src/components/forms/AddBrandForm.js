@@ -15,11 +15,11 @@ import TableRow from "@material-ui/core/TableRow";
 import TableHead from "@material-ui/core/TableHead";
 import { withStyles, makeStyles, useTheme } from "@material-ui/core/styles";
 import Paper from "@material-ui/core/Paper";
-import DeleteIcon from '@material-ui/icons/DeleteForever';
-import EditIcon from '@material-ui/icons/Edit';
+import DeleteIcon from "@material-ui/icons/DeleteForever";
+import EditIcon from "@material-ui/icons/Edit";
 import IconButton from "@material-ui/core/IconButton";
-import InputBase from '@material-ui/core/InputBase';
-import SaveIcon from '@material-ui/icons/Save';
+import InputBase from "@material-ui/core/InputBase";
+import SaveIcon from "@material-ui/icons/Save";
 import TablePagination from "@material-ui/core/TablePagination";
 import FirstPageIcon from "@material-ui/icons/FirstPage";
 import KeyboardArrowLeft from "@material-ui/icons/KeyboardArrowLeft";
@@ -96,7 +96,7 @@ function TablePaginationActions(props) {
       </IconButton>
     </div>
   );
-};
+}
 
 TablePaginationActions.propTypes = {
   count: PropTypes.number.isRequired,
@@ -108,14 +108,14 @@ TablePaginationActions.propTypes = {
 const BrandInput = withStyles((theme) => ({
   input: {
     borderRadius: 4,
-    position: 'relative',
+    position: "relative",
     backgroundColor: theme.palette.common.white,
-    border: '1px solid #ced4da',
+    border: "1px solid #ced4da",
     fontSize: 16,
-    width: '150px',
-    padding: '5px',
-    transition: theme.transitions.create(['border-color', 'box-shadow']),
-    '&:focus': {
+    width: "150px",
+    padding: "5px",
+    transition: theme.transitions.create(["border-color", "box-shadow"]),
+    "&:focus": {
       borderColor: "#17a2b8",
     },
   },
@@ -124,14 +124,14 @@ const BrandInput = withStyles((theme) => ({
 const ManufacturerInput = withStyles((theme) => ({
   input: {
     borderRadius: 4,
-    position: 'relative',
+    position: "relative",
     backgroundColor: theme.palette.common.white,
-    border: '1px solid #ced4da',
+    border: "1px solid #ced4da",
     fontSize: 16,
-    width: '150px',
-    padding: '5px',
-    transition: theme.transitions.create(['border-color', 'box-shadow']),
-    '&:focus': {
+    width: "150px",
+    padding: "5px",
+    transition: theme.transitions.create(["border-color", "box-shadow"]),
+    "&:focus": {
       borderColor: "#17a2b8",
     },
   },
@@ -177,7 +177,7 @@ let AddBrandForm = ({
         effect: "bouncyflip",
         timeout: 2000,
       });
-    };
+    }
     setLoading(true);
     const reader = new FileReader();
     reader.onload = (evt) => {
@@ -192,24 +192,25 @@ let AddBrandForm = ({
       );
       let arr = [];
       if (!prods[0].Brand || !prods[0].Manufacturer) {
-        ErrorAlert("Ошибка в документе. Проверьте правильность заполнения документа")
-      }
-      else {
-        prods.forEach(element => {
+        ErrorAlert(
+          "Ошибка в документе. Проверьте правильность заполнения документа"
+        );
+      } else {
+        prods.forEach((element) => {
           arr.push({
             brand: element.Brand,
             manufacturer: element.Manufacturer,
             changed: false,
             deleted: false,
             brandChanging: false,
-            manufacturerChanging: false
-          })
+            manufacturerChanging: false,
+          });
         });
         setBrands(arr);
       }
-    }
+    };
     reader.readAsBinaryString(selectedFile);
-    setLoading(false)
+    setLoading(false);
   };
 
   const StyledTableCell = withStyles((theme) => ({
@@ -243,12 +244,29 @@ let AddBrandForm = ({
     setSending(true);
     let reqdata;
     if (id.id === 1) {
-      reqdata = { brand: [{ brand: brand, manufacturer: manufacturer, deleted: false }] };
+      let brandId = null;
+      if (brandData) {
+        brandId = brandData.id;
+      }
+      reqdata = {
+        brand: [
+          {
+            id: brandId,
+            brand: brand || brandData.brand,
+            manufacturer: manufacturer || brandData.manufacturer,
+            deleted: false,
+          },
+        ],
+      };
     }
     if (id.id === 2) {
       let brnds = [];
       brands.forEach((brnd, i) => {
-        brnds.push({ brand: brnd.brand, manufacturer: brnd.manufacturer, deleted: false });
+        brnds.push({
+          brand: brnd.brand,
+          manufacturer: brnd.manufacturer,
+          deleted: false,
+        });
       });
       reqdata = { brand: brnds };
     }
@@ -263,7 +281,7 @@ let AddBrandForm = ({
         setSending(false);
         history.push({
           pathname: "../brand",
-        })
+        });
       })
       .catch((err) => {
         Alert.error(
@@ -281,34 +299,33 @@ let AddBrandForm = ({
   };
 
   const editBrand = (idx, state) => {
-    setBrands(prevState => {
+    setBrands((prevState) => {
       let obj = prevState[idx];
       obj.changed = !state;
       obj.brandChanging = true;
       return [...prevState];
-    })
+    });
     brandChanging();
   };
 
   const brandChange = (value, idx) => {
-    setBrands(prevState => {
+    setBrands((prevState) => {
       let obj = prevState[idx];
       obj.brandChanging = true;
       obj.manufacturerChanging = false;
       obj.brand = value;
       return [...prevState];
-    })
+    });
   };
 
   const manufacturerChange = (value, idx) => {
-    setBrands(prevState => {
+    setBrands((prevState) => {
       let obj = prevState[idx];
       obj.brandChanging = false;
       obj.manufacturerChanging = true;
       obj.manufacturer = value;
       return [...prevState];
-    })
-
+    });
   };
 
   const brandChanging = () => {
@@ -317,11 +334,10 @@ let AddBrandForm = ({
       if (i.changed === true) {
         setChanging(true);
         break;
-      }
-      else {
+      } else {
         setChanging(false);
       }
-    };
+    }
   };
 
   const handleChangePage = (event, newPage) => {
@@ -370,9 +386,7 @@ let AddBrandForm = ({
           className="col-md-9"
           style={{ display: "flex", justifyContent: "right" }}
         ></div>
-        <div
-          className="col-md-3"
-        >
+        <div className="col-md-3">
           <button
             style={{
               marginBottom: "5px",
@@ -393,91 +407,98 @@ let AddBrandForm = ({
               onChange={handleSelectedFile}
             />
           </div>
-          {isLoading && loaded !== 0 &&
+          {isLoading && loaded !== 0 && (
             <div className="form-group">
               <Progress max="100" color="success" value={loaded}>
                 {Math.round(loaded, 2)}%
-            </Progress>
+              </Progress>
             </div>
-          }
+          )}
           <button
             className="btn btn-info form-control"
             onClick={handleFetchFromExcel}
           >
             Выгрузить
-      </button>
-          {brands.length > 0 &&
+          </button>
+          {brands.length > 0 && (
             <Fragment>
               <TableContainer
                 component={Paper}
-                style={{ boxShadow: "0px -1px 1px 1px white", paddingTop: "20px", paddingBottom: "20px" }}
+                style={{
+                  boxShadow: "0px -1px 1px 1px white",
+                  paddingTop: "20px",
+                  paddingBottom: "20px",
+                }}
               >
                 <Table id="table-to-xls">
                   <TableHead>
-                    <TableRow style={{ fontWeight: "bold" }} >
-                      <StyledTableCell>
-                      </StyledTableCell>
-                      <StyledTableCell>
-                        Наименование
-                    </StyledTableCell>
-                      <StyledTableCell>
-                        Компания
-                    </StyledTableCell>
-                      <StyledTableCell>
-                      </StyledTableCell>
+                    <TableRow style={{ fontWeight: "bold" }}>
+                      <StyledTableCell></StyledTableCell>
+                      <StyledTableCell>Наименование</StyledTableCell>
+                      <StyledTableCell>Компания</StyledTableCell>
+                      <StyledTableCell></StyledTableCell>
                     </TableRow>
                   </TableHead>
                   <TableBody>
                     {brands
-                      .slice(page * rowsPerPage, page * rowsPerPage + rowsPerPage)
+                      .slice(
+                        page * rowsPerPage,
+                        page * rowsPerPage + rowsPerPage
+                      )
                       .map((brand, idx) => (
                         <TableRow key={idx}>
                           <StyledTableCell>{idx + 1}</StyledTableCell>
                           <StyledTableCell>
-                            {brand.changed === true ?
+                            {brand.changed === true ? (
                               <BrandInput
                                 autoFocus={brand.brandChanging}
                                 variant="outlined"
                                 value={brand.brand}
-                                onChange={(e) => brandChange(e.target.value, idx)}
-                              /> : brand.brand
-                            }
+                                onChange={(e) =>
+                                  brandChange(e.target.value, idx)
+                                }
+                              />
+                            ) : (
+                              brand.brand
+                            )}
                           </StyledTableCell>
                           <StyledTableCell>
-                            {brand.changed === true ?
+                            {brand.changed === true ? (
                               <ManufacturerInput
                                 autoFocus={brand.manufacturerChanging}
                                 variant="outlined"
                                 value={brand.manufacturer}
-                                onChange={(e) => manufacturerChange(e.target.value, idx)}
-                              /> : brand.manufacturer
-                            }
+                                onChange={(e) =>
+                                  manufacturerChange(e.target.value, idx)
+                                }
+                              />
+                            ) : (
+                              brand.manufacturer
+                            )}
                           </StyledTableCell>
                           <StyledTableCell align="right">
                             <IconButton
                               onClick={() => {
                                 editBrand(idx, brand.changed);
                               }}
-                            > {brand.changed === true ?
-                              <SaveIcon
-                                fontSize="small"
-                                title="Сохранить"
-                              />
-                              :
-                              <EditIcon
-                                fontSize="small"
-                                title="Изменить цену"
-                              />
-                              }
+                            >
+                              {" "}
+                              {brand.changed === true ? (
+                                <SaveIcon fontSize="small" title="Сохранить" />
+                              ) : (
+                                <EditIcon
+                                  fontSize="small"
+                                  title="Изменить цену"
+                                />
+                              )}
                             </IconButton>
                             <IconButton
                               disabled={brand.changed}
-                              onClick={() => { deleteBrand(idx); }}
+                              onClick={() => {
+                                deleteBrand(idx);
+                              }}
                             >
-                              <DeleteIcon
-                                fontSize="small"
-                                title="Удалить"
-                              />
+                              <DeleteIcon fontSize="small" title="Удалить" />
                             </IconButton>
                           </StyledTableCell>
                         </TableRow>
@@ -485,7 +506,7 @@ let AddBrandForm = ({
                   </TableBody>
                 </Table>
               </TableContainer>
-              {!isChanging ?
+              {!isChanging ? (
                 <TablePagination
                   rowsPerPageOptions={[10, 20, 50]}
                   component="div"
@@ -498,27 +519,32 @@ let AddBrandForm = ({
                   onChangePage={handleChangePage}
                   onChangeRowsPerPage={handleChangeRowsPerPage}
                   ActionsComponent={TablePaginationActions}
-                /> : ""}
+                />
+              ) : (
+                ""
+              )}
               <button
                 className="btn btn-info form-control"
                 onClick={() => saveBrands({ id: 2 })}
                 disabled={isSending}
               >
                 Сохранить
-                </button>
+              </button>
             </Fragment>
-          }
+          )}
         </div>
       </div>
       <div className="empty-space" />
-      {brands.length === 0 &&
-        < Fragment >
+      {brands.length === 0 && (
+        <Fragment>
           <dl>
             <dt>Наименование бренда</dt>
             <dd>
               <Field
                 value={brand}
-                onChange={(e) => { setBrand(e.target.value) }}
+                onChange={(e) => {
+                  setBrand(e.target.value);
+                }}
                 name="brand"
                 component={InputField}
                 type="text"
@@ -531,7 +557,9 @@ let AddBrandForm = ({
             <dd>
               <Field
                 value={manufacturer}
-                onChange={(e) => { setManufacturer(e.target.value) }}
+                onChange={(e) => {
+                  setManufacturer(e.target.value);
+                }}
                 name="manufacturer"
                 component={InputField}
                 type="text"
@@ -549,8 +577,8 @@ let AddBrandForm = ({
             {isSending
               ? "Пожалуйста подождите..."
               : !brandData
-                ? "Добавить"
-                : "Сохранить изменения"}
+              ? "Добавить"
+              : "Сохранить изменения"}
           </button>
           {!brandData && (
             <button
@@ -563,7 +591,7 @@ let AddBrandForm = ({
             </button>
           )}
         </Fragment>
-      }
+      )}
     </div>
   );
 };
