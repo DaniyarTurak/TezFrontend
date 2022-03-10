@@ -52,7 +52,7 @@ export default function ReportSales({ companyProps }) {
   const [attributes, setAttributes] = useState([]);
   const [brand, setBrand] = useState({ value: "@", label: "Все" });
   const [brands, setBrands] = useState([]);
-  const [category, setCategory] = useState({ value: "@", label: "Все" });
+  const [category, setCategory] = useState(undefined);
   const [categories, setCategories] = useState([]);
   const [counterparty, setCounterParty] = useState({
     value: "0",
@@ -243,7 +243,7 @@ export default function ReportSales({ companyProps }) {
     setAttrVal({ value: "", label: "Все" });
     setBarcode("");
     setBrand({ value: "@", label: "Все" });
-    setCategory({ value: "@", label: "Все" });
+    setCategory(undefined);
     setAttribute({ value: "@", label: "Все", format: "" });
     setSearched(false)
   };
@@ -526,7 +526,7 @@ export default function ReportSales({ companyProps }) {
         code: barcode,
         counterparty: counterparty.value,
         point: point.value,
-        category: category.value,
+        category: category,
         brand: brand.value,
         transaction_type: type.value,
         sell_type: sellType.value,
