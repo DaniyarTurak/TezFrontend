@@ -18,7 +18,6 @@ export default function SalesOptions({
   brand,
   brands,
   category,
-  categories,
   changeDate,
   counterparty,
   counterparties,
@@ -34,8 +33,6 @@ export default function SalesOptions({
   onCounterpartieListInput,
   onBrandChange,
   onBrandListInput,
-  onCategoryChange,
-  onCategoryListInput,
   onTypeChange,
   onAttributeChange,
   onAttributeTypeChange,
@@ -136,17 +133,7 @@ export default function SalesOptions({
           label="Бренды"
         />
       </Grid>
-
-      {/* <Grid item xs={3}>
-        <AutocompleteSelect
-          value={category}
-          onChange={onCategoryChange}
-          options={categories}
-          onInputChange={onCategoryListInput}
-          noOptions="Категории не найдены"
-          label="Категории"
-        />
-      </Grid> */}
+      
       <Grid item xs={12}>
         <CategorySelect setCategory={setCategory} category={category} />
       </Grid>

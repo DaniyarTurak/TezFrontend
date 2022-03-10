@@ -140,32 +140,6 @@ export default function ReportSales({ companyProps }) {
     }
   }, []);
 
-  // useEffect(() => {
-  //   if (!isDateChanging) {
-  //     if (withoutDate) {
-  //       getWithoutDate();
-  //     }
-  //     else {
-  //       getSales();
-
-  //     }
-  //   }
-  //   return () => {
-  //     setDateChanging(false);
-  //   };
-  // }, [
-  //   // attribute,
-  //   // attrval,
-  //   // brand,
-  //   // counterparty,
-  //   // category,
-  //   // dateFrom,
-  //   // dateTo,
-  //   // grouping,
-  //   // point,
-  //   // type,
-  // ]);
-
   useEffect(
     () => {
       if (!debouncedName || debouncedName === "") {
@@ -337,9 +311,7 @@ export default function ReportSales({ companyProps }) {
     setType(t);
   };
 
-  const onCategoryChange = (event, c) => {
-    setCategory(c);
-  };
+
 
   const onAttributeChange = (event, a) => {
     setAttribute(a);
@@ -365,10 +337,6 @@ export default function ReportSales({ companyProps }) {
 
   const onBrandListInput = (event, b, reason) => {
     if (reason === "input") getBrands(b);
-  };
-
-  const onCategoryListInput = (event, c, reason) => {
-    if (reason === "input") getCategories(c);
   };
 
   const getAttributes = () => {
@@ -633,8 +601,6 @@ export default function ReportSales({ companyProps }) {
         onCounterpartieListInput={onCounterpartieListInput}
         onBrandChange={onBrandChange}
         onBrandListInput={onBrandListInput}
-        onCategoryChange={onCategoryChange}
-        onCategoryListInput={onCategoryListInput}
         onTypeChange={onTypeChange}
         onAttributeChange={onAttributeChange}
         onAttributeTypeChange={onAttributeTypeChange}
