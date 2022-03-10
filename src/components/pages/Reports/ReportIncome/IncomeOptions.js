@@ -6,6 +6,7 @@ import TextField from "@material-ui/core/TextField";
 import MaterialDateDefault from "../../../ReusableComponents/MaterialDateDefault";
 import AutocompleteSelect from "../../../ReusableComponents/AutocompleteSelect";
 import AutocompleteProductBarcode from "../../../ReusableComponents/AutocompleteProductBarcode";
+import CategorySelect from "../../../ReusableComponents/CategorySelect";
 
 export default function IncomeOptions({
   attrval,
@@ -49,7 +50,8 @@ export default function IncomeOptions({
   points,
   products,
   productSelectValue,
-  textAttrval
+  textAttrval,
+  setCategory
 }) {
   return (
     <Fragment>
@@ -108,15 +110,8 @@ export default function IncomeOptions({
         />
       </Grid>
 
-      <Grid item xs={3}>
-        <AutocompleteSelect
-          value={category}
-          onChange={onCategoryChange}
-          options={categories}
-          onInputChange={onCategoryListInput}
-          noOptions="Категории не найдены"
-          label="Категории"
-        />
+      <Grid item xs={12}>
+        <CategorySelect setCategory={setCategory} category={category} />
       </Grid>
 
       <Grid item xs={3}>

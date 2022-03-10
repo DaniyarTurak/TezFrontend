@@ -86,7 +86,7 @@ export default function ReportIncome({ companyProps }) {
   const [barcode, setBarcode] = useState("");
   const [brand, setBrand] = useState({ value: -1, label: "Все" });
   const [brands, setBrands] = useState([]);
-  const [category, setCategory] = useState({ value: -1, label: "Все" });
+  const [category, setCategory] = useState(undefined);
   const [categories, setCategories] = useState([]);
   const [counterparty, setCounterParty] = useState({
     value: -1,
@@ -141,25 +141,6 @@ export default function ReportIncome({ companyProps }) {
     }
   }, []);
 
-  // useEffect(() => {
-  //   if (!isDateChanging) {
-  //     getSales();
-  //   }
-  //   return () => {
-  //     setDateChanging(false);
-  //   };
-  // }, [    
-  //   // point,
-  //   // counterparty,
-  //   // category,
-  //   // brand,
-  //   // attribute,
-  //   // attrval,
-  //   // grouping,
-  //   // nds,
-  //   // dateFrom,
-  //   // dateTo,
-  // ]);
 
   const clean = () => {
     setSales([]);
@@ -170,6 +151,7 @@ export default function ReportIncome({ companyProps }) {
     setNds({ value: "-1", label: "Все" });
     setSearched(false)
     setTextAttrval("")
+    setCategory(undefined)
   };
 
   const changeDate = (dateStr) => {
@@ -263,10 +245,6 @@ export default function ReportIncome({ companyProps }) {
     setBrand(b);
   };
 
-  const onCategoryChange = (e, c) => {
-    setCategory(c);
-  };
-
   const onAttributeChange = (e, a) => {
     setAttribute(a);
     setAttrVal("");
@@ -299,10 +277,6 @@ export default function ReportIncome({ companyProps }) {
 
   const onBrandListInput = (event, b, reason) => {
     if (reason === "input") getBrands(b);
-  };
-
-  const onCategoryListInput = (event, c, reason) => {
-    if (reason === "input") getCategories(c);
   };
 
   const getAttributes = () => {
@@ -541,7 +515,7 @@ export default function ReportIncome({ companyProps }) {
         company,
         counterparty: counterparty.value,
         point: point.value,
-        category: category.value,
+        category: category,
         brand: brand.value,
         attribute: attribute.value,
         attrval: attribute.format==="TEXT" ? textAttrval === "" ? "-1" : textAttrval : attrval.label? attrval.label === "Все" ? "-1" : attrval.label : "-1",
@@ -604,8 +578,7 @@ export default function ReportIncome({ companyProps }) {
         onBrandListInput={onBrandListInput}
         onCounterpartieChange={onCounterpartieChange}
         onCounterpartieListInput={onCounterpartieListInput}
-        onCategoryChange={onCategoryChange}
-        onCategoryListInput={onCategoryListInput}
+        setCategory={setCategory}
         onGroupingChange={onGroupingChange}
         onNdsChange={onNdsChange}
         onProductChange={onProductChange}
