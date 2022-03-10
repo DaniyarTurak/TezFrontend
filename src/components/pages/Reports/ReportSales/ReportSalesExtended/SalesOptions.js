@@ -4,10 +4,10 @@ import Checkbox from "@material-ui/core/Checkbox";
 import moment from "moment";
 import Grid from "@material-ui/core/Grid";
 import TextField from "@material-ui/core/TextField";
-import MaterialDateDefault from "../../../ReusableComponents/MaterialDateDefault";
-import AutocompleteSelect from "../../../ReusableComponents/AutocompleteSelect";
+import MaterialDateDefault from "../../../../ReusableComponents/MaterialDateDefault";
+import AutocompleteSelect from "../../../../ReusableComponents/AutocompleteSelect";
 import Autocomplete from "@material-ui/lab/Autocomplete";
-import CategorySelect from "../../../ReusableComponents/CategorySelect";
+import CategorySelect from "../../../../ReusableComponents/CategorySelect";
 
 export default function SalesOptions({
   attrval,
@@ -56,7 +56,7 @@ export default function SalesOptions({
   setSellType,
   clientTypes,
   sellTypes,
-  setCategory
+  setCategory,
 }) {
   return (
     <Fragment>
@@ -133,11 +133,10 @@ export default function SalesOptions({
           label="Бренды"
         />
       </Grid>
-      
+
       <Grid item xs={12}>
         <CategorySelect setCategory={setCategory} category={category} />
       </Grid>
-
 
       <Grid item xs={3}>
         <AutocompleteSelect
@@ -243,7 +242,6 @@ export default function SalesOptions({
       {/* <Grid item xs={3}>
         <CategorySelect onCategoryChange={onCategoryChange} setCategory={setCategory} />
       </Grid> */}
-
     </Fragment>
   );
 }

@@ -569,13 +569,13 @@ export default function ReportStockBalance({ companyProps }) {
           brand: brand.value,
           attribute: attribute.value,
           attrval:
-          attrval.label === "Все"
-            ? ""
-            : attribute.format === "SPR"
-            ? attrval.label
-            : attribute.format === "DATE"
-            ? dateAttrval
-            : attrval,
+            attrval.label === "Все"
+              ? ""
+              : attribute.format === "SPR"
+              ? attrval.label
+              : attribute.format === "DATE"
+              ? dateAttrval
+              : attrval,
           notattr,
           nds: nds.value,
           flag,

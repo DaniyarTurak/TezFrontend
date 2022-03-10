@@ -11,7 +11,7 @@ import TableHead from "@material-ui/core/TableHead";
 import TableFooter from "@material-ui/core/TableFooter";
 import Paper from "@material-ui/core/Paper";
 import Grid from "@material-ui/core/Grid";
-import OrderArrowMaterial from "../../../ReusableComponents/OrderArrowMaterial";
+import OrderArrowMaterial from "../../../../ReusableComponents/OrderArrowMaterial";
 import FirstPageIcon from "@material-ui/icons/FirstPage";
 import KeyboardArrowLeft from "@material-ui/icons/KeyboardArrowLeft";
 import KeyboardArrowRight from "@material-ui/icons/KeyboardArrowRight";
@@ -20,7 +20,7 @@ import IconButton from "@material-ui/core/IconButton";
 import "moment/locale/ru";
 import { withStyles, makeStyles, useTheme } from "@material-ui/core/styles";
 import Axios from "axios";
-import ErrorAlert from "../../../ReusableComponents/ErrorAlert";
+import ErrorAlert from "../../../../ReusableComponents/ErrorAlert";
 Moment.locale("ru");
 
 const useStyles1 = makeStyles((theme) => ({

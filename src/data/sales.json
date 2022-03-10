@@ -1,0 +1,13 @@
+[
+    {
+      "id": 0,
+      "route": "ReportSalesSimple",
+      "caption": "Упрощенный"
+    },
+    {
+      "id": 1,
+      "route": "ReportSalesExtended",
+      "caption": "Расширенный"
+    }
+]
+  
