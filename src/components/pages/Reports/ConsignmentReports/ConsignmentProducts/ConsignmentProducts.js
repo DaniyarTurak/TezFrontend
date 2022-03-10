@@ -37,7 +37,7 @@ export default function ConsginmentProducts({
 }) {
   const [brand, setBrand] = useState({ label: "Все", value: "@" });
   const [brands, setBrands] = useState([]);
-  const [category, setCategory] = useState({ label: "Все", value: "@" });
+  const [category, setCategory] = useState(undefined);
   const [categories, setCategories] = useState([]);
   const [consignments, setConsignments] = useState([]);
   const [consignator, setConsignator] = useState(
@@ -77,7 +77,7 @@ export default function ConsginmentProducts({
     } else if (!brand.value) {
       AlertFunction("Бренд");
       return;
-    } else if (!category.value) {
+    } else if (category===undefined) {
       AlertFunction("Категорию");
       return;
     }
@@ -85,7 +85,7 @@ export default function ConsginmentProducts({
     Axios.get("/api/report/consignment", {
       params: {
         brand: brand.value,
-        category: category.value,
+        category: category,
         consignator: consignator.value,
       },
     })
@@ -214,6 +214,7 @@ export default function ConsginmentProducts({
         onConsignatorChange={onConsignatorChange}
         onConsignatorListInput={onConsignatorListInput}
         isLoading={isLoading}
+        setCategory={setCategory}
       />
 
       {consignments.length > 0 && !isLoading && (
