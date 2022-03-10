@@ -5,6 +5,7 @@ import Grid from "@material-ui/core/Grid";
 import Button from "@material-ui/core/Button";
 import Paper from "@material-ui/core/Paper";
 import Typography from "@material-ui/core/Typography";
+import CategorySelect from "../../../../ReusableComponents/CategorySelect";
 
 export default function ConsginmentOptions({
   brand,
@@ -22,11 +23,12 @@ export default function ConsginmentOptions({
   onConsignatorChange,
   onConsignatorListInput,
   isLoading,
+  setCategory
 }) {
   return (
     <Paper className={classes.paper}>
-      <Grid container spacing={3}>
-        <Grid item xs={3}>
+      <Grid container spacing={2}>
+        <Grid item xs={4}>
           <Autocomplete
             value={consignator}
             defaultValue={consignator}
@@ -55,7 +57,7 @@ export default function ConsginmentOptions({
             )}
           />
         </Grid>
-        <Grid item xs={3}>
+        <Grid item xs={4}>
           <Autocomplete
             value={brand}
             defaultValue={brand}
@@ -84,7 +86,7 @@ export default function ConsginmentOptions({
             )}
           />
         </Grid>
-        <Grid item xs={3}>
+        {/* <Grid item xs={3}>
           <Autocomplete
             value={category}
             defaultValue={category}
@@ -112,6 +114,9 @@ export default function ConsginmentOptions({
               />
             )}
           />
+        </Grid> */}
+        <Grid item xs={8}>
+          <CategorySelect setCategory={setCategory} category={category} />
         </Grid>
         <Grid item xs={3}>
           <Button
