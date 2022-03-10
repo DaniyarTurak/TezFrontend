@@ -137,7 +137,7 @@ export default function SalesOptions({
         />
       </Grid>
 
-      <Grid item xs={3}>
+      {/* <Grid item xs={3}>
         <AutocompleteSelect
           value={category}
           onChange={onCategoryChange}
@@ -146,6 +146,9 @@ export default function SalesOptions({
           noOptions="Категории не найдены"
           label="Категории"
         />
+      </Grid> */}
+      <Grid item xs={12}>
+        <CategorySelect setCategory={setCategory} category={category} />
       </Grid>
 
 

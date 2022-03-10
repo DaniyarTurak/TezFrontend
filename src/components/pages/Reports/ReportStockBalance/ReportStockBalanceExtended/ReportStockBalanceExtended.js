@@ -565,10 +565,17 @@ export default function ReportStockBalance({ companyProps }) {
           barcode,
           stockID,
           counterparty: counterparty.value,
-          category: category.value,
+          category: category,
           brand: brand.value,
           attribute: attribute.value,
-          attrval: attrval.label === "Все" ? "" : attrval.label,
+          attrval:
+          attrval.label === "Все"
+            ? ""
+            : attribute.format === "SPR"
+            ? attrval.label
+            : attribute.format === "DATE"
+            ? dateAttrval
+            : attrval,
           notattr,
           nds: nds.value,
           flag,
